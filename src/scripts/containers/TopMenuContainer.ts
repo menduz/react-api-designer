@@ -1,9 +1,9 @@
 import {connect, Dispatch} from 'react-redux'
-import {AppState} from "../reducers/AppState";
 import TopMenu from "../components/TopMenu";
 
 import {Actions, saveFile} from "../actions/index";
 import {addFile} from "../actions/repository";
+import {AppState} from "../reducers/index";
 
 function mapStateToProps(state: AppState) {
     return { }

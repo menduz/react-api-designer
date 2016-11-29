@@ -6,9 +6,9 @@ import {Repository} from '../repository/immutable/repository'
 import Directory = Repository.Directory;
 import Element = Repository.Element;
 import File = Repository.File;
-import {AppState} from "../reducers/AppState";
 import {Actions} from "../actions/index";
 import {Path} from "../repository/Path";
+import {AppState, RepositoryState, ExpandedDirectoriesState} from "../reducers/index";
 
 interface RepositoryNode extends TreeViewNode {
     path: Path
@@ -41,9 +41,12 @@ interface StateProps {
 }
 
 function mapStateToProps(state: AppState): StateProps {
+    const repository = state.get(RepositoryState, Repository.empty());
+    const expandedDirs = state.get(ExpandedDirectoriesState, Map<string, Repository.Element>());
+
     return {
-        nodes: state.repository.root.children
-            .map((c) => nodeFromElement(state.expandedDirs, c))
+        nodes: repository.root.children
+            .map((c: Repository.Element) => nodeFromElement(expandedDirs, c))
             .toArray()
     }
 }

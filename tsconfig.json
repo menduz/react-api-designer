@@ -16,7 +16,6 @@
     }
   },
   "files": [
-    "./src/scripts/index.tsx",
     "./src/scripts/actions/index.ts",
     "./src/scripts/actions/repository.ts",
     "./src/scripts/components/AceEditor.tsx",
@@ -24,16 +23,14 @@
     "./src/scripts/components/TopMenu.tsx",
     "./src/scripts/containers/TreeViewContainer.ts",
     "./src/scripts/containers/TopMenuContainer.ts",
+    "./src/scripts/reducers/index.ts",
     "./src/scripts/repository/index.ts",
     "./src/scripts/repository/Path.ts",
     "./src/scripts/repository/file-system/FileSystem.ts",
+    "./src/scripts/repository/file-system/LocalStorageFileSystem.ts",
     "./src/scripts/repository/immutable/Repository.ts",
     "./src/scripts/repository/immutable/RepositoryFactory.ts",
-    "./src/scripts/repository/ImmutableRepository.ts",
-    "./src/scripts/repository/IndependentImmutableRepository.ts",
-    "./src/scripts/repository/file-system/LocalStorageFileSystem.ts",
     "./src/scripts/repository/mutable/Repository.ts",
-    "./src/scripts/reducers/AppState.ts",
-    "./src/scripts/reducers/index.ts"
+    "./src/scripts/index.tsx"
   ]
 }

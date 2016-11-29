@@ -27,10 +27,7 @@ const store = createStore(apiDesignerReducer, applyMiddleware(thunk));
 
 store.subscribe(() => {
     console.log('// %%%%%%% New State %%%%%%%');
-    console.log(store.getState().repository);
-    console.log(store.getState().selectedElement);
-    console.log(store.getState().files.toString());
-    console.log(store.getState().expandedDirs.toString());
+    console.log(store.getState().toString());
 });
 
 ReactDOM.render(

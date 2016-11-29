@@ -1,12 +1,17 @@
 import {Map} from 'immutable';
-import {AppState} from "./AppState";
-import {ImmutableRepository} from '../repository/ImmutableRepository';
 import {AppAction, Actions, SelectElement, AddDirectory, SaveFile} from "../actions/index";
-import fromMutableFileRepository = ImmutableRepository.Repository.fromMutableFileRepository;
 import {FileAdded, InitAction} from "../actions/repository";
 import {Path} from "../repository/Path";
+import {Repository} from "../repository/immutable/Repository";
 
-const addDirectoryReducer = function (state: AppState, addDirectoryAction: AddDirectory) {
+export const RepositoryState = 'RepositoryState';
+export const SelectedElementState = 'SelectedElementState';
+export const ExpandedDirectoriesState = 'ExpandedDirectoriesState';
+export const FilesState = 'FilesState';
+
+export type AppState = Map<string, any>;
+
+const addDirectoryReducer = function (state: Map<string, any>, addDirectoryAction: AddDirectory) {
     // const path = state.selectedElement && state.selectedElement.isDirectory() ? state.selectedElement.path : state.repository.root.path;
     // GlobalState.repository.addDirectory(path, addDirectoryAction.name);
     // return state
@@ -15,31 +20,39 @@ const addDirectoryReducer = function (state: AppState, addDirectoryAction: AddDi
 };
 
 const addFileReducer = function (state: AppState, addFileAction: FileAdded) {
-    return state.withRepository(state.repository.updateElement(addFileAction.file));
+    const repository = state.get(RepositoryState, Repository.empty()) as Repository;
+    return state.set(RepositoryState, repository.updateElement(addFileAction.file));
 };
 
 const selectElementReducer = function (state: AppState, selectAction: SelectElement) {
-    const element = state.repository.getByPath(Path.fromString(selectAction.path));
-    const selectedState = state.withSelectedElement(element);
+    const repository = state.get(RepositoryState, Repository.empty()) as Repository;
 
-    var toggleDir = function (expandedDirs: Map<string, boolean>, path: string) {
+
+    const element = repository.getByPath(Path.fromString(selectAction.path));
+    const selectedState = state.set(SelectedElementState, element);
+
+    const toggleDir = function (expandedDirs: Map<string, boolean>, path: string) {
         const expanded = expandedDirs.get(path, false);
         return expandedDirs.set(path, !expanded);
     };
 
-    return element.isDirectory() ? selectedState.withExpandedDirs(toggleDir(state.expandedDirs, element.path.toString())) : selectedState;
+    const expandedDirs = state.get(ExpandedDirectoriesState, Map<string, boolean>()) as Map<string, boolean>;
+    const newExpanded = element.isDirectory()? toggleDir(expandedDirs, element.path.toString()): expandedDirs;
+    return selectedState.set(ExpandedDirectoriesState, newExpanded);
 };
 
-const initReducer = function (state: AppState, action: InitAction) { return state.withRepository(action.repository); };
+const initReducer = function (state: AppState, action: InitAction) {
+    return state.set(RepositoryState, action.repository);
+};
 
 const saveFileReducer = function (state: AppState, action: SaveFile) {
-    const selectedElement = state.selectedElement;
+    const selectedElement = state.get(SelectedElementState);
     if(!selectedElement) return state;
 
 };
 
 export const apiDesignerReducer = (state: AppState, action: AppAction): AppState => {
-    state = state || AppState.empty();
+    state = state || Map<string, boolean>();
 
     console.log("// ======= Action ======= ");
     console.log(action);
