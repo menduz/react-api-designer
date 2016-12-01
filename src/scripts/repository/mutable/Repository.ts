@@ -16,13 +16,13 @@ export namespace MutableRepository {
 
         static fromFileSystem(fileSystem: FileSystem): Promise<Repository> {
             return fileSystem.directory(Repository.FileSystemSeparator)
-                .then((entry: Entry) => new Repository(fileSystem, Repository.ElementFactory.directory(entry)));
+                .then((e: Entry) => new Repository(fileSystem, Repository.ElementFactory.directory(fileSystem, e)));
         }
 
         get root() { return this._root; }
 
         getByPath(path: string): Repository.Element {
-            var pathElements = path.split(Repository.FileSystemSeparator)
+            const pathElements = path.split(Repository.FileSystemSeparator)
                 .filter(s => s.length !== 0);
 
             return this.root.getByPath(List(pathElements));
@@ -38,7 +38,7 @@ export namespace MutableRepository {
             const element = this.getByPath(path);
             if (!element.isDirectory()) return;
             const directory = element as Repository.Directory;
-            const file = Repository.File.File(name, content, directory);
+            const file = Repository.File.dirty(name, content, directory);
 
             return file.getContent()
                 .then(content => this._fileSystem.save(file.path, content))
@@ -46,43 +46,44 @@ export namespace MutableRepository {
                 .then(() => file);
         }
 
-        addDirectory(path: string, name: string) {
+        addDirectory(path: string, name: string): Promise<Repository.Directory> {
             const element = this.getByPath(path);
             if (!element.isDirectory()) return;
             const directory = element as Repository.Directory;
             const newDirectory = new Repository.Directory(name, [], directory);
-            directory.children.push(newDirectory);
 
-            return newDirectory;
+            return this._fileSystem.createFolder(newDirectory.path)
+                .then(() => { directory.children.push(newDirectory) })
+                .then(() => newDirectory);
         }
     }
 
     export namespace Repository {
         export class ElementFactory {
-            static element(entry: Entry, parent?: Directory): Element {
+            static element(fileSystem: FileSystem, entry: Entry, parent?: Directory): Element {
                 switch (entry.type) {
                     case EntryFolder:
-                        return ElementFactory.directory(entry, parent);
+                        return ElementFactory.directory(fileSystem, entry, parent);
                     case EntryFile:
-                        return ElementFactory.file(entry, parent);
+                        return ElementFactory.file(fileSystem, entry, parent);
                 }
                 throw `${entry.type} is not a valid entry type.`;
             }
 
-            static directory(entry: Entry, parent?: Directory): Directory {
+            static directory(fileSystem: FileSystem, entry: Entry, parent?: Directory): Directory {
                 if (entry.type !== EntryFolder) throw 'This isn\'t a folder entry';
 
-                const children = entry.children.map((entry) => ElementFactory.element(entry));
+                const children = entry.children.map((entry) => ElementFactory.element(fileSystem, entry));
                 const directory = new Directory(entry.name, children, parent);
                 children.forEach((child: Element) => { child.parent = directory; });
 
                 return directory;
             }
 
-            static file(entry: Entry, parent?: Directory): File {
+            static file(fileSystem: FileSystem, entry: Entry, parent?: Directory): File {
                 if (entry.type !== EntryFile) throw 'This isn\'t a file entry';
 
-                return File.EmptyFile(entry.name, parent)
+                return File.empty(entry.name, fileSystem,parent)
             }
         }
 
@@ -159,7 +160,7 @@ export namespace MutableRepository {
             getByPath(path: List<string>): Repository.Element {
                 if (path.isEmpty()) return this;
 
-                var childrenResult = this.children
+                const childrenResult = this.children
                     .filter((e) => e.name === path.first())
                     .map((e) => e.getByPath(path.shift()));
 
@@ -168,23 +169,19 @@ export namespace MutableRepository {
         }
 
         export class File extends Element {
-            protected _name: string;
-            protected _parent?: Directory;
             private _state: File.State;
 
-            private constructor(name: string, parent?: Directory) {
+            private constructor(name: string, stateFactory: (f: File) => File.State, parent?: Directory) {
                 super(name, parent);
-                this._state = new File.EmptyState(this);
+                this._state = stateFactory(this);
             }
 
-            static EmptyFile(name: string, parent?: Directory) {
-                return new File(name, parent);
+            static empty(name: string, fileSystem: FileSystem, parent?: Directory) {
+                return new File(name, (f) => new File.EmptyState(f, fileSystem), parent);
             }
 
-            static File(name: string, content: string, parent?: Directory) {
-                var file = new File(name, parent);
-                file.setContent(content);
-                return file;
+            static dirty(name: string, content: string, parent?: Directory) {
+                return new File(name, () => new File.DirtyState(content), parent);
             }
 
             isDirectory() {
@@ -226,19 +223,15 @@ export namespace MutableRepository {
 
             export class EmptyState implements State {
                 private _file: File;
+                private _fileSystem: FileSystem;
 
-                constructor(file: File) {
+                constructor(file: File, fileSystem: FileSystem) {
                     this._file = file;
+                    this._fileSystem = fileSystem;
                 }
 
                 getContent(): [Promise<string>, State] {
-                    const contentPromise: Promise<string> = new Promise<string>((resolve) => {
-                        // Loads from repository...
-                        setTimeout(() => {
-                            resolve("");
-                        }, 100);
-                    });
-
+                    const contentPromise: Promise<string> = this._fileSystem.load(this._file.path);
                     return [contentPromise, new LoadingState(this._file, contentPromise)];
                 }
 
@@ -297,7 +290,7 @@ export namespace MutableRepository {
                 }
             }
 
-            class DirtyState implements State {
+            export class DirtyState implements State {
                 _content: string;
 
                 constructor(content: string) {

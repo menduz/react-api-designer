@@ -2,13 +2,13 @@ import {Map} from 'immutable';
 import {connect, Dispatch} from 'react-redux'
 import TreeView, {TreeViewNode} from '@mulesoft/anypoint-components/lib/TreeView'
 
-import {Repository} from '../repository/immutable/repository'
+import {Repository} from '../repository/immutable/Repository'
 import Directory = Repository.Directory;
 import Element = Repository.Element;
 import File = Repository.File;
-import {Actions} from "../actions/index";
 import {Path} from "../repository/Path";
 import {AppState, RepositoryState, ExpandedDirectoriesState} from "../reducers/index";
+import {selectElement} from "../actions/repository";
 
 interface RepositoryNode extends TreeViewNode {
     path: Path
@@ -58,7 +58,7 @@ interface DispatchProps {
 function mapDispatchToProps(dispatch: Dispatch<AppState>): DispatchProps {
     return {
         onClick: (node: TreeViewNode) => {
-            dispatch({type: Actions.SELECT_ELEMENT, path: (node as RepositoryNode).path });
+            dispatch(selectElement((node as RepositoryNode).path));
         }
     }
 }

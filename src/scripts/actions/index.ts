@@ -1,26 +1,19 @@
 import {Action} from "redux";
+import {Path} from "../repository/Path";
 
 export enum Actions{
+    CONTENT_CHANGED,
     INIT,
-    SELECT_ELEMENT,
+    ELEMENT_SELECTED,
     FILE_ADDED,
-    ADD_DIRECTORY,
+    DIRECTORY_ADDED,
     SAVE_FILE,
+    FILE_LOADED,
     FILE_SAVED
 }
 
 export interface AppAction extends Action {
     type: Actions;
-}
-
-export class SelectElement implements AppAction {
-    readonly type = Actions.SELECT_ELEMENT;
-    readonly path: string;
-}
-
-export class AddDirectory implements AppAction {
-    readonly type = Actions.ADD_DIRECTORY;
-    readonly name: string;
 }
 
 export const saveFile = function(): SaveFile { return { type: Actions.SAVE_FILE,} };

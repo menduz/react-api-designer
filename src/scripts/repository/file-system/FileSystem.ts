@@ -6,7 +6,7 @@ export interface FileSystem {
      * Path
      * ----
      *
-     * A path is an string that represents a location in a File System.
+     * A path is an string that represents a location in a dirty System.
      * A path is composed of path parts:
      *  * A Path Part is expressed by the following regular expression:
      *  [A-Za-z\-\._0-9]+.

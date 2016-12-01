@@ -26,13 +26,15 @@ export default class AceEditor extends React.PureComponent<AceEditorProps, {}> {
         return this.refs['editor'] as HTMLElement;
     }
 
+    handleChange() { if (this.props.onChange) this.props.onChange(this.editor.getValue()) }
+
     componentDidMount() {
         this.editor = ace.edit(this.editorRef());
 
         this.editor.setTheme(`ace/theme/${this.theme}`);
         this.editor.getSession().setMode(`ace/mode/${this.mode}`);
 
-        if (this.props.onChange) this.editor.getSession().on('change', this.props.onChange)
+        if (this.props.onChange) this.editor.getSession().on('change', this.handleChange.bind(this))
     }
 
     set value(value: string) { this.editor.setValue(value); }
@@ -40,8 +42,8 @@ export default class AceEditor extends React.PureComponent<AceEditorProps, {}> {
     get value(): string { return this.editor.getValue(); }
 
     render() {
-        const editorStyle = {height: this.height, width: this.width};
-        return <div ref="editor" id="editor" style={editorStyle}></div>;
+        const editorStyle = {height: this.height, width: this.width, display: this.props.display ? 'block' : 'none'};
+        return <div ref="editor" id="editor" style={editorStyle}>{this.props.value}</div>;
     }
 }
 
@@ -55,7 +57,7 @@ interface AceEditorProps {
     width?: string;
     fontSize?: number;
     showGutter?: boolean;
-    onChange?: (event: ChangeEvent) => void;
+    onChange?: (v: string) => void;
     onCopy?: () => void;
     onPaste?: () => void;
     onFocus?: () => void;
@@ -80,6 +82,7 @@ interface AceEditorProps {
     enableBasicAutocompletion?: boolean,
     enableLiveAutocompletion?: boolean,
     commands?: EditorCommand[],
+    display?: boolean;
 }
 
 interface ChangeEvent {

@@ -69,7 +69,7 @@ class LocalStorageFileSystem implements FileSystem {
         LocalStorageHelper.forEach((entry) => {
             if (entry.path.toLowerCase() !== path.toLowerCase() &&
                 this.extractParentPath(entry.path) + '/' === path) {
-                this.addChildren(entry, this.findFiles);
+                this.addChildren(entry, this.findFiles.bind(this));
                 entries.push(entry);
             }
         });
@@ -80,7 +80,7 @@ class LocalStorageFileSystem implements FileSystem {
      *
      * Save in localStorage entries.
      *
-     * File structure are objects that contain the following attributes:
+     * dirty structure are objects that contain the following attributes:
      * * path: The full path (including the filename).
      * * content: The content of the file (only valid for files).
      * * isFolder: A flag that indicates whether is a folder or file.
@@ -302,7 +302,7 @@ class LocalStorageFileSystem implements FileSystem {
 
                 let destinationEntry: LocalStorageEntry = LocalStorageHelper.get(destination) as LocalStorageEntry;
                 if (destinationEntry) {
-                    reject('File or folder already exists.');
+                    reject('dirty or folder already exists.');
                     return; // deferred.promise;
                 }
 

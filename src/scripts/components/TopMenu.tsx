@@ -11,7 +11,7 @@ export default class TopMenu extends React.Component<TopMenuProps, {}> {
         const actions: ActionBarElement[] = [
             {
                 icon: 'plus',
-                label: 'Add File',
+                label: 'Add dirty',
                 onClick: this.props.onAddFile,
                 testId: 'add-file',
             },

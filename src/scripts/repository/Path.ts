@@ -17,10 +17,10 @@ export abstract class Path {
     }
 
     static path(elements: List<string>, absolute: boolean = true): Path {
-        const filteredElements = elements.filter((s) =>  s && s.length > 0);
+        const filteredElements = elements.filter((s) =>  s && s.length > 0).toList();
 
         if (filteredElements.isEmpty()) return Path.emptyPath(absolute);
-        return absolute ? new AbsolutePathImpl(elements) : new RelativePathImpl(elements);
+        return absolute ? new AbsolutePathImpl(filteredElements) : new RelativePathImpl(filteredElements);
     }
 
     static fromString(value: string): Path {
