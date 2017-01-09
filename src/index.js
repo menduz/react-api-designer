@@ -1,10 +1,11 @@
-// @flow
+//@flow
 
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import './index.css';
 
-import ApiDesigner from './ApiDesigner/ApiDesigner'
-
-export default {ApiDesigner}
-
-ReactDOM.render(<ApiDesigner/>, document.getElementById('root'))
+ReactDOM.render(
+  <App />,
+  document.getElementById('root')
+);
