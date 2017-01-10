@@ -4,6 +4,37 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+const converterWorker = new Worker(`${process.env.PUBLIC_URL}/build/static/js/api-designer-worker.js`)
+
+converterWorker.addEventListener('message', (e) => {
+  const response = e.data
+  console.log(response)
+
+  switch (response.type) {
+
+    case 'raml-parse-resolve':
+      break
+
+    case 'raml-parse-reject':
+      break
+
+    case 'request-file':
+      converterWorker.postMessage({
+        type: 'request-file',
+        path: '/api.raml',
+        content: '#%RAML 1.0\ntitle: My Raml'
+      })
+      break
+
+  }
+
+}, false)
+
+converterWorker.postMessage({
+  type: 'raml-parse',
+  path: '/api.raml'
+})
+
 class App extends Component {
   render() {
     return (
