@@ -1,51 +1,59 @@
 //@flow
 
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-const converterWorker = new Worker(`${process.env.PUBLIC_URL}/build/static/js/api-designer-worker.js`)
-
-converterWorker.addEventListener('message', (e) => {
-  const response = e.data
-  console.log(response)
-
-  switch (response.type) {
-
-    case 'raml-parse-resolve':
-      break
-
-    case 'raml-parse-reject':
-      break
-
-    case 'request-file':
-      converterWorker.postMessage({
-        type: 'request-file',
-        path: '/api.raml',
-        content: '#%RAML 1.0\ntitle: My Raml'
-      })
-      break
-
-  }
-
-}, false)
-
-converterWorker.postMessage({
-  type: 'raml-parse',
-  path: '/api.raml'
-})
+import WebWorker from './web-worker'
 
 class App extends Component {
+
+  constructor(props) {
+    super(props)
+
+    this.state = { errors: [] }
+
+    this.worker = new WebWorker({
+      getFile: (path) => {
+        return this.editor.value
+      }
+    });
+  }
+
+  parserRaml() {
+    this.worker.parserRaml('/api.raml').then(result => {
+      console.log(result)
+      this.setState({errors:result.errors})
+    }).catch(error => {
+      console.error(error)
+      // unexpected
+      this.setState({errors:[error]})
+    })
+  }
+
   render() {
     return (
       <div className="App">
         <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
+          <img src={logo} className="App-logo" alt="logo"/>
           <h2>Welcome to React</h2>
         </div>
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
+
+        <textarea rows="10" cols="100"
+                  ref={(editor) => { this.editor = editor; }}
+                  onKeyUp={this.parserRaml.bind(this)}
+                  defaultValue="#%RAML 1.0"/>
+        <ul>
+          {
+            this.state.errors.map(error =>
+              <li>{error.message}</li>
+            )
+          }
+        </ul>
+
       </div>
     );
   }
