@@ -23,7 +23,10 @@ class App extends Component {
   parserRaml() {
     this.worker.parserRaml('/api.raml').then(result => {
       console.log(result)
-      this.setState({errors:result.errors})
+      this.setState({
+        raml: result.specification,
+        errors:result.errors
+      })
     }).catch(error => {
       console.error(error)
       // unexpected
@@ -53,6 +56,8 @@ class App extends Component {
             )
           }
         </ul>
+
+        <textarea value={JSON.stringify(this.state.raml, null, 2)} rows="10" cols="100" disabled/>
 
       </div>
     );
