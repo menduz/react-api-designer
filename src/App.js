@@ -11,7 +11,7 @@ class App extends Component {
   constructor(props) {
     super(props)
 
-    this.state = { errors: [] }
+    this.state = {errors: []}
 
     this.worker = new WebWorker({
       getFile: (path) => {
@@ -20,18 +20,19 @@ class App extends Component {
     });
   }
 
-  parserRaml() {
-    this.worker.parserRaml('/api.raml').then(result => {
-      console.log(result)
-      this.setState({
-        raml: result.specification,
-        errors:result.errors
+  parseRaml(path) {
+    const promise = this.worker.ramlParse(path);
+    if (promise) {
+      promise.then(result => {
+        this.setState({
+          raml: result.specification,
+          errors: result.errors
+        })
+      }).catch(error => {
+        if (error === 'aborted') console.log('aborting old parse request for', path)
+        else this.setState({errors: [error]}) // unexpected error
       })
-    }).catch(error => {
-      console.error(error)
-      // unexpected
-      this.setState({errors:[error]})
-    })
+    }
   }
 
   render() {
@@ -47,7 +48,7 @@ class App extends Component {
 
         <textarea rows="10" cols="100"
                   ref={(editor) => { this.editor = editor; }}
-                  onKeyUp={this.parserRaml.bind(this)}
+                  onKeyUp={this.parseRaml.bind(this, 'api.raml')}
                   defaultValue="#%RAML 1.0"/>
         <ul>
           {
