@@ -1,3 +1,5 @@
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+
 module.exports = {
   entry: './src-worker/index.js',
   output: {
@@ -23,5 +25,13 @@ module.exports = {
   node: {
     fs: "empty"
   },
-  devtool: "source-map"
+  devtool: "source-map",
+  plugins: [
+    new CopyWebpackPlugin([
+      {
+        from: 'node_modules/monaco-editor/min/vs',
+        to: 'vs',
+      }
+    ])
+  ]
 }

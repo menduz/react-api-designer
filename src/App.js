@@ -10,6 +10,7 @@ import Tab from '@mulesoft/anypoint-components/lib/Tab'
 import Tabs from '@mulesoft/anypoint-components/lib/Tabs'
 import tree from './tree.json';
 // import logo from './logo.svg';
+import DesignerEditor from './Editor/Editor'
 import './App.css';
 
 import WebWorker from './web-worker'
@@ -23,27 +24,32 @@ class App extends Component {
       tree: tree,
       active: null,
       selectedTab: parseInt(localStorage.getItem('designer:preference:selectedTab') || 0),
-      errors: []
+      errors: [],
+      editor: {value: '#%RAML 1.0'}
     }
 
     this.worker = new WebWorker({
       getFile: (path) => {
-        return this.editor.value
+        return this.state.editor.value
       }
     });
   }
 
-  parseRaml(path) {
+  parseRaml(path, code) {
     const promise = this.worker.ramlParse(path);
     if (promise) {
       promise.then(result => {
         this.setState({
           raml: result.specification,
-          errors: result.errors
+          errors: result.errors,
+          editor: {value: code}
         })
       }).catch(error => {
         if (error === 'aborted') console.log('aborting old parse request for', path)
-        else this.setState({errors: [error]}) // unexpected error
+        else this.setState({
+          errors: [error],
+          editor: {value: code}
+        }) // unexpected error
       })
     }
   }
@@ -103,10 +109,21 @@ class App extends Component {
                        defaultSize={parseInt(localStorage.getItem('designer:preference:rightSplit') || 300, 10)}
                        onChange={size => localStorage.setItem('designer:preference:rightSplit', size)}>
               <div className="CodePanel">
-                <textarea rows="50" style={{width:"100%"}}
-                          ref={(editor) => { this.editor = editor; }}
-                          onKeyUp={this.parseRaml.bind(this, 'api.raml')}
-                          defaultValue="#%RAML 1.0"/>
+                <h3>RAML Monaco editor</h3>
+                <DesignerEditor
+                  code={this.state.editor.value}
+                  onChange={this.parseRaml.bind(this)}
+                  onSuggest={position => null}
+                  suggestions={this.state.suggestions}
+                  errors={this.state.errors}
+                  language="raml"
+                />
+
+                <h3>JSON Monaco editor</h3>
+                <DesignerEditor
+                  code="{}"
+                  language="json"
+                />
               </div>
               <div className="InfoPanel">
                 <Tabs selectedIndex={this.state.selectedTab}>

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "copy-webpack-plugin": "^4.0.1",
     "flow-bin": "^0.37.4",
     "react-scripts": "0.8.5",
     "webpack": "^1.14.0",
@@ -18,7 +19,8 @@
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-split-pane": "^0.1.57",
-    "react-ui-tree": "^2.6.0"
+    "react-ui-tree": "^2.6.0",
+    "react-monaco-editor": "0.7.3"
   },
   "scripts": {
     "start": "npm run build-worker && react-scripts start",
