@@ -37,7 +37,7 @@ class DesignerEditor extends React.Component {
 
   onChange(newValue, event) {
     if (this.props.onChange !== undefined) {
-      this.props.onChange("", newValue)
+      this.props.onChange(newValue, event)
     }
   }
 

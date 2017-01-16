@@ -9,9 +9,13 @@ import TabList from '@mulesoft/anypoint-components/lib/TabList'
 import Tab from '@mulesoft/anypoint-components/lib/Tab'
 import Tabs from '@mulesoft/anypoint-components/lib/Tabs'
 import tree from './tree.json';
+import { parseText } from './actions'
+
 // import logo from './logo.svg';
 import DesignerEditor from './Editor/Editor'
 import './App.css';
+import { connect } from 'react-redux'
+
 
 import WebWorker from './web-worker'
 
@@ -35,24 +39,36 @@ class App extends Component {
     });
   }
 
-  parseRaml(path, code) {
-    const promise = this.worker.ramlParse(path);
-    if (promise) {
-      promise.then(result => {
-        this.setState({
-          raml: result.specification,
-          errors: result.errors,
-          editor: {value: code}
-        })
-      }).catch(error => {
-        if (error === 'aborted') console.log('aborting old parse request for', path)
-        else this.setState({
-          errors: [error],
-          editor: {value: code}
-        }) // unexpected error
-      })
-    }
+  handleKeyUp = (event, newValue ) => {
+    //event.preventDefault()
+    //console.log("LECKO" + JSON.stringify(event) + " newValue:" + JSON.stringify(newValue))
+    // if (key === 'Enter') {
+    this.props.dispatch(parseText(event))
+    // this.setState({
+    //   editor: {value: newValue}
+    // })
+
+    // }
   }
+
+  // parseRaml(path, code) {
+  //   const promise = this.worker.ramlParse(path);
+  //   if (promise) {
+  //     promise.then(result => {
+  //       this.setState({
+  //         raml: result.specification,
+  //         errors: result.errors,
+  //         editor: {value: code}
+  //       })
+  //     }).catch(error => {
+  //       if (error === 'aborted') console.log('aborting old parse request for', path)
+  //       else this.setState({
+  //         errors: [error],
+  //         editor: {value: code}
+  //       }) // unexpected error
+  //     })
+  //   }
+  // }
 
   onTabSelect(selectedTab) {
     this.setState({selectedTab})
@@ -83,6 +99,7 @@ class App extends Component {
   }
 
   render() {
+    const { isPending, text, errors, isParsing, parsedText} = this.props
     return (
       <div className="App">
         <div className="App-header">
@@ -111,8 +128,8 @@ class App extends Component {
               <div className="CodePanel">
                 <h3>RAML Monaco editor</h3>
                 <DesignerEditor
-                  code={this.state.editor.value}
-                  onChange={this.parseRaml.bind(this)}
+                  code={text}
+                  onChange={this.handleKeyUp.bind(this)}
                   onSuggest={position => null}
                   suggestions={this.state.suggestions}
                   errors={this.state.errors}
@@ -134,7 +151,7 @@ class App extends Component {
                   <TabPanel>
                     {this.state.selectedTab === 0 &&
                     <pre>
-                      {JSON.stringify(this.state.raml, null, 2)}
+                      {JSON.stringify(parsedText, null, 2)}
                     </pre>
                     }
                   </TabPanel>
@@ -155,4 +172,17 @@ class App extends Component {
   }
 }
 
-export default App;
+
+const mapStateToProps = state => {
+  const { parse } = state
+  return {
+    lastUpdated: parse.lastUpdate,
+    isParsing:parse.isParsing,
+    errors:parse.errors,
+    text:parse.text,
+    parsedText:parse.parsedText,
+  }
+}
+
+export default connect(mapStateToProps)(App)
+

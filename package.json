@@ -18,9 +18,13 @@
     "raml-1-parser": "1.1.12",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
+    "react-monaco-editor": "0.7.3",
+    "react-redux": "^4.4.5",
     "react-split-pane": "^0.1.57",
     "react-ui-tree": "^2.6.0",
-    "react-monaco-editor": "0.7.3"
+    "redux": "^3.5.2",
+    "redux-logger": "^2.7.4",
+    "redux-thunk": "^2.1.0"
   },
   "scripts": {
     "start": "npm run build-worker && react-scripts start",
