@@ -30,10 +30,9 @@ const parse = text => (dispatch, getState) => {
     rootNodeDetails: true
   };
 
-  console.log("OK " + text)
 
   return ramlParser.parseRAML(text, options).then(api => {
-    console.log("OK ")
+    // console.log("OK ")
     api = api.expand ? api.expand(true) : api;
     const result = api.toJSON(options)
     console.log(result)
@@ -54,9 +53,9 @@ const parse = text => (dispatch, getState) => {
   // if (promise) {
   //   promise.then(result => {
   //     dispatch(parseResult(result.specification, result.errors))
-  //     if (getState.isPending) {
-  //       parse(getState().text)
-  //     }
+  //     // if (getState.isPending) {
+  //     //   dispatch(parse(getState().text))
+  //     // }
   //   }).catch(error => {
   //     if (error === 'aborted') console.log('aborting old parse request for', text)
   //     else

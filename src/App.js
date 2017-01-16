@@ -39,11 +39,11 @@ class App extends Component {
     });
   }
 
-  handleKeyUp = (event, newValue ) => {
+  handleKeyUp = (newValue, event ) => {
     //event.preventDefault()
     //console.log("LECKO" + JSON.stringify(event) + " newValue:" + JSON.stringify(newValue))
     // if (key === 'Enter') {
-    this.props.dispatch(parseText(event))
+    this.props.dispatch(parseText(newValue))
     // this.setState({
     //   editor: {value: newValue}
     // })
@@ -143,7 +143,13 @@ class App extends Component {
                 />
               </div>
               <div className="InfoPanel">
-                <Tabs selectedIndex={this.state.selectedTab}>
+                {isParsing
+                  ? <div><h2>Parsing...</h2>
+                  </div>:<div/>}
+                {isPending
+                  ? <div><h2>IsPending...</h2>
+                  </div>:<div/>}
+                  <Tabs selectedIndex={this.state.selectedTab}>
                   <TabList>
                     <Tab onClick={this.onTabSelect.bind(this, 0)}>Preview</Tab>
                     <Tab onClick={this.onTabSelect.bind(this, 1)}>Errors</Tab>
@@ -158,7 +164,7 @@ class App extends Component {
                   <TabPanel>
                     {this.state.selectedTab === 1 &&
                     <pre>
-                      {JSON.stringify(this.state.errors, null, 2)}
+                      {JSON.stringify(errors, null, 2)}
                     </pre>
                     }
                   </TabPanel>
