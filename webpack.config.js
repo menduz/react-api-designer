@@ -3,7 +3,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
   entry: './src-worker/index.js',
   output: {
-    path: __dirname + '/public/build/static/js',
+    path: __dirname + '/public/static/js',
     filename: 'api-designer-worker.js',
   },
   module: {
@@ -31,6 +31,9 @@ module.exports = {
       {
         from: 'node_modules/monaco-editor/min/vs',
         to: 'vs',
+      }, {
+        from: 'bower_components',
+        to: 'api-console',
       }
     ])
   ]

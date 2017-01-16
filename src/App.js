@@ -1,7 +1,7 @@
 //@flow
 
-import React, {Component} from 'react';
-import cx from 'classnames';
+import React, {Component} from 'react'
+import cx from 'classnames'
 import Tree from 'react-ui-tree'
 import SplitPane from 'react-split-pane'
 import TabPanel from '@mulesoft/anypoint-components/lib/TabPanel'
@@ -15,6 +15,7 @@ import { parseText } from './actions'
 import DesignerEditor from './components/editor/Editor'
 import './App.css';
 import { connect } from 'react-redux'
+import ReactConsole from './ReactConsole'
 
 class App extends Component {
 
@@ -64,7 +65,7 @@ class App extends Component {
 
     this.setState({
       active: node
-    });
+    })
   }
 
   renderNode(node) {
@@ -73,11 +74,12 @@ class App extends Component {
             onClick={this.onClickNode.bind(this, node)}>
         {node.module}
       </span>
-    );
+    )
   }
 
   render() {
     const { isPending, text, errors, isParsing, parsedObject} = this.props
+    const { tree, editor, suggestions, errors, selectedTab} = this.state
     return (
       <div className="App">
         <div className="App-header">
@@ -91,7 +93,7 @@ class App extends Component {
             <Tree
               className="Tree"
               paddingLeft={20}
-              tree={this.state.tree}
+              tree={tree}
               isNodeCollapsed={this.isNodeCollapsed}
               onChange={this.handleChange.bind(this)}
               renderNode={this.renderNode.bind(this)}
@@ -109,8 +111,8 @@ class App extends Component {
                   code={text}
                   onChange={this.onTextChange.bind(this)}
                   onSuggest={this.suggestions.bind(this)}
-                  suggestions={this.state.suggestions}
-                  errors={this.state.errors}
+                  suggestions={suggestions}
+                  errors={errors}
                   language="raml"
                 />
 
@@ -121,20 +123,18 @@ class App extends Component {
                 />
               </div>
               <div className="InfoPanel">
-                  <Tabs selectedIndex={this.state.selectedTab}>
+                  <Tabs selectedIndex={selectedTab}>
                   <TabList>
                     <Tab onClick={this.onTabSelect.bind(this, 0)}>Preview</Tab>
                     <Tab onClick={this.onTabSelect.bind(this, 1)}>Errors</Tab>
                   </TabList>
                   <TabPanel>
-                    {this.state.selectedTab === 0 &&
-                    <pre>
-                      {JSON.stringify(parsedObject, null, 2)}
-                    </pre>
+                    {selectedTab === 0 &&
+                      <ReactConsole raml={parsedText}/>
                     }
                   </TabPanel>
                   <TabPanel>
-                    {this.state.selectedTab === 1 &&
+                    {selectedTab === 1 &&
                     <pre>
                       {JSON.stringify(errors, null, 2)}
                     </pre>
@@ -146,7 +146,7 @@ class App extends Component {
           </div>
         </SplitPane>
       </div>
-    );
+    )
   }
 }
 
