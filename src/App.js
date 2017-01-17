@@ -9,15 +9,12 @@ import TabList from '@mulesoft/anypoint-components/lib/TabList'
 import Tab from '@mulesoft/anypoint-components/lib/Tab'
 import Tabs from '@mulesoft/anypoint-components/lib/Tabs'
 import tree from './tree.json';
-import { parseResult, parsingRequest, startParsing } from './actions'
+import { parseText } from './actions'
 
 // import logo from './logo.svg';
 import DesignerEditor from './components/editor/Editor'
 import './App.css';
 import { connect } from 'react-redux'
-
-
-import WebWorker from './web-worker'
 
 class App extends Component {
 
@@ -32,28 +29,10 @@ class App extends Component {
       suggestions: [],
       editor: {value: '#%RAML 1.0'}
     }
-
-    var that = this
-    this.worker = new WebWorker({
-      getFile: (path) => {
-        // console.log("WebWorker: " + path + " " + text)
-        return that.props.text
-      }
-    });
   }
 
-  handleKeyUp = (newValue, event ) => {
-    this.props.dispatch(parsingRequest(newValue))
-    this.props.dispatch(startParsing())
-    const promise = this.worker.ramlParse('#api.raml');
-    if (promise) {
-      promise.then(result => {
-        this.props.dispatch(parseResult(JSON.stringify(result.specification), result.errors))
-      }).catch(error => {
-        if (error === 'aborted') console.log('aborting old parse request for', error)
-        else this.props.dispatch(parseResult('', [error]))
-      })
-    }
+  onTextChange = (newValue, event) => {
+    this.props.onValueChange(newValue, event)
   }
 
   suggestions(position) {
@@ -98,7 +77,7 @@ class App extends Component {
   }
 
   render() {
-    const { isPending, text, errors, isParsing, parsedText} = this.props
+    const { isPending, text, errors, isParsing, parsedObject} = this.props
     return (
       <div className="App">
         <div className="App-header">
@@ -128,7 +107,7 @@ class App extends Component {
                 <h3>RAML Monaco editor</h3>
                 <DesignerEditor
                   code={text}
-                  onChange={this.handleKeyUp.bind(this)}
+                  onChange={this.onTextChange.bind(this)}
                   onSuggest={this.suggestions.bind(this)}
                   suggestions={this.state.suggestions}
                   errors={this.state.errors}
@@ -150,7 +129,7 @@ class App extends Component {
                   <TabPanel>
                     {this.state.selectedTab === 0 &&
                     <pre>
-                      {JSON.stringify(parsedText, null, 2)}
+                      {JSON.stringify(parsedObject, null, 2)}
                     </pre>
                     }
                   </TabPanel>
@@ -178,10 +157,16 @@ const mapStateToProps = state => {
     lastUpdated: parse.lastUpdate,
     isParsing:parse.isParsing,
     errors:parse.errors,
-    text:parse.text,
-    parsedText:parse.parsedText,
+    text: parse.text,
+    parsedObject:parse.parsedObject,
   }
 }
 
-export default connect(mapStateToProps)(App)
+const mapDispatch = dispatch => {
+  return {
+      onValueChange: value => dispatch(parseText(value))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatch)(App)
 

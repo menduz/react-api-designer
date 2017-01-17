@@ -7,9 +7,10 @@ import {
 const parse = (state = {
   isParsing: false,
   isPending: false,
+  mimeType: "",
   errors: [],
   text: "",
-  parsedText:""
+  parsedObject: {}
 }, action) => {
   switch (action.type) {
     case START_PARSING:
@@ -30,8 +31,9 @@ const parse = (state = {
       return {
         ...state,
         isParsing: false,
+        mimeType: action.mimeType,
         errors: action.errors,
-        parsedText: action.parsedText,
+        parsedObject: action.parsedObject,
         lastUpdated: action.receivedAt
       }
     default:
