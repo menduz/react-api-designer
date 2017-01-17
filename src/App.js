@@ -9,7 +9,7 @@ import TabList from '@mulesoft/anypoint-components/lib/TabList'
 import Tab from '@mulesoft/anypoint-components/lib/Tab'
 import Tabs from '@mulesoft/anypoint-components/lib/Tabs'
 import tree from './tree.json';
-import { parseText } from './actions'
+import { parseResult, parsingRequest, startParsing } from './actions'
 
 // import logo from './logo.svg';
 import DesignerEditor from './Editor/Editor'
@@ -34,41 +34,25 @@ class App extends Component {
 
     this.worker = new WebWorker({
       getFile: (path) => {
-        return this.state.editor.value
+        // console.log("WebWorker: " + path + " " + text)
+        return this.props.text
       }
     });
   }
 
   handleKeyUp = (newValue, event ) => {
-    //event.preventDefault()
-    //console.log("LECKO" + JSON.stringify(event) + " newValue:" + JSON.stringify(newValue))
-    // if (key === 'Enter') {
-    this.props.dispatch(parseText(newValue))
-    // this.setState({
-    //   editor: {value: newValue}
-    // })
-
-    // }
+    this.props.dispatch(parsingRequest(newValue))
+    this.props.dispatch(startParsing())
+    const promise = this.worker.ramlParse('#api.raml');
+    if (promise) {
+      promise.then(result => {
+        this.props.dispatch(parseResult(JSON.stringify(result.specification), result.errors))
+      }).catch(error => {
+        if (error === 'aborted') console.log('aborting old parse request for', error)
+        else this.props.dispatch(parseResult('', [error]))
+      })
+    }
   }
-
-  // parseRaml(path, code) {
-  //   const promise = this.worker.ramlParse(path);
-  //   if (promise) {
-  //     promise.then(result => {
-  //       this.setState({
-  //         raml: result.specification,
-  //         errors: result.errors,
-  //         editor: {value: code}
-  //       })
-  //     }).catch(error => {
-  //       if (error === 'aborted') console.log('aborting old parse request for', path)
-  //       else this.setState({
-  //         errors: [error],
-  //         editor: {value: code}
-  //       }) // unexpected error
-  //     })
-  //   }
-  // }
 
   onTabSelect(selectedTab) {
     this.setState({selectedTab})
@@ -143,12 +127,6 @@ class App extends Component {
                 />
               </div>
               <div className="InfoPanel">
-                {isParsing
-                  ? <div><h2>Parsing...</h2>
-                  </div>:<div/>}
-                {isPending
-                  ? <div><h2>IsPending...</h2>
-                  </div>:<div/>}
                   <Tabs selectedIndex={this.state.selectedTab}>
                   <TabList>
                     <Tab onClick={this.onTabSelect.bind(this, 0)}>Preview</Tab>
