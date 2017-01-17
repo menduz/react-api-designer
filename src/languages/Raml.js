@@ -1,6 +1,6 @@
 export function language() {
   return {
-    id: 'RAML',
+    id: 'raml',
     extensions: ['.raml']
   }
 }

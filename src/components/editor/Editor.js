@@ -1,6 +1,6 @@
 import React from 'react'
 import MonacoEditor from 'react-monaco-editor'
-import * as Raml from '../Languages/Raml'
+import * as Raml from '../../languages/Raml'
 import './Editor.css';
 
 class DesignerEditor extends React.Component {
@@ -9,8 +9,13 @@ class DesignerEditor extends React.Component {
     this.onSuggest = this.onSuggest.bind(this)
 
     this.editor = null
-    this.monaco = null
     this.language = props.language.toLowerCase()
+    this.monaco = null
+    this.timer = null;
+
+    this.state = {
+      code : props.code
+    }
   }
 
   isNewLanguage() {
@@ -31,13 +36,22 @@ class DesignerEditor extends React.Component {
     this.monaco = monaco
 
     if (this.isNewLanguage()) {
-      this.registerCompletion(this.props.suggestions)
+      this.registerCompletion()
     }
   }
 
   onChange(newValue, event) {
-    if (this.props.onChange !== undefined) {
+    function handleOnChange() {
       this.props.onChange(newValue, event)
+    }
+
+    if (this.timer) {
+      clearTimeout(this.timer)
+    }
+
+    if (this.props.onChange !== undefined) {
+      this.timer = setTimeout(handleOnChange.bind(this), 200)
+      this.setState({ code :  newValue })
     }
   }
 
@@ -121,7 +135,8 @@ class DesignerEditor extends React.Component {
         <MonacoEditor
           requireConfig={requireConfig}
           height="300"
-          value={this.props.code}
+          width="auto"
+          value={this.state.code}
           options={options}
           language={this.props.language}
           onChange={this.onChange.bind(this)}

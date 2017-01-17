@@ -12,7 +12,7 @@ import tree from './tree.json';
 import { parseResult, parsingRequest, startParsing } from './actions'
 
 // import logo from './logo.svg';
-import DesignerEditor from './Editor/Editor'
+import DesignerEditor from './components/editor/Editor'
 import './App.css';
 import { connect } from 'react-redux'
 
@@ -29,13 +29,15 @@ class App extends Component {
       active: null,
       selectedTab: parseInt(localStorage.getItem('designer:preference:selectedTab') || 0),
       errors: [],
+      suggestions: [],
       editor: {value: '#%RAML 1.0'}
     }
 
+    var that = this
     this.worker = new WebWorker({
       getFile: (path) => {
         // console.log("WebWorker: " + path + " " + text)
-        return this.props.text
+        return that.props.text
       }
     });
   }
@@ -52,6 +54,19 @@ class App extends Component {
         else this.props.dispatch(parseResult('', [error]))
       })
     }
+  }
+
+  suggestions(position) {
+    var suggestions = [
+      {
+        label: '#%RAML 1.0',
+        insertText: '#%RAML 1.0'
+      }, {
+        label: '#%RAML 1.0 DataType',
+        insertText: '#%RAML 1.0 DataType'
+      }
+    ]
+    this.setState({suggestions: suggestions})
   }
 
   onTabSelect(selectedTab) {
@@ -114,7 +129,7 @@ class App extends Component {
                 <DesignerEditor
                   code={text}
                   onChange={this.handleKeyUp.bind(this)}
-                  onSuggest={position => null}
+                  onSuggest={this.suggestions.bind(this)}
                   suggestions={this.state.suggestions}
                   errors={this.state.errors}
                   language="raml"

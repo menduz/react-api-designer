@@ -1,0 +1,14 @@
+.Editor {
+    text-align: left;
+}
+
+.monaco-editor .suggest-widget > .tree {
+    width: inherit;
+    height: inherit;
+    position: relative;
+    background-color: inherit;
+
+    .monaco-list-rows {
+        margin-right: 0;
+    }
+}
