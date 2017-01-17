@@ -126,7 +126,7 @@ class DesignerEditor extends React.Component {
     const requireConfig = {
       url: 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.1/require.min.js',
       paths: {
-        'vs': `${process.env.PUBLIC_URL}/build/static/js/vs`
+        'vs': `${process.env.PUBLIC_URL}/static/js/vs`
       }
     }
 

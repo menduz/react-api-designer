@@ -10,12 +10,10 @@ import Tab from '@mulesoft/anypoint-components/lib/Tab'
 import Tabs from '@mulesoft/anypoint-components/lib/Tabs'
 import tree from './tree.json';
 import { parseText } from './actions'
-
-// import logo from './logo.svg';
 import DesignerEditor from './components/editor/Editor'
-import './App.css';
 import { connect } from 'react-redux'
-import ReactConsole from './ReactConsole'
+import ReactConsole from './components/preview/components/ReactConsole'
+import './App.css';
 
 class App extends Component {
 
@@ -25,7 +23,7 @@ class App extends Component {
     this.state = {
       tree: tree,
       active: null,
-      selectedTab: parseInt(localStorage.getItem('designer:preference:selectedTab') || 0),
+      selectedTab: parseInt(localStorage.getItem('designer:preference:selectedTab') || 0, 10),
       errors: [],
       suggestions: [],
       editor: {value: '#%RAML 1.0'}
@@ -37,7 +35,7 @@ class App extends Component {
   }
 
   suggestions(position) {
-    var suggestions = [
+    const suggestions = [
       {
         label: '#%RAML 1.0',
         insertText: '#%RAML 1.0'
@@ -79,7 +77,7 @@ class App extends Component {
 
   render() {
     const { isPending, text, errors, isParsing, parsedObject} = this.props
-    const { tree, editor, suggestions, errors, selectedTab} = this.state
+    const { tree, editor, suggestions, selectedTab} = this.state
     return (
       <div className="App">
         <div className="App-header">
@@ -90,14 +88,12 @@ class App extends Component {
                    defaultSize={parseInt(localStorage.getItem('designer:preference:leftSplit') || 150, 10)}
                    onChange={size => localStorage.setItem('designer:preference:leftSplit', size)}>
           <div className="TreePanel">
-            <Tree
-              className="Tree"
-              paddingLeft={20}
-              tree={tree}
-              isNodeCollapsed={this.isNodeCollapsed}
-              onChange={this.handleChange.bind(this)}
-              renderNode={this.renderNode.bind(this)}
-            />
+            <Tree className="Tree"
+                  paddingLeft={20}
+                  tree={tree}
+                  isNodeCollapsed={this.isNodeCollapsed}
+                  onChange={this.handleChange.bind(this)}
+                  renderNode={this.renderNode.bind(this)}/>
           </div>
 
           <div className="RightPanel">
@@ -107,37 +103,34 @@ class App extends Component {
                        onChange={size => localStorage.setItem('designer:preference:rightSplit', size)}>
               <div className="CodePanel">
                 <h3>RAML Monaco editor</h3>
-                <DesignerEditor
-                  code={text}
-                  onChange={this.onTextChange.bind(this)}
-                  onSuggest={this.suggestions.bind(this)}
-                  suggestions={suggestions}
-                  errors={errors}
-                  language="raml"
-                />
+                <DesignerEditor code={text}
+                                onChange={this.onTextChange.bind(this)}
+                                onSuggest={this.suggestions.bind(this)}
+                                suggestions={suggestions}
+                                errors={errors}
+                                language="raml"/>
 
                 <h3>JSON Monaco editor</h3>
-                <DesignerEditor
-                  code="{}"
-                  language="json"
-                />
+                <DesignerEditor code="{}" language="json"/>
               </div>
               <div className="InfoPanel">
-                  <Tabs selectedIndex={selectedTab}>
+                {isParsing ? <div><h2>Parsing...</h2></div> : null}
+                {isPending ? <div><h2>IsPending...</h2></div> : null}
+                <Tabs selectedIndex={selectedTab}>
                   <TabList>
                     <Tab onClick={this.onTabSelect.bind(this, 0)}>Preview</Tab>
                     <Tab onClick={this.onTabSelect.bind(this, 1)}>Errors</Tab>
                   </TabList>
                   <TabPanel>
                     {selectedTab === 0 &&
-                      <ReactConsole raml={parsedText}/>
+                      <ReactConsole raml={parsedObject}/>
                     }
                   </TabPanel>
                   <TabPanel>
                     {selectedTab === 1 &&
-                    <pre>
-                      {JSON.stringify(errors, null, 2)}
-                    </pre>
+                      <pre>
+                          {JSON.stringify(errors, null, 2)}
+                      </pre>
                     }
                   </TabPanel>
                 </Tabs>
@@ -150,9 +143,8 @@ class App extends Component {
   }
 }
 
-
 const mapStateToProps = state => {
-  const { parse } = state
+  const {parse} = state
   return {
     lastUpdated: parse.lastUpdate,
     isParsing:parse.isParsing,
@@ -169,4 +161,3 @@ const mapDispatch = dispatch => {
 }
 
 export default connect(mapStateToProps, mapDispatch)(App)
-
