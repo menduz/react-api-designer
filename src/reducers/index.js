@@ -1,32 +1,24 @@
 import { combineReducers } from 'redux'
 import {
-  START_PARSING, PARSING_REQUEST, PARSING_RESULT,
+  PARSING_REQUEST, PARSING_RESULT,
   SUGGESTION, SUGGESTION_RESULT
 } from '../actions'
 
 
 const parse = (state = {
   isParsing: false,
-  isPending: false,
   mimeType: "",
   errors: [],
   text: "",
   parsedObject: {}
 }, action) => {
   switch (action.type) {
-    case START_PARSING:
-      return {
-        ...state,
-        isPending: false
-      }
 
     case PARSING_REQUEST:
-      const isPending = state.isParsing
       return {
         ...state,
         isParsing: true,
         text:action.text,
-        isPending: isPending
       }
     case PARSING_RESULT:
       return {
@@ -45,16 +37,12 @@ const parse = (state = {
 
 const suggestion = (state = {
   suggestions: [],
-  suggestionsText : '',
   isSearching:false,
-  offset:0
 }, action) => {
   switch (action.type) {
     case SUGGESTION:
       return {
         ...state,
-        offset: action.offset,
-        suggestionsText: action.suggestionText,
         isSearching: true
       }
     case SUGGESTION_RESULT:

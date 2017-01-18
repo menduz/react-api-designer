@@ -67,7 +67,7 @@ class App extends Component {
   }
 
   render() {
-    const { isPending, text, errors, isParsing, parsedObject, suggestions} = this.props
+    const { text, errors, parsedObject, suggestions} = this.props
     const { tree, editor, selectedTab} = this.state
     return (
       <div className="App">
