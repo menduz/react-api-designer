@@ -134,7 +134,7 @@ class DesignerEditor extends React.Component {
       <div className="Editor">
         <MonacoEditor
           requireConfig={requireConfig}
-          height="300"
+          height="800"
           width="auto"
           value={this.state.code}
           options={options}

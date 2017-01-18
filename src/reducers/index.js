@@ -1,41 +1,8 @@
-import { combineReducers } from 'redux'
-import {
-  PARSING_REQUEST, PARSING_RESULT,
-  SUGGESTION, SUGGESTION_RESULT
-} from '../actions'
+import parse from './parse'
+import {SUGGESTION, SUGGESTION_RESULT} from '../actions'
+export {parse as parseReducer};
 
-
-const parse = (state = {
-  isParsing: false,
-  mimeType: "",
-  errors: [],
-  text: "",
-  parsedObject: {}
-}, action) => {
-  switch (action.type) {
-
-    case PARSING_REQUEST:
-      return {
-        ...state,
-        isParsing: true,
-        text:action.text,
-      }
-    case PARSING_RESULT:
-      return {
-        ...state,
-        isParsing: false,
-        mimeType: action.mimeType,
-        errors: action.errors,
-        parsedObject: action.parsedObject,
-        lastUpdated: action.receivedAt
-      }
-    default:
-      return state
-  }
-}
-
-
-const suggestion = (state = {
+export const suggestionReducer = (state = {
   suggestions: [],
   isSearching:false,
 }, action) => {
@@ -55,10 +22,3 @@ const suggestion = (state = {
       return state
   }
 }
-
-const rootReducer = combineReducers({
-  parse,
-  suggestion
-})
-
-export default rootReducer

@@ -4,11 +4,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import './index.css';
-import {createStore, applyMiddleware} from 'redux'
+import {createStore, applyMiddleware, combineReducers} from 'redux'
 import {Provider} from 'react-redux'
 import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
-import reducer from './reducers'
+import {parseReducer, suggestionReducer} from './reducers'
 import WebWorker from './web-worker'
 
 class Repository {
@@ -35,8 +35,13 @@ if (process.env.NODE_ENV !== 'production') {
     middleware.push(createLogger())
 }
 
+const rootReducer = combineReducers({
+  parse: parseReducer,
+  suggestion: suggestionReducer
+})
+
 const store = createStore(
-    reducer,
+    rootReducer,
     applyMiddleware(...middleware)
 )
 
