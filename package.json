@@ -16,6 +16,7 @@
     "classnames": "^2.2.5",
     "oas-raml-converter": "0.0.12",
     "raml-1-parser": "1.1.12",
+    "raml-suggestions": "0.0.26",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-monaco-editor": "0.7.3",

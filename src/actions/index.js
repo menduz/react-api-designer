@@ -1,9 +1,34 @@
 // import WebWorker from '../web-worker'
 import ramlParser from "raml-1-parser";
+import Suggest from '../../src-worker/raml/suggest'
 
 export const PARSING_REQUEST = 'PARSING_REQUEST'
 export const PARSING_RESULT = 'PARSING_RESULT'
 export const START_PARSING = 'START_PARSING'
+
+export const SUGGESTION = 'SUGGESTION'
+export const SUGGESTION_RESULT = 'SUGGESTION_RESULT'
+
+const suggestion = (suggestionText, offset) => ({
+    type: SUGGESTION,
+    suggestionText,
+    offset
+})
+
+const suggestionResult = suggestions => ({
+    type: SUGGESTION_RESULT,
+    suggestions
+})
+
+
+export const suggest = (text, offset) => (dispatch) => {
+  dispatch(suggestion (text, offset))
+  Suggest.suggestions(text, offset).then(result => {
+    dispatch(suggestionResult(result))
+  }).catch(e => {
+    dispatch(suggestionResult([]))
+  })
+}
 
 
 export const parsingRequest = text => ({

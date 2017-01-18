@@ -55,7 +55,7 @@ const ramlParser = new RamlParser(path => {
 
 listenThenPost('raml-parse', data => ramlParser.parse(data.path), () => requestFileCallbacks.clear())
 
-listenThenPost('raml-suggest', data => ramlSuggest(data.path, data.cursor))
+listenThenPost('raml-suggest', data => ramlSuggest.suggestions(data.content, data.cursorPosition))
 
 listenThenPost('spec-convert', data => converter(data.path, data.from, data.to, data.format))
 

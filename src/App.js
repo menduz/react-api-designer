@@ -9,7 +9,9 @@ import TabList from '@mulesoft/anypoint-components/lib/TabList'
 import Tab from '@mulesoft/anypoint-components/lib/Tab'
 import Tabs from '@mulesoft/anypoint-components/lib/Tabs'
 import tree from './tree.json';
-import { parseText } from './actions'
+import { parseText, suggest } from './actions'
+
+// import logo from './logo.svg';
 import DesignerEditor from './components/editor/Editor'
 import { connect } from 'react-redux'
 import ReactConsole from './components/preview/components/ReactConsole'
@@ -35,16 +37,7 @@ class App extends Component {
   }
 
   suggestions(position) {
-    const suggestions = [
-      {
-        label: '#%RAML 1.0',
-        insertText: '#%RAML 1.0'
-      }, {
-        label: '#%RAML 1.0 DataType',
-        insertText: '#%RAML 1.0 DataType'
-      }
-    ]
-    this.setState({suggestions: suggestions})
+    this.props.onSuggest(this.props.text, position)
   }
 
   onTabSelect(selectedTab) {
@@ -76,7 +69,7 @@ class App extends Component {
   }
 
   render() {
-    const { isPending, text, errors, isParsing, parsedObject} = this.props
+    const { isPending, text, errors, isParsing, parsedObject, suggestions} = this.props
     const { tree, editor, suggestions, selectedTab} = this.state
     return (
       <div className="App">
@@ -109,7 +102,6 @@ class App extends Component {
                                 suggestions={suggestions}
                                 errors={errors}
                                 language="raml"/>
-
                 <h3>JSON Monaco editor</h3>
                 <DesignerEditor code="{}" language="json"/>
               </div>
@@ -144,19 +136,21 @@ class App extends Component {
 }
 
 const mapStateToProps = state => {
-  const {parse} = state
+  const { parse, suggestion } = state
   return {
     lastUpdated: parse.lastUpdate,
     isParsing:parse.isParsing,
     errors:parse.errors,
     text: parse.text,
     parsedObject:parse.parsedObject,
+    suggestions: suggestion.suggestions
   }
 }
 
 const mapDispatch = dispatch => {
   return {
-      onValueChange: value => dispatch(parseText(value))
+      onValueChange: value => dispatch(parseText(value)),
+      onSuggest: (text, offset) => dispatch(suggest(text,offset))
   }
 }
 
