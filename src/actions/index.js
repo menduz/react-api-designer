@@ -1,8 +1,12 @@
+import RamlParser from '../../src-worker/raml/parser'
+
 export const PARSING_REQUEST = 'PARSING_REQUEST'
 export const PARSING_RESULT = 'PARSING_RESULT'
 
 export const SUGGESTION = 'SUGGESTION'
 export const SUGGESTION_RESULT = 'SUGGESTION_RESULT'
+
+export const useWorker = false
 
 const suggestion = ({
     type: SUGGESTION
@@ -39,13 +43,32 @@ export const parseResult = (parsedObject, errors) => ({
 
 export const parseText = (value) => (dispatch, getState, { worker }) => {
     dispatch(parsingRequest(value))
+
+  if (useWorker) {
+    worker.setRepositoryContent(value)
     const promise = worker.ramlParse('#api.raml');
     if (promise) {
-        promise.then(result => {
-            dispatch(parseResult(result.specification, result.errors))
-        }).catch(error => {
-            if (error === 'aborted') console.log('aborting old parse request for', error)
-            else dispatch(parseResult('', [error]))
-        })
+      promise.then(result => {
+        console.log("result!")
+        dispatch(parseResult(result.specification, result.errors))
+      }).catch(error => {
+        console.log("error " + error)
+        if (error === 'aborted') console.log('aborting old parse request for', error)
+        else dispatch(parseResult('', [error]))
+      })
     }
+  } else {
+
+    const ramlParser = new RamlParser(path => {
+      return Promise.resolve(value)
+    });
+
+    ramlParser.parse('path').then(result => {
+      dispatch(parseResult(result.specification, result.errors))
+    }).catch(err => {
+      console.error(err.message)
+      dispatch(parseResult({}, [err.message]))
+    })
+  }
+
 }

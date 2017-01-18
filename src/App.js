@@ -98,7 +98,7 @@ class App extends Component {
                                 onChange={this.onTextChange.bind(this)}
                                 onSuggest={this.suggestions.bind(this)}
                                 suggestions={suggestions}
-                                errors={errors}
+                                //errors={}
                                 language="raml"/>
                 <h3>JSON Monaco editor</h3>
                 <DesignerEditor code="{}" language="json"/>

@@ -16,9 +16,7 @@ export default class RamlSuggestions {
   static sum(total, size){ return total + size; }
 
   static calcOffset (content, cursorPosition) {
-    console.log('content ' + content)
     const lines = Array.from(content.split('\n'))
-    console.log('lines ' + lines[0])
     var allPreviewsLinesSize = RamlSuggestions.range(0, cursorPosition.lineNumber - 2)
       .map(index => { return lines[index].length + 1; })
       .reduce(RamlSuggestions.sum, 0);
@@ -28,8 +26,6 @@ export default class RamlSuggestions {
 
 
   static suggestions(content, cursorPosition) {
-    console.log("cursorPosition: " + cursorPosition)
-    console.log("suggestions: " + RamlSuggestions.calcOffset(content, cursorPosition))
     const fscontent  = new FSContent(content, RamlSuggestions.calcOffset(content, cursorPosition));
 
     return RAML.suggestAsync(fscontent,  new ContentProvider()).then(

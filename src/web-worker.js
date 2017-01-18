@@ -12,6 +12,11 @@ export default class WebWorker {
 
     this.parsing = false
     this.parsingPending = new Map()
+    this.fileRepository = fileRepository
+  }
+
+  setRepositoryContent(text) {
+    this.fileRepository.setFile(text)
   }
 
   ramlParse(path) {
