@@ -10,8 +10,6 @@ import Tab from '@mulesoft/anypoint-components/lib/Tab'
 import Tabs from '@mulesoft/anypoint-components/lib/Tabs'
 import tree from './tree.json';
 import { parseText, suggest } from './actions'
-
-// import logo from './logo.svg';
 import DesignerEditor from './components/editor/Editor'
 import { connect } from 'react-redux'
 import ReactConsole from './components/preview/components/ReactConsole'
@@ -70,7 +68,7 @@ class App extends Component {
 
   render() {
     const { isPending, text, errors, isParsing, parsedObject, suggestions} = this.props
-    const { tree, editor, suggestions, selectedTab} = this.state
+    const { tree, editor, selectedTab} = this.state
     return (
       <div className="App">
         <div className="App-header">
@@ -106,8 +104,6 @@ class App extends Component {
                 <DesignerEditor code="{}" language="json"/>
               </div>
               <div className="InfoPanel">
-                {isParsing ? <div><h2>Parsing...</h2></div> : null}
-                {isPending ? <div><h2>IsPending...</h2></div> : null}
                 <Tabs selectedIndex={selectedTab}>
                   <TabList>
                     <Tab onClick={this.onTabSelect.bind(this, 0)}>Preview</Tab>

@@ -21,9 +21,9 @@ const suggestionResult = suggestions => ({
 })
 
 
-export const suggest = (text, offset) => (dispatch) => {
+export const suggest = (text, offset) => (dispatch, getState, { worker }) => {
   dispatch(suggestion (text, offset))
-  Suggest.suggestions(text, offset).then(result => {
+  worker.ramlSuggest(text, offset).then(result => {
     dispatch(suggestionResult(result))
   }).catch(e => {
     dispatch(suggestionResult([]))
