@@ -5,16 +5,16 @@ export const SUGGESTION = 'SUGGESTION'
 export const SUGGESTION_RESULT = 'SUGGESTION_RESULT'
 
 const suggestion = ({
-    type: SUGGESTION
+  type: SUGGESTION
 })
 
 const suggestionResult = suggestions => ({
-    type: SUGGESTION_RESULT,
-    suggestions
+  type: SUGGESTION_RESULT,
+  suggestions
 })
 
 
-export const suggest = (text, offset) => (dispatch, getState, { worker }) => {
+export const suggest = (text, offset) => (dispatch, getState, {worker}) => {
   dispatch(suggestion)
   worker.ramlSuggest(text, offset).then(result => {
     dispatch(suggestionResult(result))
@@ -25,8 +25,8 @@ export const suggest = (text, offset) => (dispatch, getState, { worker }) => {
 
 
 export const parsingRequest = text => ({
-    type: PARSING_REQUEST,
-    text
+  type: PARSING_REQUEST,
+  text
 })
 
 export const parseResult = (parsedObject, errors) => ({
@@ -59,5 +59,4 @@ export const parseText = (value) => (dispatch, getState, { worker }) => {
       }
     })
   }
-
 }

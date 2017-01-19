@@ -12,6 +12,7 @@ import {parseReducer, suggestionReducer} from './reducers'
 import WebWorker from './web-worker'
 import newFolder from './components/modal/new-folder'
 import newFile from './components/modal/new-file'
+import {goToErrorReducer} from './components/errors/reducer'
 
 
 class Repository {
@@ -43,6 +44,7 @@ if (process.env.NODE_ENV !== 'production') {
 const rootReducer = combineReducers({
   parse: parseReducer,
   suggestion: suggestionReducer,
+  errorCursor: goToErrorReducer,
   dialogs: combineReducers({
     newFolder: newFolder.reducer,
     newFile: newFile.reducer

@@ -1,6 +1,8 @@
 import React from 'react'
+import {connect} from 'react-redux'
 import MonacoEditor from 'react-monaco-editor'
 import * as Raml from '../../languages/Raml'
+import {goToErrorAction} from '../errors/reducer'
 import './Editor.css';
 
 class DesignerEditor extends React.Component {
@@ -14,7 +16,7 @@ class DesignerEditor extends React.Component {
     this.timer = null;
 
     this.state = {
-      code : props.code
+      code: props.code
     }
   }
 
@@ -42,20 +44,19 @@ class DesignerEditor extends React.Component {
     this.editor = editor
     this.monaco = monaco
     editor.getModel().updateOptions({tabSize: 2})
+    this.props.finishLoading(editor, monaco)
   }
 
   onChange(newValue, event) {
-    function handleOnChange() {
-      this.props.onChange(newValue, event)
-    }
-
     if (this.timer) {
       clearTimeout(this.timer)
     }
 
     if (this.props.onChange !== undefined) {
-      this.timer = setTimeout(handleOnChange.bind(this), 200)
-      this.setState({ code :  newValue })
+      this.timer = setTimeout(() => {
+        this.props.onChange(newValue, event)
+      }, 500)
+      this.setState({code: newValue})
     }
   }
 
@@ -86,7 +87,7 @@ class DesignerEditor extends React.Component {
     const markers = errors.map(error => {
       return {
         ...error,
-        endColumn : error.endColumn || this.editor.getModel().getLineContent(error.startLineNumber).length + 1,
+        endColumn: error.endColumn || this.editor.getModel().getLineContent(error.startLineNumber).length + 1,
         severity: error.severity === 'warning' ? this.monaco.Severity.Warning : this.monaco.Severity.Error
       }
     }, this);
@@ -120,17 +121,15 @@ class DesignerEditor extends React.Component {
 
     return (
       <div className="Editor">
-        <MonacoEditor
-          requireConfig={requireConfig}
-          height="800"
-          width="auto"
-          value={this.state.code}
-          options={options}
-          language={this.props.language}
-          onChange={this.onChange.bind(this)}
-          editorWillMount={this.editorWillMount.bind(this)}
-          editorDidMount={this.editorDidMount.bind(this)}
-        />
+        <MonacoEditor requireConfig={requireConfig}
+                      height="800"
+                      width="auto"
+                      value={this.state.code}
+                      options={options}
+                      language={this.props.language}
+                      onChange={this.onChange.bind(this)}
+                      editorWillMount={this.editorWillMount.bind(this)}
+                      editorDidMount={this.editorDidMount.bind(this)}/>
       </div>
     )
   }
@@ -146,4 +145,46 @@ DesignerEditor.propTypes = {
   theme: React.PropTypes.string
 }
 
-export default DesignerEditor
+class DesignerEditorContainer extends React.Component {
+
+  constructor(props, context) {
+    super(props, context)
+    this.context.store.subscribe(this.updateErrorCursor.bind(this))
+  }
+
+  updateErrorCursor() {
+    const {store} = this.context
+    const {errorCursor} = store.getState().errorCursor
+    if (this.editor && errorCursor && errorCursor.lineNumber !== -1) {
+      this.editor.setPosition(new this.monaco.Position(errorCursor.lineNumber, errorCursor.column))
+      const falseError = {
+        startLineNumber: -1,
+        startColumn: -1
+      }
+      store.dispatch(goToErrorAction(falseError))
+    }
+  }
+
+  finishLoading(editor, monaco) {
+    this.editor = editor
+    this.monaco = monaco
+  }
+
+  render() {
+    return (
+      <DesignerEditor code={this.props.code}
+                      onChange={this.props.onChange}
+                      onSuggest={this.props.onSuggest}
+                      suggestions={this.props.suggestions}
+                      errors={this.props.errors}
+                      language={this.props.language}
+                      finishLoading={this.finishLoading.bind(this)}/>
+    )
+  }
+}
+
+DesignerEditorContainer.contextTypes = {
+  store: React.PropTypes.object
+}
+
+export default DesignerEditorContainer

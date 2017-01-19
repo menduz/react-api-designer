@@ -7,7 +7,7 @@ import SplitPane from 'react-split-pane'
 import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
 import tree from './tree.json';
 import { parseText, suggest } from './actions'
-import DesignerEditor from './components/editor/Editor'
+import DesignerEditorContainer from './components/editor/Editor'
 import Menu from './components/menu/Menu'
 import {connect} from 'react-redux'
 import {Info} from './components/info'
@@ -87,7 +87,7 @@ class App extends Component {
                        defaultSize={parseInt(localStorage.getItem('designer:preference:rightSplit') || 300, 10)}
                        onChange={size => localStorage.setItem('designer:preference:rightSplit', size)}>
               <div className="CodePanel">
-                <DesignerEditor code={text}
+                <DesignerEditorContainer code={text}
                                 onChange={this.onTextChange.bind(this)}
                                 onSuggest={this.suggestions.bind(this)}
                                 suggestions={suggestions}
