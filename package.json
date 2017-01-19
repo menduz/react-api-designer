@@ -29,12 +29,12 @@
     "redux-thunk": "^2.1.0"
   },
   "scripts": {
-    "start": "npm run build-worker && react-scripts start",
-    "build": "npm run build-worker && react-scripts build",
+    "start": "webpack -d && react-scripts start",
+    "build": "webpack && react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "flow": "flow",
-    "build-worker": "webpack"
+    "build-worker": "webpack -d"
   },
   "proxy": "http://localhost:3000"
 }

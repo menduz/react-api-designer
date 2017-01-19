@@ -4,8 +4,6 @@ export const PARSING_RESULT = 'PARSING_RESULT'
 export const SUGGESTION = 'SUGGESTION'
 export const SUGGESTION_RESULT = 'SUGGESTION_RESULT'
 
-import RamlSuggestion from '../suggest'
-
 const suggestion = ({
     type: SUGGESTION
 })
@@ -18,8 +16,7 @@ const suggestionResult = suggestions => ({
 
 export const suggest = (text, offset) => (dispatch, getState, { worker }) => {
   dispatch(suggestion)
-  // worker.ramlSuggest(text, offset)
-  RamlSuggestion.suggestions(text, offset).then(result => {
+  worker.ramlSuggest(text, offset).then(result => {
     dispatch(suggestionResult(result))
   }).catch(e => {
     dispatch(suggestionResult([]))
