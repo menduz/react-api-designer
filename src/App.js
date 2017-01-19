@@ -8,6 +8,7 @@ import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
 import tree from './tree.json';
 import { parseText, suggest } from './actions'
 import DesignerEditor from './components/editor/Editor'
+import Menu from './components/menu/Menu'
 import {connect} from 'react-redux'
 import {Info} from './components/info'
 import './App.css';
@@ -68,13 +69,16 @@ class App extends Component {
                    minSize={10}
                    defaultSize={parseInt(localStorage.getItem('designer:preference:leftSplit') || 150, 10)}
                    onChange={size => localStorage.setItem('designer:preference:leftSplit', size)}>
-          <div className="TreePanel">
-            <Tree className="Tree"
-                  paddingLeft={20}
-                  tree={tree}
-                  isNodeCollapsed={this.isNodeCollapsed}
-                  onChange={this.handleChange.bind(this)}
-                  renderNode={this.renderNode.bind(this)}/>
+          <div>
+            <Menu className="menu"/>
+            <div className="TreePanel">
+              <Tree className="Tree"
+                    paddingLeft={20}
+                    tree={tree}
+                    isNodeCollapsed={this.isNodeCollapsed}
+                    onChange={this.handleChange.bind(this)}
+                    renderNode={this.renderNode.bind(this)}/>
+            </div>
           </div>
 
           <div className="RightPanel">
