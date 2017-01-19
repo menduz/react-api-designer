@@ -10,6 +10,8 @@ import {treeChanged, nodeSelected, addDirectory, addFile} from './actions';
 
 import type {Node} from './model';
 
+import './FileSystemTree.css';
+
 type Props = {
     tree: ?Node,
     active: ?Node,
