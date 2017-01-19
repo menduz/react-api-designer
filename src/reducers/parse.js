@@ -6,7 +6,7 @@ import {
 let initialState = {
   isParsing: false,
   isPending: false,
-  mimeType: "",
+  language: "",
   errors: [],
   text: "",
   parsedObject: {}
@@ -32,7 +32,7 @@ const parse = (state = initialState, action) => {
       return {
         ...state,
         isParsing: false,
-        mimeType: action.mimeType,
+        language: action.language,
         errors: action.errors,
         parsedObject: action.parsedObject,
         lastUpdated: action.receivedAt

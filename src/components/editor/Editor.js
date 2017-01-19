@@ -8,8 +8,8 @@ class DesignerEditor extends React.Component {
     super(props)
     this.onSuggest = this.onSuggest.bind(this)
 
-    this.editor = null
     this.language = props.language.toLowerCase()
+    this.editor = null
     this.monaco = null
     this.timer = null;
 
@@ -18,26 +18,32 @@ class DesignerEditor extends React.Component {
     }
   }
 
-  isNewLanguage() {
+  isRamlLanguage() {
     return this.language === 'raml'
   }
 
   editorWillMount(monaco) {
-    if (this.isNewLanguage()) { // Register RAML language
-      monaco.languages.register(Raml.language())
-      monaco.languages.setLanguageConfiguration(this.language, Raml.configurations())
-      monaco.languages.setMonarchTokensProvider(this.language, Raml.tokens())
-    }
     this.monaco = monaco
+
+    if (this.isRamlLanguage()) { // Register RAML language
+      const languages = monaco.languages;
+      languages.register(Raml.language(this.language))
+      languages.setLanguageConfiguration(this.language, Raml.configurations())
+      languages.setMonarchTokensProvider(this.language, Raml.tokens())
+      languages.registerCompletionItemProvider(this.language, {
+        provideCompletionItems: (model, position) => {
+          return new Promise((resolve) => {
+            this.onSuggest(position, resolve)
+          })
+        }
+      })
+    }
   }
 
   editorDidMount(editor, monaco) {
     this.editor = editor
     this.monaco = monaco
-
-    if (this.isNewLanguage()) {
-      this.registerCompletion()
-    }
+    editor.getModel().updateOptions({tabSize: 2})
   }
 
   onChange(newValue, event) {
@@ -57,56 +63,56 @@ class DesignerEditor extends React.Component {
 
   onSuggest(position, resolve) {
     if (this.props.onSuggest !== undefined) {
+      if (this.onSuggestCallback) {
+        // resolve any pending promise before replacing
+        this.onSuggestCallback([])
+      }
       this.onSuggestCallback = resolve
       this.props.onSuggest(position)
     }
   }
 
-  registerCompletion() {
-    this.monaco.languages.registerCompletionItemProvider(this.language, {
-      provideCompletionItems: (model, position) => {
-        return new Promise((resolve) => {
-          this.onSuggest(position, resolve)
-        })
-      }
-    })
-  }
-
   renderSuggestions(suggestions) {
     if (this.onSuggestCallback) {
-      this.onSuggestCallback(suggestions)
+      console.log(suggestions)
+      this.onSuggestCallback(suggestions.map(suggestion => {
+        return {
+          kind: this.monaco.languages.CompletionItemKind.Text, // chose Kind based on category?
+          insertText: suggestion.text || suggestion.displayText || '',
+          label: suggestion.displayText,
+          documentation: suggestion.description
+        }
+      }))
       this.onSuggestCallback = null
     }
   }
 
   renderErrors(errors) {
-    const hasErrors = errors !== undefined && errors.length > 0
+    let parsedErrors = []
+    if (errors && errors.length > 0) {
+      parsedErrors = errors.map(error => {
+        const from = error.range.start
+        const to = error.range.end
 
-    if (hasErrors) {
-      var parsedErrors = errors.map(function (error) {
-        const start = error.range.start
-        const line = start.line
-        const lineSize = this.editor.getModel().getLineContent(line).length + 1
-        const severity = error.isWarning ? this.monaco.Severity.Warning : this.monaco.Severity.Error
+        const line = Math.max(1, from.line)
+        const startColumn = from.column
+        const endColumn = to && to.column ? to.column : this.editor.getModel().getLineContent(line).length + 1
 
         return {
-          severity: severity,
+          message: error.message,
           startLineNumber: line,
-          startColumn: start.column,
           endLineNumber: line,
-          endColumn: lineSize,
-          message: error.message
+          startColumn,
+          endColumn,
+          severity: error.isWarning ? this.monaco.Severity.Warning : this.monaco.Severity.Error
         }
-      }, this)
-
-      this.monaco.editor.setModelMarkers(this.editor.getModel(), '', parsedErrors)
-    } else if (this.monaco !== null) {
-      this.monaco.editor.setModelMarkers(this.editor.getModel(), '', [])
+      }, this);
     }
+    this.monaco.editor.setModelMarkers(this.editor.getModel(), '', parsedErrors)
   }
 
   render() {
-    if (this.isNewLanguage()) {
+    if (this.monaco && this.isRamlLanguage()) {
       this.renderErrors(this.props.errors)
       this.renderSuggestions(this.props.suggestions)
     }

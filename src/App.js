@@ -4,6 +4,7 @@ import React, {Component} from 'react'
 import cx from 'classnames'
 import Tree from 'react-ui-tree'
 import SplitPane from 'react-split-pane'
+import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
 import tree from './tree.json';
 import { parseText, suggest } from './actions'
 import DesignerEditor from './components/editor/Editor'
@@ -61,6 +62,7 @@ class App extends Component {
       <div className="App">
         <div className="App-header">
           <h2>Api Designer</h2>
+          {isParsing ? <Spinner size="s" className="Spinner-parser"/> : null}
         </div>
         <SplitPane split="vertical"
                    minSize={10}
@@ -81,8 +83,6 @@ class App extends Component {
                        defaultSize={parseInt(localStorage.getItem('designer:preference:rightSplit') || 300, 10)}
                        onChange={size => localStorage.setItem('designer:preference:rightSplit', size)}>
               <div className="CodePanel">
-                {isParsing ? <div><h2>Parsing...</h2></div> : null}
-                <h3>RAML Monaco editor</h3>
                 <DesignerEditor code={text}
                                 onChange={this.onTextChange.bind(this)}
                                 onSuggest={this.suggestions.bind(this)}

@@ -11,9 +11,8 @@ class ReactConsole extends Component {
   }
 
   _setRamlToConsole(raml) {
-    const ramlSource = raml.specification !== undefined ? raml.specification : raml
     const ramlCopy = {}
-    Object.assign(ramlCopy, ramlSource)
+    Object.assign(ramlCopy, raml)
     this.console.raml = ramlCopy
   }
 

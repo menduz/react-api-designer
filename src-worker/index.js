@@ -1,12 +1,20 @@
-import RamlParser from './raml/parser'
-import ramlSuggest from './raml/suggest'
 import converter from './converter'
+// import ramlSuggest from './raml/suggest'
+import RamlParser from './raml/parser'
 
 const requestFileCallbacks = new Map();
 
-const post = (type, data) => {
+const post = (type, data, retry) => {
   data.type = type
-  self.postMessage(data)
+  try {
+    self.postMessage(data)
+  } catch (e) {
+    console.log('Error when trying to post back from worker', e)
+    if (retry) {
+      // send just the type, so the flow can continue
+      self.postMessage({type})
+    }
+  }
 }
 
 const listen = (type, fn) => {
@@ -20,11 +28,13 @@ const listenThenPost = (type, fn, finallyFn) => {
     fn(data)
       .then(result => {
         if (finallyFn) finallyFn(result)
-        return post(type + '-resolve', result)
+        return post(type + '-resolve', result, true)
       })
       .catch(error => {
         if (finallyFn) finallyFn(error)
-        return post(type + '-reject', {message: error.message})
+        // js exceptions cant be serialized as normal strings, so just post the error message in that case
+        const serializableError = error.stack ? {message: error.message} : error
+        return post(type + '-reject', serializableError, true)
       })
   })
 }
@@ -55,7 +65,7 @@ const ramlParser = new RamlParser(path => {
 
 listenThenPost('raml-parse', data => ramlParser.parse(data.path), () => requestFileCallbacks.clear())
 
-listenThenPost('raml-suggest', data => ramlSuggest(data.content, data.cursorPosition))
+// listenThenPost('raml-suggest', data => ramlSuggest.suggestions(data.content, data.cursorPosition))
 
 listenThenPost('spec-convert', data => converter(data.path, data.from, data.to, data.format))
 

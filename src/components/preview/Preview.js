@@ -7,12 +7,11 @@ import JSONTree from 'react-json-tree'
 class Preview extends Component {
 
   render() {
-    const {parsedObject, mimeType} = this.props
+    const {parsedObject, language} = this.props
+    if (!parsedObject) return <ReactConsole raml={{}}/>
 
-    if (!parsedObject) return <ReactConsole raml={parsedObject}/>
-
-    switch (mimeType) {
-      case 'text/raml':
+    switch (language) {
+      case 'raml':
         return <ReactConsole raml={parsedObject}/>
       default:
         return <JSONTree data={parsedObject} theme={{base00:'#000000'}} hideRoot={true}/>
@@ -24,7 +23,7 @@ const mapStateToProps = state => {
   const {parse} = state
   return {
     parsedObject: parse.parsedObject,
-    mimeType: parse.mimeType
+    language: parse.language
   }
 }
 

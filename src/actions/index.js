@@ -18,6 +18,7 @@ const suggestionResult = suggestions => ({
 
 export const suggest = (text, offset) => (dispatch, getState, { worker }) => {
   dispatch(suggestion)
+  // worker.ramlSuggest(text, offset)
   RamlSuggestion.suggestions(text, offset).then(result => {
     dispatch(suggestionResult(result))
   }).catch(e => {
@@ -33,7 +34,7 @@ export const parsingRequest = text => ({
 
 export const parseResult = (parsedObject, errors) => ({
   type: PARSING_RESULT,
-  mimeType: "text/raml", // todo check raml mimeType
+  language: "raml",
   errors: errors,
   parsedObject: parsedObject,
   receivedAt: Date.now()
@@ -43,15 +44,19 @@ export const parseText = (value) => (dispatch, getState, { worker }) => {
   dispatch(parsingRequest(value))
 
   worker.setRepositoryContent(value)
-  const promise = worker.ramlParse('#api.raml');
+  const promise = worker.ramlParse('/api.raml');
   if (promise) {
     promise.then(result => {
-      console.log("result!")
       dispatch(parseResult(result.specification, result.errors))
     }).catch(error => {
-      console.log("error " + error)
-      if (error === 'aborted') console.log('aborting old parse request for', error)
-      else dispatch(parseResult('', [error]))
+      if (error === 'aborted') console.log('Aborting old parse request')
+      else {
+        // report unexpected errors in the first line
+        dispatch(parseResult(null, [{
+          range: {start: {line: 1, column: 0}},
+          message: error.message
+        }]))
+      }
     })
   }
 
