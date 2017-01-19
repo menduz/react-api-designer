@@ -1,19 +1,16 @@
 import converter from './converter'
-import ramlSuggest from './raml/suggest'
+import RamlSuggest from './raml/suggest'
 import RamlParser from './raml/parser'
 
 const requestFileCallbacks = new Map();
 
-const post = (type, data, retry) => {
+const post = (type, data) => {
   data.type = type
   try {
     self.postMessage(data)
   } catch (e) {
-    console.log('Error when trying to post back from worker', e)
-    if (retry) {
-      // send just the type, so the flow can continue
-      self.postMessage({type})
-    }
+    console.error('Error when trying to post back from worker', e)
+    self.postMessage({type}) // send just the type, so the flow can continue
   }
 }
 
@@ -23,18 +20,16 @@ const listen = (type, fn) => {
   }, false)
 }
 
-const listenThenPost = (type, fn, finallyFn) => {
+const listenThenPost = (type, fn) => {
   listen(type, data => {
     fn(data)
       .then(result => {
-        if (finallyFn) finallyFn(result)
-        return post(type + '-resolve', result, true)
+        return post(type + '-resolve', result)
       })
       .catch(error => {
-        if (finallyFn) finallyFn(error)
         // js exceptions cant be serialized as normal strings, so just post the error message in that case
         const serializableError = error.stack ? {message: error.message} : error
-        return post(type + '-reject', serializableError, true)
+        return post(type + '-reject', serializableError)
       })
   })
 }
@@ -54,16 +49,19 @@ const responseFile = (path, error, content) => {
   }
 }
 
-const ramlParser = new RamlParser(path => {
+const requestFilePromise = path => {
   return new Promise((resolve, reject) => {
     requestFile(path, (err, content) => {
       if (err) reject(err)
       else resolve(content)
     })
   })
-});
+}
 
-listenThenPost('raml-parse', data => ramlParser.parse(data.path), () => requestFileCallbacks.clear())
+const ramlParser = new RamlParser(requestFilePromise);
+const ramlSuggest = new RamlSuggest(requestFilePromise);
+
+listenThenPost('raml-parse', data => ramlParser.parse(data.path))
 
 listenThenPost('raml-suggest', data => ramlSuggest.suggestions(data.content, data.cursorPosition))
 

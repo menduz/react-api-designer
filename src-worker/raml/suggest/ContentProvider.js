@@ -1,11 +1,7 @@
-/**
- * Created by lecko on 1/17/17.
- */
-
 export default class ContentProvider {
 
-  constructor(content) {
-    this.content = content
+  constructor(onFileRequest) {
+  this.onFileRequest = onFileRequest
   }
 
   contentDirName(content) {

@@ -1,15 +1,39 @@
 import ContentProvider from './ContentProvider'
 import FSContent from './FSContent'
-import RAML from 'raml-suggestions'
+import ramlSuggestions from 'raml-suggestions'
 
 export default class RamlSuggestions {
 
-  static suggestions(content, cursorPosition) {
-    const fscontent  = new FSContent(content, RamlSuggestions.calcOffset(content, cursorPosition));
+  constructor(onFileRequest) {
+    this.onFileRequest = onFileRequest
+  }
 
-    return RAML.suggestAsync(fscontent, new ContentProvider())
-      .then(result => Array.isArray(result) ? result : [])
-      .catch(() => [])
+  suggestions(content, cursorPosition) {
+    const fsContent  = new FSContent(content, RamlSuggestions.calcOffset(content, cursorPosition));
+    const contentProvider = new ContentProvider(this.onFileRequest);
+    return ramlSuggestions.suggestAsync(fsContent, contentProvider).then(RamlSuggestions._mapResults)
+  }
+
+  static _mapResults(results) {
+    if (!Array.isArray(results)) return []
+
+    return results.map(suggestion => {
+      return {
+        kind: suggestion.category,
+        label: suggestion.displayText,
+        insertText: suggestion.text || suggestion.displayText || '',
+        documentation: suggestion.description
+      }
+    })
+  }
+
+  static calcOffset(content, cursorPosition) {
+    const lines = Array.from(content.split('\n'))
+    const allPreviewsLinesSize = RamlSuggestions.range(0, cursorPosition.lineNumber - 2)
+      .map(index => lines[index].length + 1)
+      .reduce((total, size) => total + size, 0)
+
+    return allPreviewsLinesSize + cursorPosition.column;
   }
 
   static range(start, stop) {
@@ -18,15 +42,6 @@ export default class RamlSuggestions {
       result[i - start] = i;
     }
     return result;
-  }
-
-  static calcOffset (content, cursorPosition) {
-    const lines = Array.from(content.split('\n'))
-    const allPreviewsLinesSize = RamlSuggestions.range(0, cursorPosition.lineNumber - 2)
-      .map(index => lines[index].length + 1)
-      .reduce((total, size) => total + size, 0)
-
-    return allPreviewsLinesSize + cursorPosition.column;
   }
 }
 

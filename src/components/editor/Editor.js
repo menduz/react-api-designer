@@ -23,8 +23,6 @@ class DesignerEditor extends React.Component {
   }
 
   editorWillMount(monaco) {
-    this.monaco = monaco
-
     if (this.isRamlLanguage()) { // Register RAML language
       const languages = monaco.languages;
       languages.register(Raml.language(this.language))
@@ -74,13 +72,10 @@ class DesignerEditor extends React.Component {
 
   renderSuggestions(suggestions) {
     if (this.onSuggestCallback) {
-      console.log(suggestions)
       this.onSuggestCallback(suggestions.map(suggestion => {
         return {
-          kind: this.monaco.languages.CompletionItemKind.Text, // chose Kind based on category?
-          insertText: suggestion.text || suggestion.displayText || '',
-          label: suggestion.displayText,
-          documentation: suggestion.description
+          ...suggestion,
+          kind: this.monaco.languages.CompletionItemKind.Text // chose Kind based on category?
         }
       }))
       this.onSuggestCallback = null
@@ -88,27 +83,14 @@ class DesignerEditor extends React.Component {
   }
 
   renderErrors(errors) {
-    let parsedErrors = []
-    if (errors && errors.length > 0) {
-      parsedErrors = errors.map(error => {
-        const from = error.range.start
-        const to = error.range.end
-
-        const line = Math.max(1, from.line)
-        const startColumn = from.column
-        const endColumn = to && to.column ? to.column : this.editor.getModel().getLineContent(line).length + 1
-
-        return {
-          message: error.message,
-          startLineNumber: line,
-          endLineNumber: line,
-          startColumn,
-          endColumn,
-          severity: error.isWarning ? this.monaco.Severity.Warning : this.monaco.Severity.Error
-        }
-      }, this);
-    }
-    this.monaco.editor.setModelMarkers(this.editor.getModel(), '', parsedErrors)
+    const markers = errors.map(error => {
+      return {
+        ...error,
+        endColumn : error.endColumn || this.editor.getModel().getLineContent(error.startLineNumber).length + 1,
+        severity: error.severity === 'warning' ? this.monaco.Severity.Warning : this.monaco.Severity.Error
+      }
+    }, this);
+    this.monaco.editor.setModelMarkers(this.editor.getModel(), '', markers)
   }
 
   render() {

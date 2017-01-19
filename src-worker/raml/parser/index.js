@@ -43,11 +43,35 @@ export default class RamlParser {
   parse(path) {
     return ramlParser.loadApi(path, this.options).then(api => {
       api = api.expand ? api.expand(true) : api;
-      return api.toJSON(this.jsonOptions);
-      // todo include ramlExpander from old api-console?
-      // if (raml.specification) {
-      //   ramlExpander.expandRaml(raml.specification);
-      // }
+      return this._toJson(api);
+    });
+  }
+
+  _toJson(api) {
+    const json = api.toJSON(this.jsonOptions);
+    json.errors = RamlParser._mapErrors(json.errors)
+    // todo include ramlExpander from old api-console?
+    // if (raml.specification) {
+    //   ramlExpander.expandRaml(raml.specification);
+    // }
+    return json;
+  }
+
+  static _mapErrors(errors) {
+    if (!errors) return []
+    return errors.map(error => {
+      const to = error.range.end
+      const from = error.range.start
+      const line = Math.max(1, from.line)
+
+      return {
+        message: error.message,
+        startLineNumber: line,
+        endLineNumber: line,
+        startColumn: from.column,
+        endColumn: to && to.column ? to.column : undefined,
+        severity: error.isWarning ? "warning" : "error"
+      }
     });
   }
 }

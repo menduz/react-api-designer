@@ -50,8 +50,11 @@ export const parseText = (value) => (dispatch, getState, { worker }) => {
       else {
         // report unexpected errors in the first line
         dispatch(parseResult(null, [{
-          range: {start: {line: 1, column: 0}},
-          message: error.message
+          message: error.message,
+          startLineNumber: 1,
+          endLineNumber: 1,
+          startColumn: 0,
+          severity: "error"
         }]))
       }
     })
