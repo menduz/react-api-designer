@@ -10,6 +10,7 @@ import './NewFile.css'
 
 type Props = {
   fileName: string,
+  fileType: string,
   onSubmit: () => void,
   onCancel: () => void,
   onFileTypeChange: () => void,
@@ -28,19 +29,30 @@ class NewFolderModal extends React.Component {
     this.props.onNameChange(event.value)
   }
 
+  handleSubmit() {
+      const type = this.props.fileType;
+      const name = this.props.fileName;
+      if (type && name)
+        this.props.onSubmit(name, type)
+  }
+
   render() {
     const {
       fileName,
-      onSubmit,
+      fileType,
       onCancel,
       onFileTypeChange,
       showModal
     } = this.props
 
-    var fileTypes = [
+    const fileTypes = [
       {
         value: 'RAML08',
         label: 'RAML 0.8 API Spec'
+      },
+      {
+        value: 'RAML10',
+        label: 'RAML 1.0 API Spec'
       }
     ]
 
@@ -49,13 +61,13 @@ class NewFolderModal extends React.Component {
         <Modal className="new-file"
                title="Add new API Spec file"
                onCancel={onCancel}
-               onSubmit={onSubmit}
+               onSubmit={this.handleSubmit.bind(this)}
                onEsc={onCancel}
                onClickOverlay={onCancel}
         >
           <Select name="selected-file-type"
                   options={fileTypes}
-                  value="RAML08"
+                  value={fileType}
                   onChange={onFileTypeChange}
           />
           <TextField className="new-file-name"

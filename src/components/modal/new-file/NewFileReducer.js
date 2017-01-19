@@ -5,7 +5,7 @@ import * as actions from './NewFileActions'
 
 const initialState : State = {
   fileName: '',
-  fileType: '',
+  fileType: 'RAML08',
   showModal: false
 }
 
@@ -14,12 +14,12 @@ export default (state: State = initialState, action: any): State => {
     case actions.CHANGE_NAME:
       return {
         ...state,
-        fileName: action.payload.name
+        fileName: action.payload
       }
     case actions.CHANGE_TYPE:
       return {
         ...state,
-        fileType: action.payload.type
+        fileType: action.payload
       }
     case actions.SHOW:
       return {
@@ -27,7 +27,6 @@ export default (state: State = initialState, action: any): State => {
         showModal: true
       }
     case actions.HIDE:
-    case actions.CREATE:
     default:
       return initialState
   }

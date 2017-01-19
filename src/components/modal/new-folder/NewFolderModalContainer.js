@@ -6,7 +6,8 @@ import {connect} from 'react-redux'
 import type {State} from './NewFolderModel'
 import NewFolderModal from './NewFolderModal'
 import {getAll} from './NewFolderSelectors'
-import {changeName, createFolder, closeNewFolderDialog} from './NewFolderActions'
+import {changeName, closeNewFolderDialog} from './NewFolderActions'
+import {addDirectory} from "../../../file-system-tree/actions";
 
 type ContainerProps = {
   folderName: string
@@ -20,10 +21,10 @@ const mapState = (rootState) => {
   }
 }
 
-const mapDispatch = (dispatch, props: ContainerProps) => {
+const mapDispatch = (dispatch) => {
   return {
-    onSubmit: () => {
-      dispatch(createFolder(props.folderName))
+    onSubmit: (name) => {
+      dispatch(addDirectory(name))
       dispatch(closeNewFolderDialog())
     },
     onCancel: () => dispatch(closeNewFolderDialog()),
@@ -31,10 +32,4 @@ const mapDispatch = (dispatch, props: ContainerProps) => {
   }
 }
 
-const NewFolderModalContainer = connect(mapState, mapDispatch)(NewFolderModal)
-
-NewFolderModalContainer.PropTypes = {
-  folderName: React.PropTypes.string
-}
-
-export default NewFolderModalContainer
+export default connect(mapState, mapDispatch)(NewFolderModal)

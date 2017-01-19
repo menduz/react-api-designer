@@ -13,7 +13,7 @@ export default (state: State = initialState, action: any): State => {
     case actions.CHANGE_NAME:
       return {
         ...state,
-        folderName: action.payload.name
+        folderName: action.payload
       }
     case actions.SHOW:
       return {
@@ -22,7 +22,6 @@ export default (state: State = initialState, action: any): State => {
       }
     case actions.HIDE:
     case actions.CLEAR:
-    case actions.CREATE:
     default:
       return initialState
   }

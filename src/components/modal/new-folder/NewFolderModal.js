@@ -20,6 +20,12 @@ class NewFolderModal extends React.Component {
     super(props)
   }
 
+  handleSubmit() {
+      const name = this.props.folderName;
+      if (name)
+          this.props.onSubmit(name)
+  }
+
   onNameChange(event: any) {
     this.props.onNameChange(event.value)
   }
@@ -37,7 +43,7 @@ class NewFolderModal extends React.Component {
         <Modal className="new-folder"
                title="Add a new folder"
                onCancel={onCancel}
-               onSubmit={onSubmit}
+               onSubmit={this.handleSubmit.bind(this)}
                onEsc={onCancel}
                onClickOverlay={onCancel}
         >

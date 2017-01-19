@@ -6,7 +6,8 @@ import {connect} from 'react-redux'
 import type {State} from './NewFileModel'
 import NewFileModal from './NewFileModal'
 import {getAll} from './NewFileSelectors'
-import {changeFileType, changeName, createFile, closeNewFileDialog} from './NewFileActions'
+import {changeFileType, changeName, closeNewFileDialog} from './NewFileActions'
+import {addFile} from "../../../file-system-tree/actions";
 
 const mapState = (rootState) => {
   const state : State = getAll(rootState)
@@ -17,10 +18,10 @@ const mapState = (rootState) => {
   }
 }
 
-const mapDispatch = (dispatch, props: ContainerProps) => {
+const mapDispatch = (dispatch) => {
   return {
-    onSubmit: () => {
-      dispatch(createFile(props.fileName, props.fileType))
+    onSubmit: (name: string, fileType: string) => {
+      dispatch(addFile(name, fileType))
       dispatch(closeNewFileDialog())
     },
     onCancel: () => dispatch(closeNewFileDialog()),
@@ -34,12 +35,6 @@ const NewFileModalContainer = connect(mapState, mapDispatch)(NewFileModal)
 NewFileModalContainer.PropTypes = {
   fileName: React.PropTypes.string,
   fileType: React.PropTypes.string
-}
-
-type ContainerProps = {
-  fileName: string,
-  fileType: string,
-  showModal: boolean
 }
 
 export default NewFileModalContainer
