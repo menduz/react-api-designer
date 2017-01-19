@@ -14,7 +14,7 @@ type Props = {
   onCancel: () => void,
   onFileTypeChange: () => void,
   onNameChange: () => void,
-  showNewFolderModal: Boolean
+  showModal: Boolean
 }
 
 class NewFolderModal extends React.Component {
@@ -34,7 +34,7 @@ class NewFolderModal extends React.Component {
       onSubmit,
       onCancel,
       onFileTypeChange,
-      showNewFolderModal
+      showModal
     } = this.props
 
     var fileTypes = [
@@ -44,7 +44,7 @@ class NewFolderModal extends React.Component {
       }
     ]
 
-    if (showNewFolderModal) {
+    if (showModal) {
       return (
         <Modal className="new-file"
                title="Add new API Spec file"

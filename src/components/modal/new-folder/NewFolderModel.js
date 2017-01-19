@@ -1,6 +1,6 @@
 //@flow
 
 export type State = {
-  showNewFolderModal: boolean,
+  showModal: boolean,
   folderName: string
 }

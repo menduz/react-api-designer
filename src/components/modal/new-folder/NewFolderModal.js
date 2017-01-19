@@ -7,7 +7,7 @@ import TextField from '@mulesoft/anypoint-components/lib/TextField'
 
 type Props = {
   folderName: string,
-  showNewFolderModal: Boolean,
+  showModal: Boolean,
   onSubmit: () => void,
   onCancel: () => void,
   onNameChange: (name: string) => void
@@ -29,10 +29,10 @@ class NewFolderModal extends React.Component {
       folderName,
       onCancel,
       onSubmit,
-      showNewFolderModal
+      showModal
     } = this.props
 
-    if (showNewFolderModal) {
+    if (showModal) {
       return (
         <Modal className="new-folder"
                title="Add a new folder"

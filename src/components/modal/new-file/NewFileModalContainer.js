@@ -13,7 +13,7 @@ const mapState = (rootState) => {
   return {
     fileName: state.fileName,
     fileType: state.fileType,
-    showNewFolderModal: state.showNewFolderModal
+    showModal: state.showModal
   }
 }
 
@@ -39,7 +39,7 @@ NewFileModalContainer.PropTypes = {
 type ContainerProps = {
   fileName: string,
   fileType: string,
-  showNewFolderModal: Boolean
+  showModal: boolean
 }
 
 export default NewFileModalContainer

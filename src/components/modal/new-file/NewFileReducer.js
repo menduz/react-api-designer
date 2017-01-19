@@ -6,7 +6,7 @@ import * as actions from './NewFileActions'
 const initialState : State = {
   fileName: '',
   fileType: '',
-  showNewFolderModal: false
+  showModal: false
 }
 
 export default (state: State = initialState, action: any): State => {
@@ -24,7 +24,7 @@ export default (state: State = initialState, action: any): State => {
     case actions.SHOW:
       return {
         ...state,
-        showNewFolderModal: true
+        showModal: true
       }
     case actions.HIDE:
     case actions.CREATE:

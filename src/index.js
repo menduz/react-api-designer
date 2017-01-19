@@ -10,7 +10,6 @@ import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
 import {parseReducer, suggestionReducer} from './reducers'
 import WebWorker from './web-worker'
-import { combineReducers } from 'redux'
 import newFolder from './components/modal/new-folder'
 import newFile from './components/modal/new-file'
 

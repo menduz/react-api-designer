@@ -4,7 +4,7 @@ import type {State} from './NewFolderModel'
 import * as actions from './NewFolderActions'
 
 const initialState = {
-  showNewFolderModal: false,
+  showModal: false,
   folderName: ''
 }
 
@@ -18,7 +18,7 @@ export default (state: State = initialState, action: any): State => {
     case actions.SHOW:
       return {
         ...state,
-        showNewFolderModal: true
+        showModal: true
       }
     case actions.HIDE:
     case actions.CLEAR:

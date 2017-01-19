@@ -3,5 +3,5 @@
 export type State = {
   fileName: string,
   fileType: string,
-  showNewFolderModal: boolean
+  showModal: boolean
 }

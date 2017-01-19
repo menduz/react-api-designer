@@ -15,7 +15,7 @@ type ContainerProps = {
 const mapState = (rootState) => {
   const state: State = getAll(rootState)
   return {
-    showNewFolderModal: state.showNewFolderModal,
+    showModal: state.showModal,
     folderName: state.folderName
   }
 }
