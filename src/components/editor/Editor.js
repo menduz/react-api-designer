@@ -86,13 +86,12 @@ class DesignerEditor extends React.Component {
   }
 
   _lineLength(line) {
-    line = Math.min(line, this.editor.getModel().getLineCount());
-    return this.editor.getModel().getLineContent(line).length + 1;
+    return this.editor.getModel().getLineLastNonWhitespaceColumn(Math.min(line, this.editor.getModel().getLineCount()));
   }
 
   _renderCursor(cursor) {
     if (cursor && cursor.line > -1) {
-      this.editor.setPosition(new this.monaco.Position(cursor.line, cursor.column))
+      this.editor.setPosition(this.editor.getModel().validatePosition(new this.monaco.Position(cursor.line, cursor.column)))
     }
   }
 

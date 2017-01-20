@@ -2,8 +2,8 @@
 
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import SplitPane from 'react-split-pane'
 import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
+import Split from './components/split/Split'
 import Editor from './components/editor/Editor'
 import Menu from './components/menu/Menu'
 import * as fileSystemTree from './file-system-tree';
@@ -14,9 +14,6 @@ const Tree = fileSystemTree.FileSystemTree
 
 class App extends Component {
 
-  static leftKey = 'designer:preference:leftSplit'
-  static rightKey = 'designer:preference:rightSplit'
-
   render() {
     const {isParsing} = this.props
     return (
@@ -25,22 +22,16 @@ class App extends Component {
           <h2>Api Designer</h2>
           {isParsing ? <Spinner size="s" className="Spinner-parser"/> : null}
         </div>
-        <SplitPane split="vertical" minSize={10}
-                   defaultSize={parseInt(localStorage.getItem(App.leftKey) || 150, 10)}
-                   onChange={size => localStorage.setItem(App.leftKey, size)}>
-          <div className="TreePanel">
+        <Split id="leftSplit" defaultSize={200}>
+          <div className="LeftPanel">
               <Menu/>
               <Tree/>
           </div>
-          <div className="RightPanel">
-            <SplitPane split="vertical" primary="second" minSize={10}
-                       defaultSize={parseInt(localStorage.getItem(App.rightKey) || 300, 10)}
-                       onChange={size => localStorage.setItem(App.rightKey, size)}>
-              <Editor/>
-              <Info/>
-            </SplitPane>
-          </div>
-        </SplitPane>
+          <Split id="rightSplit" defaultSize={350} primary="second" className="RightPanel">
+            <Editor/>
+            <Info/>
+          </Split>
+        </Split>
       </div>
     )
   }

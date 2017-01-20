@@ -27,7 +27,7 @@ class Errors extends Component {
       return (
         <li key={index} className={error.severity}>
           <a onClick={this.props.onErrorClick.bind(this, error)}>
-            {`${error.message} (${error.startLineNumber}, ${error.startColumn})`}
+            {error.message} <strong>({error.startLineNumber}, {error.startColumn})</strong>
           </a>
         </li>
       )
