@@ -3,11 +3,11 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
-import Split from './components/split/Split'
-import Editor from './components/editor/Editor'
-import Menu from './components/menu/Menu'
-import * as fileSystemTree from './file-system-tree';
-import {Info} from './components/info'
+import Split from '../split/Split'
+import Editor from '../editor/Editor'
+import Menu from '../menu/Menu'
+import * as fileSystemTree from '../../file-system-tree';
+import {Info} from '../info'
 import './App.css';
 
 const Tree = fileSystemTree.FileSystemTree

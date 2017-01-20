@@ -2,7 +2,7 @@
 
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './App'
+import App from './components/app/App'
 import './index.css'
 import {createStore, applyMiddleware, combineReducers} from 'redux'
 import {Provider} from 'react-redux'
@@ -11,7 +11,7 @@ import createLogger from 'redux-logger'
 import Repository from "./repository/Repository"
 import LocalStorageFileSystem from "./repository/file-system/LocalStorageFileSystem"
 import editorReducer from './components/editor/reducers'
-import WebWorker from './web-worker'
+import WebWorker from './webworker'
 import newFolder from './components/modal/new-folder'
 import newFile from './components/modal/new-file'
 import {initFileSystem} from "./file-system-tree/actions"
