@@ -12,10 +12,6 @@ import {openNewFileDialog} from '../modal/new-file/NewFileActions'
 import './Menu.css'
 
 class Menu extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-
   render() {
     let {
       showNewFolderDialog,

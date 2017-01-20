@@ -1,11 +1,4 @@
-export function language(id = 'raml') {
-  return {
-    id: id,
-    extensions: ['.raml']
-  }
-}
-
-export function configurations() {
+const configurations = () => {
   return {
     comments: {lineComment: "#"},
     brackets: [["{", "}"], ["[", "]"]],
@@ -17,7 +10,7 @@ export function configurations() {
   }
 }
 
-export function tokens() {
+const tokens = () => {
   return {
     tokenPostfix: ".yaml",
     brackets: [{token: "delimiter.bracket", open: "{", close: "}"}, {
@@ -78,4 +71,14 @@ export function tokens() {
       anchor: [[/[&*][^ ]+/, "namespace"]]
     }
   }
+}
+
+export const id = 'raml'
+export const extension = '.' + id
+export default (monaco, provideCompletionItems) => {
+  const languages = monaco.languages;
+  languages.register({id, extensions: [extension]})
+  languages.setLanguageConfiguration(id, configurations())
+  languages.setMonarchTokensProvider(id, tokens())
+  languages.registerCompletionItemProvider(id, {provideCompletionItems})
 }

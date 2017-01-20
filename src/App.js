@@ -7,7 +7,6 @@ import { parseText, suggest } from './actions'
 import DesignerEditorContainer from './components/editor/Editor'
 import Menu from './components/menu/Menu'
 import * as fileSystemTree from './file-system-tree';
-import DesignerEditor from './components/editor/Editor'
 import {connect} from 'react-redux'
 import {Info} from './components/info'
 import './App.css';
@@ -20,7 +19,7 @@ class App extends Component {
     super(props)
 
     this.state = {
-      selectedTab: parseInt(localStorage.getItem('designer:preference:selectedTab') || 0),
+      selectedTab: parseInt(localStorage.getItem('designer:preference:selectedTab') || 0, 10),
       errors: [],
       suggestions: [],
     }

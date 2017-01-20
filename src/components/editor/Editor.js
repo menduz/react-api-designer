@@ -1,16 +1,21 @@
 import React from 'react'
-import {connect} from 'react-redux'
 import MonacoEditor from 'react-monaco-editor'
-import * as Raml from '../../languages/Raml'
+import registerRamlLanguage from './languages/Raml'
 import {goToErrorAction} from '../errors/reducer'
 import './Editor.css';
+
+// todo review loading of Monaco assets
+const requireConfig = {
+  url: 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.1/require.min.js',
+  paths: {
+    'vs': `${process.env.PUBLIC_URL}/static/js/vs`
+  }
+}
 
 class DesignerEditor extends React.Component {
   constructor(props) {
     super(props)
-    this.onSuggest = this.onSuggest.bind(this)
 
-    this.language = props.language.toLowerCase()
     this.editor = null
     this.monaco = null
     this.timer = null;
@@ -20,24 +25,12 @@ class DesignerEditor extends React.Component {
     }
   }
 
-  isRamlLanguage() {
-    return this.language === 'raml'
-  }
-
   editorWillMount(monaco) {
-    if (this.isRamlLanguage()) { // Register RAML language
-      const languages = monaco.languages;
-      languages.register(Raml.language(this.language))
-      languages.setLanguageConfiguration(this.language, Raml.configurations())
-      languages.setMonarchTokensProvider(this.language, Raml.tokens())
-      languages.registerCompletionItemProvider(this.language, {
-        provideCompletionItems: (model, position) => {
-          return new Promise((resolve) => {
-            this.onSuggest(position, resolve)
-          })
-        }
+    registerRamlLanguage(monaco, (model, position) => {
+      return new Promise((resolve) => {
+        this.onSuggest(position, resolve)
       })
-    }
+    })
   }
 
   editorDidMount(editor, monaco) {
@@ -95,28 +88,18 @@ class DesignerEditor extends React.Component {
   }
 
   render() {
-    if (this.monaco && this.isRamlLanguage()) {
+    if (this.monaco && this.editor) {
       this.renderErrors(this.props.errors)
       this.renderSuggestions(this.props.suggestions)
     }
 
-    const theme = this.props.theme ? this.props.theme : 'vs'
-
     const options = {
+      theme: this.props.theme || 'vs',
       selectOnLineNumbers: true,
       roundedSelection: false,
       readOnly: false,
-      theme: theme,
       cursorStyle: 'line',
-      automaticLayout: false,
-    }
-
-    // todo review loading of Monaco assets
-    const requireConfig = {
-      url: 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.1/require.min.js',
-      paths: {
-        'vs': `${process.env.PUBLIC_URL}/static/js/vs`
-      }
+      automaticLayout: false
     }
 
     return (
