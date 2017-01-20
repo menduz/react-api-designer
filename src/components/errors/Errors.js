@@ -29,9 +29,9 @@ class Errors extends Component {
 }
 
 const mapStateToProps = state => {
-  const {parse} = state
+  const {editor} = state
   return {
-    errors: parse.errors
+    errors: editor.errors
   }
 }
 

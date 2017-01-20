@@ -20,10 +20,10 @@ class Preview extends Component {
 }
 
 const mapStateToProps = state => {
-  const {parse} = state
+  const {editor} = state
   return {
-    parsedObject: parse.parsedObject,
-    language: parse.language
+    parsedObject: editor.parsedObject,
+    language: editor.language
   }
 }
 

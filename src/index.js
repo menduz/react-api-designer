@@ -10,7 +10,7 @@ import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
 import Repository from "./repository/Repository"
 import LocalStorageFileSystem from "./repository/file-system/LocalStorageFileSystem"
-import {parseReducer, suggestionReducer} from './reducers'
+import {editorReducer, suggestionReducer} from './reducers'
 import WebWorker from './web-worker'
 import newFolder from './components/modal/new-folder'
 import newFile from './components/modal/new-file'
@@ -53,7 +53,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const rootReducer = combineReducers({
-    parse: parseReducer,
+    editor: editorReducer,
     suggestion: suggestionReducer,
     [fileSystemTree.NAME]: fileSystemTree.reducer,
     dialogs: combineReducers({
@@ -69,8 +69,8 @@ const store = createStore(
 
 let listener = () => {
     if (repositoryMock) {
-        const parse = store.getState().parse
-        if (parse && parse.text) repositoryMock.setFile(parse.text)
+        const editor = store.getState().editor
+        if (editor && editor.text) repositoryMock.setFile(editor.text)
     }
 }
 store.subscribe(listener)

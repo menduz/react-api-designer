@@ -1,6 +1,6 @@
-import parse from './parse'
+import editor from './editor'
 import {SUGGESTION, SUGGESTION_RESULT} from '../actions'
-export {parse as parseReducer};
+export {editor as editorReducer};
 
 export const suggestionReducer = (state = {
   suggestions: [],

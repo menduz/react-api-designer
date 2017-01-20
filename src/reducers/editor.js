@@ -13,7 +13,7 @@ let initialState = {
   cursor: null
 };
 
-const parse = (state = initialState, action) => {
+const editor = (state = initialState, action) => {
   switch (action.type) {
     case START_PARSING:
       return {
@@ -53,4 +53,4 @@ const parse = (state = initialState, action) => {
   }
 }
 
-export default parse
+export default editor

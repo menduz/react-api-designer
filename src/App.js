@@ -75,13 +75,13 @@ class App extends Component {
 }
 
 const mapStateToProps = state => {
-  const { parse, suggestion } = state
+  const { editor, suggestion } = state
   return {
-    lastUpdated: parse.lastUpdate,
-    isParsing: parse.isParsing,
-    errors: parse.errors,
-    text: parse.text,
-    cursor: parse.cursor,
+    lastUpdated: editor.lastUpdate,
+    isParsing: editor.isParsing,
+    errors: editor.errors,
+    text: editor.text,
+    cursor: editor.cursor,
     suggestions: suggestion.suggestions
   }
 }

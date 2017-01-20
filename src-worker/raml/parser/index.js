@@ -62,14 +62,14 @@ export default class RamlParser {
     return errors.map(error => {
       const to = error.range.end
       const from = error.range.start
-      const line = Math.max(1, from.line)
+      const line = from.line + 1
 
       return {
         message: error.message,
         startLineNumber: line,
         endLineNumber: line,
         startColumn: from.column,
-        endColumn: to && to.column ? to.column : undefined,
+        endColumn: to && to.column ? to.column + 1 : undefined,
         severity: error.isWarning ? "warning" : "error"
       }
     });
