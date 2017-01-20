@@ -1,7 +1,7 @@
 import {
   SET_CURSOR,
   START_PARSING, PARSING_REQUEST, PARSING_RESULT,
-  SUGGESTION, SUGGESTION_RESULT
+  SUGGESTION_REQUEST, SUGGESTION_RESULT
 } from './actions'
 
 
@@ -54,7 +54,7 @@ export default (state = initialState, action) => {
         }
       }
 
-    case SUGGESTION:
+    case SUGGESTION_REQUEST:
       return {
         ...state,
         isSearching: true

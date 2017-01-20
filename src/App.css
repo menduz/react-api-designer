@@ -1,3 +1,9 @@
+*, :after, :before {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box
+}
+
 .App-header {
   background-color: #222;
   /*height: 50px;*/
@@ -12,11 +18,12 @@
 
 .App-header .Spinner-parser {
   float: right;
+  padding: 2px;
 }
 
 .menu {
-  height: 40px;
-  border-bottom: 1px solid rgba(140, 139, 139, 0.42);
+  height: 35px;
+  border-bottom: 2px solid rgba(39,47,51,.1);
 }
 
 /*SplitPane*/

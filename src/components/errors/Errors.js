@@ -6,24 +6,46 @@ import './errors.css'
 
 class Errors extends Component {
 
+  _renderFilters(issues) {
+    let errors = 0
+    let warnings = 0
+    for (let issue of issues) {
+      if (issue.severity === 'warning') warnings++
+      else errors++
+    }
+
+    return (
+      <div className="Filter">
+        <a href="#"><strong>{errors}</strong> {errors === 1 ? 'Error' : 'Errors'}</a>
+        <a href="#"><strong>{warnings}</strong> {warnings === 1 ? 'Warning' : 'Warnings'}</a>
+      </div>
+    )
+  }
+
   _renderItems(errors) {
     return errors.map((error, index) => {
-        return(
-          <li key={index}>
-            <a onClick={this.props.onErrorClick.bind(this, error)}>
-              {`${error.message} (${error.startLineNumber}, ${error.startColumn})`}
-            </a>
-          </li>
-        )
+      return (
+        <li key={index} className={error.severity}>
+          <a onClick={this.props.onErrorClick.bind(this, error)}>
+            {`${error.message} (${error.startLineNumber}, ${error.startColumn})`}
+          </a>
+        </li>
+      )
     })
   }
 
   render() {
     const {errors} = this.props
+    if (!errors || errors.length === 0)
+      return <div className="Errors No-errors">No errors</div>
+
     return (
-      <ol>
-        {this._renderItems(errors)}
-      </ol>
+      <div className="Errors">
+        {this._renderFilters(errors)}
+        <ol>
+          {this._renderItems(errors)}
+        </ol>
+      </div>
     )
   }
 }

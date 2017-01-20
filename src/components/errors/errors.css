@@ -1,3 +1,35 @@
-a {
-    cursor: pointer;
+.Errors a {
+  cursor: pointer;
+}
+
+.Errors {
+  padding-top: 12px;
+}
+
+.No-errors, .Filter {
+  text-align: center;
+}
+
+.Errors .Filter a {
+  text-decoration: none;
+  padding: 10px;
+  color: #000;
+  font-size: 13px;
+}
+
+.Errors ol {
+  list-style: none;
+  margin: 15px;
+  padding: 0;
+}
+
+.Errors li {
+  border-left: 2px #ff5959 solid;
+  padding-left: 7px;
+  margin: 7px;
+  font-size: 12px;
+}
+
+.Errors li.warning {
+  border-color: #fff454;
 }

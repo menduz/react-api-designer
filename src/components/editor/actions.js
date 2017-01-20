@@ -1,10 +1,11 @@
-export const PARSING_REQUEST = 'PARSING_REQUEST'
-export const PARSING_RESULT = 'PARSING_RESULT'
+export const PARSING_REQUEST = 'DESIGNER/EDITOR/PARSING_REQUEST'
+export const PARSING_RESULT = 'DESIGNER/EDITOR/PARSING_RESULT'
 
-export const SUGGESTION = 'SUGGESTION'
-export const SUGGESTION_RESULT = 'SUGGESTION_RESULT'
+export const SUGGESTION_REQUEST = 'DESIGNER/EDITOR/SUGGESTION_REQUEST'
+export const SUGGESTION_RESULT = 'DESIGNER/EDITOR/SUGGESTION_RESULT'
 
-export const SET_CURSOR = 'DESIGNER/SET_CURSOR'
+export const SET_CURSOR = 'DESIGNER/EDITOR/SET_CURSOR'
+export const SET_TEXT = 'DESIGNER/EDITOR/SET_TEXT'
 
 export const goToLine = (line, column) => dispatch => {
   dispatch({
@@ -19,18 +20,28 @@ export const goToLine = (line, column) => dispatch => {
   }))
 }
 
-const suggestion = ({
-  type: SUGGESTION
-})
+export const setText = (text) => dispatch => {
+  dispatch({
+    type: SET_TEXT,
+    text
+  })
+
+  // just a go, free cursor state right after
+  window.setTimeout(() => dispatch({
+      type: SET_TEXT
+  }))
+}
 
 const suggestionResult = suggestions => ({
   type: SUGGESTION_RESULT,
   suggestions
 })
 
-
 export const suggest = (text, offset) => (dispatch, getState, {worker}) => {
-  dispatch(suggestion)
+  dispatch({
+    type: SUGGESTION_REQUEST
+  })
+
   worker.ramlSuggest(text, offset).then(result => {
     dispatch(suggestionResult(result))
   }).catch(e => {

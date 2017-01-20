@@ -50,6 +50,7 @@ class NewFolderModal extends React.Component {
           <TextField value={folderName}
                      placeholder="Folder name..."
                      onChange={this.onNameChange.bind(this)}
+                     autoFocus
           />
         </Modal>
       )

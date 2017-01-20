@@ -5,7 +5,7 @@ import * as actions from './NewFileActions'
 
 const initialState : State = {
   fileName: '',
-  fileType: 'RAML08',
+  fileType: 'RAML10',
   showModal: false
 }
 

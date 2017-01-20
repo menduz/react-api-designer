@@ -47,12 +47,12 @@ class NewFolderModal extends React.Component {
 
     const fileTypes = [
       {
-        value: 'RAML08',
-        label: 'RAML 0.8 API Spec'
-      },
-      {
         value: 'RAML10',
         label: 'RAML 1.0 API Spec'
+      },
+      {
+        value: 'RAML08',
+        label: 'RAML 0.8 API Spec'
       }
     ]
 
@@ -69,11 +69,13 @@ class NewFolderModal extends React.Component {
                   options={fileTypes}
                   value={fileType}
                   onChange={onFileTypeChange}
+                  clearable={false}
           />
           <TextField className="new-file-name"
                      value={fileName}
                      placeholder="File name..."
                      onChange={this.onNameChange.bind(this)}
+                     autoFocus
           />
         </Modal>
       )

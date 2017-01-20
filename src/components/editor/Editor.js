@@ -19,11 +19,8 @@ class DesignerEditor extends React.Component {
 
     this.editor = null
     this.monaco = null
-    this.timer = null;
-
-    this.state = {
-      value: props.value
-    }
+    this.timer = null
+    this.value = this.props.value;
   }
 
   editorWillMount(monaco) {
@@ -41,27 +38,27 @@ class DesignerEditor extends React.Component {
   }
 
   onChange(newValue, event) {
-    this.setState({value: newValue})
+    this.value = newValue
 
     if (this.timer) {
       clearTimeout(this.timer)
     }
 
-    if (this.props.onChange !== undefined) {
+    if (this.props.onChange) {
       this.timer = setTimeout(() => {
-        this.props.onChange(this.state.value)
+        this.props.onChange(this.value)
       }, 500)
     }
   }
 
   onSuggest(position, resolve) {
-    if (this.props.onSuggest !== undefined) {
+    if (this.props.onSuggest) {
       if (this.onSuggestCallback) {
         // resolve any pending promise before replacing
         this.onSuggestCallback([])
       }
       this.onSuggestCallback = resolve
-      this.props.onSuggest(this.state.value, position)
+      this.props.onSuggest(this.value, position)
     }
   }
 
@@ -99,6 +96,13 @@ class DesignerEditor extends React.Component {
     }
   }
 
+  componentWillReceiveProps (nextProps) {
+    // leave text in state, as it will just be used once
+    if (nextProps.text) {
+      this.value = nextProps.text
+    }
+  }
+
   render() {
     if (this.monaco && this.editor) {
       this._renderErrors(this.props.errors)
@@ -120,7 +124,7 @@ class DesignerEditor extends React.Component {
         <MonacoEditor requireConfig={requireConfig}
                       height="800"
                       width="auto"
-                      value={this.state.value}
+                      value={this.value}
                       options={options}
                       language={this.props.language}
                       onChange={this.onChange.bind(this)}

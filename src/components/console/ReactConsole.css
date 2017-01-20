@@ -2,3 +2,7 @@
 .raml-docs-resource-viewer-0 [wide-layout].raml-docs-resource-viewer nav.raml-docs-resource-viewer {
     display: none;
 }
+
+.raml-documentation-empty-state-0 {
+    background-color: transparent;
+}
