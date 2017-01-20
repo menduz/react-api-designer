@@ -9,6 +9,9 @@ import Repository from '../repository/Repository'
 import type {Node} from './model'
 import {getCurrentDirectory} from "./selectors";
 
+import * as editor from "../components/editor";
+import File from "../repository/File";
+
 export const INIT_FILE_SYSTEM = `DESIGNER/${PREFIX}/INIT_FILE_SYSTEM`
 
 export const FILE_ADDED = `DESIGNER/${PREFIX}/FILE_ADDED`
@@ -35,7 +38,7 @@ export const directoryAdded = (directory: DirectoryModel) => ({
 type Action = {type: any}
 type Dispatch = (action: Action) => void;
 type GetState = () => {[key: string]: any}
-type ExtraArgs = {repositoryContainer: { repository: Repository} }
+type ExtraArgs = {repositoryContainer: {repository: Repository}}
 
 const defaultContent = (fileType: string) => {
     switch (fileType) {
@@ -48,8 +51,8 @@ const defaultContent = (fileType: string) => {
 }
 
 export const addFile = (name: string, fileType: string) =>
-    (dispatch: Dispatch, getState: GetState, { repositoryContainer }: ExtraArgs) => {
-        if(!repositoryContainer.isLoaded) return
+    (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs) => {
+        if (!repositoryContainer.isLoaded) return
         const repository: Repository = repositoryContainer.repository
         const parent = getCurrentDirectory(getState());
 
@@ -61,7 +64,7 @@ export const addFile = (name: string, fileType: string) =>
 
 export const addDirectory = (name: string) =>
     (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs) => {
-        if(!repositoryContainer.isLoaded) return
+        if (!repositoryContainer.isLoaded) return
         const repository: Repository = repositoryContainer.repository
         const parent = getCurrentDirectory(getState());
 
@@ -76,7 +79,25 @@ export const treeChanged = (tree: Node) => ({
     payload: tree
 })
 
-export const nodeSelected = (node: Node) => ({
-    type: NODE_SELECTED,
-    payload: node
-})
+export const nodeSelected = (node: Node) =>
+    (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs) => {
+        dispatch({
+            type: NODE_SELECTED,
+            payload: node
+        })
+
+
+        if (!repositoryContainer.isLoaded) return
+        const repository: Repository = repositoryContainer.repository
+        const element = repository.getByPath(node.path);
+        if(!element || element.isDirectory()) return
+
+        const path = editor.selectors.getCurrentFilePath(getState());
+        if (path === node.path.toString()) return
+
+        const file: File = ((element: any): File);
+        file.getContent()
+            .then((content) => {
+                dispatch(editor.actions.updateFile(content, node.path.toString()))
+            })
+    }

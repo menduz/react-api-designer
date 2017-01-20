@@ -31,6 +31,8 @@ class Mock extends React.Component {
 
 const mapStateToProps = state => {
   const {mock} = state
+  if(!mock) return {}
+
   return {
     isUp: mock.isUp
   }

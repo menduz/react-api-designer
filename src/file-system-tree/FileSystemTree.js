@@ -6,7 +6,7 @@ import TreeUI from 'react-ui-tree'
 import cx from 'classnames';
 import {getAll} from './selectors';
 import {fromFileSystem} from './model';
-import {treeChanged, nodeSelected, addDirectory, addFile} from './actions';
+import {treeChanged, nodeSelected} from './actions';
 
 import type {Node} from './model';
 

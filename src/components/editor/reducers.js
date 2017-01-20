@@ -7,8 +7,8 @@ import {
 
 const initialState = {
   language: "raml",
-  text: "#%RAML 1.0\n",
-  path: '/api.raml',
+  text: "",
+  path: null,
   position: null,
 
   isParsing: false,
@@ -26,7 +26,8 @@ export default (state = initialState, action) => {
       return {
         ...state,
         text: action.text,
-        path: action.path
+        path: action.path,
+        language: action.language
       }
     case SET_POSITION:
       return {
@@ -40,8 +41,7 @@ export default (state = initialState, action) => {
     case PARSING_REQUEST:
       return {
         ...state,
-        isParsing: true,
-        text: action.text
+        isParsing: true
       }
     case PARSING_RESULT:
       return {

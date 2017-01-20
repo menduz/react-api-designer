@@ -4,13 +4,11 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import Header from '../header/Header'
 import Split from '../split/Split'
-import Editor from '../editor/Editor'
 import Menu from '../menu/Menu'
-import * as fileSystemTree from '../../file-system-tree';
 import {Info} from '../info'
+import {Editor} from '../editor'
+import {FileSystemTree} from '../../file-system-tree'
 import './App.css';
-
-const Tree = fileSystemTree.FileSystemTree
 
 class App extends Component {
   render() {
@@ -20,7 +18,7 @@ class App extends Component {
         <Split id="leftSplit" defaultSize={200}>
           <div className="LeftPanel">
               <Menu/>
-              <Tree/>
+              <FileSystemTree/>
           </div>
           <Split id="rightSplit" defaultSize={350} primary="second" className="RightPanel">
             <Editor/>

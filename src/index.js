@@ -10,7 +10,7 @@ import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
 import Repository from "./repository/Repository"
 import LocalStorageFileSystem from "./repository/file-system/LocalStorageFileSystem"
-import editorReducer from './components/editor/reducers'
+import * as editor from './components/editor'
 import WebWorker from './webworker'
 import newFolder from './components/modal/new-folder'
 import newFile from './components/modal/new-file'
@@ -53,7 +53,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const rootReducer = combineReducers({
-    editor: editorReducer,
+    [editor.NAME]: editor.reducer,
     [fileSystemTree.NAME]: fileSystemTree.reducer,
     dialogs: combineReducers({
         newFolder: newFolder.reducer,

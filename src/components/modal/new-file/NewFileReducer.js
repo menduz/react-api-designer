@@ -27,7 +27,8 @@ export default (state: State = initialState, action: any): State => {
         showModal: true
       }
     case actions.HIDE:
-    default:
       return initialState
+    default:
+      return state
   }
 }

@@ -66,4 +66,12 @@ export default class Repository {
             .then(() => { directory.children.push(newDirectory) })
             .then(() => newDirectory)
     }
+
+    setContent(path: string, content: string): void {
+        const element = this.getByPathString(path);
+        if(!element || element.isDirectory()) return
+
+        const file: File = ((element: any): File)
+        file.setContent(content)
+    }
 }

@@ -2,7 +2,7 @@ import React from 'react'
 import MonacoEditor from 'react-monaco-editor'
 import {connect} from 'react-redux'
 import registerRamlLanguage from './languages/Raml'
-import {updateFile, suggest} from './actions'
+import {suggest, updateCurrentFile} from './actions'
 import './Editor.css';
 
 // todo review loading of Monaco assets
@@ -181,7 +181,7 @@ const mapStateToProps = state => {
 
 const mapDispatch = (dispatch) => {
   return {
-    onChange: (value) => dispatch(updateFile(value, '/api.raml', 500)),
+    onChange: (value) => dispatch(updateCurrentFile(value, 500)),
     onSuggest: (text, offset) => dispatch(suggest(text, offset))
   }
 }

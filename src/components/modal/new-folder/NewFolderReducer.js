@@ -22,7 +22,8 @@ export default (state: State = initialState, action: any): State => {
       }
     case actions.HIDE:
     case actions.CLEAR:
-    default:
       return initialState
+    default:
+      return state
   }
 }
