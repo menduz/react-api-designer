@@ -1,6 +1,7 @@
 //@flow
 import React, {Component} from 'react'
 import './ReactConsole.css'
+import {Mock} from '../mock'
 
 class ReactConsole extends Component {
 
@@ -24,7 +25,10 @@ class ReactConsole extends Component {
 
   render() {
     return (
-      <api-console-raml ref={console => this.console = console } narrow/>
+      <div>
+        <Mock/>
+        <api-console-raml ref={console => this.console = console } narrow/>
+      </div>
     )
   }
 }
