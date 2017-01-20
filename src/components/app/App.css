@@ -1,20 +1,3 @@
-.App-header {
-  background-color: #222;
-  /*height: 50px;*/
-  padding: 10px;
-  color: white;
-}
-
-.App-header h2 {
-  margin: 0;
-  display: inline-block
-}
-
-.App-header .Spinner-parser {
-  float: right;
-  padding: 2px;
-}
-
 .menu {
   height: 35px;
   border-bottom: 2px solid rgba(39,47,51,.1);

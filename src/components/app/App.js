@@ -2,7 +2,7 @@
 
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
+import Header from '../header/Header'
 import Split from '../split/Split'
 import Editor from '../editor/Editor'
 import Menu from '../menu/Menu'
@@ -13,15 +13,10 @@ import './App.css';
 const Tree = fileSystemTree.FileSystemTree
 
 class App extends Component {
-
   render() {
-    const {isParsing} = this.props
     return (
       <div className="App">
-        <div className="App-header">
-          <h2>Api Designer</h2>
-          {isParsing ? <Spinner size="s" className="Spinner-parser"/> : null}
-        </div>
+        <Header/>
         <Split id="leftSplit" defaultSize={200}>
           <div className="LeftPanel">
               <Menu/>
