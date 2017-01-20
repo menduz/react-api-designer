@@ -1,7 +1,7 @@
 //@flow
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {cursorJump} from '../../actions'
+import {goToLine} from '../../actions'
 import './errors.css'
 
 class Errors extends Component {
@@ -37,7 +37,7 @@ const mapStateToProps = state => {
 
 const mapDispatch = dispatch => {
   return {
-    onErrorClick: error => dispatch(cursorJump(error.startLineNumber, error.startColumn))
+    onErrorClick: error => dispatch(goToLine(error.startLineNumber, error.startColumn))
   }
 }
 

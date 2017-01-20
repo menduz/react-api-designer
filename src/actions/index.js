@@ -6,7 +6,7 @@ export const SUGGESTION_RESULT = 'SUGGESTION_RESULT'
 
 export const SET_CURSOR = 'DESIGNER/SET_CURSOR'
 
-export const cursorJump = (line, column) => dispatch => {
+export const goToLine = (line, column) => dispatch => {
   dispatch({
     type: SET_CURSOR,
     line,
@@ -39,12 +39,12 @@ export const suggest = (text, offset) => (dispatch, getState, {worker}) => {
 }
 
 
-export const parsingRequest = text => ({
+const parsingRequest = text => ({
   type: PARSING_REQUEST,
   text
 })
 
-export const parseResult = (parsedObject, errors) => ({
+const parseResult = (parsedObject, errors) => ({
   type: PARSING_RESULT,
   language: "raml",
   errors: errors,

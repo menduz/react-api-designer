@@ -6,9 +6,9 @@ import {
 let initialState = {
   isParsing: false,
   isPending: false,
-  language: "",
+  language: "raml",
   errors: [],
-  text: "",
+  text: "#%RAML 1.0\n",
   parsedObject: {},
   cursor: null
 };

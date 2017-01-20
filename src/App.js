@@ -3,8 +3,7 @@
 import React, {Component} from 'react'
 import SplitPane from 'react-split-pane'
 import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
-import { parseText, suggest } from './actions'
-import DesignerEditorContainer from './components/editor/Editor'
+import Editor from './components/editor/Editor'
 import Menu from './components/menu/Menu'
 import * as fileSystemTree from './file-system-tree';
 import {connect} from 'react-redux'
@@ -56,14 +55,7 @@ class App extends Component {
                        defaultSize={parseInt(localStorage.getItem('designer:preference:rightSplit') || 300, 10)}
                        onChange={size => localStorage.setItem('designer:preference:rightSplit', size)}>
               <div className="CodePanel">
-                <DesignerEditorContainer
-                                code={text}
-                                cursor={cursor}
-                                onChange={this.onTextChange.bind(this)}
-                                onSuggest={this.suggestions.bind(this)}
-                                suggestions={suggestions}
-                                errors={errors}
-                                language="raml"/>
+                <Editor/>
               </div>
               <Info/>
             </SplitPane>
@@ -75,22 +67,10 @@ class App extends Component {
 }
 
 const mapStateToProps = state => {
-  const { editor, suggestion } = state
+  const { editor } = state
   return {
-    lastUpdated: editor.lastUpdate,
-    isParsing: editor.isParsing,
-    errors: editor.errors,
-    text: editor.text,
-    cursor: editor.cursor,
-    suggestions: suggestion.suggestions
+    isParsing: editor.isParsing
   }
 }
 
-const mapDispatch = dispatch => {
-  return {
-      onValueChange: value => dispatch(parseText(value)),
-      onSuggest: (text, offset) => dispatch(suggest(text,offset))
-  }
-}
-
-export default connect(mapStateToProps, mapDispatch)(App)
+export default connect(mapStateToProps)(App)
