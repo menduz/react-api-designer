@@ -49,7 +49,7 @@ export default class RamlParser {
 
   _toJson(api) {
     const json = api.toJSON(this.jsonOptions);
-    json.errors = RamlParser._mapErrors(json.errors)
+    json.errors = RamlParser._mapErrors(json.errors || [])
     // todo include ramlExpander from old api-console?
     // if (raml.specification) {
     //   ramlExpander.expandRaml(raml.specification);
@@ -58,7 +58,6 @@ export default class RamlParser {
   }
 
   static _mapErrors(errors) {
-    if (!errors) return []
     return errors.map(error => {
       const to = error.range.end
       const from = error.range.start

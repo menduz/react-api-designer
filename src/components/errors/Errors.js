@@ -1,7 +1,7 @@
 //@flow
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {goToLine} from '../editor/actions'
+import {setPosition} from '../editor/actions'
 import './errors.css'
 
 class Errors extends Component {
@@ -59,7 +59,7 @@ const mapStateToProps = state => {
 
 const mapDispatch = dispatch => {
   return {
-    onErrorClick: error => dispatch(goToLine(error.startLineNumber, error.startColumn))
+    onErrorClick: error => dispatch(setPosition(error.startLineNumber, error.startColumn))
   }
 }
 

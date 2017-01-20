@@ -2,7 +2,7 @@ import React from 'react'
 import MonacoEditor from 'react-monaco-editor'
 import {connect} from 'react-redux'
 import registerRamlLanguage from './languages/Raml'
-import {parseText, suggest} from './actions'
+import {updateFile, suggest} from './actions'
 import './Editor.css';
 
 // todo review loading of Monaco assets
@@ -19,8 +19,38 @@ class DesignerEditor extends React.Component {
 
     this.editor = null
     this.monaco = null
-    this.timer = null
+
+    this.language = this.props.language;
     this.value = this.props.value;
+    this.position = this.props.position;
+    this.errors = this.props.errors;
+    this.suggestions = this.props.suggestions;
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.position !== this.position) {
+      this.position = nextProps.position
+      this._revealPosition(this.position)
+    }
+    if (DesignerEditor._arraysChanged(nextProps.errors, this.errors)) {
+      this.errors = nextProps.errors
+      this._renderErrors(this.errors)
+    }
+    if (DesignerEditor._arraysChanged(nextProps.suggestions, this.suggestions)) {
+      this.suggestions = nextProps.suggestions
+      this._renderSuggestions(this.suggestions)
+    }
+
+    let update = false
+    if (nextProps.value !== this.value) {
+      this.value = nextProps.value
+      update = true
+    }
+    if (nextProps.language !== this.language) {
+      this.language = nextProps.language
+      update = true
+    }
+    return update
   }
 
   editorWillMount(monaco) {
@@ -40,14 +70,8 @@ class DesignerEditor extends React.Component {
   onChange(newValue, event) {
     this.value = newValue
 
-    if (this.timer) {
-      clearTimeout(this.timer)
-    }
-
     if (this.props.onChange) {
-      this.timer = setTimeout(() => {
-        this.props.onChange(this.value)
-      }, 500)
+      this.props.onChange(newValue, event)
     }
   }
 
@@ -75,6 +99,8 @@ class DesignerEditor extends React.Component {
   }
 
   _renderErrors(errors) {
+    if (!this.monaco) return
+
     const markers = errors.map(error => {
       return {
         ...error,
@@ -89,26 +115,17 @@ class DesignerEditor extends React.Component {
     return this.editor.getModel().getLineLastNonWhitespaceColumn(Math.min(line, this.editor.getModel().getLineCount()));
   }
 
-  _renderCursor(cursor) {
-    if (cursor && cursor.line > -1) {
-      this.editor.setPosition(this.editor.getModel().validatePosition(new this.monaco.Position(cursor.line, cursor.column)))
-    }
-  }
+  _revealPosition(position) {
+    if (!this.monaco) return
 
-  componentWillReceiveProps (nextProps) {
-    // leave text in state, as it will just be used once
-    if (nextProps.text) {
-      this.value = nextProps.text
+    if (position && position.line > -1) {
+      const positionObj = new this.monaco.Position(position.line, position.column);
+      this.editor.revealPositionInCenterIfOutsideViewport(positionObj)
+      this.editor.setPosition(this.editor.getModel().validatePosition(positionObj))
     }
   }
 
   render() {
-    if (this.monaco && this.editor) {
-      this._renderErrors(this.props.errors)
-      this._renderSuggestions(this.props.suggestions)
-      this._renderCursor(this.props.cursor);
-    }
-
     const options = {
       theme: this.props.theme || 'vs',
       selectOnLineNumbers: true,
@@ -123,21 +140,25 @@ class DesignerEditor extends React.Component {
         <MonacoEditor requireConfig={requireConfig}
                       height="800"
                       width="auto"
-                      value={this.value}
                       options={options}
-                      language={this.props.language}
+                      value={this.value}
+                      language={this.language}
                       onChange={this.onChange.bind(this)}
                       editorWillMount={this.editorWillMount.bind(this)}
                       editorDidMount={this.editorDidMount.bind(this)}/>
       </div>
     )
   }
+
+  static _arraysChanged(array1, array2) {
+    return array1 !== array2 && (array1.length !== 0 || array2.length !== 0)
+  }
 }
 
 DesignerEditor.propTypes = {
   language: React.PropTypes.string.isRequired,
   value: React.PropTypes.string,
-  cursor: React.PropTypes.object,
+  position: React.PropTypes.object,
   errors: React.PropTypes.arrayOf(React.PropTypes.object),
   suggestions: React.PropTypes.arrayOf(React.PropTypes.object),
   theme: React.PropTypes.string,
@@ -151,16 +172,16 @@ const mapStateToProps = state => {
   return {
     language: editor.language,
     value: editor.text,
-    cursor: editor.cursor,
+    position: editor.position,
     errors: editor.errors,
     suggestions: editor.suggestions,
     theme: editor.theme
   }
 }
 
-const mapDispatch = dispatch => {
+const mapDispatch = (dispatch) => {
   return {
-    onChange: value => dispatch(parseText(value)),
+    onChange: (value) => dispatch(updateFile(value, '/api.raml', 500)),
     onSuggest: (text, offset) => dispatch(suggest(text, offset))
   }
 }

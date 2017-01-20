@@ -1,6 +1,6 @@
 import {
-  SET_CURSOR,
-  START_PARSING, PARSING_REQUEST, PARSING_RESULT,
+  SET_TEXT, SET_POSITION,
+  PARSING_REQUEST, PARSING_RESULT,
   SUGGESTION_REQUEST, SUGGESTION_RESULT
 } from './actions'
 
@@ -8,10 +8,10 @@ import {
 const initialState = {
   language: "raml",
   text: "#%RAML 1.0\n",
-  cursor: null,
+  path: '/api.raml',
+  position: null,
 
   isParsing: false,
-  isPending: false,
   parsedObject: {},
   errors: [],
 
@@ -22,18 +22,26 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
 
-    case START_PARSING:
+    case SET_TEXT:
       return {
         ...state,
-        isPending: false
+        text: action.text,
+        path: action.path
       }
+    case SET_POSITION:
+      return {
+        ...state,
+        position: {
+          line: action.line,
+          column: action.column
+        }
+      }
+
     case PARSING_REQUEST:
-      const isPending = state.isParsing
       return {
         ...state,
         isParsing: true,
-        text: action.text,
-        isPending: isPending
+        text: action.text
       }
     case PARSING_RESULT:
       return {
@@ -41,17 +49,7 @@ export default (state = initialState, action) => {
         isParsing: false,
         language: action.language,
         errors: action.errors,
-        parsedObject: action.parsedObject,
-        lastUpdated: action.receivedAt
-      }
-
-    case SET_CURSOR:
-      return {
-        ...state,
-        cursor: !action.line ? null : {
-          line: action.line,
-          column: action.column
-        }
+        parsedObject: action.parsedObject
       }
 
     case SUGGESTION_REQUEST:
