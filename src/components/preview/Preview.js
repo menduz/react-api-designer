@@ -1,6 +1,7 @@
 //@flow
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import EmptyResult from '@mulesoft/anypoint-components/lib/EmptyResult'
 import {ReactConsole} from '../console'
 import JSONTree from 'react-json-tree'
 
@@ -8,8 +9,6 @@ class Preview extends Component {
 
   render() {
     const {parsedObject, language} = this.props
-    if (!parsedObject) return <ReactConsole raml={{}}/>
-
     switch (language) {
       case 'raml':
         return <ReactConsole raml={parsedObject}/>

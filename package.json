@@ -6,8 +6,8 @@
     "copy-webpack-plugin": "^4.0.1",
     "flow-bin": "^0.37.4",
     "json-loader": "^0.5.4",
-    "react-scripts": "0.8.5",
-    "request": "latest",
+    "react-scripts": "^0.8.5",
+    "request": "^2.79.0",
     "webpack": "^1.14.0"
   },
   "dependencies": {
@@ -21,7 +21,8 @@
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-json-tree": "^0.10.1",
-    "react-monaco-editor": "0.7.3",
+    "react-monaco-editor": "^0.7.3",
+    "monaco-editor": "^0.8.0",
     "react-redux": "^4.4.5",
     "react-split-pane": "^0.1.57",
     "react-toggle-button": "^2.1.0",

@@ -72,55 +72,60 @@ export const updateCurrentFile = (text, delay = 0) =>
     }
 
 let parseTimer = null
-export const updateFile = (text, path, delay = 0) =>
-    (dispatch, getState, { worker, repositoryContainer }) => {
-  dispatch(setText(text, path))
+const parseJson = function (text, path, dispatch, worker) {
+  dispatch(parsingRequest())
 
-  if (repositoryContainer.isLoaded && path && text)
+  const promise = worker.jsonParse({text});
+  if (promise) {
+    promise.then(result => {
+      dispatch(parseResult(result, []))
+    }).catch(error => {
+      if (error === 'aborted') console.log('Aborting old parse request')
+      dispatch(parseResult({}, [error]))
+    })
+  }
+}
+const parseRaml = function (text, path, dispatch, worker) {
+  dispatch(parsingRequest())
+  worker.setRepositoryContent(text)
+  const promise = worker.ramlParse({path});
+  if (promise) {
+    promise.then(result => {
+      dispatch(parseResult(result.specification, result.errors))
+    }).catch(error => {
+      if (error === 'aborted') console.log('Aborting old parse request')
+      else {
+        // report unexpected errors in the first line
+        dispatch(parseResult(null, [{
+          message: error.message,
+          startLineNumber: 1,
+          endLineNumber: 1,
+          startColumn: 0,
+          severity: "error"
+        }]))
+      }
+    })
+  }
+}
+
+export const updateFile = (text, path, delay = 0) =>
+  (dispatch, getState, { worker, repositoryContainer }) => {
+    dispatch(setText(text, path))
+
+    if (repositoryContainer.isLoaded && path && text)
       repositoryContainer.repository.setContent(path, text)
 
-  if (parseTimer) clearTimeout(parseTimer)
+    if (parseTimer) clearTimeout(parseTimer)
 
-  switch(getLanguage(getState())) {
-      case 'raml':
-          parseTimer = setTimeout(() => {
-              dispatch(parsingRequest())
+  parseTimer = setTimeout(() => {
 
-              worker.setRepositoryContent(text)
-              const promise = worker.ramlParse(path);
-              if (promise) {
-                  promise.then(result => {
-                      dispatch(parseResult(result.specification, result.errors))
-                  }).catch(error => {
-                      if (error === 'aborted') console.log('Aborting old parse request')
-                      else {
-                          // report unexpected errors in the first line
-                          dispatch(parseResult(null, [{
-                              message: error.message,
-                              startLineNumber: 1,
-                              endLineNumber: 1,
-                              startColumn: 0,
-                              severity: "error"
-                          }]))
-                      }
-                  })
-              }
-          }, delay)
-          break
-      case 'json':
-          try {
-            dispatch(parseResult(JSON.parse(text), []))
-          } catch (e) {
-              dispatch(parseResult({}, [{
-                  message: e.message,
-                  startLineNumber: 1,
-                  endLineNumber: 1,
-                  startColumn: 0,
-                  severity: "error"
-              }]))
-          }
-          break
+    switch(getLanguage(getState())) {
+        case 'raml':
+            return parseRaml(text, path, dispatch, worker)
+        case 'json':
+          return parseJson(text, path, dispatch, worker)
       default:
-          dispatch(parseResult({}, []))
-  }
+        dispatch(parseResult({}, []))
+    }
+  }, delay)
 }

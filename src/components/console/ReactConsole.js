@@ -25,8 +25,11 @@ class ReactConsole extends Component {
 
   render() {
     return (
-      <div>
-        <Mock/>
+      <div className="Console">
+        <div className="Mock-on-off">
+          <small>Mocking Service:</small>
+          <Mock/>
+        </div>
         <api-console-raml ref={console => this.console = console } narrow/>
       </div>
     )

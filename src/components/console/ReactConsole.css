@@ -1,8 +1,22 @@
-/* Console */
 .raml-docs-resource-viewer-0 [wide-layout].raml-docs-resource-viewer nav.raml-docs-resource-viewer {
     display: none;
 }
 
 .raml-documentation-empty-state-0 {
     background-color: transparent;
+}
+
+.Mock-on-off {
+    text-align: right;
+    padding: 5px 5px 9px;
+    border-bottom: 2px solid rgba(39,47,51,.1);
+}
+
+.Mock-on-off > small {
+    color: #aaa;
+}
+
+.Mock-on-off > div {
+    display: inline-block;
+    padding: 0 6px;
 }

@@ -6,8 +6,8 @@ import {
 
 
 const initialState = {
-  language: "raml",
-  text: "",
+  language: '',
+  text: '',
   path: null,
   position: null,
 
@@ -47,7 +47,6 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isParsing: false,
-        language: action.language,
         errors: action.errors,
         parsedObject: action.parsedObject
       }

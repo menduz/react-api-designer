@@ -1,13 +1,13 @@
 import converter from './converter'
+import jsonParse from './json'
 import RamlSuggest from './raml/suggest'
 import RamlParser from './raml/parser'
 
 const requestFileCallbacks = new Map();
 
-const post = (type, data) => {
-  data.type = type
+const post = (type, payload) => {
   try {
-    self.postMessage(data)
+    self.postMessage({type, payload})
   } catch (e) {
     console.error('Error when trying to post back from worker', e)
     self.postMessage({type}) // send just the type, so the flow can continue
@@ -16,7 +16,7 @@ const post = (type, data) => {
 
 const listen = (type, fn) => {
   self.addEventListener('message', e => {
-    if (e.data.type === type) fn(e.data);
+    if (e.data.type === type) fn(e.data.payload);
   }, false)
 }
 
@@ -68,3 +68,5 @@ listenThenPost('raml-suggest', data => ramlSuggest.suggestions(data.content, dat
 listenThenPost('spec-convert', data => converter(data.path, data.from, data.to, data.format))
 
 listen('request-file', data => responseFile(data.path, data.error, data.content))
+
+listenThenPost('json-parse', data => jsonParse(data.text))

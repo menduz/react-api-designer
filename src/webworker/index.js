@@ -19,36 +19,44 @@ export default class WebWorker {
     this.fileRepository.setFile(text)
   }
 
-  ramlParse(path) {
+  jsonParse(data) {
+    return this.parse('json-parse', data, 'jsonParse')
+  }
+
+  ramlParse(data) {
+    return this.parse('raml-parse', data, 'ramlParse', data.path)
+  }
+
+  parse(msg, data, fnName, pendingKey = msg) {
     if (this.parsing) {
       // if we already have a parse request pending, reject it as aborted
-      const pending = this.parsingPending.get(path);
+      const pending = this.parsingPending.get(pendingKey);
       if (pending) pending.reject('aborted')
 
       // leave the parser request as pending
       return new Promise((resolve, reject) => {
-        this.parsingPending.set(path, {resolve, reject})
+        this.parsingPending.set(pendingKey, {resolve, reject})
       })
     }
 
     this.parsing = true
     return new Promise((resolve, reject) => {
-      this._postAndExpect('raml-parse', {path}).then(result => {
+      this._postAndExpect(msg, data).then(result => {
         resolve(result)
-        this.ramlParsePending(path)
+        this.parsePending(data, pendingKey, fnName)
       }).catch(error => {
         reject(error)
-        this.ramlParsePending(path)
+        this.parsePending(data, pendingKey, fnName)
       })
     })
   }
 
-  ramlParsePending(path) {
+  parsePending(data, pendingKey, fnName) {
     this.parsing = false
-    const pending = this.parsingPending.get(path);
+    const pending = this.parsingPending.get(pendingKey);
     if (pending) {
-      this.parsingPending.delete(path)
-      this.ramlParse(path)
+      this.parsingPending.delete(pendingKey)
+      this[fnName](data)
         .then(pending.resolve)
         .catch(pending.reject)
     }
@@ -64,29 +72,29 @@ export default class WebWorker {
 
   _listen(type, fn) {
     this.worker.addEventListener('message', (e) => {
-      if (e.data.type === type) fn(e.data);
+      if (e.data.type === type) fn(e.data.payload);
     }, false)
   }
 
-  _post(type, data) {
-    this.worker.postMessage({...data, type})
+  _post(type, payload) {
+    this.worker.postMessage({type, payload})
   }
 
-  _postAndExpect(type, data) {
+  _postAndExpect(type, payload) {
     return new Promise((resolve, reject) => {
       const listener = (e) => {
         if (e.data.type === type + '-resolve') {
           this.worker.removeEventListener('message', listener, false)
-          resolve(e.data);
+          resolve(e.data.payload);
         }
         else if (e.data.type === type + '-reject') {
           this.worker.removeEventListener('message', listener, false)
-          reject(e.data);
+          reject(e.data.payload);
         }
       };
       this.worker.addEventListener('message', listener, false)
 
-      this._post(type, data)
+      this._post(type, payload)
     })
   }
 }
