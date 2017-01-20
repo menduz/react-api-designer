@@ -2,7 +2,7 @@ import React from 'react'
 import MonacoEditor from 'react-monaco-editor'
 import {connect} from 'react-redux'
 import registerRamlLanguage from './languages/Raml'
-import { parseText, suggest } from '../../actions'
+import {parseText, suggest} from './actions'
 import './Editor.css';
 
 // todo review loading of Monaco assets
@@ -81,11 +81,16 @@ class DesignerEditor extends React.Component {
     const markers = errors.map(error => {
       return {
         ...error,
-        endColumn: error.endColumn || this.editor.getModel().getLineContent(error.startLineNumber).length + 1,
+        endColumn: error.endColumn || this._lineLength(error.startLineNumber),
         severity: error.severity === 'warning' ? this.monaco.Severity.Warning : this.monaco.Severity.Error
       }
-    }, this);
+    });
     this.monaco.editor.setModelMarkers(this.editor.getModel(), '', markers)
+  }
+
+  _lineLength(line) {
+    line = Math.min(line, this.editor.getModel().getLineCount());
+    return this.editor.getModel().getLineContent(line).length + 1;
   }
 
   _renderCursor(cursor) {
@@ -139,13 +144,13 @@ DesignerEditor.propTypes = {
 
 
 const mapStateToProps = state => {
-  const {editor, suggestion} = state
+  const {editor} = state
   return {
     language: editor.language,
     value: editor.text,
     cursor: editor.cursor,
     errors: editor.errors,
-    suggestions: suggestion.suggestions,
+    suggestions: editor.suggestions,
     theme: editor.theme
   }
 }

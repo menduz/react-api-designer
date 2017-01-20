@@ -1,7 +1,7 @@
 //@flow
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {goToLine} from '../../actions'
+import {goToLine} from '../editor/actions'
 import './errors.css'
 
 class Errors extends Component {

@@ -1,32 +1,38 @@
 import {
-  START_PARSING, PARSING_REQUEST, PARSING_RESULT, SET_CURSOR
-} from '../actions'
+  SET_CURSOR,
+  START_PARSING, PARSING_REQUEST, PARSING_RESULT,
+  SUGGESTION, SUGGESTION_RESULT
+} from './actions'
 
 
-let initialState = {
+const initialState = {
+  language: "raml",
+  text: "#%RAML 1.0\n",
+  cursor: null,
+
   isParsing: false,
   isPending: false,
-  language: "raml",
-  errors: [],
-  text: "#%RAML 1.0\n",
   parsedObject: {},
-  cursor: null
+  errors: [],
+
+  isSearching: false,
+  suggestions: []
 };
 
-const editor = (state = initialState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
+
     case START_PARSING:
       return {
         ...state,
         isPending: false
       }
-
     case PARSING_REQUEST:
       const isPending = state.isParsing
       return {
         ...state,
         isParsing: true,
-        text:action.text,
+        text: action.text,
         isPending: isPending
       }
     case PARSING_RESULT:
@@ -48,9 +54,19 @@ const editor = (state = initialState, action) => {
         }
       }
 
+    case SUGGESTION:
+      return {
+        ...state,
+        isSearching: true
+      }
+    case SUGGESTION_RESULT:
+      return {
+        ...state,
+        suggestions: action.suggestions,
+        isSearching: false
+      }
+
     default:
       return state
   }
 }
-
-export default editor
