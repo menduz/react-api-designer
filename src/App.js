@@ -34,7 +34,7 @@ class App extends Component {
   }
 
   render() {
-    const {text, errors, isParsing, suggestions} = this.props
+    const {text, errors, isParsing, suggestions, cursor} = this.props
     return (
       <div className="App">
         <div className="App-header">
@@ -56,7 +56,9 @@ class App extends Component {
                        defaultSize={parseInt(localStorage.getItem('designer:preference:rightSplit') || 300, 10)}
                        onChange={size => localStorage.setItem('designer:preference:rightSplit', size)}>
               <div className="CodePanel">
-                <DesignerEditorContainer code={text}
+                <DesignerEditorContainer
+                                code={text}
+                                cursor={cursor}
                                 onChange={this.onTextChange.bind(this)}
                                 onSuggest={this.suggestions.bind(this)}
                                 suggestions={suggestions}
@@ -79,6 +81,7 @@ const mapStateToProps = state => {
     isParsing: parse.isParsing,
     errors: parse.errors,
     text: parse.text,
+    cursor: parse.cursor,
     suggestions: suggestion.suggestions
   }
 }

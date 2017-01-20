@@ -4,6 +4,21 @@ export const PARSING_RESULT = 'PARSING_RESULT'
 export const SUGGESTION = 'SUGGESTION'
 export const SUGGESTION_RESULT = 'SUGGESTION_RESULT'
 
+export const SET_CURSOR = 'DESIGNER/SET_CURSOR'
+
+export const cursorJump = (line, column) => dispatch => {
+  dispatch({
+    type: SET_CURSOR,
+    line,
+    column
+  })
+
+  // just a go, free cursor state right after
+  window.setTimeout(() => dispatch({
+      type: SET_CURSOR
+  }))
+}
+
 const suggestion = ({
   type: SUGGESTION
 })

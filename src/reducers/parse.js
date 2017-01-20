@@ -1,5 +1,5 @@
 import {
-  START_PARSING, PARSING_REQUEST, PARSING_RESULT
+  START_PARSING, PARSING_REQUEST, PARSING_RESULT, SET_CURSOR
 } from '../actions'
 
 
@@ -9,7 +9,8 @@ let initialState = {
   language: "",
   errors: [],
   text: "",
-  parsedObject: {}
+  parsedObject: {},
+  cursor: null
 };
 
 const parse = (state = initialState, action) => {
@@ -37,6 +38,16 @@ const parse = (state = initialState, action) => {
         parsedObject: action.parsedObject,
         lastUpdated: action.receivedAt
       }
+
+    case SET_CURSOR:
+      return {
+        ...state,
+        cursor: !action.line ? null : {
+          line: action.line,
+          column: action.column
+        }
+      }
+
     default:
       return state
   }

@@ -14,7 +14,6 @@ import {parseReducer, suggestionReducer} from './reducers'
 import WebWorker from './web-worker'
 import newFolder from './components/modal/new-folder'
 import newFile from './components/modal/new-file'
-import {goToErrorReducer} from './components/errors/reducer'
 import {initFileSystem} from "./file-system-tree/actions"
 import FileSystemTreeModelFactory from "./file-system-tree/model/FileSystemTreeModelFatory"
 import * as fileSystemTree from "./file-system-tree"
@@ -57,7 +56,6 @@ const rootReducer = combineReducers({
     parse: parseReducer,
     suggestion: suggestionReducer,
     [fileSystemTree.NAME]: fileSystemTree.reducer,
-    errorCursor: goToErrorReducer,
     dialogs: combineReducers({
         newFolder: newFolder.reducer,
         newFile: newFile.reducer

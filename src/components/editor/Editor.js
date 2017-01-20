@@ -1,7 +1,6 @@
 import React from 'react'
 import MonacoEditor from 'react-monaco-editor'
 import registerRamlLanguage from './languages/Raml'
-import {goToErrorAction} from '../errors/reducer'
 import './Editor.css';
 
 // todo review loading of Monaco assets
@@ -64,7 +63,7 @@ class DesignerEditor extends React.Component {
     }
   }
 
-  renderSuggestions(suggestions) {
+  _renderSuggestions(suggestions) {
     if (this.onSuggestCallback) {
       this.onSuggestCallback(suggestions.map(suggestion => {
         return {
@@ -76,7 +75,7 @@ class DesignerEditor extends React.Component {
     }
   }
 
-  renderErrors(errors) {
+  _renderErrors(errors) {
     const markers = errors.map(error => {
       return {
         ...error,
@@ -87,10 +86,17 @@ class DesignerEditor extends React.Component {
     this.monaco.editor.setModelMarkers(this.editor.getModel(), '', markers)
   }
 
+  _renderCursor(cursor) {
+    if (cursor && cursor.line > -1) {
+      this.editor.setPosition(new this.monaco.Position(cursor.line, cursor.column))
+    }
+  }
+
   render() {
     if (this.monaco && this.editor) {
-      this.renderErrors(this.props.errors)
-      this.renderSuggestions(this.props.suggestions)
+      this._renderErrors(this.props.errors)
+      this._renderSuggestions(this.props.suggestions)
+      this._renderCursor(this.props.cursor);
     }
 
     const options = {
@@ -121,6 +127,7 @@ class DesignerEditor extends React.Component {
 DesignerEditor.propTypes = {
   language: React.PropTypes.string.isRequired,
   code: React.PropTypes.string.isRequired,
+  cursor: React.PropTypes.object,
   onChange: React.PropTypes.func,
   onSuggest: React.PropTypes.func,
   errors: React.PropTypes.arrayOf(React.PropTypes.object),
@@ -136,16 +143,16 @@ class DesignerEditorContainer extends React.Component {
   }
 
   updateErrorCursor() {
-    const {store} = this.context
-    const {errorCursor} = store.getState().errorCursor
-    if (this.editor && errorCursor && errorCursor.lineNumber !== -1) {
-      this.editor.setPosition(new this.monaco.Position(errorCursor.lineNumber, errorCursor.column))
-      const falseError = {
-        startLineNumber: -1,
-        startColumn: -1
-      }
-      store.dispatch(goToErrorAction(falseError))
-    }
+    // const {store} = this.context
+    // const {errorCursor} = store.getState().errorCursor
+    // if (this.editor && errorCursor && errorCursor.lineNumber !== -1) {
+    //   this.editor.setPosition(new this.monaco.Position(errorCursor.lineNumber, errorCursor.column))
+    //   const falseError = {
+    //     startLineNumber: -1,
+    //     startColumn: -1
+    //   }
+    //   store.dispatch(goToErrorAction(falseError))
+    // }
   }
 
   finishLoading(editor, monaco) {
@@ -156,6 +163,7 @@ class DesignerEditorContainer extends React.Component {
   render() {
     return (
       <DesignerEditor code={this.props.code}
+                      cursor={this.props.cursor}
                       onChange={this.props.onChange}
                       onSuggest={this.props.onSuggest}
                       suggestions={this.props.suggestions}
