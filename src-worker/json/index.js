@@ -36,8 +36,7 @@ export default (text) => {
       message: message,
       startLineNumber: position.line,
       endLineNumber: position.line,
-      startColumn: position.column,
-      severity: "error"
+      startColumn: position.column
     })
   }
 }

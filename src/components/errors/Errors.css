@@ -16,12 +16,14 @@
   padding: 10px;
   color: #000;
   font-size: 13px;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 .Errors ol {
   list-style: none;
-  margin: 15px;
   padding: 0;
+  margin: 25px 15px 15px;
 }
 
 .Errors li {
@@ -33,4 +35,17 @@
 
 .Errors li.warning {
   border-color: #fff454;
+}
+
+.Filter a.toggled  {
+  color: #a6a7a7;
+  border-bottom: 3px #a6a7a7 solid;
+}
+
+.Filter .Filter-errors {
+  border-bottom: 3px #ff5959 solid;
+}
+
+.Filter .Filter-warnings {
+  border-bottom: 3px #fff454 solid;
 }

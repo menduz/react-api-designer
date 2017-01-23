@@ -56,7 +56,7 @@ export default class RamlParser {
 
   _toJson(api) {
     const json = api.toJSON(this.jsonOptions);
-    json.errors = RamlParser._mapErrors(json.errors || [])
+    json.errors = RamlParser._mapErrors(json.errors)
     // todo include ramlExpander from old api-console?
     // if (raml.specification) {
     //   ramlExpander.expandRaml(raml.specification);
@@ -64,7 +64,7 @@ export default class RamlParser {
     return json;
   }
 
-  static _mapErrors(errors) {
+  static _mapErrors(errors = []) {
     return errors.map(error => {
       const to = error.range.end
       const from = error.range.start
@@ -74,7 +74,7 @@ export default class RamlParser {
         endLineNumber: from.line + 1,
         startColumn: from.column + 1,
         endColumn: to && to.column ? to.column + 1 : undefined,
-        severity: error.isWarning ? "warning" : "error"
+        isWarning: error.isWarning
       }
     });
   }

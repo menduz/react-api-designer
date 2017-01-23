@@ -114,7 +114,7 @@ class DesignerEditor extends React.Component {
       return {
         ...error,
         endColumn: error.endColumn || this._lineLength(error.startLineNumber),
-        severity: error.severity === 'warning' ? this.monaco.Severity.Warning : this.monaco.Severity.Error
+        severity: error.isWarning ? this.monaco.Severity.Warning : this.monaco.Severity.Error
       }
     });
 

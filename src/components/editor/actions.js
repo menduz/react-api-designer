@@ -104,8 +104,7 @@ const parseRaml = function (text, path, dispatch, worker) {
           message: error.message,
           startLineNumber: 1,
           endLineNumber: 1,
-          startColumn: 0,
-          severity: "error"
+          startColumn: 0
         }]))
       }
     })
@@ -126,8 +125,7 @@ const parseOas = function (text, path, dispatch, worker) {
           message: error.message,
           startLineNumber: 1,
           endLineNumber: 1,
-          startColumn: 0,
-          severity: "error"
+          startColumn: 0
         }]))
       }
     })
