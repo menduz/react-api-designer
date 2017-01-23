@@ -22,11 +22,14 @@ const listen = (type, fn) => {
 
 const listenThenPost = (type, fn) => {
   listen(type, data => {
+    console.time(type)
     fn(data)
       .then(result => {
+        console.timeEnd(type)
         return post(type + '-resolve', result)
       })
       .catch(error => {
+        console.timeEnd(type)
         // js exceptions cant be serialized as normal strings, so just post the error message in that case
         const serializableError = error.stack ? {message: error.message} : error
         return post(type + '-reject', serializableError)
@@ -38,7 +41,7 @@ const requestFile = (path, callback) => {
   const callbackList = requestFileCallbacks.get(path) || [];
   callbackList.push(callback)
   requestFileCallbacks.set(path, callbackList)
-  post('request-file', {path})
+  post('requestFile', {path})
 }
 
 const responseFile = (path, error, content) => {
@@ -61,12 +64,20 @@ const requestFilePromise = path => {
 const ramlParser = new RamlParser(requestFilePromise);
 const ramlSuggest = new RamlSuggest(requestFilePromise);
 
-listenThenPost('raml-parse', data => ramlParser.parse(data.path))
+listenThenPost('ramlParse', data => ramlParser.parse(data.path))
 
-listenThenPost('raml-suggest', data => ramlSuggest.suggestions(data.content, data.cursorPosition))
+listenThenPost('ramlSuggest', data => ramlSuggest.suggestions(data.content, data.cursorPosition))
 
-listenThenPost('spec-convert', data => converter(data.path, data.from, data.to, data.format))
+listenThenPost('specConvert', data => converter(data.path, data.from, data.to, {format: data.format}))
 
-listen('request-file', data => responseFile(data.path, data.error, data.content))
+listen('requestFile', data => responseFile(data.path, data.error, data.content))
 
-listenThenPost('json-parse', data => jsonParse(data.text))
+listenThenPost('jsonParse', data => jsonParse(data.text))
+
+listenThenPost('oasParse', data => {
+  return new Promise((resolve, reject) => {
+    converter(data.text, "SWAGGER", "RAML10", {validateImport: true}).then(raml => {
+      ramlParser.parseData(raml).then(resolve).catch(reject)
+    }).catch(reject)
+  })
+})

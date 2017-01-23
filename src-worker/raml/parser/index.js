@@ -47,6 +47,13 @@ export default class RamlParser {
     });
   }
 
+  parseData(data) {
+    return ramlParser.parseRAML(data, this.options).then(api => {
+      api = api.expand ? api.expand(true) : api;
+      return this._toJson(api);
+    });
+  }
+
   _toJson(api) {
     const json = api.toJSON(this.jsonOptions);
     json.errors = RamlParser._mapErrors(json.errors || [])

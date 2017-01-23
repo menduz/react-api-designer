@@ -6,13 +6,13 @@ import {
 
 
 const initialState = {
-  language: '',
   text: '',
   path: null,
+  language: {id: ''},
   position: null,
 
   isParsing: false,
-  parsedObject: {},
+  parsedObject: null,
   errors: [],
 
   isSearching: false,

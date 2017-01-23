@@ -3,8 +3,8 @@ export default class WebWorker {
   constructor(fileRepository) {
     this.worker = new Worker(`${process.env.PUBLIC_URL}/static/js/api-designer-worker.js`)
 
-    this._listen('request-file', (request) => {
-      this._post('request-file', {
+    this._listen('requestFile', (request) => {
+      this._post('requestFile', {
         path: request.path,
         content: fileRepository.getFile(request.path)
       })
@@ -19,15 +19,19 @@ export default class WebWorker {
     this.fileRepository.setFile(text)
   }
 
+  oasParse(data) {
+    return this.parse('oasParse', data)
+  }
+
   jsonParse(data) {
-    return this.parse('json-parse', data, 'jsonParse')
+    return this.parse('jsonParse', data)
   }
 
   ramlParse(data) {
-    return this.parse('raml-parse', data, 'ramlParse', data.path)
+    return this.parse('ramlParse', data, data.path)
   }
 
-  parse(msg, data, fnName, pendingKey = msg) {
+  parse(fnName, data, pendingKey = fnName) {
     if (this.parsing) {
       // if we already have a parse request pending, reject it as aborted
       const pending = this.parsingPending.get(pendingKey);
@@ -41,7 +45,7 @@ export default class WebWorker {
 
     this.parsing = true
     return new Promise((resolve, reject) => {
-      this._postAndExpect(msg, data).then(result => {
+      this._postAndExpect(fnName, data).then(result => {
         resolve(result)
         this.parsePending(data, pendingKey, fnName)
       }).catch(error => {
@@ -63,11 +67,11 @@ export default class WebWorker {
   }
 
   ramlSuggest(content, cursorPosition) {
-    return this._postAndExpect('raml-suggest', {content, cursorPosition})
+    return this._postAndExpect('ramlSuggest', {content, cursorPosition})
   }
 
   specConvert(path, from, to, format) {
-    return this._postAndExpect('spec-convert', {path, from, to, format})
+    return this._postAndExpect('specConvert', {path, from, to, format})
   }
 
   _listen(type, fn) {

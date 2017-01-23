@@ -11,16 +11,18 @@ class ReactConsole extends Component {
     return false
   }
 
-  _setRamlToConsole(raml) {
-    const ramlCopy = {}
-    Object.assign(ramlCopy, raml)
-    this.console.raml = ramlCopy
-  }
 
-  //Warning setting state here will trigger re-render
   componentDidMount() {
     const {raml} = this.props
     this._setRamlToConsole(raml)
+  }
+
+  _setRamlToConsole(raml) {
+    console.time("rendering-console")
+    const ramlCopy = {}
+    Object.assign(ramlCopy, raml)
+    this.console.raml = ramlCopy
+    console.timeEnd("rendering-console")
   }
 
   render() {

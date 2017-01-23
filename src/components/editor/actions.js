@@ -22,7 +22,7 @@ const suggestionResult = suggestions => ({
 })
 
 export const suggest = (text, offset) => (dispatch, getState, {worker}) => {
-  if (getLanguage(getState()) !== 'raml') return
+  if (getLanguage(getState()).id !== 'raml') return
 
   dispatch({
     type: SUGGESTION_REQUEST
@@ -36,17 +36,21 @@ export const suggest = (text, offset) => (dispatch, getState, {worker}) => {
 }
 
 const calculateLanguage = (text, path) => {
-    const lastDot = path.lastIndexOf('.');
-    const extension = lastDot > -1 ? path.substring(lastDot + 1) : 'txt';
-    switch (extension) {
-        case 'json':
-            // detect swagger based on text content
-            return text.indexOf('swagger') > -1 ? 'swagger' : extension
-        case 'yml':
-            return 'yaml'
-        default:
-            return extension
-    }
+  const lastDot = path.lastIndexOf('.');
+  const extension = lastDot > -1 ? path.substring(lastDot + 1) : 'txt';
+  switch (extension) {
+    case 'raml':
+      return {id: 'raml'}
+    case 'json':
+      // detect oas based on text content
+      return text.indexOf('swagger') > -1 ?
+        {id: 'oas', parent: extension} :
+        {id: extension, native:true}
+    case 'yml':
+      return {id: 'yaml', native:true}
+    default:
+      return {id: extension, native:true}
+  }
 }
 
 const setText = (text, path) => ({
@@ -81,7 +85,7 @@ const parseJson = function (text, path, dispatch, worker) {
       dispatch(parseResult(result, []))
     }).catch(error => {
       if (error === 'aborted') console.log('Aborting old parse request')
-      dispatch(parseResult({}, [error]))
+      dispatch(parseResult(null, [error]))
     })
   }
 }
@@ -107,6 +111,28 @@ const parseRaml = function (text, path, dispatch, worker) {
     })
   }
 }
+const parseOas = function (text, path, dispatch, worker) {
+  dispatch(parsingRequest())
+  worker.setRepositoryContent(text)
+  const promise = worker.oasParse({text});
+  if (promise) {
+    promise.then(result => {
+      dispatch(parseResult(result.specification, result.errors))
+    }).catch(error => {
+      if (error === 'aborted') console.log('Aborting old parse request')
+      else {
+        // report unexpected errors in the first line
+        dispatch(parseResult({}, [{
+          message: error.message,
+          startLineNumber: 1,
+          endLineNumber: 1,
+          startColumn: 0,
+          severity: "error"
+        }]))
+      }
+    })
+  }
+}
 
 export const updateFile = (text, path, delay = 0) =>
   (dispatch, getState, { worker, repositoryContainer }) => {
@@ -119,9 +145,11 @@ export const updateFile = (text, path, delay = 0) =>
 
   parseTimer = setTimeout(() => {
 
-    switch(getLanguage(getState())) {
+    switch(getLanguage(getState()).id) {
         case 'raml':
             return parseRaml(text, path, dispatch, worker)
+        case 'oas':
+            return parseOas(text, path, dispatch, worker)
         case 'json':
           return parseJson(text, path, dispatch, worker)
       default:

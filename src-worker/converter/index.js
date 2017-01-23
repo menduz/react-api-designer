@@ -7,13 +7,13 @@ const stringify = (data) => {
   return result === '{}' ? '' : result;
 }
 
-export default (path, from, to, format) => {
+export default (text, from, to, options) => {
   return new Promise((resolve, reject) => {
-    const from = converter.Formats[from];
-    const to = converter.Formats[to];
+    const fromFormat = converter.Formats[from];
+    const toFormat = converter.Formats[to];
 
-    converter.Converter(from, to).converFile(path, {format})
+    new converter.Converter(fromFormat, toFormat).convertData(text, options)
       .then(result => { resolve(stringify(result)) })
-      .catch(error => { reject(stringify(error)) })
+      .catch(error => { reject(error) })
   })
 }

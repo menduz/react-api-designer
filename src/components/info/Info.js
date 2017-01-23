@@ -32,10 +32,10 @@ class Info extends Component {
           <Tab onClick={this._onTabSelect.bind(this, 1)}>Issues</Tab>
         </TabList>
         <TabPanel>
-          <Preview/>
+          {selectedTab === 0 ? <Preview/> : null}
         </TabPanel>
         <TabPanel>
-          <Errors/>
+          {selectedTab === 1 ? <Errors/> : null}
         </TabPanel>
       </Tabs>
     )

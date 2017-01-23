@@ -45,8 +45,9 @@ const defaultContent = (fileType: string) => {
         case 'RAML10':
             return "#%RAML 1.0\ntitle: myApi"
         case 'RAML08':
-        default:
             return "#%RAML 0.8\ntitle: myApi"
+        default:
+            return ""
     }
 }
 

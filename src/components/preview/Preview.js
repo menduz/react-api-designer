@@ -1,15 +1,19 @@
 //@flow
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import EmptyResult from '@mulesoft/anypoint-components/lib/EmptyResult'
 import {ReactConsole} from '../console'
 import JSONTree from 'react-json-tree'
+import './Preview.css'
 
 class Preview extends Component {
 
   render() {
     const {parsedObject, language} = this.props
-    switch (language) {
+
+    if (!parsedObject || !language.id) return <div className="Preview No-preview">No preview</div>
+
+    switch (language.id) {
+      case 'oas':
       case 'raml':
         return <ReactConsole raml={parsedObject}/>
       default:

@@ -2,7 +2,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {setPosition} from '../editor/actions'
-import './errors.css'
+import './Errors.css'
 
 class Errors extends Component {
 

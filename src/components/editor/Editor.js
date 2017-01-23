@@ -33,7 +33,7 @@ class DesignerEditor extends React.Component {
       if (nextProps.position !== this.position)
         this._revealPosition(nextProps.position)
 
-      if (!this.isNativeLanguage() && nextProps.errors !== this.errors && (nextProps.errors.length !== 0 || this.errors.length !== 0))
+      if (!this.language.native && nextProps.errors !== this.errors && (nextProps.errors.length !== 0 || this.errors.length !== 0))
         this._showErrors(nextProps.errors)
 
       if (this.onSuggestCallback)
@@ -41,7 +41,7 @@ class DesignerEditor extends React.Component {
     }
 
     let update = false
-    if (nextProps.language !== this.language) {
+    if (nextProps.language.id !== this.language.id) {
       this._changeLanguage(nextProps.language)
       update = true
     }
@@ -57,11 +57,7 @@ class DesignerEditor extends React.Component {
   _changeLanguage(language) {
     this.language = language
     if (this.monaco && this.language)
-      this.monaco.editor.setModelLanguage(this.editor.getModel(), this.language)
-  }
-
-  isNativeLanguage() {
-    return this.language !== 'raml'
+      this.monaco.editor.setModelLanguage(this.editor.getModel(), this.language.parent || this.language.id)
   }
 
   editorWillMount(monaco) {
@@ -147,13 +143,13 @@ class DesignerEditor extends React.Component {
 
     return (
       <div className="Editor">
-        {this.language ? '' : (<EmptyResult className="Empty" message="Select a file"/>)}
+        {this.language.id ? '' : (<EmptyResult className="Empty" message="Select a file"/>)}
         <MonacoEditor height="800"
                       width="auto"
                       options={options}
                       requireConfig={requireConfig}
                       value={this.value}
-                      language={this.language}
+                      language={this.language.parent || this.language.id}
                       onChange={this.onChange.bind(this)}
                       editorWillMount={this.editorWillMount.bind(this)}
                       editorDidMount={this.editorDidMount.bind(this)}/>
@@ -167,7 +163,7 @@ class DesignerEditor extends React.Component {
 }
 
 DesignerEditor.propTypes = {
-  language: React.PropTypes.string,
+  language: React.PropTypes.object,
   value: React.PropTypes.string,
   position: React.PropTypes.object,
   errors: React.PropTypes.arrayOf(React.PropTypes.object),

@@ -6,8 +6,9 @@
   padding-top: 12px;
 }
 
-.No-errors, .Filter {
+.Errors.No-errors, .Errors .Filter {
   text-align: center;
+  color: #cacbcc;
 }
 
 .Errors .Filter a {

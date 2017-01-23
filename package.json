@@ -1,7 +1,27 @@
 {
-  "name": "react-sandbox",
+  "name": "api-designer",
   "version": "0.1.0",
   "private": true,
+  "main": "./src/index.js",
+  "bin": {
+    "api-designer": "todo.js"
+  },
+  "homepage": "https://mulesoft.github.io/react-api-designer",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mulesoft/react-api-designer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mulesoft/react-api-designer/issues"
+  },
+  "scripts": {
+    "start": "webpack -d && react-scripts start",
+    "build": "webpack && react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "flow": "flow",
+    "build-worker": "webpack -d"
+  },
   "devDependencies": {
     "copy-webpack-plugin": "^4.0.1",
     "flow-bin": "^0.37.4",
@@ -15,7 +35,7 @@
     "browser-request": "^0.3.3",
     "classnames": "^2.2.5",
     "immutable": "^3.8.1",
-    "oas-raml-converter": "0.1.0",
+    "oas-raml-converter": "0.1.1",
     "raml-1-parser": "1.1.13",
     "raml-suggestions": "0.0.26",
     "react": "^15.4.2",
@@ -31,14 +51,5 @@
     "redux-logger": "^2.7.4",
     "redux-thunk": "^2.1.0",
     "traverse": "^0.6.6"
-  },
-  "scripts": {
-    "start": "webpack -d && react-scripts start",
-    "build": "webpack && react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "flow": "flow",
-    "build-worker": "webpack -d"
-  },
-  "proxy": "http://localhost:3000"
+  }
 }
