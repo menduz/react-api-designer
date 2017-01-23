@@ -11,6 +11,8 @@ export default class MockingService {
         return that.mockingServiceClient.createMock({
           raml: ramlContent
         });
+      }).catch(err => {
+        return Promise.reject(err)
       })
   };
 

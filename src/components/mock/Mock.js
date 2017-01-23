@@ -6,7 +6,6 @@ import {createMock, deleteMock} from './actions'
 
 class Mock extends React.Component {
   onToggle(value) {
-    console.log('onToggle ' + value)
     if (value)
       this.props.stopMock()
     else

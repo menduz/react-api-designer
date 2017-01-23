@@ -28,6 +28,7 @@ export default(state = {
     case STOP_MOCK:
       return {
         ...state,
+        isStarting: false,
         isStopping: false,
         isUp:false,
         id: "",
