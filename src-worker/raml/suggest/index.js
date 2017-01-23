@@ -20,9 +20,9 @@ export default class RamlSuggestions {
     return results.map(suggestion => {
       return {
         kind: suggestion.category,
-        label: suggestion.displayText,
+        label: suggestion.displayText || suggestion.text || '',
         insertText: suggestion.text || suggestion.displayText || '',
-        documentation: suggestion.description
+        documentation: suggestion.description || ''
       }
     })
   }
@@ -32,8 +32,7 @@ export default class RamlSuggestions {
     const allPreviewsLinesSize = RamlSuggestions.range(0, cursorPosition.lineNumber - 2)
       .map(index => lines[index].length + 1)
       .reduce((total, size) => total + size, 0)
-
-    return allPreviewsLinesSize + cursorPosition.column;
+    return allPreviewsLinesSize + cursorPosition.column -1;
   }
 
   static range(start, stop) {
