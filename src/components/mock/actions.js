@@ -31,7 +31,6 @@ const mockStarted = (id, manageKey, baseUri, manageUri) => ({
 
 
 export const createMock = () => (dispatch, getState) => {
-
   if (!getState().mock.isUp && !getState().mock.isStarting) {
     dispatch(startMock)
     const mock = new MockingService(new MockingServiceClient())

@@ -72,14 +72,19 @@ export default class MockingServiceClient {
     return new Promise(function (resolve, reject) {
       request.post(options, function (error, response, body) {
         if (!error) {
-          console.log(body)
           const json = body
-          resolve({
-            id: json.id,
-            manageKey: json.manageKey,
-            baseUri: json.baseUri,
-            manageUri: json.manageUri
-          })
+
+          if (json.id !== undefined) {
+            resolve({
+              id: json.id,
+              manageKey: json.manageKey,
+              baseUri: json.baseUri,
+              manageUri: json.manageUri
+            })
+          } else {
+            console.error('Cannot create mock', body)
+            reject(body)
+          }
         } else {
           reject(error)
         }

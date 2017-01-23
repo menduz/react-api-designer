@@ -11,6 +11,7 @@ import createLogger from 'redux-logger'
 import Repository from "./repository/Repository"
 import LocalStorageFileSystem from "./repository/file-system/LocalStorageFileSystem"
 import * as editor from './components/editor'
+import mockReducer from './components/mock/reducers'
 import WebWorker from './webworker'
 import newFolder from './components/modal/new-folder'
 import newFile from './components/modal/new-file'
@@ -58,7 +59,9 @@ const rootReducer = combineReducers({
     dialogs: combineReducers({
         newFolder: newFolder.reducer,
         newFile: newFile.reducer
-    })
+    }),
+    mock: mockReducer
+
 })
 
 const store = createStore(
