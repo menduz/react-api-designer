@@ -15,12 +15,12 @@ class App extends Component {
     return (
       <div className="App">
         <Header/>
-        <Split id="leftSplit" defaultSize={200}>
+        <Split id="leftSplit" className="App-content">
           <div className="LeftPanel">
               <Menu/>
               <FileSystemTree/>
           </div>
-          <Split id="rightSplit" defaultSize={350} primary="second" className="RightPanel">
+          <Split id="rightSplit" minSize={200} defaultSize={400} position="right" className="RightPanel">
             <Editor/>
             <Info/>
           </Split>

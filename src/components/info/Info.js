@@ -9,18 +9,18 @@ import Tabs from '@mulesoft/anypoint-components/lib/Tabs'
 
 class Info extends Component {
 
-  static key = 'designer:preference:selectedTab'
+  static KEY = 'designer:preference:infoTab'
 
   constructor(props) {
     super(props)
     this.state = {
-      selectedTab: parseInt(localStorage.getItem(Info.key) || 0, 10)
+      selectedTab: parseInt(localStorage.getItem(Info.KEY) || 0, 10)
     }
   }
 
   _onTabSelect(selectedTab) {
     this.setState({selectedTab})
-    localStorage.setItem(Info.key, selectedTab)
+    localStorage.setItem(Info.KEY, selectedTab)
   }
 
   render() {

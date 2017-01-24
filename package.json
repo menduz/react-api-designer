@@ -31,7 +31,7 @@
     "webpack": "^1.14.0"
   },
   "dependencies": {
-    "@mulesoft/anypoint-components": "^2.35.0",
+    "@mulesoft/anypoint-components": "^2.36.11",
     "browser-request": "^0.3.3",
     "classnames": "^2.2.5",
     "immutable": "^3.8.1",

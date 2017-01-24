@@ -25,6 +25,10 @@ class DesignerEditor extends React.Component {
     this.value = this.props.value;
     this.position = this.props.position;
     this.errors = this.props.errors;
+
+    window.addEventListener('resize', () => {
+      if (this.editor) this.editor.layout()
+    });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -144,9 +148,7 @@ class DesignerEditor extends React.Component {
     return (
       <div className="Editor">
         {this.language.id ? '' : (<EmptyResult className="Empty" message="Select a file"/>)}
-        <MonacoEditor height="800"
-                      width="auto"
-                      options={options}
+        <MonacoEditor options={options}
                       requireConfig={requireConfig}
                       value={this.value}
                       language={this.language.parent || this.language.id}
