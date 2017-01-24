@@ -1,22 +1,20 @@
 .raml-docs-resource-viewer-0 [wide-layout].raml-docs-resource-viewer nav.raml-docs-resource-viewer {
-    display: none;
+  display: none;
 }
 
 .raml-documentation-empty-state-0 {
-    background-color: transparent;
+  background-color: transparent;
 }
 
-.Mock-on-off {
-    text-align: right;
-    padding: 5px 5px 9px;
-    border-bottom: 2px solid rgba(39,47,51,.1);
+.Console-toolbar {
+  border-bottom: 2px solid rgba(39, 47, 51, .1);
+  padding: 5px 10px 9px;
 }
 
-.Mock-on-off > small {
-    color: #aaa;
+.Console-toolbar .Mock {
+  text-align: right;
 }
 
-.Mock-on-off > div {
-    display: inline-block;
-    padding: 0 6px;
+.Console-toolbar .Spinner-console {
+  float: left;
 }

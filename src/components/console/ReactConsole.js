@@ -1,35 +1,43 @@
 //@flow
 import React, {Component} from 'react'
+import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
 import './ReactConsole.css'
 import {Mock} from '../mock'
 
 class ReactConsole extends Component {
 
-  shouldComponentUpdate(nextProps) {
-    const {raml} = nextProps
-    this._setRamlToConsole(raml)
-    return false
+  constructor(props) {
+    super(props)
+    this.state = {
+      loading: false
+    }
   }
 
-
-  componentDidMount() {
-    const {raml} = this.props
-    this._setRamlToConsole(raml)
+  componentWillReceiveProps(nextProps) {
+    this._updateConsole(nextProps.raml)
   }
 
-  _setRamlToConsole(raml) {
-    console.time("rendering-console")
-    const ramlCopy = {}
-    Object.assign(ramlCopy, raml)
-    this.console.raml = ramlCopy
-    console.timeEnd("rendering-console")
+  _updateConsole(raml) {
+    if (this.raml !== raml) {
+      this.raml = raml
+      this.setState({loading: true})
+
+      clearTimeout(this.timer)
+      this.timer = setTimeout(() => {
+        console.time("updatingConsole")
+        this.console.raml = {...this.raml}
+        console.timeEnd("updatingConsole")
+        this.setState({loading: false})
+      }, 100)
+    }
   }
 
   render() {
+    const {loading} = this.state
     return (
       <div className="Console">
-        <div className="Mock-on-off">
-          <small>Mocking Service:</small>
+        <div className="Console-toolbar">
+          {loading && <div className="Spinner-console"><Spinner size="s"/></div>}
           <Mock/>
         </div>
         <api-console-raml ref={console => this.console = console } narrow/>

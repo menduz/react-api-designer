@@ -7,7 +7,7 @@ import './index.css'
 import {createStore, applyMiddleware, combineReducers} from 'redux'
 import {Provider} from 'react-redux'
 import thunk from 'redux-thunk'
-import createLogger from 'redux-logger'
+import reduxLogger from 'redux-logger'
 import Repository from "./repository/Repository"
 import LocalStorageFileSystem from "./repository/file-system/LocalStorageFileSystem"
 import * as editor from './components/editor'
@@ -27,7 +27,7 @@ class RepositoryMock {
     }
 
     getFile(path) {
-        var byPathString = this.repositoryContainer.repository.getByPathString(path);
+        const byPathString = this.repositoryContainer.repository.getByPathString(path);
         if (byPathString !== undefined) {
             return byPathString.getContent()
         } else {
@@ -50,8 +50,8 @@ let thunkMiddleware = thunk.withExtraArgument({
 })
 
 const middleware = [thunkMiddleware]
-if (process.env.NODE_ENV !== 'production') {
-    middleware.push(createLogger())
+if (location.search.indexOf('redux-logger=true') > -1) {
+    middleware.push(reduxLogger())
 }
 
 const rootReducer = combineReducers({

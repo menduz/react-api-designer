@@ -17,6 +17,9 @@ class Info extends Component {
     this.state = {
       selectedTab: parseInt(localStorage.getItem(Info.KEY) || 0, 10)
     }
+
+    // fix selected tab color
+    window.addEventListener('resize', () => this.forceUpdate());
   }
 
   _onTabSelect(selectedTab) {

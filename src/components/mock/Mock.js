@@ -1,8 +1,8 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import ToggleButton from 'react-toggle-button'
-
 import {createMock, deleteMock} from './actions'
+import './Mock.css'
 
 class Mock extends React.Component {
   onToggle(value) {
@@ -18,10 +18,13 @@ class Mock extends React.Component {
       isUp
     } = this.props
     return (
-      <div>
-        <ToggleButton
-          value={ isUp || false }
-          onToggle={this.onToggle.bind(this)} />
+      <div className="Mock">
+        <small>Mocking Service:</small>
+        <div>
+          <ToggleButton
+            value={ isUp || false }
+            onToggle={this.onToggle.bind(this)}/>
+        </div>
       </div>
     )
 
@@ -30,7 +33,7 @@ class Mock extends React.Component {
 
 const mapStateToProps = state => {
   const {mock} = state
-  if(!mock) return {}
+  if (!mock) return {}
 
   return {
     isUp: mock.isUp

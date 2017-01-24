@@ -14,6 +14,7 @@ export default class Split extends Component {
     this.sizeKey = 'designer:preference:' + this.props.id + ':locked'
     this.lockedKey = 'designer:preference:' + this.props.id + ':size'
 
+    // should move to the redux store
     this.state = {
       dragging: false,
       hover: false,

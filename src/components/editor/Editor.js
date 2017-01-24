@@ -26,6 +26,7 @@ class DesignerEditor extends React.Component {
     this.position = this.props.position;
     this.errors = this.props.errors;
 
+    // fix editor size
     window.addEventListener('resize', () => {
       if (this.editor) this.editor.layout()
     });
@@ -101,7 +102,9 @@ class DesignerEditor extends React.Component {
     this.onSuggestCallback(suggestions.map(suggestion => {
       return {
         ...suggestion,
-        kind: this.monaco.languages.CompletionItemKind.Text // chose Kind based on category?
+        kind: suggestion.insertText.lastIndexOf(':') > -1 ?
+          this.monaco.languages.CompletionItemKind.Property :
+          this.monaco.languages.CompletionItemKind.Value // chose Kind based on category?
       }
     }))
     this.onSuggestCallback = null

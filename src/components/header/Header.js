@@ -12,7 +12,7 @@ class Header extends Component {
     return (
       <div className="App-header">
         <h2>Api Designer</h2>
-        {isParsing ? <Spinner size="s" className="Spinner-parser"/> : null}
+        {isParsing ? <div className="Spinner-parser"><Spinner size="s"/></div> : null}
       </div>
     )
   }
