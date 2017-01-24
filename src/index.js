@@ -19,29 +19,30 @@ import {initFileSystem} from "./file-system-tree/actions"
 import FileSystemTreeModelFactory from "./file-system-tree/model/FileSystemTreeModelFatory"
 import * as fileSystemTree from "./file-system-tree"
 
-class RepositoryMock {
-    text: string
 
-    constructor() {
-        this.text = ''
+class RepositoryMock {
+
+    constructor(repositoryContainer) {
+        this.repositoryContainer = repositoryContainer
     }
 
     getFile(path) {
-        return this.text
-    }
-
-    setFile(text) {
-        this.text = text
+        var byPathString = this.repositoryContainer.repository.getByPathString(path);
+        if (byPathString !== undefined) {
+            return byPathString.getContent()
+        } else {
+            return Promise.resolve('')
+        }
     }
 }
-const repositoryMock = new RepositoryMock()
-
-const worker = new WebWorker(repositoryMock)
 
 const repositoryContainer = {
     repository: undefined,
     isLoaded: false
 }
+
+const repositoryMock = new RepositoryMock(repositoryContainer)
+const worker = new WebWorker(repositoryMock)
 
 let thunkMiddleware = thunk.withExtraArgument({
     worker,
@@ -68,14 +69,6 @@ const store = createStore(
     rootReducer,
     applyMiddleware(...middleware)
 )
-
-let listener = () => {
-    if (repositoryMock) {
-        const editor = store.getState().editor
-        if (editor && editor.text) repositoryMock.setFile(editor.text)
-    }
-}
-store.subscribe(listener)
 
 // Load Repository
 

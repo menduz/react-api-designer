@@ -4,12 +4,13 @@ export default class MockingService {
     this.mockingServiceClient = mockingServiceClient
   }
 
-  createMock(ramlContent) {
+  createMock(ramlContent, jsonObject) {
     const that = this
     return this.dereferenceRaml(ramlContent)
       .then(() => {
         return that.mockingServiceClient.createMock({
-          raml: ramlContent
+          raml: ramlContent,
+          json: jsonObject
         });
       }).catch(err => {
         return Promise.reject(err)

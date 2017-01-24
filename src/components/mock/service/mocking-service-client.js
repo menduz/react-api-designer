@@ -75,7 +75,6 @@ export default class MockingServiceClient {
           const json = body
 
           if (json.id !== undefined) {
-            console.log(body)
             resolve({
               id: json.id,
               manageKey: json.manageKey,

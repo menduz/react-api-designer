@@ -91,7 +91,6 @@ const parseJson = function (text, path, dispatch, worker) {
 }
 const parseRaml = function (text, path, dispatch, worker) {
   dispatch(parsingRequest())
-  worker.setRepositoryContent(text)
   const promise = worker.ramlParse({path});
   if (promise) {
     promise.then(result => {
@@ -112,7 +111,6 @@ const parseRaml = function (text, path, dispatch, worker) {
 }
 const parseOas = function (text, path, dispatch, worker) {
   dispatch(parsingRequest())
-  worker.setRepositoryContent(text)
   const promise = worker.oasParse({text});
   if (promise) {
     promise.then(result => {
