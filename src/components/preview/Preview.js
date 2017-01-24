@@ -8,10 +8,11 @@ import './Preview.css'
 
 class Preview extends Component {
 
-  render() {
+  _render() {
     const {parsedObject, language, text} = this.props
 
-    if (!parsedObject || !language.id) return <div className="Preview No-preview">No preview</div>
+    if (!language.id || !text || !parsedObject)
+      return <div className="No-preview">No preview</div>
 
     switch (language.id) {
       case 'oas':
@@ -20,8 +21,12 @@ class Preview extends Component {
       case 'md':
         return <ReactMarkdown source={text}/>
       default:
-        return <JSONTree data={parsedObject} theme={{base00:'#000000'}} hideRoot={true}/>
+        return <JSONTree data={parsedObject} hideRoot={true}/>
     }
+  }
+
+  render() {
+    return <div className="Preview">{this._render()}</div>
   }
 }
 
