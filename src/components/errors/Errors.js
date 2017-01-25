@@ -26,10 +26,12 @@ class Errors extends Component {
 
     return (
       <div className="Filter">
-        <a className={cx('Filter-errors', { 'toggled': this.state.filterErrors })} href="#" onClick={this._filterIssues.bind(this, 'error')}>
+        <a className={cx('Filter-errors', { 'toggled': this.state.filterErrors })} href="#"
+           onClick={this._filterIssues.bind(this, 'error')}>
           <strong>{errors}</strong> {errors === 1 ? 'Error' : 'Errors'}
         </a>
-        <a className={cx('Filter-warnings', { 'toggled': this.state.filterWarnings })} href="#" onClick={this._filterIssues.bind(this, 'warning')}>
+        <a className={cx('Filter-warnings', { 'toggled': this.state.filterWarnings })} href="#"
+           onClick={this._filterIssues.bind(this, 'warning')}>
           <strong>{warnings}</strong> {warnings === 1 ? 'Warning' : 'Warnings'}
         </a>
       </div>
@@ -41,16 +43,22 @@ class Errors extends Component {
     this.setState(isError ? {filterErrors: !this.state.filterErrors} : {filterWarnings: !this.state.filterWarnings})
   }
 
-  _renderItems(errors) {
+  _renderItems(errors, trace = false) {
     const {filterErrors, filterWarnings} = this.state
     return errors.filter(error => {
       return (!error.isWarning && !filterErrors) || (error.isWarning && !filterWarnings)
     }).map((error, index) => {
       return (
         <li key={index} className={error.isWarning ? 'warning' : 'error'}>
+          {trace ? <span> ↳ </span> : null}
           <a onClick={this.props.onErrorClick.bind(this, error)}>
             {error.message} <strong>({error.startLineNumber}, {error.startColumn})</strong>
           </a>
+          {error.trace && error.trace.length > 0 ?
+            <ol className="Trace-errors">
+              {this._renderItems(error.trace, true)}
+            </ol> : null
+          }
         </li>
       )
     })
@@ -64,7 +72,7 @@ class Errors extends Component {
     return (
       <div className="Errors">
         {this._renderFilters(errors)}
-        <ol>
+        <ol className="Root-errors">
           {this._renderItems(errors)}
         </ol>
       </div>

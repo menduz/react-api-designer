@@ -3,7 +3,7 @@
 }
 
 .Errors {
-  padding-top: 12px;
+  padding-top: 10px;
 }
 
 .Errors.No-errors, .Errors .Filter {
@@ -22,18 +22,38 @@
 
 .Errors ol {
   list-style: none;
-  padding: 0;
-  margin: 25px 15px 15px;
+  padding: 2px 0;
 }
 
 .Errors li {
+  padding-top: 2px;
+}
+
+.Errors span {
+  vertical-align: top;
+}
+
+.Errors a {
+  white-space: normal;
+  display: inline-block;
+}
+
+.Errors ol.Root-errors {
+  margin: 7px 15px;
+}
+
+.Errors ol.Trace-errors ol {
+  margin-left: 15px;
+}
+
+.Errors ol.Root-errors > li {
   border-left: 2px #ff5959 solid;
   padding-left: 7px;
-  margin: 7px;
+  margin: 12px 0;
   font-size: 12px;
 }
 
-.Errors li.warning {
+.Errors ol.Root-errors > li.warning {
   border-color: #fff454;
 }
 

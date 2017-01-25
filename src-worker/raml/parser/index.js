@@ -33,7 +33,7 @@ export default class RamlParser {
       }
     }
 
-    this.jsonOptions=  {
+    this.jsonOptions = {
       serializeMetadata: false,
       dumpSchemaContents: true,
       rootNodeDetails: true
@@ -74,7 +74,9 @@ export default class RamlParser {
         endLineNumber: from.line + 1,
         startColumn: from.column + 1,
         endColumn: to && to.column ? to.column + 1 : undefined,
-        isWarning: error.isWarning
+        isWarning: error.isWarning,
+        path: error.path,
+        trace: error.trace
       }
     });
   }
