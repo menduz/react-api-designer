@@ -8,6 +8,7 @@ import File from './File'
 import Element from './Element'
 import Directory from './Directory'
 import ElementFactory from './ElementFactory'
+import ZipHelper from './helper/ZipHelper'
 
 export default class Repository {
   _fileSystem: FileSystem
@@ -80,5 +81,9 @@ export default class Repository {
 
     file.setContent(content)
     return file
+  }
+
+  buildZip():Promise<> {
+    return ZipHelper.buildZip(this.root)
   }
 }
