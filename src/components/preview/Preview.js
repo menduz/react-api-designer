@@ -11,9 +11,6 @@ class Preview extends Component {
   _render() {
     const {parsedObject, language, text} = this.props
 
-    if (!language.id || !text || !parsedObject)
-      return <div className="No-preview">No preview</div>
-
     switch (language.id) {
       case 'oas':
       case 'raml':
@@ -21,6 +18,7 @@ class Preview extends Component {
       case 'md':
         return <ReactMarkdown source={text}/>
       default:
+        if (!parsedObject) return <div className="No-preview">No preview</div>
         return <JSONTree data={parsedObject} hideRoot={true}/>
     }
   }
