@@ -6,7 +6,7 @@ import TreeUI from 'react-ui-tree'
 import cx from 'classnames';
 import {getAll} from './selectors';
 import {fromFileTree} from './model';
-import {treeChanged, nodeSelected} from './actions';
+import {treeChanged, pathSelected} from './actions';
 
 import type {Node} from './model';
 
@@ -77,7 +77,7 @@ const mapStateToProps = (rootState) => {
 const mapDispatch = dispatch => {
   return {
     onTreeChange: (tree: Node) => dispatch(treeChanged(tree)),
-    onNodeClick: (node: Node) => dispatch(nodeSelected(node))
+    onNodeClick: (node: Node) => dispatch(pathSelected(node.path))
   }
 }
 

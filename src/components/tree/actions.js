@@ -16,8 +16,8 @@ export const NODE_SELECTED = `DESIGNER/${PREFIX}/NODE_SELECTED`
 export const PATH_SELECTED = `DESIGNER/${PREFIX}/PATH_SELECTED`
 export const TREE_CHANGED = `DESIGNER/${PREFIX}/TREE_CHANGED`
 
-type Action = {type: any}
-type Dispatch = (action: Action) => void;
+type Action = {type: any} | (d: Dispatch, gS: GetState, eA: ExtraArgs) => void
+type Dispatch = (action: Action) => void
 type GetState = () => {[key: string]: any}
 type ExtraArgs = {repositoryContainer: {repository: Repository}}
 
@@ -26,43 +26,37 @@ export const treeChanged = (tree: Node) => ({
   payload: tree
 })
 
-export const pathSelected = (path: Path) => ({
-  type: PATH_SELECTED,
-  payload: path
-})
-
-export const nodeSelected = (node: Node) =>
+export const pathSelected = (path: Path) =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs) => {
     dispatch({
       type: NODE_SELECTED,
-      payload: node.path
+      payload: path
     })
-
 
     if (!repositoryContainer.isLoaded) return
     const repository: Repository = repositoryContainer.repository
-    const element = repository.getByPath(node.path);
+    const element = repository.getByPath(path);
     if (!element || element.isDirectory()) return
 
-    const path = editor.selectors.getCurrentFilePath(getState());
-    if (path === node.path.toString()) return
+    const currentPath = editor.selectors.getCurrentFilePath(getState());
+    if (currentPath === path.toString()) return
 
     const file: File = ((element: any): File);
     file.getContent()
       .then((content) => {
-        dispatch(editor.actions.updateFile(content, node.path))
+        dispatch(editor.actions.updateFile(content, path))
       })
   }
 
 export const addFile = (name: string, fileType: string) =>
   (dispatch: Dispatch, getState: GetState) => {
     const directory = getCurrentDirectory(getState());
-    dispatch(repository.actions.addFile(directory, name, fileType))
+    dispatch(repository.actions.addFile(directory.path, name, fileType))
     dispatch(pathSelected(directory.path.append(name)))
   }
 
 export const addDirectory = (name: string) =>
   (dispatch: Dispatch, getState: GetState) => {
     const directory = getCurrentDirectory(getState());
-    dispatch(repository.actions.addDirectory(directory, name))
+    dispatch(repository.actions.addDirectory(directory.path, name))
   }

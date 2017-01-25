@@ -68,7 +68,7 @@ export default class Repository {
     const directory: Directory = ((element: any): Directory)
     const newDirectory = new Directory(name, [], directory)
 
-    return this._fileSystem.createFolder(newDirectory.path)
+    return this._fileSystem.createFolder(newDirectory.path.toString())
       .then(() => { directory.children.push(newDirectory) })
       .then(() => newDirectory)
   }
