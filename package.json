@@ -51,6 +51,7 @@
     "redux": "^3.5.2",
     "redux-logger": "^2.7.4",
     "redux-thunk": "^2.1.0",
-    "traverse": "^0.6.6"
+    "traverse": "^0.6.6",
+    "react-file-download": "0.3.2"
   }
 }

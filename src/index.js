@@ -16,6 +16,8 @@ import mockReducer from './components/mock/reducers'
 import WebWorker from './webworker'
 import newFolder from './components/modal/new-folder'
 import newFile from './components/modal/new-file'
+import importModal from './components/modal/import'
+import exportModal from './components/modal/export'
 import {initFileSystem} from "./repository-redux/actions"
 import FileTreeFactory from "./repository-redux/model/FileTreeFactory"
 import * as fileSystemTree from "./components/tree"
@@ -69,7 +71,9 @@ const rootReducer = combineReducers({
   [fileSystemTree.NAME]: fileSystemTree.reducer,
   dialogs: combineReducers({
     newFolder: newFolder.reducer,
-    newFile: newFile.reducer
+    newFile: newFile.reducer,
+    import: importModal.reducer,
+    export: exportModal.reducer
   }),
   mock: mockReducer
 
