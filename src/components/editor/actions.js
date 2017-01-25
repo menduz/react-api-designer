@@ -1,5 +1,7 @@
-import {PREFIX} from './index'
+import {PREFIX} from './constants'
 import {getCurrentFilePath, getLanguage} from './selectors'
+import {Path} from '../../repository'
+import {updateFileContent, saveFile} from '../../repository-redux/actions'
 
 export const PARSING_REQUEST = `DESIGNER/${PREFIX}/PARSING_REQUEST`
 export const PARSING_RESULT = `DESIGNER/${PREFIX}/PARSING_RESULT`
@@ -8,7 +10,7 @@ export const SUGGESTION_REQUEST = `DESIGNER/${PREFIX}/SUGGESTION_REQUEST`
 export const SUGGESTION_RESULT = `DESIGNER/${PREFIX}/SUGGESTION_RESULT`
 
 export const SET_POSITION = `DESIGNER/${PREFIX}/SET_POSITION`
-export const SET_TEXT = `DESIGNER/${PREFIX}/SET_TEXT`
+export const SET_PATH = `DESIGNER/${PREFIX}/SET_TEXT`
 
 export const setPosition = (line, column) => ({
   type: SET_POSITION,
@@ -35,29 +37,9 @@ export const suggest = (text, offset) => (dispatch, getState, {worker}) => {
   })
 }
 
-const calculateLanguage = (text, path) => {
-  const lastDot = path.lastIndexOf('.');
-  const extension = lastDot > -1 ? path.substring(lastDot + 1) : 'txt';
-  switch (extension) {
-    case 'raml':
-      return {id: 'raml'}
-    case 'json':
-      // detect oas based on text content
-      return text.indexOf('swagger') > -1 ?
-        {id: 'oas', parent: extension} :
-        {id: extension, native:true}
-    case 'yml':
-      return {id: 'yaml', native:true}
-    default:
-      return {id: extension, native:true}
-  }
-}
-
-const setText = (text, path) => ({
-  type: SET_TEXT,
-  text,
-  path,
-  language: calculateLanguage(text, path)
+const setPath = (path, language) => ({
+  type: SET_PATH,
+  path, language
 })
 
 const parsingRequest = () => ({
@@ -70,16 +52,11 @@ const parseResult = (parsedObject, errors) => ({
   parsedObject: parsedObject
 })
 
-export const updateCurrentFile = (text, delay = 0) =>
-    (dispatch, getState) => {
-        dispatch(updateFile(text, getCurrentFilePath(getState()), delay))
-    }
-
 let parseTimer = null
 const parseJson = function (text, path, dispatch, worker) {
   dispatch(parsingRequest())
 
-  const promise = worker.jsonParse({text});
+  const promise = worker.jsonParse({text})
   if (promise) {
     promise.then(result => {
       dispatch(parseResult(result, []))
@@ -89,9 +66,10 @@ const parseJson = function (text, path, dispatch, worker) {
     })
   }
 }
+
 const parseRaml = function (text, path, dispatch, worker) {
   dispatch(parsingRequest())
-  const promise = worker.ramlParse({path});
+  const promise = worker.ramlParse({path})
   if (promise) {
     promise.then(result => {
       dispatch(parseResult(result.specification, result.errors))
@@ -109,9 +87,10 @@ const parseRaml = function (text, path, dispatch, worker) {
     })
   }
 }
+
 const parseOas = function (text, path, dispatch, worker) {
   dispatch(parsingRequest())
-  const promise = worker.oasParse({text});
+  const promise = worker.oasParse({text})
   if (promise) {
     promise.then(result => {
       dispatch(parseResult(result.specification, result.errors))
@@ -130,26 +109,51 @@ const parseOas = function (text, path, dispatch, worker) {
   }
 }
 
-export const updateFile = (text, path, delay = 0) =>
-  (dispatch, getState, { worker, repositoryContainer }) => {
-    dispatch(setText(text, path))
+export const updateCurrentFile = (text, delay = 0) =>
+  (dispatch, getState) => {
+    dispatch(updateFile(text, getCurrentFilePath(getState()), delay))
+  }
 
-    if (repositoryContainer.isLoaded && path && text)
-      repositoryContainer.repository.setContent(path, text)
+const calculateLanguage = (text, path) => {
+  const lastDot = path.lastIndexOf('.')
+  const extension = lastDot > -1 ? path.substring(lastDot + 1) : 'txt'
+  switch (extension) {
+    case 'raml':
+      return {id: 'raml'}
+    case 'json':
+      // detect oas based on text content
+      return text.indexOf('swagger') > -1 ?
+        {id: 'oas', parent: extension} :
+        {id: extension, native: true}
+    case 'yml':
+      return {id: 'yaml', native: true}
+    default:
+      return {id: extension, native: true}
+  }
+}
+
+export const updateFile = (text, path: Path, delay = 0) =>
+  (dispatch, getState, {worker}) => {
+    dispatch(updateFileContent(path, text))
+    dispatch(setPath(path, calculateLanguage(text, path.toString())))
 
     if (parseTimer) clearTimeout(parseTimer)
 
-  parseTimer = setTimeout(() => {
-
-    switch(getLanguage(getState()).id) {
+    parseTimer = setTimeout(() => {
+      const pathString = path.toString()
+      switch (getLanguage(getState()).id) {
         case 'raml':
-            return parseRaml(text, path, dispatch, worker)
+          return parseRaml(text, pathString, dispatch, worker)
         case 'oas':
-            return parseOas(text, path, dispatch, worker)
+          return parseOas(text, pathString, dispatch, worker)
         case 'json':
-          return parseJson(text, path, dispatch, worker)
-      default:
-        dispatch(parseResult({}, []))
-    }
-  }, delay)
+          return parseJson(text, pathString, dispatch, worker)
+        default:
+          dispatch(parseResult({}, []))
+      }
+    }, delay)
+  }
+
+export const saveCurrentFile = () => (dispatch, getState) => {
+  dispatch(saveFile(getCurrentFilePath(getState())))
 }

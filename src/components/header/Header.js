@@ -3,7 +3,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
-import './Header.css';
+import './Header.css'
 
 class Header extends Component {
 

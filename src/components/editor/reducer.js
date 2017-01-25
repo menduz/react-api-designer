@@ -1,12 +1,11 @@
 import {
-  SET_TEXT, SET_POSITION,
+  SET_PATH, SET_POSITION,
   PARSING_REQUEST, PARSING_RESULT,
   SUGGESTION_REQUEST, SUGGESTION_RESULT
 } from './actions'
 
 
 const initialState = {
-  text: '',
   path: null,
   language: {id: ''},
   position: null,
@@ -17,15 +16,14 @@ const initialState = {
 
   isSearching: false,
   suggestions: []
-};
+}
 
 export default (state = initialState, action) => {
   switch (action.type) {
 
-    case SET_TEXT:
+    case SET_PATH:
       return {
         ...state,
-        text: action.text,
         path: action.path,
         language: action.language
       }
@@ -62,7 +60,6 @@ export default (state = initialState, action) => {
         suggestions: action.suggestions,
         isSearching: false
       }
-
     default:
       return state
   }

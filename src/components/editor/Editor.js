@@ -4,7 +4,9 @@ import MonacoEditor from 'react-monaco-editor'
 import EmptyResult from '@mulesoft/anypoint-components/lib/EmptyResult'
 import registerRamlLanguage from './languages/Raml'
 import {suggest, updateCurrentFile} from './actions'
-import './Editor.css';
+import './Editor.css'
+import {getAll} from "./selectors"
+import {getFileContent} from "../../repository-redux/selectors"
 
 // todo review loading of Monaco assets
 const requireConfig = {
@@ -21,15 +23,15 @@ class DesignerEditor extends React.Component {
     this.editor = null
     this.monaco = null
 
-    this.language = this.props.language;
-    this.value = this.props.value;
-    this.position = this.props.position;
-    this.errors = this.props.errors;
+    this.language = this.props.language
+    this.value = this.props.value
+    this.position = this.props.position
+    this.errors = this.props.errors
 
     // fix editor size
     window.addEventListener('resize', () => {
       if (this.editor) this.editor.layout()
-    });
+    })
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -119,20 +121,20 @@ class DesignerEditor extends React.Component {
         endColumn: error.endColumn || this._lineLength(error.startLineNumber),
         severity: error.isWarning ? this.monaco.Severity.Warning : this.monaco.Severity.Error
       }
-    });
+    })
 
     this.monaco.editor.setModelMarkers(this.editor.getModel(), '', markers)
   }
 
   _lineLength(line) {
-    return this.editor.getModel().getLineLastNonWhitespaceColumn(Math.min(line, this.editor.getModel().getLineCount()));
+    return this.editor.getModel().getLineLastNonWhitespaceColumn(Math.min(line, this.editor.getModel().getLineCount()))
   }
 
   _revealPosition(position) {
     this.position = position
 
     if (position && position.line > -1) {
-      const positionObj = new this.monaco.Position(position.line, position.column);
+      const positionObj = new this.monaco.Position(position.line, position.column)
       this.editor.revealPositionInCenterIfOutsideViewport(positionObj)
       this.editor.setPosition(this.editor.getModel().validatePosition(positionObj))
     }
@@ -178,12 +180,13 @@ DesignerEditor.propTypes = {
   onSuggest: React.PropTypes.func
 }
 
-
 const mapStateToProps = state => {
-  const {editor} = state
+  const editor = getAll(state)
+  const text = editor.path? getFileContent(state)(editor.path) || '' : ''
+
   return {
     language: editor.language,
-    value: editor.text,
+    value: text,
     position: editor.position,
     errors: editor.errors,
     suggestions: editor.suggestions,

@@ -3,9 +3,9 @@
 import {List} from 'immutable'
 import {Map} from 'immutable'
 
-import Path from '../../repository/Path'
+import {Path} from '../../repository'
 
-export class FileSystemTreeModel {
+export class FileTree {
     _root: DirectoryModel
 
     constructor(root: DirectoryModel) {
@@ -16,19 +16,19 @@ export class FileSystemTreeModel {
         return this._root
     }
 
-    static empty(): FileSystemTreeModel {
-        return new FileSystemTreeModel(DirectoryModel.directory('', Path.emptyPath(), List()))
+    static empty(): FileTree {
+        return new FileTree(DirectoryModel.directory('', Path.emptyPath(), List()))
     }
 
     getByPath(path: Path): ?ElementModel {
         return this._root.getByPath(path)
     }
 
-    renameFile(file: FileModel, name: string): FileSystemTreeModel {
+    renameFile(file: FileModel, name: string): FileTree {
         return this.updateElement(file.withName(name))
     }
 
-    moveElement(from: Path, to: Path): FileSystemTreeModel {
+    moveElement(from: Path, to: Path): FileTree {
         const element = this.getByPath(from)
         if(!element) return this
 
@@ -37,12 +37,12 @@ export class FileSystemTreeModel {
             .updateElement(element.withPath(to))
     }
 
-    updateElement(element: ElementModel): FileSystemTreeModel {
-        return new FileSystemTreeModel(this._root.updateElement(element.path.parent(), element))
+    updateElement(element: ElementModel): FileTree {
+        return new FileTree(this._root.updateElement(element.path.parent(), element))
     }
 
-    removeElement(path: Path): FileSystemTreeModel {
-        return new FileSystemTreeModel(this._root.removeElement(path.parent(), path.last()))
+    removeElement(path: Path): FileTree {
+        return new FileTree(this._root.removeElement(path.parent(), path.last()))
     }
 
     get root(): DirectoryModel { return this._root }

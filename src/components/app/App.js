@@ -7,8 +7,8 @@ import Split from '../split/Split'
 import Menu from '../menu/Menu'
 import {Info} from '../info'
 import {Editor} from '../editor'
-import {FileSystemTree} from '../../file-system-tree'
-import './App.css';
+import {FileSystemTree} from '../tree'
+import './App.css'
 
 class App extends Component {
   render() {

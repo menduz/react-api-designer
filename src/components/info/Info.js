@@ -1,4 +1,5 @@
-//@flow
+// @flow
+
 import React, {Component} from 'react'
 import {Preview} from '../preview'
 import {Errors} from '../errors'
@@ -19,7 +20,7 @@ class Info extends Component {
     }
 
     // fix selected tab color
-    window.addEventListener('resize', () => this.forceUpdate());
+    window.addEventListener('resize', () => this.forceUpdate())
   }
 
   _onTabSelect(selectedTab) {

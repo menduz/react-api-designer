@@ -7,7 +7,7 @@ import type {State} from './NewFolderModel'
 import NewFolderModal from './NewFolderModal'
 import {getAll} from './NewFolderSelectors'
 import {changeName, closeNewFolderDialog} from './NewFolderActions'
-import {addDirectory} from "../../../file-system-tree/actions";
+import {addDirectory} from "../../tree/actions";
 
 type ContainerProps = {
   folderName: string

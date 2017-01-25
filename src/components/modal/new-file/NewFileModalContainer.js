@@ -7,7 +7,7 @@ import type {State} from './NewFileModel'
 import NewFileModal from './NewFileModal'
 import {getAll} from './NewFileSelectors'
 import {changeFileType, changeName, closeNewFileDialog} from './NewFileActions'
-import {addFile} from "../../../file-system-tree/actions";
+import {addFile} from "../../tree/actions";
 
 const mapState = (rootState) => {
   const state : State = getAll(rootState)

@@ -6,7 +6,6 @@
   "bin": {
     "api-designer": "todo.js"
   },
-  "homepage": "https://mulesoft.github.io/react-api-designer",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mulesoft/react-api-designer.git"

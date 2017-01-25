@@ -10,15 +10,18 @@ import {openNewFolderDialog} from '../modal/new-folder/NewFolderActions'
 import {openNewFileDialog} from '../modal/new-file/NewFileActions'
 
 import './Menu.css'
+import {saveCurrentFile} from "../editor/actions"
 
 class Menu extends React.Component {
   render() {
     let {
       showNewFolderDialog,
-      showNewFileDialog
+      showNewFileDialog,
+      saveFile
     } = this.props
     return (
       <div className="menu">
+        <button className="save-file-button" onClick={saveFile}/>
         <button className="new-file-button" onClick={showNewFileDialog}/>
         <NewFileModalContainer/>
 
@@ -38,7 +41,8 @@ const mapState = (state) => {
 const mapDispatch = (dispatch) => {
   return {
     showNewFolderDialog: () => dispatch(openNewFolderDialog()),
-    showNewFileDialog: () => dispatch(openNewFileDialog())
+    showNewFileDialog: () => dispatch(openNewFileDialog()),
+    saveFile: () => dispatch(saveCurrentFile())
   }
 }
 

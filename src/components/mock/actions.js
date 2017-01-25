@@ -35,8 +35,8 @@ export const createMock = () => (dispatch, getState) => {
     dispatch(startMock)
     const mock = new MockingService(new MockingServiceClient())
     //@@TODO GET editor.text from a function!!
-    const ramlContent = getState().editor.text;
-    const jsonObject = getState().editor.parsedObject;
+    const ramlContent = getState().editor.text
+    const jsonObject = getState().editor.parsedObject
 
     mock.createMock(ramlContent, jsonObject).then(res => {
       dispatch(mockStarted(res.id, res.manageKey, res.baseUri, res.manageUri))

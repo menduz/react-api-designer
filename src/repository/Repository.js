@@ -2,76 +2,83 @@
 
 import FileSystem from './file-system/FileSystem'
 import type {Entry} from './file-system/FileSystem'
+
 import Path from './Path'
-import File from './File';
-import Element from './Element';
-import Directory from './Directory';
-import ElementFactory from './ElementFactory';
+import File from './File'
+import Element from './Element'
+import Directory from './Directory'
+import ElementFactory from './ElementFactory'
 
 export default class Repository {
-    static FileSystemSeparator = '/'
+  _fileSystem: FileSystem
+  _root: Directory
 
-    _fileSystem: FileSystem
-    _root: Directory
+  constructor(fileSystem: FileSystem, root: Directory) {
+    this._fileSystem = fileSystem
+    this._root = root
+  }
 
-    constructor(fileSystem: FileSystem, root: Directory) {
-        this._fileSystem = fileSystem
-        this._root = root
-    }
+  static fromFileSystem(fileSystem: FileSystem): Promise<Repository> {
+    return fileSystem.directory(Path.FileSystemSeparator)
+      .then((e: Entry) => new Repository(fileSystem, ElementFactory.directory(fileSystem, e)))
+  }
 
-    static fromFileSystem(fileSystem: FileSystem): Promise<Repository> {
-        return fileSystem.directory(Repository.FileSystemSeparator)
-            .then((e: Entry) => new Repository(fileSystem, ElementFactory.directory(fileSystem, e)))
-    }
+  get root(): Directory {
+    return this._root
+  }
 
-    get root(): Directory {
-        return this._root
-    }
+  getByPathString(path: string): ?Element {
+    return this.getByPath(Path.fromString(path))
+  }
 
-    getByPathString(path: string): ?Element {
-        return this.getByPath(Path.fromString(path))
-    }
+  getByPath(path: Path): ?Element {
+    return this._root.getByPath(path)
+  }
 
-    getByPath(path: Path): ?Element {
-        return this._root.getByPath(path)
-    }
+  getFileByPath(path: Path): ?File {
+    const element = this.getByPath(path)
+    if (!element || element.isDirectory()) return
 
-    saveFile(file: File): Promise<File> {
-        return file.getContent()
-            .then((content) => this._fileSystem.save(file.path, content))
-            .then(() => file)
-    }
+    return ((element: any): File)
+  }
 
-    addFile(path: Path, name: string, content: string): Promise<File> {
-        const element = this.getByPath(path)
-        if (!element || !element.isDirectory()) return Promise.reject()
+  saveFile(path: Path): Promise<File> {
+    const file = this.getFileByPath(path)
+    if (!file) return Promise.reject()
 
-        const directory = ((element: any): Directory)
-        const file = File.dirty(name, content, directory)
+    return file.save(this._fileSystem)
+  }
 
-        return file.getContent()
-            .then(content => this._fileSystem.save(file.path, content))
-            .then(() => { directory.children.push(file) })
-            .then(() => file)
-    }
+  addFile(path: Path, name: string, content: string): File {
+    const element = this.getByPath(path)
+    if (!element || !element.isDirectory())
+      throw new Error(`${path.toString()} is not a valid directory`)
 
-    addDirectory(path: Path, name: string): Promise<Directory> {
-        const element = this.getByPath(path)
-        if (!element || !element.isDirectory()) return Promise.reject()
+    const directory = ((element: any): Directory)
+    const file = File.dirty(name, content, directory)
+    directory.addChild(file)
 
-        const directory: Directory = ((element: any): Directory)
-        const newDirectory = new Directory(name, [], directory)
+    return file
+  }
 
-        return this._fileSystem.createFolder(newDirectory.path)
-            .then(() => { directory.children.push(newDirectory) })
-            .then(() => newDirectory)
-    }
+  addDirectory(path: Path, name: string): Promise<Directory> {
+    const element = this.getByPath(path)
+    if (!element || !element.isDirectory()) return Promise.reject()
 
-    setContent(path: string, content: string): void {
-        const element = this.getByPathString(path);
-        if(!element || element.isDirectory()) return
+    const directory: Directory = ((element: any): Directory)
+    const newDirectory = new Directory(name, [], directory)
 
-        const file: File = ((element: any): File)
-        file.setContent(content)
-    }
+    return this._fileSystem.createFolder(newDirectory.path)
+      .then(() => { directory.children.push(newDirectory) })
+      .then(() => newDirectory)
+  }
+
+  setContent(path: Path, content: string): File {
+    const file = this.getFileByPath(path)
+    if (!file)
+      throw new Error(`${path.toString()} is not a valid file`)
+
+    file.setContent(content)
+    return file
+  }
 }
