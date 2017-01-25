@@ -19,11 +19,16 @@ class Mock extends React.Component {
     } = this.props
     return (
       <div className="Mock">
-        <small>Mocking Service:</small>
+        <small>Mocking Service</small>
         <div>
           <ToggleButton
             value={ isUp || false }
-            onToggle={this.onToggle.bind(this)}/>
+            onToggle={this.onToggle.bind(this)}
+            colors={{ active: { base: '#30AB5D' }, inactive: { base: '#fff' } }}
+            trackStyle={{border:'1px #C4C7C4 solid'}}
+            activeLabelStyle={{fontSize: '9px', paddingLeft: '4px'}}
+            inactiveLabelStyle={{fontSize: '9px', paddingRight: '11px', color:'#C4C7C4'}}
+            thumbStyle={{border:'1px #C4C7C4 solid', boxShadow:''}}/>
         </div>
       </div>
     )
