@@ -4,7 +4,7 @@ import Repository from '../../../repository/Repository'
 
 import {FILE_SAVE_FAILED, error} from "../../../repository-redux/actions"
 
-var fileDownload = require('react-file-download')
+const fileDownload = require('react-file-download')
 
 type ExtraArgs = {repositoryContainer: {repository: Repository}}
 type GetState = () => {[key: string]: any}
@@ -37,8 +37,9 @@ export const exportAll = (name: string, type: string) =>
       return repository.buildZip()
         .then(
           (content) => {
-            console.log('zipContent: ' + content)
-            fileDownload(content, 'file.zip')
+            const extension = '.' + type;
+            const n = name.endsWith(extension)?name:name + extension
+            fileDownload(content, n)
             dispatch({type: EXPORT_ZIP_DONE})
           }).catch(err => {
             console.error(err)
