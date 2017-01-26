@@ -1,7 +1,8 @@
 // @flow
 
 import {Map} from 'immutable'
-import type {State} from './model/State'
+
+import type {State} from './model'
 
 import {
   FILE_ADDED,

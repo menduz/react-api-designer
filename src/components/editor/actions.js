@@ -2,6 +2,8 @@ import {PREFIX} from './constants'
 import {getCurrentFilePath, getLanguage} from './selectors'
 import {Path} from '../../repository'
 import {updateFileContent, saveFile} from '../../repository-redux/actions'
+import {getFileTree} from '../../repository-redux/selectors'
+import {RepositoryTypeFactory} from '../../repository/type'
 
 export const PARSING_REQUEST = `DESIGNER/${PREFIX}/PARSING_REQUEST`
 export const PARSING_RESULT = `DESIGNER/${PREFIX}/PARSING_RESULT`
@@ -23,19 +25,23 @@ const suggestionResult = suggestions => ({
   suggestions
 })
 
-export const suggest = (text, offset) => (dispatch, getState, {worker}) => {
-  if (getLanguage(getState()).id !== 'raml') return
+export const suggest = (text, cursorPosition, path, repository) =>
+  (dispatch, getState, {worker}) => {
+    const fileTree = getFileTree(getState())
+    if (!fileTree) return
+    if (getLanguage(getState()).id !== 'raml') return
 
-  dispatch({
-    type: SUGGESTION_REQUEST
-  })
+    const path = getCurrentFilePath(getState()).toString()
+    const repository = RepositoryTypeFactory.fromRepositoryModel(fileTree)
 
-  worker.ramlSuggest(text, offset).then(result => {
-    dispatch(suggestionResult(result))
-  }).catch(e => {
-    dispatch(suggestionResult([]))
-  })
-}
+    dispatch({type: SUGGESTION_REQUEST})
+
+    worker.ramlSuggest(text, cursorPosition, path, repository)
+      .then(result => {
+        dispatch(suggestionResult(result))
+      })
+      .catch(e => { dispatch(suggestionResult([])) })
+  }
 
 const setPath = (path, language) => ({
   type: SET_PATH,

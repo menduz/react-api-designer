@@ -1,8 +1,8 @@
 // @flow
 
 import {PREFIX} from './constants'
-import {FileModel, DirectoryModel, FileTree} from './model/FileTree'
-import Factory from './model/FileTreeFactory'
+import {FileModel, DirectoryModel, RepositoryModel} from '../repository/immutable/RepositoryModel'
+import Factory from '../repository/immutable/RepositoryModelFactory'
 
 import Repository from '../repository/Repository'
 
@@ -25,7 +25,7 @@ export const DIRECTORY_ADD_FAILED = `DESIGNER/${PREFIX}/DIRECTORY_ADD_FAILED`
 export const FILE_CONTENT_UPDATED = `DESIGNER/${PREFIX}/FILE_CONTENT_UPDATED`
 export const FILE_CONTENT_UPDATE_FAILED = `DESIGNER/${PREFIX}/FILE_CONTENT_UPDATE_FAILED`
 
-export const initFileSystem = (fileTree: FileTree) => ({
+export const initFileSystem = (fileTree: RepositoryModel) => ({
     type: INIT_FILE_SYSTEM,
     payload: fileTree
 })
@@ -113,7 +113,7 @@ export const saveFile = (path: Path) =>
         dispatch({type: FILE_SAVE_STARTED})
         return repository.saveFile(path)
             .then(
-                (file) => { dispatch(fileSaved(Factory.fileModel(file))) },
+                (file) => dispatch(fileSaved(Factory.fileModel(file))),
                 () => { dispatch(error(FILE_SAVE_FAILED, 'Error on save')) }
             )
     }

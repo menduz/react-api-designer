@@ -3,7 +3,7 @@
 import {Set} from 'immutable'
 
 import {Path} from '../../repository';
-import {FileTree, FileModel, DirectoryModel, ElementModel} from '../../repository-redux/model/FileTree';
+import {RepositoryModel, FileModel, DirectoryModel, ElementModel} from '../../repository/immutable/RepositoryModel';
 
 export type State = {
   currentPath: ?Path,
@@ -20,7 +20,7 @@ export type Node = {
   leaf: ?boolean
 }
 
-export const fromFileTree = (fileTree: FileTree) => (expandedFiles: Set<string>): Node => {
+export const fromFileTree = (fileTree: RepositoryModel) => (expandedFiles: Set<string>): Node => {
   return fromDirectory(expandedFiles)(fileTree.root)
 }
 

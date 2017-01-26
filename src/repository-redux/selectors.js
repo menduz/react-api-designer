@@ -1,14 +1,14 @@
 // @flow
 
 import {NAME} from './index'
-import {FileTree} from './model/FileTree'
 import {Path} from '../repository'
+import {RepositoryModel} from '../repository/immutable'
 
-import type {State} from './model/State'
+import type {State} from './model'
 
 export const getAll = (rootState: any): State => rootState[NAME]
 
-export const getFileTree = (rootState: any): ?FileTree => getAll(rootState).fileTree
+export const getFileTree = (rootState: any): ?RepositoryModel => getAll(rootState).fileTree
 
 export const getFileContent = (rootState: any) => (path: Path): ?string => {
   const state = getAll(rootState)

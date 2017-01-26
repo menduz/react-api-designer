@@ -168,6 +168,10 @@ class File extends Element {
     return dirty
   }
 
+  get extension(): string {
+    return this._name.substring(this._name.lastIndexOf('.') + 1)
+  }
+
   set state(value: State) {
     this._state = value
   }

@@ -65,8 +65,8 @@ export default class WebWorker {
     }
   }
 
-  ramlSuggest(content, cursorPosition) {
-    return this._postAndExpect('ramlSuggest', {content, cursorPosition})
+  ramlSuggest(content, cursorPosition, path, repository) {
+    return this._postAndExpect('ramlSuggest', {content, cursorPosition, path, repository})
   }
 
   specConvert(path, from, to, format) {

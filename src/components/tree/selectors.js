@@ -2,7 +2,7 @@
 
 import {NAME} from './index';
 import type {State} from './model';
-import {ElementModel, DirectoryModel} from "../../repository-redux/model/FileTree";
+import {ElementModel, DirectoryModel} from "../../repository/immutable/RepositoryModel";
 import {getFileTree} from "../../repository-redux/selectors";
 import {Path} from '../../repository';
 

@@ -19,40 +19,17 @@ import newFile from './components/modal/new-file'
 import importModal from './components/modal/import'
 import exportModal from './components/modal/export'
 import {initFileSystem} from "./repository-redux/actions"
-import FileTreeFactory from "./repository-redux/model/FileTreeFactory"
+import FileTreeFactory from "./repository/immutable/RepositoryModelFactory"
 import * as fileSystemTree from "./components/tree"
-import File from "./repository/File";
+import FileProvider from './webworker/FileProvider'
+import type {RepositoryContainer} from './RepositoryContainer'
 
-type RepositoryContainer = {
-  repository: ?Repository,
-  isLoaded: boolean
-}
-
-class RepositoryMock {
-  repositoryContainer: RepositoryContainer
-
-  constructor(repositoryContainer) {
-    this.repositoryContainer = repositoryContainer
-  }
-
-  getFile(path): Promise<string> {
-    const repository = this.repositoryContainer.repository;
-    const byPathString = repository && repository.getByPathString(path);
-    if (byPathString && !byPathString.isDirectory()) {
-      const file = ((byPathString: any): File);
-      return file.getContent()
-    } else {
-      return Promise.resolve('')
-    }
-  }
-}
-
-const repositoryContainer = {
+const repositoryContainer: RepositoryContainer = {
   repository: undefined,
   isLoaded: false
 }
 
-const repositoryMock = new RepositoryMock(repositoryContainer)
+const repositoryMock = new FileProvider(repositoryContainer)
 const worker = new WebWorker(repositoryMock)
 
 let thunkMiddleware = thunk.withExtraArgument({
@@ -76,7 +53,6 @@ const rootReducer = combineReducers({
     export: exportModal.reducer
   }),
   mock: mockReducer
-
 })
 
 const store = createStore(
@@ -93,7 +69,7 @@ Repository.fromFileSystem(new LocalStorageFileSystem())
     return repository
   })
   .then((repository) => {
-    store.dispatch(initFileSystem(FileTreeFactory.fileTree(repository)))
+    store.dispatch(initFileSystem(FileTreeFactory.repository(repository)))
   })
 
 ReactDOM.render(
