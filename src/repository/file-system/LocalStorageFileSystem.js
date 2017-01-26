@@ -305,7 +305,7 @@ class LocalStorageFileSystem extends FileSystem {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         let entry: ?LocalStorageEntry = LocalStorageHelper.get(path)
-        if (entry && entry.type === 'file' && entry.content) {
+        if (entry && entry.type === 'file') {
           resolve(entry.content || '')
         } else {
           reject(this._fileNotFoundMessage(path))
