@@ -1,7 +1,7 @@
 export default class WebWorker {
 
   constructor(fileRepository) {
-    this.worker = new Worker(`${process.env.PUBLIC_URL}/static/js/api-designer-worker.js`)
+    this.worker = new Worker(`${window.PUBLIC_URL || process.env.PUBLIC_URL}/static/js/api-designer-worker.js`)
 
     this._listen('requestFile', (request) => {
       const that = this

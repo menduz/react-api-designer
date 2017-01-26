@@ -8,6 +8,8 @@ bower_components
 coverage
 
 # production
+build
+out
 public/static
 
 # misc

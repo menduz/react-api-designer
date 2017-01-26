@@ -8,12 +8,9 @@ import './Editor.css'
 import {getAll} from "./selectors"
 import {getFileContent} from "../../repository-redux/selectors"
 
-// todo review loading of Monaco assets
 const requireConfig = {
-  url: 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.1/require.min.js',
-  paths: {
-    'vs': `${process.env.PUBLIC_URL}/static/js/vs`
-  }
+  url: `${window.PUBLIC_URL || process.env.PUBLIC_URL}/static/js/vs/loader.js`,
+  paths: {'vs': `${window.PUBLIC_URL || process.env.PUBLIC_URL}/static/js/vs`}
 }
 
 class DesignerEditor extends React.Component {
@@ -155,6 +152,7 @@ class DesignerEditor extends React.Component {
         {this.language.id ? '' : (<EmptyResult className="Empty" message="Select a file"/>)}
         <MonacoEditor options={options}
                       requireConfig={requireConfig}
+                      context={window.electronAmdContext}
                       value={this.value}
                       language={this.language.parent || this.language.id}
                       onChange={this.onChange.bind(this)}

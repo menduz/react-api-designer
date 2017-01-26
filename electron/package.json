@@ -1,0 +1,18 @@
+{
+  "name": "electron-api-designer",
+  "description": "A web editor for creating and sharing RAML API specifications",
+  "productName": "Api Designer",
+  "version": "0.1.0",
+  "main": "./main.js",
+  "scripts": {
+    "electron": "electron ./main.js",
+    "build-designer": "cd .. && npm run build && cd electron && npm run copy-build",
+    "copy-build": "cp -r ../build ./",
+    "electron-packager": "electron-packager . --icon ./build/logo.png.icns --out ./out --overwrite",
+    "build-package": "npm run build-designer && npm run electron-packager"
+  },
+  "devDependencies": {
+    "electron": "^1.4.15",
+    "electron-packager": "^8.5.1"
+  }
+}
