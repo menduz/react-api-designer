@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 import cx from 'classnames'
 import {setPosition} from '../editor/actions'
 import './Errors.css'
+import {traceErrorSelected} from './actions'
 
 class Errors extends Component {
 
@@ -43,15 +44,20 @@ class Errors extends Component {
     this.setState(isError ? {filterErrors: !this.state.filterErrors} : {filterWarnings: !this.state.filterWarnings})
   }
 
-  _renderItems(errors, trace = false) {
+  _filterOnlyRootErrors(error, trace) {
     const {filterErrors, filterWarnings} = this.state
+    return !trace ? (!error.isWarning && !filterErrors) || (error.isWarning && !filterWarnings) : true
+  }
+
+  _renderItems(errors, trace = false) {
+    const {onErrorClick, onTraceClick} = this.props
     return errors.filter(error => {
-      return (!error.isWarning && !filterErrors) || (error.isWarning && !filterWarnings)
+      return this._filterOnlyRootErrors(error, trace)
     }).map((error, index) => {
       return (
         <li key={index} className={error.isWarning ? 'warning' : 'error'}>
           {trace ? <span> ↳ </span> : null}
-          <a onClick={this.props.onErrorClick.bind(this, error)}>
+          <a onClick={!trace ? onErrorClick.bind(this, error) : onTraceClick.bind(this, error)}>
             {error.message} <strong>({error.startLineNumber}, {error.startColumn})</strong>
           </a>
           {error.trace && error.trace.length > 0 ?
@@ -89,7 +95,8 @@ const mapStateToProps = state => {
 
 const mapDispatch = dispatch => {
   return {
-    onErrorClick: error => dispatch(setPosition(error.startLineNumber, error.startColumn))
+    onErrorClick: error => dispatch(setPosition(error.startLineNumber, error.startColumn)),
+    onTraceClick: error => dispatch(traceErrorSelected(error))
   }
 }
 

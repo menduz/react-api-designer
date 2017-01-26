@@ -42,7 +42,7 @@ export const pathSelected = (path: Path) =>
     if (currentPath === path.toString()) return
 
     const file: File = ((element: any): File);
-    file.getContent()
+    return file.getContent()
       .then((content) => {
         dispatch(editor.actions.updateFile(content, path))
       })
