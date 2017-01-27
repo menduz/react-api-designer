@@ -1,6 +1,5 @@
 //@flow
 
-import React from 'react'
 import {connect} from 'react-redux'
 
 import type {State} from './NewFolderModel'
@@ -8,10 +7,6 @@ import NewFolderModal from './NewFolderModal'
 import {getAll} from './NewFolderSelectors'
 import {changeName, closeNewFolderDialog} from './NewFolderActions'
 import {addDirectory} from "../../tree/actions";
-
-type ContainerProps = {
-  folderName: string
-}
 
 const mapState = (rootState) => {
   const state: State = getAll(rootState)

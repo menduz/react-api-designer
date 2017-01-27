@@ -4,13 +4,7 @@ import request from "browser-request"
 
 import {addFile} from '../../tree/actions'
 import {updateCurrentFile} from '../../editor/actions'
-
-import {Repository} from '../../../repository'
-
-type GetState = () => {[key: string]: any}
-type ExtraArgs = {repositoryContainer: {repository: Repository}}
-type Action = {type: any} | (d: Dispatch, gS: GetState, eA: ExtraArgs) => void
-type Dispatch = (action: Action) => void
+import type {Dispatch} from '../../../types/types'
 
 export const HIDE = 'import/HIDE_DIALOG'
 export const SHOW = 'import/SHOW_DIALOG'

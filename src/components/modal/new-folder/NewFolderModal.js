@@ -16,10 +16,6 @@ type Props = {
 class NewFolderModal extends React.Component {
   props: Props
 
-  constructor(props: Props) {
-    super(props)
-  }
-
   handleSubmit() {
       const name = this.props.folderName;
       if (name)
@@ -34,7 +30,6 @@ class NewFolderModal extends React.Component {
     const {
       folderName,
       onCancel,
-      onSubmit,
       showModal
     } = this.props
 

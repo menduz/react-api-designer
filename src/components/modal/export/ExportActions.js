@@ -4,12 +4,9 @@ import Repository from '../../../repository/Repository'
 
 import {FILE_SAVE_FAILED, error} from "../../../repository-redux/actions"
 
-const fileDownload = require('react-file-download')
+import type {Dispatch, GetState, ExtraArgs} from '../../../types/types'
 
-type ExtraArgs = {repositoryContainer: {repository: Repository}}
-type GetState = () => {[key: string]: any}
-type Action = {type: any} | (d: Dispatch, gS: GetState, eA: ExtraArgs) => void
-type Dispatch = (action: Action) => void
+const fileDownload = require('react-file-download')
 
 export const HIDE = 'export/HIDE'
 export const SHOW = 'export/SHOW'

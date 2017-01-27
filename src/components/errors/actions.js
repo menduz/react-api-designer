@@ -1,8 +1,7 @@
 import {actions as treeActions} from '../tree/index'
 import {actions as editorActions} from '../editor/index'
 import {Path} from '../../repository/index'
-
-type Dispatch = (action: Action) => void
+import type {Dispatch} from '../../types/types'
 
 export const traceErrorSelected = (error) => {
   return (dispatch: Dispatch) => {

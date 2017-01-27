@@ -9,6 +9,8 @@ import Repository from '../repository/Repository'
 import {Path} from '../repository'
 import {isValidDirectory, isValidFile} from './selectors'
 
+import type {Dispatch, GetState, ExtraArgs} from '../types/types'
+
 export const INIT_FILE_SYSTEM = `DESIGNER/${PREFIX}/INIT_FILE_SYSTEM`
 
 export const FILE_ADDED = `DESIGNER/${PREFIX}/FILE_ADDED`
@@ -56,17 +58,32 @@ export const error = (type: string, errorMessage: string) => ({
     payload: errorMessage
 })
 
-type Action = {type: any}
-type Dispatch = (action: Action) => void
-type GetState = () => {[key: string]: any}
-type ExtraArgs = {repositoryContainer: {repository: Repository}}
-
-const defaultContent = (fileType: string) => {
+const defaultContent = (fileType?: string) => {
     switch (fileType) {
         case 'RAML10':
             return '#%RAML 1.0\ntitle: myApi'
         case 'RAML08':
             return '#%RAML 0.8\ntitle: myApi'
+      case 'TRAIT':
+        return '#%RAML 1.0 Trait'
+      case 'RESOURCE-TYPE':
+        return '#%RAML 1.0 ResourceType'
+      case 'LIBRARY':
+        return '#%RAML 1.0 Library\nusage:'
+      case 'OVERLAY':
+        return '#%RAML 1.0 Overlay\nextends:'
+      case 'EXTENSION':
+        return '#%RAML 1.0 Extension\nextends:'
+      case 'DATA-TYPE':
+        return '#%RAML 1.0 DataType'
+      case 'DOCUMENTATION-ITEM':
+        return '#%RAML 1.0 DocumentationItem\ntitle:\ncontent:'
+      case 'NAMED-EXAMPLE':
+        return '#%RAML 1.0 NamedExample\nvalue:'
+      case 'ANNOTATION-TYPE-DECLARATION':
+        return '#%RAML 1.0 AnnotationTypeDeclaration'
+      case 'SECURITY-SCHEME':
+        return '#%RAML 1.0 SecurityScheme\ntype:'
         default:
             return ''
     }
@@ -74,7 +91,7 @@ const defaultContent = (fileType: string) => {
 
 const REPOSITORY_NOT_LOADED = 'Repository not loaded!'
 
-export const addFile = (parentPath: Path, name: string, fileType: string)  =>
+export const addFile = (parentPath: Path, name: string, fileType?: string)  =>
     (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): any => {
         if (!repositoryContainer.isLoaded)
             return dispatch(error(FILE_ADD_FAILED, REPOSITORY_NOT_LOADED))

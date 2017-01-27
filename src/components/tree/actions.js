@@ -5,6 +5,7 @@ import {PREFIX} from './index'
 import {Repository} from '../../repository'
 
 import type {Node} from './model'
+import type {Dispatch, GetState, ExtraArgs} from '../../types/types'
 
 import * as editor from "../editor";
 import * as repository from "../../repository-redux";
@@ -15,11 +16,6 @@ import {Path} from '../../repository';
 export const NODE_SELECTED = `DESIGNER/${PREFIX}/NODE_SELECTED`
 export const PATH_SELECTED = `DESIGNER/${PREFIX}/PATH_SELECTED`
 export const TREE_CHANGED = `DESIGNER/${PREFIX}/TREE_CHANGED`
-
-type Action = {type: any} | (d: Dispatch, gS: GetState, eA: ExtraArgs) => void
-type Dispatch = (action: Action) => void
-type GetState = () => {[key: string]: any}
-type ExtraArgs = {repositoryContainer: {repository: Repository}}
 
 export const treeChanged = (tree: Node) => ({
   type: TREE_CHANGED,
@@ -48,7 +44,7 @@ export const pathSelected = (path: Path) =>
       })
   }
 
-export const addFile = (name: string, fileType: string) =>
+export const addFile = (name: string, fileType?: string) =>
   (dispatch: Dispatch, getState: GetState) => {
     const directory = getCurrentDirectory(getState());
     dispatch(repository.actions.addFile(directory.path, name, fileType))
