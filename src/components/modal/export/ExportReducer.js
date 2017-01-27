@@ -34,19 +34,19 @@ export default (state: State = initialState, action: any): State => {
         exportName: action.payload.name
       }
     }
-    case actions.EXPORT_ZIP_STARTED:
+    case actions.EXPORT_STARTED:
       return {
         ...state,
         isExporting: true
       }
-    case actions.EXPORT_ZIP_FAILED: {
+    case actions.EXPORT_FAILED: {
       return {
         ...state,
         isExporting: false,
         showError: true
       }
     }
-    case actions.EXPORT_ZIP_DONE:
+    case actions.EXPORT_DONE:
     default:
       return initialState
   }
