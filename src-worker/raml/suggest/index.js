@@ -30,10 +30,10 @@ export default class RamlSuggestions {
 
     return results.map(suggestion => {
       return {
-        kind: suggestion.category,
         label: suggestion.displayText || suggestion.text || '',
         insertText: suggestion.text || suggestion.displayText || '',
-        documentation: suggestion.description || ''
+        documentation: suggestion.description,
+        detail: suggestion.category === 'unknown' ? undefined : suggestion.category
       }
     })
   }
