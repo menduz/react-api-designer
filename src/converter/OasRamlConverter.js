@@ -1,6 +1,6 @@
 //@flow
 
-import converter from 'oas-raml-converter'
+// import converter from 'oas-raml-converter'
 import Repository from '../repository/Repository'
 import Element from '../repository/Element'
 
@@ -9,7 +9,7 @@ class OasRamlConverter {
 
   static convertToSwagger(repository: Repository, format) {
 
-    const toSwagger = new converter.Converter(converter.Formats.AUTO, converter.Formats.SWAGGER)
+    const toSwagger = {} // new converter.Converter(converter.Formats.AUTO, converter.Formats.SWAGGER)
     const options = {
       format: format,
       fsResolver: {

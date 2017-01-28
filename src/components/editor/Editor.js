@@ -109,22 +109,25 @@ class DesignerEditor extends React.Component {
     this.onSuggestCallback = null
   }
 
+  _lineLength(line) {
+    return this.editor.getModel().getLineLastNonWhitespaceColumn(Math.min(line, this.editor.getModel().getLineCount()))
+  }
+
+  _mapErrors(error) {
+    if (error.trace) return this._mapErrors(error.trace)
+
+    return {
+      ...error,
+      endColumn: error.endColumn || this._lineLength(error.startLineNumber),
+      severity: error.isWarning ? this.monaco.Severity.Warning : this.monaco.Severity.Error
+    }
+  }
+
   _showErrors(errors) {
     this.errors = errors
 
-    const markers = errors.map(error => {
-      return {
-        ...error,
-        endColumn: error.endColumn || this._lineLength(error.startLineNumber),
-        severity: error.isWarning ? this.monaco.Severity.Warning : this.monaco.Severity.Error
-      }
-    })
-
+    const markers = errors.map(error => this._mapErrors(error));
     this.monaco.editor.setModelMarkers(this.editor.getModel(), '', markers)
-  }
-
-  _lineLength(line) {
-    return this.editor.getModel().getLineLastNonWhitespaceColumn(Math.min(line, this.editor.getModel().getLineCount()))
   }
 
   _revealPosition(position) {

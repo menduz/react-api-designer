@@ -2,9 +2,8 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import cx from 'classnames'
-import {setPosition} from '../editor/actions'
 import './Errors.css'
-import {traceErrorSelected} from './actions'
+import {goToError} from './actions'
 
 class Errors extends Component {
 
@@ -44,27 +43,27 @@ class Errors extends Component {
     this.setState(isError ? {filterErrors: !this.state.filterErrors} : {filterWarnings: !this.state.filterWarnings})
   }
 
-  _filterOnlyRootErrors(error, trace) {
+  _filterRootErrors(error, trace) {
     const {filterErrors, filterWarnings} = this.state
     return !trace ? (!error.isWarning && !filterErrors) || (error.isWarning && !filterWarnings) : true
   }
 
   _renderItems(errors, trace = false) {
-    const {onErrorClick, onTraceClick} = this.props
+    const {onErrorClick} = this.props
+
     return errors.filter(error => {
-      return this._filterOnlyRootErrors(error, trace)
+      return this._filterRootErrors(error, trace)
     }).map((error, index) => {
       return (
         <li key={index} className={error.isWarning ? 'warning' : 'error'}>
           {trace ? <span> ↳ </span> : null}
-          <a onClick={!trace ? onErrorClick.bind(this, error) : onTraceClick.bind(this, error)}>
+          <a onClick={onErrorClick.bind(this, error)}>
             {error.message} <strong>({error.startLineNumber}, {error.startColumn})</strong>
           </a>
-          {error.trace && error.trace.length > 0 ?
+          {!(error.trace && error.trace.length > 0) ? null :
             <ol className="Trace-errors">
               {this._renderItems(error.trace, true)}
-            </ol> : null
-          }
+            </ol>}
         </li>
       )
     })
@@ -95,8 +94,7 @@ const mapStateToProps = state => {
 
 const mapDispatch = dispatch => {
   return {
-    onErrorClick: error => dispatch(setPosition(error.startLineNumber, error.startColumn)),
-    onTraceClick: error => dispatch(traceErrorSelected(error))
+    onErrorClick: error => dispatch(goToError(error))
   }
 }
 

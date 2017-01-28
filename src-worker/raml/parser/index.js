@@ -76,7 +76,7 @@ export default class RamlParser {
         endColumn: to && to.column ? to.column + 1 : undefined,
         isWarning: error.isWarning,
         path: error.path,
-        trace: error.trace
+        trace: error.trace ? RamlParser._mapErrors(error.trace) : undefined
       }
     });
   }

@@ -31,9 +31,10 @@ export default class RamlSuggestions {
     return results.map(suggestion => {
       return {
         label: suggestion.displayText || suggestion.text || '',
-        insertText: suggestion.text || suggestion.displayText || '',
+        insertText: suggestion.text,
         documentation: suggestion.description,
-        detail: suggestion.category === 'unknown' ? undefined : suggestion.category
+        detail: suggestion.category !== 'unknown' ? suggestion.category : undefined
+        // todo give range property for better competition
       }
     })
   }
