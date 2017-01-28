@@ -1,0 +1,10 @@
+.Preview .No-preview {
+  text-align: center;
+  color: #cacbcc;
+  padding-top: 12px;
+}
+
+.Preview > ul {
+  background: transparent !important;
+  padding-left: 20px !important;
+}

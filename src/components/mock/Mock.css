@@ -1,0 +1,8 @@
+.Mock > small {
+  color: #3c4b65;
+  padding-right: 6px;
+}
+
+.Mock > div {
+  display: inline-block;
+}

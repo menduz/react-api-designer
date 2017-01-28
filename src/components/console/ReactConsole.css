@@ -1,0 +1,20 @@
+.raml-docs-resource-viewer-0 [wide-layout].raml-docs-resource-viewer nav.raml-docs-resource-viewer {
+  display: none;
+}
+
+.raml-documentation-empty-state-0 {
+  background-color: transparent;
+}
+
+.Console-toolbar {
+  border-bottom: 2px solid rgba(39, 47, 51, .1);
+  padding: 5px 10px 9px;
+}
+
+.Console-toolbar .Mock {
+  text-align: right;
+}
+
+.Console-toolbar .Spinner-console {
+  float: left;
+}

@@ -1,0 +1,71 @@
+.Errors a {
+  cursor: pointer;
+}
+
+.Errors {
+  padding-top: 10px;
+}
+
+.Errors.No-errors, .Errors .Filter {
+  text-align: center;
+  color: #cacbcc;
+}
+
+.Errors .Filter a {
+  text-decoration: none;
+  padding: 10px;
+  color: #000;
+  font-size: 13px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.Errors ol {
+  list-style: none;
+  padding: 2px 0;
+}
+
+.Errors li {
+  padding-top: 2px;
+}
+
+.Errors span {
+  vertical-align: top;
+}
+
+.Errors a {
+  white-space: normal;
+  display: inline-block;
+}
+
+.Errors ol.Root-errors {
+  margin: 7px 15px;
+}
+
+.Errors ol.Trace-errors ol {
+  margin-left: 15px;
+}
+
+.Errors ol.Root-errors > li {
+  border-left: 2px #ff5959 solid;
+  padding-left: 7px;
+  margin: 12px 0;
+  font-size: 12px;
+}
+
+.Errors ol.Root-errors > li.warning {
+  border-color: #fff454;
+}
+
+.Filter a.toggled  {
+  color: #a6a7a7;
+  border-bottom: 3px #a6a7a7 solid;
+}
+
+.Filter .Filter-errors {
+  border-bottom: 3px #ff5959 solid;
+}
+
+.Filter .Filter-warnings {
+  border-bottom: 3px #fff454 solid;
+}

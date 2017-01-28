@@ -1,7 +1,11 @@
 [ignore]
+.*/node_modules/@mulesoft/.*
+.*/node_modules/oas-raml-converter/.*
 
 [include]
 
 [libs]
 
 [options]
+
+unsafe.enable_getters_and_setters=true

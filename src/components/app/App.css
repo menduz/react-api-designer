@@ -1,0 +1,21 @@
+.App-header {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50px;
+}
+
+.App-content {
+  padding-top: 50px;
+}
+
+.menu {
+  height: 35px;
+  padding-right: 20px;
+  border-bottom: 2px solid rgba(39,47,51,.1);
+}
+
+/* hide editor scrollbar and tab list active selector while dragging */
+.Split.is-dragging .Editor .decorationsOverviewRuler, .Split.is-dragging [data-anypoint-component="TabList"] > div {
+  display: none !important;
+}
