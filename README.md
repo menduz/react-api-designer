@@ -1,8 +1,10 @@
 # Api Designer
 
 ## Setup steps:
-
 ```bash
+# (Pre-requisite) need to be logged in into the Mulesoft npm repository (to download inner dependencies like components)
+npm login --registry=https://npm.mulesoft.com --scope=@mulesoft
+
 # install new console dependencies using bower
 bower install
 
