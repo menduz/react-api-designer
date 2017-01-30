@@ -8,6 +8,7 @@ import TabList from '@mulesoft/anypoint-components/lib/TabList'
 import Tab from '@mulesoft/anypoint-components/lib/Tab'
 import Tabs from '@mulesoft/anypoint-components/lib/Tabs'
 import {connect} from 'react-redux'
+import './info.css'
 
 class Info extends Component {
 

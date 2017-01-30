@@ -1,8 +1,8 @@
 .App-header {
-  /*height: 50px;*/
   background-color: #222;
   padding: 10px;
   color: white;
+  font-family: DIN Pro, sans-serif;
 }
 
 .App-header h2 {
