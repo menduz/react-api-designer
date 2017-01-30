@@ -1,4 +1,4 @@
-import converter from './converter'
+import OasRamlConverter from './converter'
 import jsonParse from './json'
 import RamlSuggestions from './raml/suggest'
 import RamlParser from './raml/parser'
@@ -63,12 +63,13 @@ const requestFilePromise = path => {
 
 const ramlParser = new RamlParser(requestFilePromise);
 const ramlSuggest = new RamlSuggestions(requestFilePromise);
+const converter = new OasRamlConverter(requestFilePromise);
+
+listenThenPost('convertToSwagger', data => converter.convertToSwagger(data.rootPath, data.format))
 
 listenThenPost('ramlParse', data => ramlParser.parse(data.path))
 
 listenThenPost('ramlSuggest', data => ramlSuggest.suggestions(data.content, data.cursorPosition, data.path, data.repository))
-
-listenThenPost('specConvert', data => converter(data.path, data.from, data.to, {format: data.format}))
 
 listen('requestFile', data => responseFile(data.path, data.error, data.content))
 
@@ -76,7 +77,7 @@ listenThenPost('jsonParse', data => jsonParse(data.text))
 
 listenThenPost('oasParse', data => {
   return new Promise((resolve, reject) => {
-    converter(data.text, "SWAGGER", "RAML10", {validateImport: true}).then(raml => {
+    converter.convert(data.text, "SWAGGER", "RAML10", {validateImport: true}).then(raml => {
       ramlParser.parseData(raml).then(resolve).catch(reject)
     }).catch(reject)
   })
