@@ -1,3 +1,32 @@
 .InfoPanel {
   font-family: DIN Pro, sans-serif;
+  padding-left: 20px;
+  white-space: normal;
+}
+
+.InfoPanelTabs {
+  border-bottom: 2px rgba(39, 47, 51, .1) solid;
+}
+
+.InfoPanelTabs ul {
+  margin: 0 0 5px;
+}
+
+.InfoPanelTabs li {
+  width: 80px;
+  margin: 0 17px;
+}
+
+.InfoPanelTabs li:after {
+  display: none;
+}
+
+.InfoPanel pre {
+  overflow: auto;
+}
+
+.Issue-icon {
+  position: absolute;
+  top: 5px;
+  left: 25px;
 }

@@ -1,7 +1,6 @@
 //@flow
 
 import React, {Component} from 'react'
-import {connect} from 'react-redux'
 import Header from '../header/Header'
 import Split from '../split/Split'
 import Menu from '../menu/Menu'
@@ -15,12 +14,12 @@ class App extends Component {
     return (
       <div className="App">
         <Header/>
-        <Split id="leftSplit" className="App-content">
+        <Split id="leftSplit" minSize={150} defaultSize={200} className="App-content">
           <div className="LeftPanel">
-              <Menu/>
-              <FileSystemTree/>
+            <Menu/>
+            <FileSystemTree/>
           </div>
-          <Split id="rightSplit" minSize={200} defaultSize={400} position="right" className="RightPanel">
+          <Split id="rightSplit" minSize={300} defaultSize={400} position="right" className="RightPanel">
             <Editor/>
             <Info/>
           </Split>
@@ -30,11 +29,4 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  const { editor } = state
-  return {
-    isParsing: editor.isParsing
-  }
-}
-
-export default connect(mapStateToProps)(App)
+export default App

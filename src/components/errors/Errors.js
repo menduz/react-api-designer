@@ -28,11 +28,11 @@ class Errors extends Component {
       <div className="Filter">
         <a className={cx('Filter-errors', { 'toggled': this.state.filterErrors })} href="#"
            onClick={this._filterIssues.bind(this, 'error')}>
-          <strong>{errors}</strong> {errors === 1 ? 'Error' : 'Errors'}
+          <strong className="Counter">{errors}</strong> {errors === 1 ? 'Error' : 'Errors'}
         </a>
         <a className={cx('Filter-warnings', { 'toggled': this.state.filterWarnings })} href="#"
            onClick={this._filterIssues.bind(this, 'warning')}>
-          <strong>{warnings}</strong> {warnings === 1 ? 'Warning' : 'Warnings'}
+          <strong className="Counter">{warnings}</strong> {warnings === 1 ? 'Warning' : 'Warnings'}
         </a>
       </div>
     )
