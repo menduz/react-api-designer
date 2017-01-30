@@ -32,6 +32,9 @@ module.exports = {
         from: 'node_modules/@mulesoft/anypoint-styles',
         to: 'anypoint-styles',
       }, {
+        from: 'node_modules/@mulesoft/anypoint-icons/lib/sprite-4.1.0.svg',
+        to: '../../assets/sprite-4.1.0.svg',
+      }, {
         from: 'node_modules/monaco-editor/min/vs',
         to: 'vs',
       }, {

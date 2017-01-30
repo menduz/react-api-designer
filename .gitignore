@@ -11,6 +11,7 @@ coverage
 build
 out
 public/static
+public/assets
 
 # misc
 .DS_Store

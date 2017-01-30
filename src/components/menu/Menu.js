@@ -29,25 +29,31 @@ class Menu extends React.Component {
       saveFile
     } = this.props
 
-    const options = [
+    const contextMenuOptions = [
       {label: 'Save', onClick: saveFile},
       {label: 'Export', onClick: showExportDialog},
       {label: 'Import', onClick: showImportDialog},
     ]
 
+    const addMenuOptions = [
+      {label: 'New file', onClick: showNewFileDialog},
+      {label: 'New folder', onClick: showNewFolderDialog},
+    ]
+
     return (
       <div className="menu">
-        <ContextMenu className="context-menu" options={options} triggerOn={['click']}>
+        <ContextMenu className="context-menu" options={contextMenuOptions} triggerOn={['click']}>
           <Icon className="context-menu-icon" name="contextmenu"/>
         </ContextMenu>
 
         <ImportModalContainer/>
         <ExportModalContainer/>
 
-        <button className="new-file-button" onClick={showNewFileDialog}/>
-        <NewFileModalContainer/>
+        <ContextMenu className="add-menu" options={addMenuOptions} triggerOn={['click']}>
+          <Icon className="plus-icon" name="plus"/>
+        </ContextMenu>
 
-        <button className="new-folder-button" onClick={showNewFolderDialog}/>
+        <NewFileModalContainer/>
         <NewFolderModalContainer/>
       </div>
     )
