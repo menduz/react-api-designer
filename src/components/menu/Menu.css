@@ -28,3 +28,24 @@
 .new-file-button:focus, .new-folder-button:focus, .save-file-button:focus {
     outline: none
 }
+
+.context-menu {
+    float: right;
+    cursor: pointer;
+}
+
+.context-menu > span > div {
+    margin-top: 7px;
+}
+
+.context-menu-icon {
+    width: 15px;
+    height: 24px;
+    opacity: 0;
+}
+
+.context-menu-icon > svg {
+    display: block;
+    height: 20px !important;
+    width: 20px !important;
+}
