@@ -6,7 +6,7 @@ import * as actions from './NewFileActions'
 
 const initialState : State = {
   fileName: '',
-  fileType: undefined,
+  fileType: fileTypes[0],
   fragmentType: fileTypes[0].subTypes[0],
   showModal: false
 }
@@ -34,7 +34,8 @@ export default (state: State = initialState, action: any): State => {
     case actions.SHOW:
       return {
         ...state,
-        showModal: true
+        showModal: true,
+        fileName: action.payload
       }
     case actions.HIDE:
       return initialState

@@ -37,9 +37,12 @@ export const changeName = (name: string) => ({
   payload: name
 })
 
-export const openNewFileDialog = () => ({
-  type: SHOW
-})
+export const openNewFileDialog = () => (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs) => {
+  dispatch({
+    type: SHOW,
+    payload: nextName('api.raml', repositoryContainer)
+  })
+}
 
 export const closeNewFileDialog = () => ({
   type: HIDE
