@@ -1,16 +1,74 @@
 .App-header {
-  background-color: #222;
-  padding: 10px;
+  background-color: #272f33;
   color: white;
   font-family: DIN Pro, sans-serif;
-}
-
-.App-header h2 {
-  margin: 0;
-  display: inline-block
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 60px;
 }
 
 .App-header .Spinner-parser {
   float: right;
   margin: 3px;
+}
+
+.Left-header > span {
+  margin-left: 16px;
+  position: relative;
+  top: 12px;
+}
+
+.Left-header > h2 {
+  display: inline-block;
+  margin: 0 0 0 24px;
+  font-size: 20pt;
+  position: relative;
+  top: 1px;
+  font-weight: normal;
+}
+
+.Left-header {
+  display: inline-block;
+  height: 100%;
+  background: url('assets/BackgroundAngle.svg') no-repeat;
+  color: #f9f9f9;
+}
+
+.Right-header {
+  display: flex;
+  height: 100%;
+  float: right;
+  background: black;
+  width: 170px;
+  align-items: center;
+  align-content: center;
+  justify-content: flex-end;
+}
+
+.Right-header > * {
+  cursor: pointer;
+  margin-right: 19px;
+  width: 14px;
+  text-align: center;
+}
+
+.Right-header > a:first-child {
+  margin-right: 22px;
+  margin-top: 1px;
+}
+
+.Right-header > span:last-child {
+  margin-right: 30px;
+  margin-top: 2px;
+}
+
+.Right-header > .Divider {
+  width: 2px;
+  margin-right: 22px;
+}
+
+.Divider {
+  height: 30px;
+  border-left: 1px solid #595959;
 }
