@@ -9,6 +9,7 @@ import Icon from '@mulesoft/anypoint-icons/lib/Icon'
 import NewFolderModalContainer from '../modal/new-folder/NewFolderModalContainer'
 import NewFileModalContainer from '../modal/new-file/NewFileModalContainer'
 import ImportModalContainer from '../modal/import/ImportModalContainer'
+import ConflictModalContainer from '../modal/import/conflict/ConflictModalContainer'
 import ExportModalContainer from '../modal/export/ExportModalContainer'
 
 import {openNewFolderDialog} from '../modal/new-folder/NewFolderActions'
@@ -47,6 +48,7 @@ class Menu extends React.Component {
         </ContextMenu>
 
         <ImportModalContainer/>
+        <ConflictModalContainer/>
         <ExportModalContainer/>
 
         <ContextMenu className="add-menu" options={addMenuOptions} triggerOn={['click']}>

@@ -36,6 +36,23 @@ export default (state: State = initialState, action: any): State => {
         ...state,
         fileToImport: action.payload.event.target
       }
+    case actions.UPLOAD_TEMP_FILE:
+      return {
+        ...state,
+        fileNameToImport:action.payload.fileName,
+        fileType:action.payload.type,
+        fileToImport: action.payload.content
+      }
+    case actions.SHOW_CONFLICT_MODAL:
+      return {
+        ...state,
+        showConflictModal: true
+      }
+    case actions.HIDE_CONFLICT_MODAL:
+      return {
+        ...state,
+        showConflictModal: false
+      }
     case actions.IMPORT_STARTED:
       return {
         ...state,

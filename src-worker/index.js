@@ -67,6 +67,8 @@ const converter = new OasRamlConverter(requestFilePromise);
 
 listenThenPost('convertToSwagger', data => converter.convertToSwagger(data.rootPath, data.format))
 
+listenThenPost('convertUrlToRaml', data => converter.convertUrlToRaml(data.rootPath))
+
 listenThenPost('ramlParse', data => ramlParser.parse(data.path))
 
 listenThenPost('ramlSuggest', data => ramlSuggest.suggestions(data.content, data.cursorPosition, data.path, data.repository))

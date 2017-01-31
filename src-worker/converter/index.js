@@ -41,6 +41,11 @@ export default class OasRamlConverter {
     return toSwagger.convertFile(rootPath, o)
   }
 
+  convertUrlToRaml(url) {
+    const toRaml = new converter.Converter(converter.Formats.AUTO, converter.Formats.RAML10)
+    return toRaml.convertFile(url)
+  }
+
   convert(text, from, to, options) {
     return new Promise((resolve, reject) => {
       const fromFormat = converter.Formats[from];

@@ -2,21 +2,12 @@
 
 import Repository from '../Repository'
 import Element from '../Element'
+import {isRamlFile, isApiDefinition} from './utils'
 
 
 export default (repository:Repository) => {
 
-  function getFirstLine(raml) {
-    return raml.split(/\r\n|\n/)[0];
-  }
 
-  function isRamlFile(name) {
-    return name.endsWith('.raml');
-  }
-
-  function isApiDefinition(raml) {
-    return /^#%RAML\s(0\.8|1\.0)\s*$/.test(getFirstLine(raml));
-  }
 
   const ramls = []
 

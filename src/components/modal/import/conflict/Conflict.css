@@ -1,0 +1,11 @@
+.conflict-modal div[data-anypoint-component="ModalBody"] {
+    overflow: visible;
+}
+
+.input-file {
+    margin-top: 15px;
+}
+
+.import-url, .import-file {
+    margin-top: 15px;
+}
