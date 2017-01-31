@@ -80,7 +80,7 @@ class NewFileModal extends React.Component {
                     onChange={onFragmentTypeChange}
                     clearable={false}/>
             <Popover className="info-small-icon" content={this.getPopoverContent(fragmentType)} triggerOn={['hover']} anchorPosition="br">
-              <Icon name="info-small"/>
+              <Icon name="info-small" size={19} fill={"rgb(124, 125, 126)"}/>
             </Popover>
           </div>) : null}
 
