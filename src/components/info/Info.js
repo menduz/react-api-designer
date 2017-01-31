@@ -35,24 +35,21 @@ class Info extends Component {
     const {errors} = this.props
     const amount = errors.length
     return (
-      <div className="Info">
-        <Icon name="detail-pane" className="Issue-icon"/>
-        <Tabs selectedIndex={selectedTab} stretch={false} className="InfoPanel">
-          <TabList className="InfoPanelTabs">
-            <Tab onClick={this._onTabSelect.bind(this, 0)}>Preview</Tab>
-            <Tab onClick={this._onTabSelect.bind(this, 1)}>
-              <strong className="Counter"> {amount !== 0 ? amount : null} </strong>
-              {amount === 1 ? 'Issue' : 'Issues'}
-            </Tab>
-          </TabList>
-          <TabPanel>
-            {selectedTab === 0 ? <Preview/> : null}
-          </TabPanel>
-          <TabPanel>
-            {selectedTab === 1 ? <Errors/> : null}
-          </TabPanel>
-        </Tabs>
-      </div>
+      <Tabs selectedIndex={selectedTab} stretch={false} className="InfoPanel">
+        <TabList className="InfoPanelTabs">
+          <Tab onClick={this._onTabSelect.bind(this, 0)}>Preview</Tab>
+          <Tab onClick={this._onTabSelect.bind(this, 1)}>
+            <strong className="Counter"> {amount !== 0 ? amount : null} </strong>
+            {amount === 1 ? 'Issue' : 'Issues'}
+          </Tab>
+        </TabList>
+        <TabPanel>
+          {selectedTab === 0 ? <Preview/> : null}
+        </TabPanel>
+        <TabPanel>
+          {selectedTab === 1 ? <Errors/> : null}
+        </TabPanel>
+      </Tabs>
     )
   }
 }
