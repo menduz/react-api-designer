@@ -15,7 +15,7 @@
   text-decoration: none;
   padding: 10px;
   color: #000;
-  font-size: 13px;
+  font-size: 10pt;
   margin-left: 5px;
   margin-right: 5px;
 }
@@ -39,7 +39,7 @@
 }
 
 .Errors ol.Root-errors {
-  margin: 7px 15px;
+  margin: 15px 7px;
 }
 
 .Errors ol.Trace-errors ol {
@@ -49,7 +49,7 @@
 .Errors ol.Root-errors > li {
   border-left: 2px #ff5959 solid;
   padding-left: 7px;
-  margin: 12px 0;
+  margin: 7px 0;
   font-size: 12px;
 }
 
@@ -63,9 +63,9 @@
 }
 
 .Filter .Filter-errors {
-  border-bottom: 3px #ff5959 solid;
+  border-bottom: 3px #ff5a59 solid;
 }
 
 .Filter .Filter-warnings {
-  border-bottom: 3px #fff454 solid;
+  border-bottom: 3px #eabf6a solid;
 }

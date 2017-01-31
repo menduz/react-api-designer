@@ -1,7 +1,11 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+}
+
+/** Overrides anypoint-styles.css small font */
+html {
+  font-size: 100%;
 }
 
 *, :after, :before {

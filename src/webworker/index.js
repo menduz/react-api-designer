@@ -69,8 +69,8 @@ export default class WebWorker {
     return this._postAndExpect('ramlSuggest', {content, cursorPosition, path, repository})
   }
 
-  specConvert(path, from, to, format) {
-    return this._postAndExpect('specConvert', {path, from, to, format})
+  convertToSwagger(rootPath, format) {
+    return this._postAndExpect('convertToSwagger', {rootPath, format})
   }
 
   _listen(type, fn) {

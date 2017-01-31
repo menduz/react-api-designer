@@ -19,7 +19,7 @@ class FSResolverExtImpl {
    * @param path
    */
   list(path: string): string[] {
-    throw new Error('RamlParser should call listAsync instead of content. File: ' + path)
+    throw new Error('RamlSuggest should call listAsync instead of content. list: ' + path)
   }
 
   /**
@@ -35,7 +35,7 @@ class FSResolverExtImpl {
    * @param path
    */
   exists(path: string): boolean {
-    throw new Error('RamlParser should call existsAsync instead of content. File: ' + path)
+    throw new Error('RamlSuggest should call existsAsync instead of exists. File: ' + path)
   }
 
   /**
@@ -51,7 +51,7 @@ class FSResolverExtImpl {
    * @param path
    */
   isDirectory(path: string): boolean {
-    throw new Error('RamlParser should call isDirectoryAsync instead of content. File: ' + path)
+    throw new Error('RamlSuggest should call isDirectoryAsync instead of isDirectory. File: ' + path)
   }
 
   /**
@@ -67,7 +67,7 @@ class FSResolverExtImpl {
    * @param path
    */
   content(path: string): string {
-    throw new Error('RamlParser should call contentAsync instead of content. File: ' + path)
+    throw new Error('RamlSuggest should call contentAsync instead of content. File: ' + path)
   }
 
   /**

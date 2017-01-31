@@ -3,24 +3,27 @@
 import React from 'react'
 
 import Modal from '@mulesoft/anypoint-components/lib/Modal'
+import Popover from '@mulesoft/anypoint-components/lib/Popover'
 import Select from '@mulesoft/anypoint-components/lib/Select'
 import TextField from '@mulesoft/anypoint-components/lib/TextField'
-
+import Icon from '@mulesoft/anypoint-icons/lib/Icon'
+import type {FileType} from './NewFileModel'
+import {fileTypes} from './NewFileModel'
 import './NewFile.css'
 
 type Props = {
   fileName: string,
-  fileType: string,
+  fileType: object,
   fragmentType: string,
   onSubmit: () => void,
   onCancel: () => void,
-  onFileTypeChange: () => void,
-  onFragmentTypeChange: () => void,
+  onFileTypeChange: (file: FileType) => void,
+  onFragmentTypeChange: (file: FileType) => void,
   onNameChange: () => void,
   showModal: Boolean
 }
 
-class NewFolderModal extends React.Component {
+class NewFileModal extends React.Component {
   props: Props
 
   onNameChange(event: any) {
@@ -28,10 +31,17 @@ class NewFolderModal extends React.Component {
   }
 
   handleSubmit() {
-    const type = this.props.fileType === 'RAML10' ? this.props.fragmentType : this.props.fileType
-    const name = this.props.fileName
-    if (type && name)
-      this.props.onSubmit(name, type)
+    const {
+      fileName,
+      fileType,
+      fragmentType,
+      onSubmit
+    } = this.props
+
+    if (fileName) {
+      const type = fileType && fileType.subTypes ? fragmentType : fileType
+      onSubmit(fileName, type ? type.value : undefined)
+    }
   }
 
   render() {
@@ -45,61 +55,53 @@ class NewFolderModal extends React.Component {
       showModal
     } = this.props
 
-    const fileTypes = [
-      {value: 'RAML10', label: 'RAML 1.0'},
-      {value: 'RAML08', label: 'RAML 0.8'},
-      {value: 'OTHER', label: 'Other'}
-    ]
+    if (!showModal) return null
 
-    const fragments = [
-      {value: 'RAML10', label: 'Spec'},
-      {value: 'TRAIT', label: 'Trait'},
-      {value: 'RESOURCE-TYPE', label: 'Resource Type'},
-      {value: 'LIBRARY', label: 'Library'},
-      {value: 'OVERLAY', label: 'Overlay'},
-      {value: 'EXTENSION', label: 'Extension'},
-      {value: 'DATA-TYPE', label: 'Type'},
-      {value: 'DOCUMENTATION-ITEM', label: 'User Documentation'},
-      {value: 'NAMED-EXAMPLE', label: 'Example'},
-      {value: 'ANNOTATION-TYPE-DECLARATION', label: 'Annotation'},
-      {value: 'SECURITY-SCHEME', label: 'Security Scheme'}
-    ]
+    return (
+      <Modal className="new-file"
+             title="Add new file"
+             onCancel={onCancel}
+             onSubmit={this.handleSubmit.bind(this)}
+             onEsc={onCancel}
+             onClickOverlay={onCancel}>
 
-    if (showModal) {
-      return (
-        <Modal className="new-file"
-               title="Add new file"
-               onCancel={onCancel}
-               onSubmit={this.handleSubmit.bind(this)}
-               onEsc={onCancel}
-               onClickOverlay={onCancel}
-        >
-          <Select className="selected-file-type"
-                  options={fileTypes}
-                  value={fileType}
-                  onChange={onFileTypeChange}
-                  clearable={false}
-          />
+        <Select className="selected-file-type"
+                options={fileTypes}
+                value={fileType}
+                onChange={onFileTypeChange}
+                clearable={false}
+                placeholder="Type..."/>
 
-          {fileType === 'RAML10' ?
+        {fileType && fileType.subTypes ?
+          (<div className="fragment-type">
             <Select className="selected-fragment"
-                    options={fragments}
+                    options={fileType.subTypes}
                     value={fragmentType}
                     onChange={onFragmentTypeChange}
-                    clearable={false}
-            /> : null}
+                    clearable={false}/>
+            <Popover className="info-small-icon" content={this.getPopoverContent(fragmentType)} triggerOn={['hover']} anchorPosition="br">
+              <Icon name="info-small"/>
+            </Popover>
+          </div>) : null}
 
-          <TextField className="new-file-name"
-                     value={fileName}
-                     placeholder="File name..."
-                     onChange={this.onNameChange.bind(this)}
-                     autoFocus
-          />
-        </Modal>
-      )
-    }
-    return null
+        <TextField className="new-file-name"
+                   value={fileName}
+                   placeholder="Name..."
+                   onChange={this.onNameChange.bind(this)}
+                   autoFocus/>
+      </Modal>
+    )
+  }
+
+  getPopoverContent(fragmentType:FileType) {
+    const link = 'https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md#';
+    return (
+      <div className="new-fragment-info">
+        {fragmentType.info}
+        <a href={link + fragmentType.link} target="_blank">(read more)</a>
+      </div>
+    );
   }
 }
 
-export default NewFolderModal
+export default NewFileModal

@@ -46,45 +46,29 @@ class ExportModal extends React.Component {
       exportName
     } = this.props
 
-    var exportTypes = [
-      {
-        value: 'zip',
-        label: 'Project zip'
-      },
-      {
-        value: 'json',
-        label: 'OAS Json'
-      },
-      {
-        value: 'yaml',
-        label: 'OAS Yaml'
-      }
-    ]
-
     if (showModal) {
       return (
         <Modal className="export-modal"
                onEnter={this.handleSubmit.bind(this)}
                onEsc={onCancel}
-               onClickOverlay={onCancel}
-        >
+               onClickOverlay={onCancel}>
 
           <ModalHeader>
-            <h2>Export file</h2>
+            <h2>Export</h2>
           </ModalHeader>
 
           <ModalBody>
-            <label>Format: </label>
             <Select name="selected-export-type"
-                    options={exportTypes}
+                    options={ExportModal.EXPORT_TYPES}
                     value={type}
                     onChange={onExportTypeChange}
                     clearable={false}
             />
             <TextField className="export-name"
                        value={exportName}
-                       placeholder="Export name..."
+                       placeholder="Name..."
                        onChange={this.onNameChange.bind(this)}
+                       autoFocus
             />
           </ModalBody>
 
@@ -99,6 +83,21 @@ class ExportModal extends React.Component {
     }
     return null
   }
+
+  static EXPORT_TYPES = [
+    {
+      value: 'zip',
+      label: 'Project zip'
+    },
+    {
+      value: 'json',
+      label: 'OAS Json'
+    },
+    {
+      value: 'yaml',
+      label: 'OAS Yaml'
+    }
+  ]
 }
 
 export default ExportModal

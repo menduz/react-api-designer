@@ -19,3 +19,7 @@
 .Split.is-dragging .Editor .decorationsOverviewRuler, .Split.is-dragging [data-anypoint-component="TabList"] > div {
   display: none !important;
 }
+
+.Counter {
+  font-family: sans-serif;
+}

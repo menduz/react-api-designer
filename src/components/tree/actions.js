@@ -22,20 +22,21 @@ export const treeChanged = (tree: Node) => ({
   payload: tree
 })
 
-export const pathSelected = (path: Path) =>
+export const pathSelected = (path: Path) : Promise =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs) => {
     dispatch({
       type: NODE_SELECTED,
       payload: path
     })
 
-    if (!repositoryContainer.isLoaded) return
+    if (!repositoryContainer.isLoaded) return Promise.resolve()
+
     const repository: Repository = repositoryContainer.repository
     const element = repository.getByPath(path);
-    if (!element || element.isDirectory()) return
+    if (!element || element.isDirectory()) return Promise.resolve()
 
     const currentPath = editor.selectors.getCurrentFilePath(getState());
-    if (currentPath === path.toString()) return
+    if (currentPath === path.toString()) return Promise.resolve()
 
     const file: File = ((element: any): File);
     return file.getContent()
