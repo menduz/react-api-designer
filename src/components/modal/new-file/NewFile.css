@@ -1,3 +1,31 @@
 .new-file .new-file-name, .new-file .selected-fragment {
     padding-top: 10px;
 }
+
+.new-file .fragment-type {
+    position: relative;
+}
+
+.new-file .fragment-type .info-small-icon {
+    position: absolute;
+    right: -32px;
+    top: 20px
+}
+
+.new-fragment-info {
+    background-color: #272f33;
+    color: #fff;
+    font-family: DIN Pro,sans-serif;
+    font-size: 13px;
+    padding: 7px 10px;
+    max-width: 310px;
+}
+
+.new-fragment-info a {
+    color: #fff;
+    padding-left: 5px;
+}
+
+div[data-reactroot] > .rc-trigger-popup {
+    z-index: 2000
+}

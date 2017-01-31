@@ -43,17 +43,15 @@ class Errors extends Component {
     this.setState(isError ? {filterErrors: !this.state.filterErrors} : {filterWarnings: !this.state.filterWarnings})
   }
 
-  _filterRootErrors(error, trace) {
+  _filterRootErrors(error) {
     const {filterErrors, filterWarnings} = this.state
-    return !trace ? (!error.isWarning && !filterErrors) || (error.isWarning && !filterWarnings) : true
+    return (!error.isWarning && !filterErrors) || (error.isWarning && !filterWarnings)
   }
 
-  _renderItems(errors, trace = false) {
+  _renderErrors(errors, trace = false) {
     const {onErrorClick} = this.props
 
-    return errors.filter(error => {
-      return this._filterRootErrors(error, trace)
-    }).map((error, index) => {
+    return errors.map((error, index) => {
       return (
         <li key={index} className={error.isWarning ? 'warning' : 'error'}>
           {trace ? <span> ↳ </span> : null}
@@ -62,7 +60,7 @@ class Errors extends Component {
           </a>
           {!(error.trace && error.trace.length > 0) ? null :
             <ol className="Trace-errors">
-              {this._renderItems(error.trace, true)}
+              {this._renderErrors(error.trace, true)}
             </ol>}
         </li>
       )
@@ -74,11 +72,13 @@ class Errors extends Component {
     if (!errors || errors.length === 0)
       return <div className="Errors No-errors">No errors</div>
 
+    const filteredErrors = errors.filter(error => this._filterRootErrors(error))
+
     return (
       <div className="Errors">
         {this._renderFilters(errors)}
         <ol className="Root-errors">
-          {this._renderItems(errors)}
+          {this._renderErrors(filteredErrors)}
         </ol>
       </div>
     )

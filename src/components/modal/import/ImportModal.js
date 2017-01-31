@@ -30,19 +30,12 @@ class ImportModal extends React.Component {
   props: Props
 
   getType(): string {
-    switch (this.props.selectValue) {
-      case 'OAS-file':
-      case 'OAS-url':
-        return 'SWAGGER'
-      case 'RAML-file':
-      case 'RAML-url':
-      default:
-        return 'RAML10'
-    }
+    const selectValue = this.props.selectValue;
+    return ImportModal.IMPORT_TYPES.find(v => v.value === selectValue).type
   }
 
   handleSubmit() {
-    var fileType = this.getType()
+    const fileType = this.getType();
     if (this.props.fileToImport) {
       this.props.onSubmitWithFile(this.props.fileToImport, fileType)
     } else {
@@ -65,25 +58,6 @@ class ImportModal extends React.Component {
       isImporting
     } = this.props
 
-    var importTypes = [
-      {
-        value: 'RAML-file',
-        label: 'RAML file'
-      },
-      {
-        value: 'RAML-url',
-        label: 'RAML url'
-      },
-      {
-        value: 'OAS-file',
-        label: 'OAS file'
-      },
-      {
-        value: 'OAS-url',
-        label: 'OAS url'
-      }
-    ]
-
     if (showModal) {
       return (
         <Modal className="import-modal"
@@ -94,23 +68,23 @@ class ImportModal extends React.Component {
                onClickOverlay={onCancel}>
 
           <ModalHeader>
-            <h2>Import file</h2>
+            <h2>Import</h2>
           </ModalHeader>
 
           <ModalBody>
             <Select name="import-type"
-                    options={importTypes}
+                    options={ImportModal.IMPORT_TYPES}
                     value={selectValue}
                     onChange={onImportTypeChange}
-                    clearable={false}/>
+                    clearable={false}
+            />
             {selectValue === 'RAML-file' || selectValue === 'OAS-file' ?
               <input className="import-file" type="file" onChange={onFileUpload}/> :
               <TextField className="import-url"
                          value={url}
                          placeholder="Url..."
                          onChange={this.handleUrlChange.bind(this)}
-                         autoFocus
-              />
+                         autoFocus/>
             }
           </ModalBody>
 
@@ -124,6 +98,29 @@ class ImportModal extends React.Component {
     }
     return null
   }
+
+  static IMPORT_TYPES = [
+    {
+      value: 'RAML-file',
+      label: 'RAML file',
+      type: 'RAML10'
+    },
+    {
+      value: 'RAML-url',
+      label: 'RAML url',
+      type: 'RAML10'
+    },
+    {
+      value: 'OAS-file',
+      label: 'OAS file',
+      type: 'SWAGGER'
+    },
+    {
+      value: 'OAS-url',
+      label: 'OAS url',
+      type: 'SWAGGER'
+    }
+  ];
 }
 
 export default ImportModal
