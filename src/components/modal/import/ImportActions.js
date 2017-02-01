@@ -1,7 +1,7 @@
 //@flow
 
 import request from "browser-request";
-import {isRaml08, nextName} from "../../../repository/helper/utils";
+import {isApiDefinition, nextName} from "../../../repository/helper/utils";
 import {addFile} from "../../tree/actions";
 import {updateCurrentFile} from "../../editor/actions";
 import type {Dispatch} from "../../../types/types";
@@ -59,12 +59,14 @@ export const uploadFile = (event: any) => ({
 export const importFileFromUrl = (url: string, fileType: string) =>
   (dispatch: Dispatch, getState, {worker, repositoryContainer}: ExtraArgs) => {
 
-    function convertFromUrl(url, fileType) {
+    function nameFromUrl(url) {
+      return url.substring(url.lastIndexOf('/') + 1, url.length)
+    }
+
+    function convertFromUrl(url, fileType, baseName) {
       console.log('starting convertUrlToRaml ' + url)
       worker.convertUrlToRaml(url).then(c => {
-        const urlName = url.substring(url.lastIndexOf('/') + 1, url.length)
-        const fileName = nextName((urlName.endsWith(".yaml") || urlName.endsWith(".json"))?
-        urlName.substring(0, urlName.length - 4) + 'raml':urlName, repositoryContainer)
+        const fileName = baseName(nameFromUrl(url))
         dispatch(addFile(fileName, fileType))
         setTimeout(() => {
           dispatch(updateCurrentFile(c))
@@ -79,7 +81,11 @@ export const importFileFromUrl = (url: string, fileType: string) =>
 
     dispatch({type: IMPORT_STARTED})
     if (fileType === 'SWAGGER') {
-      convertFromUrl(url, fileType)
+      function baseName(name) {
+        return nextName((name.endsWith(".yaml") || name.endsWith(".json"))?
+        name.substring(0, name.length - 4) + 'raml':name, repositoryContainer)
+      }
+      convertFromUrl(url, fileType, baseName)
     }
     else {
       const req = {
@@ -93,11 +99,13 @@ export const importFileFromUrl = (url: string, fileType: string) =>
           dispatch({type: IMPORT_DONE})
         }
         else {
-          if (isRaml08(response.response)) {
-            convertFromUrl(url, fileType)
+          if (isApiDefinition(response.response)) {
+            function baseName(name) {
+              return nextName(name.endsWith('.raml')?name:name + '.raml', repositoryContainer)
+            }
+            convertFromUrl(url, fileType, baseName)
           } else {
-            const urlName = url.substring(url.lastIndexOf('/') + 1, url.length)
-            const fileName = nextName((urlName.endsWith('.raml'))?urlName:urlName + '.raml', repositoryContainer)
+            const fileName = nextName(nameFromUrl(url), repositoryContainer)
             dispatch(addFile(fileName, fileType))
             setTimeout(() => {
               dispatch(updateCurrentFile(response.response))
