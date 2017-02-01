@@ -1,0 +1,51 @@
+import React, {Component} from 'react'
+import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
+import {Mock} from '../../mock'
+import './Console.css'
+
+class Console extends Component {
+
+  componentDidMount() {
+    console.log("componentDidMount...")
+    window.angular.bootstrap(this.angularContainer, ['ramlConsoleApp'])
+    this.updateConsole(this.props)
+  }
+
+  shouldComponentUpdate(nextProps) {
+    console.log("shouldComponentUpdate...")
+    this.updateConsole(nextProps)
+    return false
+  }
+
+  updateConsole(nextProps) {
+    const containerElement = this.angularContainer
+    const scope = window.angular.element(containerElement).scope();
+    if (scope.raml !== nextProps.raml) {
+      this.spinner.classList.remove("hide")
+      console.time("updatingConsole")
+      scope.$apply(() => {
+        console.log("componentDidUpdate...")
+        scope.raml = nextProps.raml
+        console.timeEnd("updatingConsole")
+        this.spinner.classList.add("hide")
+      })
+    }
+  }
+
+  render() {
+    return (
+      <div id="angular-container" ref={angularContainer => this.angularContainer = angularContainer}>
+        <div className="Console-toolbar">
+          <div className="Spinner-console hide" ref={spinner => this.spinner = spinner}>
+            <Spinner size="s"/>
+          </div>
+          <Mock/>
+        </div>
+        <raml-console raml="raml"
+                      options="{singleView: true, disableThemeSwitcher: true, disableRamlClientGenerator: true}"/>
+      </div>
+    )
+  }
+}
+
+export default Console

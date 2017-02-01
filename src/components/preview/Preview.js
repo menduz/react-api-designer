@@ -1,7 +1,7 @@
 //@flow
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {ReactConsole} from '../console'
+import {Console as AngularConsole} from '../raml-console/angular-console'
 import JSONTree from 'react-json-tree'
 import ReactMarkdown from 'react-markdown'
 import {getFileContent} from "../../repository-redux/selectors"
@@ -15,7 +15,7 @@ class Preview extends Component {
     switch (language.id) {
       case 'oas':
       case 'raml':
-        return <ReactConsole raml={parsedObject}/>
+        return <AngularConsole raml={parsedObject}/>
       case 'md':
         return <ReactMarkdown source={text}/>
       default:

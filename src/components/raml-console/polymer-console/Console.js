@@ -2,10 +2,10 @@
 
 import React, {Component} from 'react'
 import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
-import './ReactConsole.css'
-import {Mock} from '../mock'
+import {Mock} from '../../mock'
+import './Console.css'
 
-class ReactConsole extends Component {
+class Console extends Component {
 
   constructor(props) {
     super(props)
@@ -41,10 +41,10 @@ class ReactConsole extends Component {
           {loading && <div className="Spinner-console"><Spinner size="s"/></div>}
           <Mock/>
         </div>
-        <api-console-raml ref={console => this.console = console } narrow/>
+        <api-console-raml ref={console => this.console = console} narrow/>
       </div>
     )
   }
 }
 
-export default ReactConsole
+export default Console

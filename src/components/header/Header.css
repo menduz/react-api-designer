@@ -6,11 +6,15 @@
   left: 0;
   right: 0;
   height: 60px;
+  display: inline-flex;
 }
 
 .App-header .Spinner-parser {
-  float: right;
-  margin: 3px;
+  display: inline-flex;
+  flex-grow: 1;
+  align-self: center;
+  justify-content: flex-end;
+  margin-right: 30px;
 }
 
 .Left-header > span {

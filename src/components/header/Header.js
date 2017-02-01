@@ -17,8 +17,8 @@ class Header extends Component {
           <Icon name="api-designer-color" size={38}/>
           <h2>{projectName ? projectName : 'API designer'}</h2>
         </div>
+        <div className="Spinner-parser">{isParsing ? <Spinner size="s"/> : null}</div>
         <div className="Right-header">
-          {isParsing ? <div className="Spinner-parser"><Spinner size="s"/></div> : null}
           <a><img src={exchangeIcon} height="20px"/></a>
           <span className="Divider"/>
           <Icon name="support-small" size={19} fill={"white"}/>
