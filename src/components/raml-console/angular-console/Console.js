@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
 import {Mock} from '../../mock'
 import './Console.css'
+import './console-overrides.css'
 
 class Console extends Component {
 
@@ -19,7 +20,7 @@ class Console extends Component {
 
   updateConsole(nextProps) {
     const containerElement = this.angularContainer
-    const scope = window.angular.element(containerElement).scope();
+    const scope = window.angular.element(containerElement).scope()
     if (scope.raml !== nextProps.raml) {
       this.spinner.classList.remove("hide")
       console.time("updatingConsole")
@@ -34,7 +35,7 @@ class Console extends Component {
 
   render() {
     return (
-      <div id="angular-container" ref={angularContainer => this.angularContainer = angularContainer}>
+      <div className="angular-container" ref={angularContainer => this.angularContainer = angularContainer}>
         <div className="Console-toolbar">
           <div className="Spinner-console hide" ref={spinner => this.spinner = spinner}>
             <Spinner size="s"/>
@@ -42,7 +43,7 @@ class Console extends Component {
           <Mock/>
         </div>
         <raml-console raml="raml"
-                      options="{singleView: true, disableThemeSwitcher: true, disableRamlClientGenerator: true}"/>
+                      options="{singleView: true, disableThemeSwitcher: true, disableRamlClientGenerator: true, disableTitle: true}"/>
       </div>
     )
   }

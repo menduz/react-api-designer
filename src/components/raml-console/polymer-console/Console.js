@@ -41,7 +41,7 @@ class Console extends Component {
           {loading && <div className="Spinner-console"><Spinner size="s"/></div>}
           <Mock/>
         </div>
-        <api-console-raml ref={console => this.console = console} narrow/>
+        <api-console-raml ref={console => this.console =  console} narrow/>
       </div>
     )
   }

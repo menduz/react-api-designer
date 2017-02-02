@@ -36,8 +36,3 @@
   left: 0;
   right: 0;
 }
-
-.InfoPanel h3.raml-console-resource-heading {
-  display: inline-flex;
-  flex-wrap: wrap;
-}
