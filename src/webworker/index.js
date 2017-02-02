@@ -3,19 +3,17 @@ export default class WebWorker {
   constructor(fileRepository) {
     this.worker = new Worker(`${window.PUBLIC_URL || process.env.PUBLIC_URL}/static/js/api-designer-worker.js`)
 
-    this._listen('requestFile', (request) => {
-      const that = this
-      fileRepository.getFile(request.path).then(c => {
-        that._post('requestFile', {
-          path: request.path,
-          content: c
-        })
-
-      })
-    })
-
     this.parsing = false
     this.parsingPending = new Map()
+
+    this._listen('requestFile', (req) => {
+      const path = req.path;
+      fileRepository.getFile(path).then(content => {
+        this._post('requestFile', {path, content})
+      }).catch(error => {
+        this._post('requestFile', {path, error})
+      })
+    })
   }
 
   oasParse(data) {

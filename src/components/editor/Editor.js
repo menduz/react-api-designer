@@ -46,6 +46,7 @@ class DesignerEditor extends React.Component {
 
     let update = false
     if (nextProps.language.id !== this.language.id) {
+      this._showErrors([])
       this._changeLanguage(nextProps.language)
       update = true
     }

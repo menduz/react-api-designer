@@ -20,7 +20,7 @@ class FileProvider {
       const file = ((byPathString: any): File);
       return file.getContent()
     } else {
-      return Promise.resolve('')
+      return Promise.reject('')
     }
   }
 }
