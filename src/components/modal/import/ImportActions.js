@@ -6,6 +6,10 @@ import {addFile} from "../../tree/actions";
 import {updateCurrentFile} from "../../editor/actions";
 import type {Dispatch} from "../../../types/types";
 import {getAll} from "./ImportSelectors";
+import ZipHelper from "../../../repository/helper/ZipHelper"
+import Repository from "../../../repository/Repository"
+
+import {BY_FILES_ACTION, ALL_FILES_ACTION, DO_NOT_REPLACE, REPLACE_ALL} from './zipfile/constants'
 
 export const HIDE = 'import/HIDE_DIALOG'
 export const SHOW = 'import/SHOW_DIALOG'
@@ -19,6 +23,16 @@ export const HIDE_CONFLICT_MODAL = 'import/HIDE_CONFLICT_MODAL'
 export const SHOW_CONFLICT_MODAL = 'import/SHOW_CONFLICT_MODAL'
 export const UPLOAD_TEMP_FILE = 'import/UPLOAD_TEMP_FILE'
 
+export const HIDE_ZIP_CONFLICT_MODAL = 'import/HIDE_ZIP_CONFLICT_MODAL'
+export const SHOW_ZIP_CONFLICT_MODAL = 'import/SHOW_ZIP_CONFLICT_MODAL'
+export const ALL_FILES_ACTION_CHANGE = 'import/ALL_FILES_ACTION_CHANGE'
+
+export const ADD_ZIP_FILES = 'import/ADD_ZIP_FILES'
+export const ZIP_FILE_ACTION = 'import/ZIP_FILE_ACTION'
+
+
+
+
 export const showConflictDialog = () => ({
   type: SHOW_CONFLICT_MODAL
 })
@@ -26,6 +40,31 @@ export const showConflictDialog = () => ({
 export const closeConflictDialog = () => ({
   type: HIDE_CONFLICT_MODAL
 })
+
+export const showZipConflictDialog = () => ({
+  type: SHOW_ZIP_CONFLICT_MODAL
+})
+
+export const closeZipConflictDialog = () => ({
+  type: HIDE_ZIP_CONFLICT_MODAL
+})
+
+
+export const addZipFiles = (zipFiles) => ({
+  type: ADD_ZIP_FILES,
+  payload: {zipFiles}
+})
+
+export const zipFileActionChange = (value) => ({
+  type: ZIP_FILE_ACTION,
+  payload: {value}
+})
+
+export const allFilesActionChange = (value: string) => ({
+  type: ALL_FILES_ACTION_CHANGE,
+  payload: {value}
+})
+
 
 export const uploadTempFile = (fileName: string, type:string, content: any) => ({
   type: UPLOAD_TEMP_FILE,
@@ -123,19 +162,45 @@ export const importFile = (fileToImport: any, fileType: string) =>
 
     const reader = new FileReader()
     const file = fileToImport.files[0]
+    const zip = isZip(file);
+    const repository: Repository = repositoryContainer.repository
 
     reader.onload = (upload) => {
       dispatch(uploadTempFile(file.name, fileType, upload.target.result))
       dispatch({type: HIDE})
-      const repository: Repository = repositoryContainer.repository
-      if (repository.getByPathString(file.name)) {
-        dispatch(showConflictDialog())
+      if (zip) {
+        ZipHelper.listZipFiles(repository, upload.target.result).then(files => {
+          dispatch(addZipFiles(files))
+          const conflicts = files.filter(f => {
+            return f.conflict
+          })
+
+
+          console.log("conflicts " + conflicts.length)
+          //console.log("conflicts[true] " + true in conflicts)
+          // new Array(conflicts).contains({conflict: true}).then(t => {
+          //   console.log("inside " + t)
+          // })
+
+          if (conflicts.length > 0) {
+            console.log("conflicts!")
+            dispatch(showZipConflictDialog())
+          } else {
+            saveZipFiles()(dispatch, getState)
+            dispatch(showZipConflictDialog())
+          }
+        })
       } else {
-        saveFile()(dispatch, getState)
+        if (repository.getByPathString(file.name)) {
+          dispatch(showConflictDialog())
+        } else {
+          saveFile()(dispatch, getState)
+          dispatch({type: IMPORT_DONE})
+        }
       }
     }
 
-    if (isZip(file)) {
+    if (zip) {
       reader.readAsArrayBuffer(file)
     } else {
       reader.readAsText(file)
@@ -155,4 +220,18 @@ export const saveFile = () => (dispatch: Dispatch, getState) => {
     dispatch({type: IMPORT_DONE})
   }, 1000)
 
+}
+
+export const saveZipFiles = () => (dispatch:Dispatch, getState) => {
+  const state = getAll(getState())
+  const zipFiles = state.zipFiles
+  console.log("saveZipFiles!!!" + JSON.stringify(zipFiles))
+  let files = []
+  if (state.zipFileAction===ALL_FILES_ACTION) {
+    files = (state.allFilesAction === REPLACE_ALL)?zipFiles:zipFiles.filter(f => { return !f.conflict})
+  } else {
+    files = (zipFiles.filter(f => {return f.override}))
+  }
+  console.log("files! " + JSON.stringify(files))
+  ZipHelper.saveFiles(null, state.fileToImport, files)
 }

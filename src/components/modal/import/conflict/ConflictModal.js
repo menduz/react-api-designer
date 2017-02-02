@@ -7,6 +7,7 @@ import Modal from '@mulesoft/anypoint-components/lib/Modal'
 import ModalHeader from '@mulesoft/anypoint-components/lib/ModalHeader'
 import ModalBody from '@mulesoft/anypoint-components/lib/ModalBody'
 import ModalFooter from '@mulesoft/anypoint-components/lib/ModalFooter'
+import Label from '@mulesoft/anypoint-components/lib/Label'
 
 import './Conflict.css'
 
@@ -43,7 +44,7 @@ class ConflictModal extends React.Component {
             <h2>File exists</h2>
           </ModalHeader>
           <ModalBody>
-            {fileNameToImport} exists, do you want to replace it?
+            <Label>{fileNameToImport} exists, do you want to replace it?</Label>
           </ModalBody>
 
           <ModalFooter>

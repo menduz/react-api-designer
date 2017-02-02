@@ -2,7 +2,7 @@
 
 import {connect} from 'react-redux'
 
-import ImportModal from './ConflictModal'
+import ConflictModal from './ConflictModal'
 
 import type {State} from '../ImportModel'
 
@@ -26,6 +26,6 @@ const mapDispatch = (dispatch) => {
   }
 }
 
-const ImportModalContainer = connect(mapState, mapDispatch)(ImportModal)
+const ConflictModalContainer = connect(mapState, mapDispatch)(ConflictModal)
 
-export default ImportModalContainer
+export default ConflictModalContainer

@@ -2,11 +2,14 @@
 
 import type {State} from './ImportModel'
 import * as actions from './ImportActions'
+import {REPLACE_ALL, ALL_FILES_ACTION} from './zipfile/constants'
 
 const initialState : State = {
   showModal: false,
   selectValue: 'RAML-file',
-  isImporting: false
+  isImporting: false,
+  allFilesAction: REPLACE_ALL,
+  zipFileAction: ALL_FILES_ACTION
 }
 
 export default (state: State = initialState, action: any): State => {
@@ -43,6 +46,34 @@ export default (state: State = initialState, action: any): State => {
         fileType:action.payload.type,
         fileToImport: action.payload.content
       }
+    case actions.SHOW_ZIP_CONFLICT_MODAL:
+      return {
+        ...state,
+        showZipConflictModal: true
+      }
+    case actions.HIDE_ZIP_CONFLICT_MODAL:
+      return {
+        ...state,
+        showZipConflictModal: false
+      }
+
+    case actions.ALL_FILES_ACTION_CHANGE:
+      return {
+        ...state,
+        allFilesAction: action.payload.value
+      }
+    case actions.ADD_ZIP_FILES:
+      return {
+        ...state,
+        zipFiles: action.payload.zipFiles
+      }
+
+    case actions.ZIP_FILE_ACTION:
+      return {
+        ...state,
+        zipFileAction: action.payload.value
+      }
+
     case actions.SHOW_CONFLICT_MODAL:
       return {
         ...state,

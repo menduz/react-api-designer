@@ -10,6 +10,7 @@ import NewFolderModalContainer from '../modal/new-folder/NewFolderModalContainer
 import NewFileModalContainer from '../modal/new-file/NewFileModalContainer'
 import ImportModalContainer from '../modal/import/ImportModalContainer'
 import ConflictModalContainer from '../modal/import/conflict/ConflictModalContainer'
+import ZipConflictModalContainer from '../modal/import/zipfile/ZipConflictModalContainer'
 import ExportModalContainer from '../modal/export/ExportModalContainer'
 
 import {openNewFolderDialog} from '../modal/new-folder/NewFolderActions'
@@ -49,6 +50,7 @@ class Menu extends React.Component {
 
         <ImportModalContainer/>
         <ConflictModalContainer/>
+        <ZipConflictModalContainer/>
         <ExportModalContainer/>
 
         <ContextMenu className="add-menu" options={addMenuOptions} triggerOn={['click']}>
