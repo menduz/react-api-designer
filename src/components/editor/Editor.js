@@ -6,7 +6,7 @@ import registerRamlLanguage from './languages/Raml'
 import {suggest, updateCurrentFile} from './actions'
 import './Editor.css'
 import {getAll} from "./selectors"
-import {getFileContent} from "../../repository-redux/selectors"
+import {getCurrentFileContent} from "../../repository-redux/selectors"
 
 const requireConfig = {
   url: `${window.PUBLIC_URL || process.env.PUBLIC_URL}/static/js/vs/loader.js`,
@@ -186,11 +186,11 @@ DesignerEditor.propTypes = {
 
 const mapStateToProps = state => {
   const editor = getAll(state)
-  const text = editor.path? getFileContent(state)(editor.path) || '' : ''
-
+  const value = getCurrentFileContent(state)()
+  console.log(value)
   return {
+    value,
     language: editor.language,
-    value: text,
     position: editor.position,
     errors: editor.errors,
     suggestions: editor.suggestions,

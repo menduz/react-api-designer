@@ -3,12 +3,17 @@
 import {NAME} from './index'
 import {Path} from '../repository'
 import {RepositoryModel} from '../repository/immutable'
-
+import {getCurrentFilePath} from '../components/editor/selectors'
 import type {State} from './model'
 
 export const getAll = (rootState: any): State => rootState[NAME]
 
 export const getFileTree = (rootState: any): ?RepositoryModel => getAll(rootState).fileTree
+
+export const getCurrentFileContent = (rootState: any) => (): ?string => {
+  const currentPath = getCurrentFilePath(rootState)
+  return currentPath ? getFileContent(rootState)(currentPath) : ''
+}
 
 export const getFileContent = (rootState: any) => (path: Path): ?string => {
   const state = getAll(rootState)
