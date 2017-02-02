@@ -9,18 +9,22 @@ import './Preview.css'
 
 class Preview extends Component {
 
+  static _empty() {
+    return <div className="No-preview">No preview</div>
+  }
+
   _render() {
     const {parsedObject, language, text} = this.props
 
     switch (language.id) {
       case 'oas':
       case 'raml':
-        return <AngularConsole raml={parsedObject}/>
+        return !parsedObject ? Preview._empty() : <AngularConsole raml={parsedObject}/>;
       case 'md':
-        return <ReactMarkdown source={text}/>
+        return !text ? Preview._empty() : <ReactMarkdown source={text}/>;
       default:
-        if (!parsedObject) return <div className="No-preview">No preview</div>
-        return <JSONTree data={parsedObject} hideRoot={true}/>
+        return !parsedObject ? Preview._empty() :
+          <JSONTree data={parsedObject} hideRoot={true} shouldExpandNode={(keyName, data, level) => level < 3}/>;
     }
   }
 

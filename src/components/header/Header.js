@@ -14,8 +14,11 @@ class Header extends Component {
     return (
       <div className="App-header">
         <div className="Left-header">
-          <Icon name="api-designer-color" size={38}/>
-          <h2>{projectName ? projectName : 'API designer'}</h2>
+          {projectName ?
+              <Icon name="api-designer-color" size={38}/> :
+              <Icon name="mulesoft-logo" size={38} fill={"white"}/>
+          }
+          <h2>{projectName || 'API designer'}</h2>
         </div>
         <div className="Spinner-parser">{isParsing ? <Spinner size="s"/> : null}</div>
         <div className="Right-header">

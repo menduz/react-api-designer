@@ -148,7 +148,9 @@ class DesignerEditor extends React.Component {
       roundedSelection: false,
       readOnly: false,
       cursorStyle: 'line',
-      automaticLayout: false
+      automaticLayout: false,
+      folding: true,
+      wordBasedSuggestions: true
     }
 
     return (
