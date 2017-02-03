@@ -69,6 +69,8 @@ listenThenPost('convertToSwagger', data => converter.convertToSwagger(data.rootP
 
 listenThenPost('convertUrlToRaml', data => converter.convertUrlToRaml(data.rootPath))
 
+listenThenPost('convertSwaggerToRaml', data => converter.convertSwaggerToRaml(data.files))
+
 listenThenPost('ramlParse', data => ramlParser.parse(data.path))
 
 listenThenPost('ramlSuggest', data => ramlSuggest.suggestions(data.content, data.cursorPosition, data.path, data.repository))

@@ -34,14 +34,26 @@ class ZipHelper {
   }
 
   static filesContents(content:any, files:Array) {
-    var zip = new JSZip();
-    return zip.loadAsync(content).then(zip => {
+
+    function buildContents(zip, files) {
       return Promise.all(files.map(f => {
         return zip.files[f.filename].async('string').then(c => {
           console.log({filename: f.filename, content:c})
           return {filename: f.filename, content:c}
         })
       }))
+    }
+
+    var zip = new JSZip();
+    return zip.loadAsync(content).then(zip => {
+      if (files) {
+        return buildContents(zip, files)
+      } else {
+        const files = Object.keys(zip.files).map(filename => {
+          return {filename}
+        })
+        return buildContents(zip, files)
+      }
     })
   }
 

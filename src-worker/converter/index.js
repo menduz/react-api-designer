@@ -1,5 +1,8 @@
+//@flow
+
 import converter from 'oas-raml-converter'
 import request from 'browser-request'
+import {language, OAS} from '../../src/repository/helper/extensions'
 
 export default class OasRamlConverter {
 
@@ -44,6 +47,52 @@ export default class OasRamlConverter {
   convertUrlToRaml(url) {
     const toRaml = new converter.Converter(converter.Formats.AUTO, converter.Formats.RAML10)
     return toRaml.convertFile(url)
+  }
+
+  convertSwaggerToRaml(files: Array) {
+    const toRaml = new converter.Converter(converter.Formats.SWAGGER, converter.Formats.RAML10)
+
+
+    function toAbsolute(path) {
+      return path.indexOf('http') !== 0 ? 'http://zip/' + path : path;
+    }
+
+    function toRelative(path) {
+      return path.indexOf('http://zip/') === 0 ? path.substring('http://zip/'.length) : path;
+    }
+
+
+    var fsResolver = {
+      canRead: function (url) {
+        return this.read(url) != null;
+      },
+      read: function (url) {
+        var path = toRelative(url.url);
+        const file = files.filter(c => c.filename === path)
+        if (file.length === 0) {
+          throw new Error('Could not load content for file ' + path);
+        }
+        return file[0].content;
+      }
+    };
+
+    const oasFiles = files.filter(c => {
+      return language(c.filename, c.content) === OAS
+    })
+    if (oasFiles.length === 0) {
+      return Promise.reject("Cannot find root oas file")
+    }
+
+    const rootName = oasFiles[0].filename;
+
+    return toRaml.convertFile(toAbsolute(rootName), {
+      resolve: {
+        file: fsResolver,
+        http: fsResolver
+      }
+    }).then(c => {
+      return {content:c, filename: rootName}
+    })
   }
 
   convert(text, from, to, options) {

@@ -30,9 +30,9 @@ const ramlType = (text: string): string => {
   return subType || '1.0'
 }
 
-const JSON: Language = {id: 'json', native: true}
-const YAML: Language = {id: 'yaml', native: true}
-const OAS: Language = {id: 'oas', parent: 'json'}
+export const JSON: Language = {id: 'json', native: true}
+export const YAML: Language = {id: 'yaml', native: true}
+export const OAS: Language = {id: 'oas', parent: 'json'}
 
 export const language = (path: string, text: string): Language => {
   const extension = pathExtension(path, 'txt')

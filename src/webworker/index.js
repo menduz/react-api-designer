@@ -75,6 +75,10 @@ export default class WebWorker {
     return this._postAndExpect('convertUrlToRaml', {rootPath})
   }
 
+  convertSwaggerToRaml(files) {
+    return this._postAndExpect('convertSwaggerToRaml', {files})
+  }
+
   _listen(type, fn) {
     this.worker.addEventListener('message', (e) => {
       if (e.data.type === type) fn(e.data.payload);
