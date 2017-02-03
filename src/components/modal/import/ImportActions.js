@@ -9,8 +9,6 @@ import {getAll} from "./ImportSelectors";
 import ZipHelper from "../../../repository/helper/ZipHelper"
 import Repository from "../../../repository/Repository"
 
-import {BY_FILES_ACTION, ALL_FILES_ACTION, DO_NOT_REPLACE, REPLACE_ALL} from './zipfile/constants'
-
 export const HIDE = 'import/HIDE_DIALOG'
 export const SHOW = 'import/SHOW_DIALOG'
 export const CHANGE_TYPE = 'import/CHANGE_TYPE'
@@ -25,15 +23,10 @@ export const UPLOAD_TEMP_FILE = 'import/UPLOAD_TEMP_FILE'
 
 export const HIDE_ZIP_CONFLICT_MODAL = 'import/HIDE_ZIP_CONFLICT_MODAL'
 export const SHOW_ZIP_CONFLICT_MODAL = 'import/SHOW_ZIP_CONFLICT_MODAL'
-export const ALL_FILES_ACTION_CHANGE = 'import/ALL_FILES_ACTION_CHANGE'
 
 export const ADD_ZIP_FILES = 'import/ADD_ZIP_FILES'
-export const ZIP_FILE_ACTION = 'import/ZIP_FILE_ACTION'
 
 export const ZIP_FILE_OVERRIDE_ACTION = 'import/ZIP_FILE_OVERRIDE_ACTION'
-
-
-
 
 export const showConflictDialog = () => ({
   type: SHOW_CONFLICT_MODAL
@@ -56,23 +49,10 @@ export const zipFileOverrideAction = (filename, override) => ({
   payload: {filename, override}
 })
 
-
-
 export const addZipFiles = (zipFiles) => ({
   type: ADD_ZIP_FILES,
   payload: {zipFiles}
 })
-
-export const zipFileActionChange = (value) => ({
-  type: ZIP_FILE_ACTION,
-  payload: {value}
-})
-
-export const allFilesActionChange = (value: string) => ({
-  type: ALL_FILES_ACTION_CHANGE,
-  payload: {value}
-})
-
 
 export const uploadTempFile = (fileName: string, type:string, content: any) => ({
   type: UPLOAD_TEMP_FILE,
@@ -223,13 +203,7 @@ export const saveFile = () => (dispatch: Dispatch, getState) => {
 export const saveZipFiles = () => (dispatch:Dispatch, getState) => {
   const state = getAll(getState())
   const zipFiles = state.zipFiles
-  let files = []
-  if (state.zipFileAction===ALL_FILES_ACTION) {
-    files = (state.allFilesAction === REPLACE_ALL)?zipFiles:zipFiles.filter(f => { return !f.conflict})
-  } else {
-    files = (zipFiles.filter(f => {return f.override}))
-  }
-  console.log("files! " + JSON.stringify(files))
+  const files = (zipFiles.filter(f => {return f.override}))
   ZipHelper.filesContents(state.fileToImport, files).then(contents => {
     console.log("contents!!! : " + JSON.stringify(contents))
     // return Promise.resolve(
