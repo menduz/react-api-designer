@@ -16,7 +16,7 @@ type Language = {
 }
 
 const line = (text: string, line: number = 1): string => {
-  const l = text.split('\n', line) // stop at first /n
+  const l = text.split(/\r\n|\n/, line) // stop at first /n
   if (!l) return text
   const item = l[line - 1];
   return item ? item.trim() : text

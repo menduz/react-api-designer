@@ -59,7 +59,15 @@ const parseResult = (parsedObject, errors) => ({
   parsedObject: parsedObject
 })
 
-let parseTimer = null
+const mapUnexpectedError = (error) =>{
+  return { message: error.message, startLineNumber: 1, endLineNumber: 1, startColumn: 0}
+}
+
+const parserError = (error, dispatch) =>{
+  if (error === 'aborted') console.log('Aborting old parse request')
+  else dispatch(parseResult(null, [error]))
+};
+
 const parseJson = function (text, path, dispatch, worker) {
   dispatch(parsingRequest())
 
@@ -67,10 +75,7 @@ const parseJson = function (text, path, dispatch, worker) {
   if (promise) {
     promise.then(result => {
       dispatch(parseResult(result, []))
-    }).catch(error => {
-      if (error === 'aborted') console.log('Aborting old parse request')
-      dispatch(parseResult(null, [error]))
-    })
+    }).catch(error => parserError(error, dispatch))
   }
 }
 
@@ -78,20 +83,8 @@ const parseRaml = function (text, path, dispatch, worker) {
   dispatch(parsingRequest())
   const promise = worker.ramlParse({path})
   if (promise) {
-    promise.then(result => {
-      dispatch(parseResult(result.specification, result.errors))
-    }).catch(error => {
-      if (error === 'aborted') console.log('Aborting old parse request')
-      else {
-        // report unexpected errors in the first line
-        dispatch(parseResult(null, [{
-          message: error.message,
-          startLineNumber: 1,
-          endLineNumber: 1,
-          startColumn: 0
-        }]))
-      }
-    })
+    promise.then(result => dispatch(parseResult(result.specification, result.errors))).
+    catch(error => parserError(mapUnexpectedError(error), dispatch))
   }
 }
 
@@ -99,20 +92,8 @@ const parseOas = function (text, path, dispatch, worker) {
   dispatch(parsingRequest())
   const promise = worker.oasParse({text})
   if (promise) {
-    promise.then(result => {
-      dispatch(parseResult(result.specification, result.errors))
-    }).catch(error => {
-      if (error === 'aborted') console.log('Aborting old parse request')
-      else {
-        // report unexpected errors in the first line
-        dispatch(parseResult({}, [{
-          message: error.message,
-          startLineNumber: 1,
-          endLineNumber: 1,
-          startColumn: 0
-        }]))
-      }
-    })
+    promise.then(result => dispatch(parseResult(result.specification, result.errors))).
+    catch(error => parserError(mapUnexpectedError(error), dispatch))
   }
 }
 
@@ -121,6 +102,7 @@ export const updateCurrentFile = (text, delay = 0) =>
     dispatch(updateFile(text, getCurrentFilePath(getState()), delay))
   }
 
+let parseTimer = null
 export const updateFile = (text, path: Path, delay = 0) =>
   (dispatch, getState, {worker}) => {
     dispatch(updateFileContent(path, text))

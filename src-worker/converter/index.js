@@ -1,4 +1,5 @@
 import converter from 'oas-raml-converter'
+import request from 'browser-request'
 
 export default class OasRamlConverter {
 
