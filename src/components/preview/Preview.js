@@ -36,7 +36,6 @@ class Preview extends Component {
 const mapStateToProps = state => {
   const {editor} = state
   const text = getCurrentFileContent(state)()
-  console.log(text)
   return {
     text,
     parsedObject: editor.parsedObject,

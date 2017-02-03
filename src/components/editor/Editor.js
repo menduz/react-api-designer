@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import MonacoEditor from 'react-monaco-editor'
 import EmptyResult from '@mulesoft/anypoint-components/lib/EmptyResult'
 import registerRamlLanguage from './languages/Raml'
-import {suggest, updateCurrentFile} from './actions'
+import {suggest, updateCurrentFile, saveCurrentFile} from './actions'
 import './Editor.css'
 import {getAll} from "./selectors"
 import {getCurrentFileContent} from "../../repository-redux/selectors"
@@ -77,6 +77,9 @@ class DesignerEditor extends React.Component {
     this.editor = editor
     this.monaco = monaco
     editor.getModel().updateOptions({tabSize: 2})
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => {
+      this.props.onSave(this.value)
+    });
   }
 
   onChange(newValue, event) {
@@ -181,13 +184,13 @@ DesignerEditor.propTypes = {
   suggestions: React.PropTypes.arrayOf(React.PropTypes.object),
   theme: React.PropTypes.string,
   onChange: React.PropTypes.func,
-  onSuggest: React.PropTypes.func
+  onSuggest: React.PropTypes.func,
+  onSave: React.PropTypes.func
 }
 
 const mapStateToProps = state => {
   const editor = getAll(state)
   const value = getCurrentFileContent(state)()
-  console.log(value)
   return {
     value,
     language: editor.language,
@@ -201,7 +204,8 @@ const mapStateToProps = state => {
 const mapDispatch = (dispatch) => {
   return {
     onChange: (value) => dispatch(updateCurrentFile(value, 500)),
-    onSuggest: (text, offset) => dispatch(suggest(text, offset))
+    onSuggest: (value, offset) => dispatch(suggest(value, offset)),
+    onSave: (value) => dispatch(saveCurrentFile())
   }
 }
 
