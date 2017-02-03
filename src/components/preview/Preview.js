@@ -9,6 +9,12 @@ import './Preview.css'
 
 class Preview extends Component {
 
+  static _consolePreview(language, parsedObject) {
+    return parsedObject && language.type &&
+      (language.type === '1.0' || language.type === '0.8' ||
+      language.type === 'Library' || language.type === 'Overlay' || language.type === 'Extension');
+  }
+
   static _empty() {
     return <div className="No-preview">No preview</div>
   }
@@ -19,9 +25,11 @@ class Preview extends Component {
     switch (language.id) {
       case 'oas':
       case 'raml':
-        return !parsedObject ? Preview._empty() : <AngularConsole raml={parsedObject}/>;
+        return !Preview._consolePreview(language, parsedObject) ? Preview._empty() :
+          <AngularConsole raml={parsedObject}/>;
       case 'md':
-        return !text ? Preview._empty() : <ReactMarkdown source={text}/>;
+        return !text ? Preview._empty() :
+          <ReactMarkdown source={text}/>;
       default:
         return !parsedObject ? Preview._empty() :
           <JSONTree data={parsedObject} hideRoot={true} shouldExpandNode={(keyName, data, level) => level < 3}/>;

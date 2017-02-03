@@ -4,6 +4,7 @@ import {Path} from '../../repository'
 import {updateFileContent, saveFile} from '../../repository-redux/actions'
 import {getFileTree} from '../../repository-redux/selectors'
 import {RepositoryTypeFactory} from '../../repository/type'
+import {language} from '../../repository/helper/extensions'
 
 export const PARSING_REQUEST = `DESIGNER/${PREFIX}/PARSING_REQUEST`
 export const PARSING_RESULT = `DESIGNER/${PREFIX}/PARSING_RESULT`
@@ -120,28 +121,10 @@ export const updateCurrentFile = (text, delay = 0) =>
     dispatch(updateFile(text, getCurrentFilePath(getState()), delay))
   }
 
-const calculateLanguage = (text, path) => {
-  const lastDot = path.lastIndexOf('.')
-  const extension = lastDot > -1 ? path.substring(lastDot + 1) : 'txt'
-  switch (extension) {
-    case 'raml':
-      return {id: 'raml'}
-    case 'json':
-      // detect oas based on text content
-      return text.indexOf('swagger') > -1 ?
-        {id: 'oas', parent: extension} :
-        {id: extension, native: true}
-    case 'yml':
-      return {id: 'yaml', native: true}
-    default:
-      return {id: extension, native: true}
-  }
-}
-
 export const updateFile = (text, path: Path, delay = 0) =>
   (dispatch, getState, {worker}) => {
     dispatch(updateFileContent(path, text))
-    dispatch(setPath(path, calculateLanguage(text, path.toString())))
+    dispatch(setPath(path, language(path.toString(), text)))
 
     if (parseTimer) clearTimeout(parseTimer)
 
