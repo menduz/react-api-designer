@@ -33,19 +33,15 @@ class ZipHelper {
     })
   }
 
-  static saveFiles(repository:Repository, content:any, files:Array) {
+  static filesContents(content:any, files:Array) {
     var zip = new JSZip();
-    console.log("files!" + files.length)
-
     return zip.loadAsync(content).then(zip => {
-      console.log("Load zip!")
-      const result = []
-      files.map(f => {
-        console.log("files zip!" + f.filename)
-        zip.files[f.filename].async('string').then(c => {
+      return Promise.all(files.map(f => {
+        return zip.files[f.filename].async('string').then(c => {
           console.log({filename: f.filename, content:c})
+          return {filename: f.filename, content:c}
         })
-      })
+      }))
     })
   }
 
@@ -60,9 +56,6 @@ class ZipHelper {
           const conflict = (repository.getByPathString(filename))?true:false
           result.push({filename, override:true, conflict})
         }
-        // var content = zip.files[filename].asNodeBuffer();
-        // var dest = path.join(unzip, filename);
-        // fs.writeFileSync(dest, content);
       })
       return result
     })

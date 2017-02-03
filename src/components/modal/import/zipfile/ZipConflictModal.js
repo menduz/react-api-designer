@@ -14,7 +14,8 @@ import Tab from '@mulesoft/anypoint-components/lib/Tab'
 import TabList from '@mulesoft/anypoint-components/lib/TabList'
 import Tabs from '@mulesoft/anypoint-components/lib/Tabs'
 import TabPanel from '@mulesoft/anypoint-components/lib/TabPanel'
-import Label from '@mulesoft/anypoint-components/lib/Label'
+import Checkbox from '@mulesoft/anypoint-components/lib/Checkbox'
+
 
 import {DO_NOT_REPLACE, REPLACE_ALL, ALL_FILES_ACTION, BY_FILES_ACTION} from './constants'
 
@@ -28,7 +29,10 @@ type Props = {
   isImporting: Boolean,
   fileNameToImport: string,
   onAllFilesActionChange: (value: string) => void,
-  zipFileActionChange: (value: string) => void
+  zipFileActionChange: (value: string) => void,
+  zipFileOverrideAction: (filename:string, override:Boolean) => void,
+  zipFiles: Array,
+  zipFileAction:string
 }
 
 class ZipConflictModal extends React.Component {
@@ -36,7 +40,6 @@ class ZipConflictModal extends React.Component {
 
   constructor(props) {
     super(props);
-    this.onRef = this.onRef.bind(this);
 
     this.state = {
       open: false,
@@ -44,23 +47,48 @@ class ZipConflictModal extends React.Component {
     };
   }
 
-  onRef(node) {
-    if (node == null) return;
-    console.log('node! ' + node)
-    if (node !== this.state.container) this.setState({ container: node });
-  }
-
   tabChange(e) {
-    console.log('value', e);
-    const value = (e.value === 0)?ALL_FILES_ACTION:BY_FILES_ACTION
-    console.log('value!: ' + value)
-    this.props.zipFileActionChange(value)
+    if (e.event) {
+      console.log('tabChange', e.event);
+      e.event.preventDefault();
+      //e.preventDefault()
+      const value = (e.value === 0)?ALL_FILES_ACTION:BY_FILES_ACTION
+      this.props.zipFileActionChange(value)
+    }
   }
 
   onAllFilesActionChange(e) {
+    console.log('onAllFilesActionChange', e.event);
+    //e.event.preventDefault();
     const value = e.value;
     //this.setState({ value });
     this.props.onAllFilesActionChange(value)
+  }
+
+  onCheckFileChange(filename, e) {
+    console.log('onCheckFileChange', e.event);
+    //e.event.preventDefault();
+    this.props.zipFileOverrideAction(filename, e.value)
+  }
+
+  renderZipFiles(files) {
+    const filter = files.filter(f => {return f.conflict})
+    const margin = { marginBottom: 20 };
+
+    if (filter.length > 0) {
+      return filter.map((file) => (
+        //<Label>{file.filename + " " + file.override}</Label>
+        <div style={margin}>
+          <Checkbox
+            name={file.filename}
+            label={file.filename}
+            onChange={this.onCheckFileChange.bind(this, file.filename)}
+            checked={file.override}
+          />
+        </div>
+      ));
+    }
+    else return [];
   }
 
   render() {
@@ -69,8 +97,14 @@ class ZipConflictModal extends React.Component {
       onCancel,
       showZipConflictModal,
       fileNameToImport,
-      allFilesAction
+      allFilesAction,
+      zipFiles,
+      zipFileAction
     } = this.props
+
+    const files = this.renderZipFiles(zipFiles);
+    const selectedIndex = (zipFileAction === ALL_FILES_ACTION)?0:1
+    console.log("zipFileAction render" + zipFileAction + " selectedIndex " + selectedIndex)
 
     if (showZipConflictModal) {
       return (
@@ -85,9 +119,9 @@ class ZipConflictModal extends React.Component {
             <h2>Import {fileNameToImport}</h2>
           </ModalHeader>
           <ModalBody>
-            <Tabs type="secondary" align="left" onChange={this.tabChange.bind(this)}>
-              <div style={{ width: '90px' }}>
-                <Affix offsetTop={19} target={this.state.container} affixClassName="affix usage-1" >
+            <Tabs type="secondary" align="left" onChange={this.tabChange.bind(this)} selectedIndex={selectedIndex}>
+              <div style={{ width: '100px' }}>
+                <Affix offsetTop={200} target={this.state.container} affixClassName="affix usage-1" >
                   <TabList>
                     <Tab>All files</Tab>
                     <Tab>By files</Tab>
@@ -96,9 +130,8 @@ class ZipConflictModal extends React.Component {
               </div>
               <TabPanel>
                 <div>
-                  <Label>All files</Label>
+                  <h3>All files</h3>
                   <RadioGroup
-                    //label="All files"
                     onChange={this.onAllFilesActionChange.bind(this)}
                     value={allFilesAction}
                   >
@@ -107,7 +140,12 @@ class ZipConflictModal extends React.Component {
                   </RadioGroup>
                 </div>
               </TabPanel>
-              <TabPanel>This can not be scrolled</TabPanel>
+              <TabPanel>
+                <div>
+                  <h3>By files</h3>
+                  {files}
+                </div>
+              </TabPanel>
             </Tabs>
           </ModalBody>
 
@@ -121,6 +159,7 @@ class ZipConflictModal extends React.Component {
     }
     return null
   }
+
 }
 
 

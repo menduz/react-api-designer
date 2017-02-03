@@ -30,6 +30,8 @@ export const ALL_FILES_ACTION_CHANGE = 'import/ALL_FILES_ACTION_CHANGE'
 export const ADD_ZIP_FILES = 'import/ADD_ZIP_FILES'
 export const ZIP_FILE_ACTION = 'import/ZIP_FILE_ACTION'
 
+export const ZIP_FILE_OVERRIDE_ACTION = 'import/ZIP_FILE_OVERRIDE_ACTION'
+
 
 
 
@@ -48,6 +50,12 @@ export const showZipConflictDialog = () => ({
 export const closeZipConflictDialog = () => ({
   type: HIDE_ZIP_CONFLICT_MODAL
 })
+
+export const zipFileOverrideAction = (filename, override) => ({
+  type: ZIP_FILE_OVERRIDE_ACTION,
+  payload: {filename, override}
+})
+
 
 
 export const addZipFiles = (zipFiles) => ({
@@ -175,19 +183,10 @@ export const importFile = (fileToImport: any, fileType: string) =>
             return f.conflict
           })
 
-
-          console.log("conflicts " + conflicts.length)
-          //console.log("conflicts[true] " + true in conflicts)
-          // new Array(conflicts).contains({conflict: true}).then(t => {
-          //   console.log("inside " + t)
-          // })
-
           if (conflicts.length > 0) {
-            console.log("conflicts!")
             dispatch(showZipConflictDialog())
           } else {
             saveZipFiles()(dispatch, getState)
-            dispatch(showZipConflictDialog())
           }
         })
       } else {
@@ -195,7 +194,6 @@ export const importFile = (fileToImport: any, fileType: string) =>
           dispatch(showConflictDialog())
         } else {
           saveFile()(dispatch, getState)
-          dispatch({type: IMPORT_DONE})
         }
       }
     }
@@ -225,7 +223,6 @@ export const saveFile = () => (dispatch: Dispatch, getState) => {
 export const saveZipFiles = () => (dispatch:Dispatch, getState) => {
   const state = getAll(getState())
   const zipFiles = state.zipFiles
-  console.log("saveZipFiles!!!" + JSON.stringify(zipFiles))
   let files = []
   if (state.zipFileAction===ALL_FILES_ACTION) {
     files = (state.allFilesAction === REPLACE_ALL)?zipFiles:zipFiles.filter(f => { return !f.conflict})
@@ -233,5 +230,14 @@ export const saveZipFiles = () => (dispatch:Dispatch, getState) => {
     files = (zipFiles.filter(f => {return f.override}))
   }
   console.log("files! " + JSON.stringify(files))
-  ZipHelper.saveFiles(null, state.fileToImport, files)
+  ZipHelper.filesContents(state.fileToImport, files).then(contents => {
+    console.log("contents!!! : " + JSON.stringify(contents))
+    // return Promise.resolve(
+    //   contents.map(f => {
+    //     console.log("f.filename: " + f.filename)
+    //     dispatch(addFile(f.filename, state.fileType))
+    //     dispatch(updateCurrentFile(f.content))
+    //   })
+    // ).then(() => {dispatch({type: IMPORT_DONE})})
+  })
 }

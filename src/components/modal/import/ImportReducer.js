@@ -9,7 +9,8 @@ const initialState : State = {
   selectValue: 'RAML-file',
   isImporting: false,
   allFilesAction: REPLACE_ALL,
-  zipFileAction: ALL_FILES_ACTION
+  zipFileAction: ALL_FILES_ACTION,
+  zipFiles:[]
 }
 
 export default (state: State = initialState, action: any): State => {
@@ -72,6 +73,18 @@ export default (state: State = initialState, action: any): State => {
       return {
         ...state,
         zipFileAction: action.payload.value
+      }
+
+    case actions.ZIP_FILE_OVERRIDE_ACTION:
+      const override = action.payload.override
+      const fileName = action.payload.filename
+
+      const zipFiles = state.zipFiles.map(t =>
+      {return (t.filename === fileName)?Object.assign({}, t, {override: override}):t})
+
+      return {
+        ...state,
+        zipFiles: zipFiles
       }
 
     case actions.SHOW_CONFLICT_MODAL:
