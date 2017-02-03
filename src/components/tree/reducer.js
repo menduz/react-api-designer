@@ -2,7 +2,7 @@
 
 import {Set} from 'immutable'
 import type {State} from './model'
-import {NODE_SELECTED, TREE_CHANGED, PATH_SELECTED} from './actions'
+import {NODE_SELECTED, PATH_SELECTED} from './actions'
 
 const initialState: State = {
   currentPath: undefined,
@@ -18,7 +18,6 @@ const reducer = (state: State = initialState, action: {type: string, payload: an
         ...state,
         currentPath: action.payload
       }
-    case TREE_CHANGED:
     default:
       return state
   }

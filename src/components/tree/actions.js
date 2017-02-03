@@ -15,12 +15,6 @@ import {Path} from '../../repository';
 
 export const NODE_SELECTED = `DESIGNER/${PREFIX}/NODE_SELECTED`
 export const PATH_SELECTED = `DESIGNER/${PREFIX}/PATH_SELECTED`
-export const TREE_CHANGED = `DESIGNER/${PREFIX}/TREE_CHANGED`
-
-export const treeChanged = (tree: Node) => ({
-  type: TREE_CHANGED,
-  payload: tree
-})
 
 export const pathSelected = (path: Path) : Promise =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs) => {
