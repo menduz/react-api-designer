@@ -25,7 +25,3 @@ export const isRamlFile = (name): string =>  {
 export const isApiDefinition = (raml): string => {
   return /^#%RAML\s(0\.8|1\.0)\s*$/.test(getFirstLine(raml));
 }
-
-export const isRaml08 = (raml): string => {
-  return /^#%RAML\s(0\.8)\s*$/.test(getFirstLine(raml));
-}

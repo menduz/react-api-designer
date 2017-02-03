@@ -28,6 +28,8 @@ export const ADD_ZIP_FILES = 'import/ADD_ZIP_FILES'
 
 export const ZIP_FILE_OVERRIDE_ACTION = 'import/ZIP_FILE_OVERRIDE_ACTION'
 
+const SWAGGER = 'SWAGGER'
+
 export const showConflictDialog = () => ({
   type: SHOW_CONFLICT_MODAL
 })
@@ -149,6 +151,22 @@ export const importFile = (fileToImport: any, fileType: string) =>
   (dispatch: Dispatch, getState, {worker, repositoryContainer}: ExtraArgs) => {
     dispatch({type: IMPORT_STARTED})
 
+
+    function convertSwaggerToRaml(files) {
+      worker.convertSwaggerToRaml(files).then(result => {
+        const fileName  = toRamlName(nameFromUrl(result.filename), repositoryContainer)
+        dispatch(addFile(fileName, fileType))
+        setTimeout(() => {
+          dispatch(updateCurrentFile(result.content))
+          dispatch({type: IMPORT_DONE})
+        }, 1000)
+      }).catch(err => {
+        //@@TODO Manage Error
+        console.error(err)
+        dispatch({type: IMPORT_DONE})
+      })
+    }
+
     const reader = new FileReader()
     const file = fileToImport.files[0]
     const zip = isZip(file);
@@ -158,21 +176,10 @@ export const importFile = (fileToImport: any, fileType: string) =>
       dispatch(uploadTempFile(file.name, fileType, upload.target.result))
       dispatch({type: HIDE})
       if (zip) {
-        if (fileType === 'SWAGGER') {
+        if (fileType === SWAGGER) {
           dispatch({type: IMPORT_STARTED})
           ZipHelper.filesContents(upload.target.result).then(files => {
-            worker.convertSwaggerToRaml(files).then(result => {
-              const fileName  = toRamlName(nameFromUrl(result.filename), repositoryContainer)
-              dispatch(addFile(fileName, fileType))
-              setTimeout(() => {
-                dispatch(updateCurrentFile(result.content))
-                dispatch({type: IMPORT_DONE})
-              }, 1000)
-            }).catch(err => {
-              //@@TODO Manage Error
-              console.error(err)
-              dispatch({type: IMPORT_DONE})
-            })
+            convertSwaggerToRaml(files)
           }).catch(err => {
             //@@TODO Manage Error
             console.error(err)
@@ -193,10 +200,15 @@ export const importFile = (fileToImport: any, fileType: string) =>
           })
         }
       } else {
-        if (repository.getByPathString(file.name)) {
-          dispatch(showConflictDialog())
+        if (fileType === SWAGGER) {
+          const files = [{filename:file.name, content:upload.target.result}]
+          convertSwaggerToRaml(files)
         } else {
-          saveFile()(dispatch, getState)
+          if (repository.getByPathString(file.name)) {
+            dispatch(showConflictDialog())
+          } else {
+            saveFile()(dispatch, getState)
+          }
         }
       }
     }
