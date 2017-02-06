@@ -8,6 +8,7 @@ import type {Dispatch} from "../../../types/types";
 import {getAll} from "./ImportSelectors";
 import ZipHelper from "../../../repository/helper/ZipHelper"
 import Repository from "../../../repository/Repository"
+import {addBulkFiles} from "../../../repository-redux/actions"
 
 export const HIDE = 'import/HIDE_DIALOG'
 export const SHOW = 'import/SHOW_DIALOG'
@@ -235,18 +236,12 @@ export const saveFile = () => (dispatch: Dispatch, getState) => {
 
 }
 
-export const saveZipFiles = () => (dispatch:Dispatch, getState) => {
+export const saveZipFiles = () => (dispatch:Dispatch, getState, {repositoryContainer}: ExtraArgs) => {
   const state = getAll(getState())
   const zipFiles = state.zipFiles
   const files = (zipFiles.filter(f => {return f.override}))
   ZipHelper.filesContents(state.fileToImport, files).then(contents => {
-    console.log("contents!!! : " + JSON.stringify(contents))
-    // return Promise.resolve(
-    //   contents.map(f => {
-    //     console.log("f.filename: " + f.filename)
-    //     dispatch(addFile(f.filename, state.fileType))
-    //     dispatch(updateCurrentFile(f.content))
-    //   })
-    // ).then(() => {dispatch({type: IMPORT_DONE})})
+    addBulkFiles(contents)(dispatch, getState, {repositoryContainer})
+    //dispatch({type: IMPORT_DONE})
   })
 }

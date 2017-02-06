@@ -91,6 +91,37 @@ const defaultContent = (fileType?: string) => {
 
 const REPOSITORY_NOT_LOADED = 'Repository not loaded!'
 
+export const addBulkFiles = (files:Array)  =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): void => {
+    if (!repositoryContainer.isLoaded)
+      return dispatch(error(FILE_ADD_FAILED, REPOSITORY_NOT_LOADED))
+    const repository: Repository = repositoryContainer.repository
+    files.forEach(f => {
+      mkdirs(f.filename, repository)(dispatch, getState, {repositoryContainer}).then(c => {
+        const file = repository.addFile(c.parentPath, c.name, f.content)
+        return dispatch(fileAdded(Factory.fileModel(file)))
+      })
+    })
+  }
+
+const mkdirs = (filename:string, repository:Repository) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
+    const names = filename.split('/')
+    let parentPath = '/'
+    let dirname = ''
+    const result = []
+    for(let i = 0; i < names.length - 1; i++) {
+      dirname = names[i]
+      const path = parentPath + dirname + '/'
+      const dir = repository.getByPathString(path);
+      if (!dir) {
+        result.push(addDirectory(Path.fromString(parentPath), dirname)(dispatch, getState, {repositoryContainer}))
+      }
+      parentPath = path
+    }
+    return Promise.all(result).then(() => {return Promise.resolve({parentPath:Path.fromString(parentPath), name: names[names.length - 1]})})
+  }
+
 export const addFile = (parentPath: Path, name: string, fileType?: string)  =>
     (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): any => {
         if (!repositoryContainer.isLoaded)

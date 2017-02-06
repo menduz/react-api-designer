@@ -37,7 +37,6 @@ class ZipConflictModal extends React.Component {
   }
 
   onCheckFileChange(filename, e) {
-    console.log('onCheckFileChange', e.event);
     //e.event.preventDefault();
     this.props.zipFileOverrideAction(filename, e.value)
   }
@@ -49,7 +48,7 @@ class ZipConflictModal extends React.Component {
     if (filter.length > 0) {
       return filter.map((file) => (
         //<Label>{file.filename + " " + file.override}</Label>
-        <div style={margin}>
+        <div style={margin} key={file.filename}>
           <Checkbox
             name={file.filename}
             label={file.filename}
@@ -84,7 +83,7 @@ class ZipConflictModal extends React.Component {
 
           <ModalHeader>
             <h2>Replace</h2>
-            <h3><bold>{fileNameToImport}</bold> contains files that already in your project</h3>
+            <h3><bold>{fileNameToImport}</bold> contains files that are already in your project</h3>
           </ModalHeader>
           <ModalBody>
             <div>
