@@ -53,6 +53,7 @@ class DesignerEditor extends React.Component {
 
     if (nextProps.value !== this.value) {
       this.value = nextProps.value
+      this.editor.focus()
       update = true
     }
 
@@ -76,6 +77,7 @@ class DesignerEditor extends React.Component {
   editorDidMount(editor, monaco) {
     this.editor = editor
     this.monaco = monaco
+    editor.focus()
     editor.getModel().updateOptions({tabSize: 2})
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => {
       this.props.onSave(this.value)
@@ -141,6 +143,7 @@ class DesignerEditor extends React.Component {
       const positionObj = new this.monaco.Position(position.line, position.column)
       this.editor.revealPositionInCenterIfOutsideViewport(positionObj)
       this.editor.setPosition(this.editor.getModel().validatePosition(positionObj))
+      this.editor.focus()
     }
   }
 
@@ -153,7 +156,7 @@ class DesignerEditor extends React.Component {
       cursorStyle: 'line',
       automaticLayout: false,
       folding: true,
-      wordBasedSuggestions: true
+      wordBasedSuggestions: false
     }
 
     return (
@@ -169,10 +172,6 @@ class DesignerEditor extends React.Component {
                       editorDidMount={this.editorDidMount.bind(this)}/>
       </div>
     )
-  }
-
-  static _arraysChanged(array1, array2) {
-    return array1 !== array2 && (array1.length !== 0 || array2.length !== 0)
   }
 }
 

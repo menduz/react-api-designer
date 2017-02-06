@@ -67,6 +67,8 @@
   top: -5px;
   right: 3px;
 }
+
+.angular-container .raml-console-resource.raml-console-is-active .raml-console-resource-path-active,
 .angular-container .raml-console-documentation-active .raml-console-resource-path-active,
 .angular-container .raml-console-resource.raml-console-is-active span,
 .angular-container .raml-console-resource.raml-console-is-active button {
@@ -110,6 +112,10 @@
 }
 .angular-container .raml-console-tab-put::before {
   background: #85639a;
+}
+
+.angular-container .raml-console-tab.raml-console-is-active .raml-console-tab-label::before {
+  background-color: #fafafa;
 }
 
 .angular-container .raml-console-tab {
