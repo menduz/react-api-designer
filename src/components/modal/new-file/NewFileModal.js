@@ -96,11 +96,11 @@ class NewFileModal extends React.Component {
   getPopoverContent(fragmentType:FileType) {
     const link = 'https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md#';
     return (
-      <div className="new-fragment-info">
+      <div className="Popover-in-modal">
         {fragmentType.info}
         <a href={link + fragmentType.link} target="_blank">(read more)</a>
       </div>
-    );
+    )
   }
 }
 

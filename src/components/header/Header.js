@@ -24,7 +24,9 @@ class Header extends Component {
         <div className="Right-header">
           <a><img src={exchangeIcon} height="20px"/></a>
           <span className="Divider"/>
-          <Icon name="support-small" size={19} fill={"white"}/>
+          <a href="https://docs.mulesoft.com/api-manager/designing-your-api" target="_blanck">
+            <Icon name="support-small" size={19} fill={"white"}/>
+          </a>
           <Icon name="contextmenu" size={19} fill={"white"}/>
         </div>
       </div>
