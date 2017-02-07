@@ -7,13 +7,11 @@ import './console-overrides.css'
 class Console extends Component {
 
   componentDidMount() {
-    console.log("componentDidMount...")
     window.angular.bootstrap(this.angularContainer, ['ramlConsoleApp'])
     this.updateConsole(this.props)
   }
 
   shouldComponentUpdate(nextProps) {
-    console.log("shouldComponentUpdate...")
     this.updateConsole(nextProps)
     return false
   }
@@ -25,7 +23,6 @@ class Console extends Component {
       this.spinner.classList.remove("hide")
       console.time("updatingConsole")
       scope.$apply(() => {
-        console.log("componentDidUpdate...")
         scope.raml = nextProps.raml
         console.timeEnd("updatingConsole")
         this.spinner.classList.add("hide")

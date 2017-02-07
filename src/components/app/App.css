@@ -3,9 +3,12 @@
   z-index: -1;
 }
 
-.menu {
+.App-content .LeftPanel {
+  margin-right: 20px;
+}
+
+.App-content .menu {
   height: 35px;
-  padding-right: 20px;
   border-bottom: 2px solid rgba(39,47,51,.1);
 }
 

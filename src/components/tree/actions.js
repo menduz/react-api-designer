@@ -47,7 +47,7 @@ export const folderSelected = (path: Path): void =>
     if (!directory || !directory.isDirectory())
       return
 
-    var folders = getAll(getState()).expandedFolders
+    const folders = getAll(getState()).expandedFolders;
     if (folders.has(path)) {
       dispatch({
         type: NOT_EXPAND_FOLDER,

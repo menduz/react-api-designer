@@ -40,24 +40,7 @@ class FileSystemTree extends Component {
     this.props.onToggle(selection.node.path)
   }
 
-  getEmpty() {
-    return !this.props.nodes ? 'Loading...' : 'Empty'
-  }
-
-  getChildren({ node, path }): ?Node[] {
-    var currentNode = this.getNodeFromProps(node)
-    if (currentNode) {
-      return currentNode.children
-    } else {
-      return []
-    }
-  }
-
-  getNodeFromProps(node: any) : ?Node {
-    return this.props.nodes.find(n => n.name === node.name)
-  }
-
-   handleSave(path: string) {
+  handleSave(path: string) {
     this.props.saveFile(Path.fromString(path))
   }
 
@@ -69,7 +52,7 @@ class FileSystemTree extends Component {
     this.props.remove(Path.fromString(path))
   }
 
-  renderLeaf({node , path, isSelected}) {
+  renderLeaf({node, path, isSelected}) {
     const options = [
       {label: 'Save', onClick: this.handleSave.bind(this, path)},
       {label: 'Rename', onClick: this.handleRename.bind(this, path)},
@@ -86,7 +69,7 @@ class FileSystemTree extends Component {
     )
   }
 
-  renderFolder({ node, path, isSelected, isExpanded }) {
+  renderFolder({node, path, isSelected, isExpanded}) {
     const options = [
       {label: 'Rename', onClick: this.handleRename.bind(this, path)},
       {label: 'Delete', onClick: this.handleDelete.bind(this, path)}
@@ -104,21 +87,25 @@ class FileSystemTree extends Component {
 
   render() {
     const {nodes, selected, expanded} = this.props
-    return (
-      <div>
-        <TreeUI
-          className="Tree"
-          getLeaf={this.renderLeaf.bind(this)}
-          getFolder={this.renderFolder.bind(this)}
-          getEmpty={this.getEmpty.bind(this)}
-          getChildren={this.getChildren.bind(this)}
-          nodes={nodes}
-          selected={selected}
-          expanded={expanded}
-          onSelect={this.handleOnSelect.bind(this)}
-          onToggle={this.handleOnToggle.bind(this)}
-        />
-        <RenameModalContainer/>
+
+    return nodes ?
+      (<div>
+          <TreeUI
+            className="Tree"
+            getLeaf={this.renderLeaf.bind(this)}
+            getFolder={this.renderFolder.bind(this)}
+            getEmpty={()=> 'Empty'}
+            nodes={nodes}
+            selected={selected}
+            expanded={expanded}
+            onSelect={this.handleOnSelect.bind(this)}
+            onToggle={this.handleOnToggle.bind(this)}
+          />
+          <RenameModalContainer/>
+        </div>
+      ) : (
+      <div className="Tree-loading">
+        Loading...
       </div>
     )
   }

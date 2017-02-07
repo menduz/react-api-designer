@@ -58,14 +58,14 @@ export default class Repository {
   }
 
   saveAll(): Promise<File[]> {
-    var files = this._getDirtyFiles()
+    const files = this._getDirtyFiles();
     this._updateSavedFiles(files)
 
-    var promises : Array<Promise> = []
+    const promises: Array<Promise> = [];
 
     files.forEach(file => {
       file.getContent().then(content => {
-        var promise = this._fileSystem.save(file.path.toString(), content)
+        const promise = this._fileSystem.save(file.path.toString(), content);
         promises.push(promise)
       })
     })
@@ -74,13 +74,13 @@ export default class Repository {
   }
 
   rename(oldName: string, newName: string): Promise<any> {
-    var element = this.getByPathString(oldName)
+    const element = this.getByPathString(oldName);
     if (element)
       element.name = newName
 
     const newCompleteName = oldName.substr(0, oldName.lastIndexOf('/') + 1) + newName
 
-    var promise = this._fileSystem.rename(oldName, newCompleteName)
+    const promise = this._fileSystem.rename(oldName, newCompleteName);
     return promise
       .then(
         () => this,
@@ -141,9 +141,9 @@ export default class Repository {
 
   _getDirtyFiles(): File[] {
     function getChildrenFrom(element: Element): Array<Element>{
-      var children : Array<Element> = []
+      const children: Array<Element> = [];
       if (element.isDirectory()) {
-        var dir = ((element) : Directory)
+        const dir = ((element) : Directory);
         dir.children.forEach(child => {
           if (child.isDirectory()) {
             children.concat(getChildrenFrom(child))
@@ -155,7 +155,7 @@ export default class Repository {
       return children
     }
 
-    var elements: Array<Element> = []
+    const elements: Array<Element> = [];
 
     this._root.children.forEach(child => {
       if (child.isDirectory()) {

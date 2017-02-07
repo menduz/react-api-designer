@@ -1,3 +1,9 @@
+.Tree-loading {
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 200;
+}
+
 .Tree .tree-leaf {
     width: 100%;
 }
@@ -18,7 +24,7 @@
 .Tree .file-menu {
     float: right;
     cursor: pointer;
-    padding-right: 23px;
+    padding-right: 4px;
 }
 
 .Tree .file-menu-icon > svg {
