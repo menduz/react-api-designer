@@ -1,7 +1,8 @@
 //@flow
 
 import request from "browser-request";
-import {isApiDefinition, nextName} from "../../../repository/helper/utils";
+import {nextName} from "../../../repository/helper/utils";
+import {isApiDefinition} from "../../../repository/helper/extensions";
 import {addFile} from "../../tree/actions";
 import {updateCurrentFile} from "../../editor/actions";
 import type {Dispatch} from "../../../types/types";

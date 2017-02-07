@@ -50,3 +50,11 @@ export const language = (path: string, text: string): Language => {
       return {id: extension, native: true}
   }
 }
+
+export const isRamlFile = (name): string =>  {
+  return name.endsWith('.raml');
+}
+
+export const isApiDefinition = (raml): string => {
+  return /^#%RAML\s(0\.8|1\.0)\s*$/.test(line(raml));
+}

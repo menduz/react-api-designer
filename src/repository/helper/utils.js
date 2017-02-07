@@ -14,14 +14,3 @@ export const nextName = (name: string, repositoryContainer: RepositoryContainer)
   return result;
 }
 
-export const getFirstLine = (raml): string => {
-  return raml.split(/\r\n|\n/)[0];
-}
-
-export const isRamlFile = (name): string =>  {
-  return name.endsWith('.raml');
-}
-
-export const isApiDefinition = (raml): string => {
-  return /^#%RAML\s(0\.8|1\.0)\s*$/.test(getFirstLine(raml));
-}

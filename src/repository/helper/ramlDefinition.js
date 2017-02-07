@@ -2,7 +2,7 @@
 
 import Repository from '../Repository'
 import Element from '../Element'
-import {isRamlFile, isApiDefinition} from './utils'
+import {isRamlFile, isApiDefinition} from './extensions'
 
 
 export default (repository:Repository) => {
