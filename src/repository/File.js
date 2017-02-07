@@ -14,6 +14,8 @@ class State {
   dirty(): [boolean, State] { throw new Error('Not implemented method') }
 
   save(path: Path, fileSystem: FileSystem): [Promise<any>, State] { throw new Error('Not implemented method') }
+
+  remove(path: Path, fileSystem: FileSystem): [Promise<any>, State] { throw new Error('Not implemented method') }
 }
 
 class DirtyState extends State {
@@ -31,7 +33,7 @@ class DirtyState extends State {
   }
 
   setContent(content: string): State {
-    if (content == this._originalContent)
+    if (content === this._originalContent)
       return new LoadedState(content)
 
     this._content = content
@@ -45,6 +47,11 @@ class DirtyState extends State {
   save(path: Path, fileSystem: FileSystem): [Promise<any>, State] {
     const promise = fileSystem.save(path.toString(), this._content)
     return [promise, new LoadedState(this._content)]
+  }
+
+  remove(path: Path, fileSystem: FileSystem): [Promise<any>, State] {
+    const promise = fileSystem.remove(path.toString())
+    return [promise, new LoadedState("")]
   }
 }
 
@@ -70,6 +77,11 @@ class LoadedState extends State {
 
   save(path: Path, fileSystem: FileSystem): [Promise<any>, State] {
     return [Promise.resolve(), this]
+  }
+
+  remove(path: Path, fileSystem: FileSystem): [Promise<any>, State] {
+    const promise = fileSystem.remove(path.toString())
+    return [promise.then(() => this), this]
   }
 }
 
@@ -102,6 +114,10 @@ class LoadingState extends State {
   save(path: Path, fileSystem: FileSystem): [Promise<any>, State] {
     return [Promise.resolve(), this]
   }
+
+  remove(path: Path, fileSystem: FileSystem): [Promise<any>, State] {
+    return [Promise.resolve(), this]
+  }
 }
 
 class EmptyState extends State {
@@ -128,6 +144,10 @@ class EmptyState extends State {
   }
 
   save(path: Path, fileSystem: FileSystem): [Promise<any>, State] {
+    return [Promise.resolve(), this]
+  }
+
+  remove(path: Path, fileSystem: FileSystem): [Promise<any>, State] {
     return [Promise.resolve(), this]
   }
 }
@@ -182,6 +202,20 @@ class File extends Element {
 
   save(fileSystem: FileSystem): Promise<File> {
     const [promise, newState] = this._state.save(this.path, fileSystem)
+    this._state = newState
+    return promise.then(() => this)
+  }
+
+  saveState(): void {
+    const [isDirty, state] = this._state.dirty()
+    if (isDirty) {
+      const content = state.getContent()[0]
+        content.then((content) => this._state = new LoadedState(content))
+    }
+  }
+
+  remove(fileSystem: FileSystem): Promise<File> {
+    const [promise, newState] = this._state.remove(this.path, fileSystem)
     this._state = newState
     return promise.then(() => this)
   }

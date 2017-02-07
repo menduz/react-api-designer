@@ -1,13 +1,14 @@
 // @flow
 
 import {PREFIX} from './constants'
-import {FileModel, DirectoryModel, RepositoryModel} from '../repository/immutable/RepositoryModel'
+import {FileModel, DirectoryModel, RepositoryModel, ElementModel} from '../repository/immutable/RepositoryModel'
 import Factory from '../repository/immutable/RepositoryModelFactory'
 
 import Repository from '../repository/Repository'
 
 import {Path} from '../repository'
-import {isValidDirectory, isValidFile} from './selectors'
+import {isValidDirectory, isValidFile, getFileTree} from './selectors'
+import {clean} from '../components/editor/actions'
 
 import type {Dispatch, GetState, ExtraArgs} from '../types/types'
 
@@ -19,6 +20,18 @@ export const FILE_ADD_FAILED = `DESIGNER/${PREFIX}/FILE_ADD_FAILED`
 export const FILE_SAVE_STARTED = `DESIGNER/${PREFIX}/FILE_SAVE_STARTED`
 export const FILE_SAVED = `DESIGNER/${PREFIX}/FILE_SAVED`
 export const FILE_SAVE_FAILED = `DESIGNER/${PREFIX}/FILE_SAVE_FAILED`
+
+export const FILE_DELETE_STARTED = `DESIGNER/${PREFIX}/FILE_DELETE_STARTED`
+export const FILE_DELETED = `DESIGNER/${PREFIX}/FILE_DELETED`
+export const FILE_DELETE_FAILED = `DESIGNER/${PREFIX}/FILE_DELETE_FAILED`
+
+export const DIRECTORY_DELETE_STARTED = `DESIGNER/${PREFIX}/DIRECTORY_DELETE_STARTED`
+export const DIRECTORY_DELETED = `DESIGNER/${PREFIX}/DIRECTORY_DELETED`
+export const DIRECTORY_DELETE_FAILED = `DESIGNER/${PREFIX}/DIRECTORY_DELETE_FAILED`
+
+export const FILE_RENAME_STARTED = `DESIGNER/${PREFIX}/FILE_RENAME_STARTED`
+export const FILE_RENAMED = `DESIGNER/${PREFIX}/FILE_RENAMED`
+export const FILE_RENAME_FAILED = `DESIGNER/${PREFIX}/FILE_RENAME_FAILED`
 
 export const DIRECTORY_ADD_STARTED = `DESIGNER/${PREFIX}/DIRECTORY_ADD_STARTED`
 export const DIRECTORY_ADDED = `DESIGNER/${PREFIX}/DIRECTORY_ADDED`
@@ -42,6 +55,24 @@ export const fileSaved = (file: FileModel) => ({
     payload: file
 })
 
+const allFilesSaved = (files: FileModel[]) => {
+  files.forEach(file => fileSaved(file))
+}
+
+export const fileRenamed = (element: ElementModel, name: string) => ({
+    type: FILE_RENAMED,
+    payload: {element, name}
+})
+
+export const fileDeleted = (path: Path) => ({
+    type: FILE_DELETED,
+    payload: path
+})
+
+export const directoryDeleted = (path: Path) => ({
+    type: DIRECTORY_DELETED,
+    payload: path
+})
 
 export const fileContentUpdated = (file: FileModel, content: string) => ({
     type: FILE_CONTENT_UPDATED,
@@ -170,6 +201,91 @@ export const saveFile = (path: Path) =>
                 () => { dispatch(error(FILE_SAVE_FAILED, 'Error on save')) }
             )
     }
+
+export const saveAll = () =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
+    if (!repositoryContainer.isLoaded)
+      return Promise.reject(dispatch(error(FILE_SAVE_FAILED, REPOSITORY_NOT_LOADED)))
+
+    const repository: Repository = repositoryContainer.repository
+    dispatch({type: FILE_SAVE_STARTED})
+
+    return repository.saveAll()
+      .then(
+        (files) => {
+          var fileModels = files.map(file => Factory.fileModel(file))
+          dispatch(allFilesSaved(fileModels))
+        },
+        () => { dispatch(error(FILE_SAVE_FAILED, 'Error on save')) })
+  }
+
+export const rename = (oldName: string, newName: string) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
+    if (!repositoryContainer.isLoaded)
+      return Promise.reject(dispatch(error(FILE_RENAME_FAILED, REPOSITORY_NOT_LOADED)))
+
+    const oldPath = getFileTree(getState()) ? getFileTree(getState()).getByPathString(oldName) : undefined
+
+    if (!oldPath || (oldPath.isDirectory() && !isValidDirectory(oldPath)))
+      return Promise.reject(dispatch(error(FILE_RENAME_FAILED, `${oldName} is not valid directory`)))
+    else {
+      if (!isValidFile(oldPath))
+        return Promise.reject(dispatch(error(FILE_RENAME_FAILED, `${oldName} is not valid file`)))
+    }
+
+    const repository: Repository = repositoryContainer.repository
+    dispatch({type: FILE_RENAME_STARTED})
+
+    return repository.rename(oldName, newName)
+      .then(
+        () => dispatch(fileRenamed(oldPath, newName)),
+        () => { dispatch(error(FILE_RENAME_FAILED, 'Error on renameElement')) }
+      )
+  }
+
+const removeDirectory = (path: Path, dispatch: Dispatch, repository: Repository) => {
+  if (!isValidDirectory(path))
+    return Promise.reject(dispatch(error(DIRECTORY_DELETE_FAILED, `${path.toString()} is not valid folder`)))
+
+  dispatch({type: DIRECTORY_DELETE_STARTED})
+  return repository.deleteDirectory(path)
+    .then(
+      () => {
+        dispatch(directoryDeleted(path))
+        dispatch(clean())
+      },
+      () => { dispatch(error(DIRECTORY_DELETE_FAILED, 'Error on delete')) }
+    )
+}
+
+const removeFile = (path: Path, dispatch: Dispatch, repository: Repository) => {
+  if (!isValidFile(path))
+    return Promise.reject(dispatch(error(FILE_DELETE_FAILED, `${path.toString()} is not valid file`)))
+
+  dispatch({type: FILE_DELETE_STARTED})
+  return repository.deleteFile(path)
+    .then(
+      () => {
+        dispatch(fileDeleted(path))
+        dispatch(clean())
+      },
+      () => { dispatch(error(FILE_DELETE_FAILED, 'Error on delete')) }
+    )
+}
+
+export const remove = (path: Path) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
+    if (!repositoryContainer.isLoaded)
+      return Promise.reject(dispatch(error(FILE_DELETE_FAILED, REPOSITORY_NOT_LOADED)))
+
+    const repository: Repository = repositoryContainer.repository
+
+    if (repository.getByPath(path).isDirectory()) {
+      removeDirectory(path, dispatch, repository)
+    } else {
+      removeFile(path, dispatch, repository)
+    }
+  }
 
 export const updateFileContent = (path: Path, content: string) =>
     (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): any => {

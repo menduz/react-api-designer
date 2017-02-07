@@ -22,8 +22,12 @@ export class RepositoryModel {
     return this._root.getByPath(Path.fromString(path))
   }
 
-  renameFile(file: FileModel, name: string): RepositoryModel {
-    return this.updateElement(file.withName(name))
+  renameElement(element: ElementModel, name: string): RepositoryModel {
+    const newPath = Path.fromString(element.path.toString().substr(0, element.path.toString().lastIndexOf('/') + 1) + name)
+
+    return this
+      .removeElement(element.path)
+      .updateElement(element.withName(name).withPath(newPath))
   }
 
   moveElement(from: Path, to: Path): RepositoryModel {
@@ -42,8 +46,6 @@ export class RepositoryModel {
   removeElement(path: Path): RepositoryModel {
     return new RepositoryModel(this._root.removeElement(path.parent(), path.last()))
   }
-
-  get root(): DirectoryModel { return this._root }
 }
 
 export class ElementModel {
@@ -60,6 +62,8 @@ export class ElementModel {
   get path(): Path { return this._path }
 
   withPath(path: Path): DirectoryModel | ElementModel { throw new Error('Not implemented method') }
+
+  withName(name: string): DirectoryModel | ElementModel { throw new Error('Not implemented method') }
 
   isDirectory(): boolean { throw new Error('Not implemented method') }
 
@@ -94,6 +98,8 @@ export class DirectoryModel extends ElementModel {
   withPath(path: Path): DirectoryModel {
     return new DirectoryModel(this._name, path, this._children)
   }
+
+  withName(name: string) { return new DirectoryModel(name, this.path, this._children) }
 
   getByPath(path: Path): ?ElementModel {
     if (path.isEmpty()) return this

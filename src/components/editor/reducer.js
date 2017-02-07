@@ -1,9 +1,8 @@
 import {
   SET_PATH, SET_POSITION,
   PARSING_REQUEST, PARSING_RESULT,
-  SUGGESTION_REQUEST, SUGGESTION_RESULT
+  SUGGESTION_REQUEST, SUGGESTION_RESULT, CLEAN_EDITOR
 } from './actions'
-
 
 const initialState = {
   path: null,
@@ -48,7 +47,6 @@ export default (state = initialState, action) => {
         errors: action.errors,
         parsedObject: action.parsedObject
       }
-
     case SUGGESTION_REQUEST:
       return {
         ...state,
@@ -60,6 +58,8 @@ export default (state = initialState, action) => {
         suggestions: action.suggestions,
         isSearching: false
       }
+    case CLEAN_EDITOR:
+      return initialState
     default:
       return state
   }

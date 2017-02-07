@@ -1,7 +1,7 @@
 import {PREFIX} from './constants'
 import {getCurrentFilePath, getLanguage} from './selectors'
 import {Path} from '../../repository'
-import {updateFileContent, saveFile} from '../../repository-redux/actions'
+import {updateFileContent, saveFile, remove, saveAll} from '../../repository-redux/actions'
 import {getFileTree} from '../../repository-redux/selectors'
 import {RepositoryTypeFactory} from '../../repository/type'
 import {language} from '../../repository/helper/extensions'
@@ -14,6 +14,8 @@ export const SUGGESTION_RESULT = `DESIGNER/${PREFIX}/SUGGESTION_RESULT`
 
 export const SET_POSITION = `DESIGNER/${PREFIX}/SET_POSITION`
 export const SET_PATH = `DESIGNER/${PREFIX}/SET_TEXT`
+
+export const CLEAN_EDITOR = `DESIGNER/${PREFIX}/CLEAN_EDITOR`
 
 export const setPosition = (line, column) => ({
   type: SET_POSITION,
@@ -125,6 +127,21 @@ export const updateFile = (text, path: Path, delay = 0) =>
     }, delay)
   }
 
-export const saveCurrentFile = () => (dispatch, getState) => {
-  dispatch(saveFile(getCurrentFilePath(getState())))
-}
+export const saveFileWithPath = (path: Path) =>
+  (dispatch) => {
+    dispatch(saveFile(path))
+  }
+
+export const save = () =>
+  (dispatch) => {
+    dispatch(saveAll())
+  }
+
+export const removeFileWithPath = (path: Path) =>
+  (dispatch) => {
+    dispatch(remove(path))
+  }
+
+export const clean = () => ({
+  type: CLEAN_EDITOR
+})

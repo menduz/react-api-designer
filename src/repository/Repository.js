@@ -43,11 +43,63 @@ export default class Repository {
     return ((element: any): File)
   }
 
+  getDirectoryByPath(path: Path): ?Directory {
+    const element = this.getByPath(path)
+    if (!element || !element.isDirectory()) return
+
+    return ((element: any): Directory)
+  }
+
   saveFile(path: Path): Promise<File> {
     const file = this.getFileByPath(path)
     if (!file) return Promise.reject()
 
     return file.save(this._fileSystem)
+  }
+
+  saveAll(): Promise<File[]> {
+    var files = this._getDirtyFiles()
+    this._updateSavedFiles(files)
+
+    var promises : Array<Promise> = []
+
+    files.forEach(file => {
+      file.getContent().then(content => {
+        var promise = this._fileSystem.save(file.path.toString(), content)
+        promises.push(promise)
+      })
+    })
+
+    return Promise.all(promises)
+  }
+
+  rename(oldName: string, newName: string): Promise<any> {
+    var element = this.getByPathString(oldName)
+    if (element)
+      element.name = newName
+
+    const newCompleteName = oldName.substr(0, oldName.lastIndexOf('/') + 1) + newName
+
+    var promise = this._fileSystem.rename(oldName, newCompleteName)
+    return promise
+      .then(
+        () => this,
+        () => this
+      )
+  }
+
+  deleteFile(path: Path): Promise<File> {
+    const file = this.getFileByPath(path)
+    if (!file) return Promise.reject()
+
+    return file.remove(this._fileSystem)
+  }
+
+  deleteDirectory(path: Path): Promise<Directory> {
+    const directory = this.getDirectoryByPath(path)
+    if (!directory) return Promise.reject()
+
+    return directory.remove(this._fileSystem)
   }
 
   addFile(path: Path, name: string, content: string): File {
@@ -85,5 +137,37 @@ export default class Repository {
 
   buildZip():Promise<> {
     return ZipHelper.buildZip(this.root)
+  }
+
+  _getDirtyFiles(): File[] {
+    function getChildrenFrom(element: Element): Array<Element>{
+      var children : Array<Element> = []
+      if (element.isDirectory()) {
+        var dir = ((element) : Directory)
+        dir.children.forEach(child => {
+          if (child.isDirectory()) {
+            children.concat(getChildrenFrom(child))
+          } else {
+            children.push(child)
+          }
+        })
+      }
+      return children
+    }
+
+    var elements: Array<Element> = []
+
+    this._root.children.forEach(child => {
+      if (child.isDirectory()) {
+        elements.concat(getChildrenFrom(child))
+      } else {
+        elements.push(child)
+      }
+    })
+    return elements
+  }
+
+  _updateSavedFiles(files: File[]): void {
+    files.forEach(file => file.saveState())
   }
 }

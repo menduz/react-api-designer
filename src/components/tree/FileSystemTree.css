@@ -1,0 +1,28 @@
+.Tree .tree-leaf {
+    width: 100%;
+}
+
+.Tree .tree-node {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.Tree .tree-node .file-menu {
+    display: none;
+}
+
+.Tree .tree-node:hover .file-menu {
+    display: inline-block;
+}
+
+.Tree .file-menu {
+    float: right;
+    cursor: pointer;
+    padding-right: 23px;
+}
+
+.Tree .file-menu-icon > svg {
+    display: block;
+    height: 14px !important;
+    width: 14px !important;
+}

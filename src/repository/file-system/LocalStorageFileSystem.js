@@ -74,6 +74,11 @@ class LocalStorageHelper {
   }
 }
 
+type ValidationResult = {
+  valid: boolean,
+  reason?: string
+}
+
 class LocalStorageFileSystem extends FileSystem {
 
   _fileNotFoundMessage(path: Path): string {
@@ -409,11 +414,6 @@ class LocalStorageFileSystem extends FileSystem {
   //     fileName && $window.saveAs(jszip.generate({type: 'blob'}), fileName)
   // }
 
-}
-
-type ValidationResult = {
-  valid: boolean,
-  reason?: string
 }
 
 export default LocalStorageFileSystem

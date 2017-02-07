@@ -18,6 +18,7 @@ import newFolder from './components/modal/new-folder'
 import newFile from './components/modal/new-file'
 import importModal from './components/modal/import'
 import exportModal from './components/modal/export'
+import rename from './components/modal/rename'
 import {initFileSystem} from "./repository-redux/actions"
 import FileTreeFactory from "./repository/immutable/RepositoryModelFactory"
 import * as fileSystemTree from "./components/tree"
@@ -50,7 +51,8 @@ const rootReducer = combineReducers({
     newFolder: newFolder.reducer,
     newFile: newFile.reducer,
     import: importModal.reducer,
-    export: exportModal.reducer
+    export: exportModal.reducer,
+    rename: rename.reducer
   }),
   mock: mockReducer
 })

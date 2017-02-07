@@ -1,23 +1,22 @@
 // @flow
 
 import {Set} from 'immutable'
-
-import {Path} from '../../repository';
+import {Path} from '../../repository'
 import {RepositoryModel, FileModel, DirectoryModel, ElementModel} from '../../repository/immutable/RepositoryModel';
 
 export type State = {
   currentPath: ?Path,
-  expandedFiles: Set<string>
+  expandedFolders: Set<Path>
 }
 
 export type Node = {
   path: Path,
   name: string,
   isDirty: boolean,
-  children: ?Node[]
+  children?: Node[]
 }
 
-export const fromFileTree = (fileTree: RepositoryModel) : Node => {
+export const fromFileTree = (fileTree: RepositoryModel) : Node[] => {
   return fromDirectory(fileTree.root).children
 }
 

@@ -2,6 +2,7 @@
 
 import Element from './Element'
 import Path from './Path'
+import FileSystem from './file-system/FileSystem'
 
 class Directory extends Element {
   _children: Element[]
@@ -35,6 +36,14 @@ class Directory extends Element {
       .map((e) => e.getByPath(path.shift()))
 
     return childrenResult.length > 0 ? childrenResult[0] : undefined
+  }
+
+  remove(fileSystem: FileSystem): Promise<Directory> {
+    this._children.forEach(children => children.remove(fileSystem))
+    this._children = []
+
+    var promise = fileSystem.remove(this.path.toString())
+    return promise.then(() => this)
   }
 }
 

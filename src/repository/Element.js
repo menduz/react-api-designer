@@ -2,6 +2,7 @@
 
 import Directory from './Directory'
 import Path from './Path'
+import FileSystem from './file-system/FileSystem'
 
 class Element {
   _name: string
@@ -28,6 +29,8 @@ class Element {
   isDirectory(): boolean { throw new Error('Not implemented method') }
 
   getByPath(path: Path): ?Element { throw new Error('Not implemented method') }
+
+  remove(fileSystem: FileSystem): Promise<Element> { throw new Error('Not implemented method') }
 }
 
 export default Element

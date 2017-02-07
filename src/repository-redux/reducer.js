@@ -5,8 +5,8 @@ import {Map} from 'immutable'
 import type {State} from './model'
 
 import {
-  FILE_ADDED,
-  DIRECTORY_ADDED,
+  FILE_ADDED, FILE_DELETED, FILE_RENAMED,
+  DIRECTORY_ADDED, DIRECTORY_DELETED,
   INIT_FILE_SYSTEM, FILE_SAVED, FILE_CONTENT_UPDATED
 } from './actions'
 
@@ -21,6 +21,19 @@ const reducer = (state: State = initialState, action: {type: string, payload: an
       return {
         ...state,
         fileTree: action.payload
+      }
+    case DIRECTORY_DELETED:
+    case FILE_DELETED:
+      if (!state.fileTree) return state
+      return {
+        ...state,
+        fileTree: state.fileTree.removeElement(action.payload)
+      }
+    case FILE_RENAMED:
+      if (!state.fileTree) return state
+      return {
+        ...state,
+        fileTree: state.fileTree.renameElement(action.payload.element, action.payload.name)
       }
     case FILE_ADDED:
     case FILE_SAVED:

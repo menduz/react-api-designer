@@ -17,9 +17,9 @@ import {openNewFolderDialog} from '../modal/new-folder/NewFolderActions'
 import {openNewFileDialog} from '../modal/new-file/NewFileActions'
 import {openImportDialog} from '../modal/import/ImportActions'
 import {openExportDialog} from '../modal/export/ExportActions'
+import {save} from "../editor/actions"
 
 import './Menu.css'
-import {saveCurrentFile} from "../editor/actions"
 
 class Menu extends React.Component {
   render() {
@@ -28,13 +28,13 @@ class Menu extends React.Component {
       showNewFileDialog,
       showImportDialog,
       showExportDialog,
-      saveFile
+      saveAll
     } = this.props
 
     const contextMenuOptions = [
-      {label: 'Save', onClick: saveFile},
-      {label: 'Export', onClick: showExportDialog},
+      {label: 'Save All', onClick: saveAll},
       {label: 'Import', onClick: showImportDialog},
+      {label: 'Export', onClick: showExportDialog}
     ]
 
     const addMenuOptions = [
@@ -44,7 +44,7 @@ class Menu extends React.Component {
 
     return (
       <div className="menu">
-        <ContextMenu className="context-menu" options={contextMenuOptions} triggerOn={['click']}>
+        <ContextMenu className="context-menu" options={contextMenuOptions}>
           <Icon className="context-menu-icon" name="contextmenu"/>
         </ContextMenu>
 
@@ -53,7 +53,7 @@ class Menu extends React.Component {
         <ZipConflictModalContainer/>
         <ExportModalContainer/>
 
-        <ContextMenu className="add-menu" options={addMenuOptions} triggerOn={['click']}>
+        <ContextMenu className="add-menu" options={addMenuOptions}>
           <Icon className="plus-icon" name="plus"/>
         </ContextMenu>
 
@@ -76,7 +76,7 @@ const mapDispatch = (dispatch) => {
     showNewFileDialog: () => dispatch(openNewFileDialog()),
     showImportDialog: () => dispatch(openImportDialog()),
     showExportDialog: () => dispatch(openExportDialog()),
-    saveFile: () => dispatch(saveCurrentFile())
+    saveAll: () => dispatch(save())
   }
 }
 

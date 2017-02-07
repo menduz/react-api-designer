@@ -16,3 +16,7 @@
     height: 20px !important;
     width: 20px !important;
 }
+
+.dropdown-menu-popup > ul > li > button {
+    font-size: 14px;
+}
