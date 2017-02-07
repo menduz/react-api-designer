@@ -7,8 +7,6 @@ import {isRamlFile, isApiDefinition} from './utils'
 
 export default (repository:Repository) => {
 
-
-
   const ramls = []
 
   function findRaml(elem:Element) {

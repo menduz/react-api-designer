@@ -98,8 +98,13 @@ export const addBulkFiles = (files:Array)  =>
     const repository: Repository = repositoryContainer.repository
     files.forEach(f => {
       mkdirs(f.filename, repository)(dispatch, getState, {repositoryContainer}).then(c => {
-        const file = repository.addFile(c.parentPath, c.name, f.content)
-        return dispatch(fileAdded(Factory.fileModel(file)))
+        if (!repository.getByPathString('/' + f.filename)) {
+          const file = repository.addFile(c.parentPath, c.name, f.content)
+          return dispatch(fileAdded(Factory.fileModel(file)))
+        } else {
+          const file = repository.setContent(Path.fromString('/' + f.filename), f.content)
+          return dispatch(fileContentUpdated(Factory.fileModel(file), f.content))
+        }
       })
     })
   }
