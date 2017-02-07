@@ -9,6 +9,15 @@ import './Preview.css'
 
 class Preview extends Component {
 
+  static _theme = {
+    scheme: 'monokai',
+    author: 'Juan Longo',
+    base03: '#bbbbbb',
+    base09: '#09885a',
+    base0B: '#0451b9',
+    base0D: '#a31515',
+  }
+
   static _consolePreview(language, parsedObject) {
     return parsedObject && language.type &&
       (language.type === '1.0' || language.type === '0.8' ||
@@ -29,10 +38,10 @@ class Preview extends Component {
           <AngularConsole raml={parsedObject}/>;
       case 'md':
         return !text ? Preview._empty() :
-          <ReactMarkdown source={text}/>;
+          <ReactMarkdown source={text} className="md-preview"/>;
       default:
         return !parsedObject ? Preview._empty() :
-          <JSONTree data={parsedObject} hideRoot={true} shouldExpandNode={(keyName, data, level) => level < 3}/>;
+          <JSONTree data={parsedObject} theme={Preview._theme} hideRoot={true} invertTheme={false}/>;
     }
   }
 
