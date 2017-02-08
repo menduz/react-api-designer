@@ -78,8 +78,9 @@ export const changeUrl = (url: string) => ({
   payload: {url}
 })
 
-export const openImportDialog = () => ({
-  type: SHOW
+export const openImportDialog = (file?: any) => ({
+  type: SHOW,
+  payload: {file}
 })
 
 export const uploadFile = (event: any) => ({

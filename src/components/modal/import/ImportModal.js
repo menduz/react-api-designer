@@ -65,7 +65,8 @@ class ImportModal extends React.Component {
       showModal,
       selectValue,
       url,
-      isImporting
+      isImporting,
+      fileToImport
     } = this.props
 
     if (showModal) {
@@ -97,7 +98,7 @@ class ImportModal extends React.Component {
             {this.getType().url ?
               <TextField className="import-url" value={url} type="url" placeholder="Url..."
                          onChange={this.handleUrlChange.bind(this)} autoFocus/> :
-              <FileUploader id="fileUploader" onChange={onFileUpload} className="import-file" required={true}/>
+              <FileUploader id="fileUploader" onChange={onFileUpload} className="import-file" required={true} value={fileToImport}/>
             }
           </ModalBody>
 

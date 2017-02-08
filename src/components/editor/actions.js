@@ -127,6 +127,10 @@ export const updateFile = (text, path: Path, delay = 0) =>
     }, delay)
   }
 
+export const saveCurrentFile = () => (dispatch, getState) => {
+  dispatch(saveFile(getCurrentFilePath(getState())))
+}
+
 export const saveFileWithPath = (path: Path) =>
   (dispatch) => {
     dispatch(saveFile(path))

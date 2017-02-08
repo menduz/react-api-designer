@@ -20,7 +20,8 @@ export default (state: State = initialState, action: any): State => {
     case actions.SHOW:
       return {
         ...state,
-        showModal: true
+        showModal: true,
+        fileToImport: action.payload.file ? action.payload.file : state.fileToImport
       }
     case actions.CHANGE_TYPE:
       return {
