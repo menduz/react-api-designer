@@ -35,7 +35,7 @@ export default (state: State = initialState, action: any): State => {
     case actions.FILE_UPLOAD:
       return {
         ...state,
-        fileToImport: action.payload.event.target
+        fileToImport: action.payload.event.value
       }
     case actions.UPLOAD_TEMP_FILE:
       return {

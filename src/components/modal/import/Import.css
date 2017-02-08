@@ -2,12 +2,16 @@
   overflow: visible;
 }
 
-.input-file {
+.import-modal .input-file {
   margin-top: 15px;
 }
 
-.import-url, .import-file {
+.import-modal .import-url, .import-modal .import-file {
   margin-top: 15px;
+}
+
+.import-modal .import-file div[data-anypoint-component="TextField"] {
+  width: 70%;
 }
 
 .import-modal .input-type {
@@ -16,7 +20,7 @@
 
 .import-modal .input-type .info-small-icon {
   position: absolute;
-  right: -29px;
+  right: -24px;
   top: 13px;
 }
 

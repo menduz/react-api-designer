@@ -32,7 +32,10 @@ class ExportModal extends React.Component {
   }
 
   handleSubmit() {
-    this.props.onSubmit(this.props.exportName, this.props.type)
+    const {exportName, type} = this.props
+
+    if (exportName && type)
+      this.props.onSubmit(exportName, type)
   }
 
   render() {

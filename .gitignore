@@ -11,6 +11,7 @@ coverage
 build
 out
 public/static
+public/shared
 public/assets
 
 # misc

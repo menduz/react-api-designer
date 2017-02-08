@@ -9,6 +9,7 @@ import ModalBody from '@mulesoft/anypoint-components/lib/ModalBody'
 import ModalFooter from '@mulesoft/anypoint-components/lib/ModalFooter'
 import Select from '@mulesoft/anypoint-components/lib/Select'
 import TextField from '@mulesoft/anypoint-components/lib/TextField'
+import FileUploader from '@mulesoft/anypoint-components/lib/FileUploader'
 import Popover from '@mulesoft/anypoint-components/lib/Popover'
 import Icon from '@mulesoft/anypoint-icons/lib/Icon'
 
@@ -37,12 +38,19 @@ class ImportModal extends React.Component {
   }
 
   handleSubmit() {
-    const fileType = this.getType().type
-    if (this.props.fileToImport) {
-      this.props.onSubmitWithFile(this.props.fileToImport, fileType)
-    } else {
-      this.props.onSubmitWithUrl(this.props.url, fileType)
-    }
+    const fileType = this.getType()
+    if (fileType.url) this.handlerUrlSubmit(fileType.type)
+    else this.handlerFileSubmit(fileType.type)
+  }
+
+  handlerUrlSubmit(type: string) {
+    if (this.props.url)
+      this.props.onSubmitWithUrl(this.props.url, type)
+  }
+
+  handlerFileSubmit(type: string) {
+    if (this.props.fileToImport)
+      this.props.onSubmitWithFile(this.props.fileToImport, type)
   }
 
   handleUrlChange(event: any) {
@@ -86,14 +94,10 @@ class ImportModal extends React.Component {
                 <Icon name="info-small" size={19} fill={"rgb(124, 125, 126)"}/>
               </Popover>
             </div>
-            {selectValue === 'RAML-file' || selectValue === 'OAS-file' ?
-              <input className="import-file" type="file" onChange={onFileUpload}/> :
-              <TextField className="import-url"
-                         value={url}
-                         type="url"
-                         placeholder="Url..."
-                         onChange={this.handleUrlChange.bind(this)}
-                         autoFocus/>
+            {this.getType().url ?
+              <TextField className="import-url" value={url} type="url" placeholder="Url..."
+                         onChange={this.handleUrlChange.bind(this)} autoFocus/> :
+              <FileUploader id="fileUploader" onChange={onFileUpload} className="import-file" required={true}/>
             }
           </ModalBody>
 
@@ -127,7 +131,8 @@ class ImportModal extends React.Component {
       value: 'RAML-url',
       label: 'RAML url',
       type: 'RAML10',
-      info: 'Note: currently it does not import includes.'
+      info: 'Note: currently it does not import includes.',
+      url: true
     },
     {
       value: 'OAS-file',
@@ -139,7 +144,8 @@ class ImportModal extends React.Component {
       value: 'OAS-url',
       label: 'OAS url',
       type: 'SWAGGER',
-      info: 'Note: currently supports OAS (Swagger) v2.0.'
+      info: 'Note: currently supports OAS (Swagger) v2.0.',
+      url: true
     }
   ];
 }

@@ -22,10 +22,10 @@ class RenameModal extends React.Component {
   }
 
   handleSubmit() {
-    if (this.props.oldName)
-      return
+    const {oldName, newName} = this.props
 
-    this.props.onSubmit(this.props.oldName, this.props.newName)
+    if (oldName && newName)
+      this.props.onSubmit(oldName, newName)
   }
 
   render() {

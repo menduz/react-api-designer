@@ -149,7 +149,7 @@ export const importFileFromUrl = (url: string, fileType: string) =>
     }
   }
 
-export const importFile = (fileToImport: any, fileType: string) =>
+export const importFile = (file: any, fileType: string) =>
   (dispatch: Dispatch, getState, {worker, repositoryContainer}: ExtraArgs) => {
     dispatch({type: IMPORT_STARTED})
 
@@ -170,13 +170,11 @@ export const importFile = (fileToImport: any, fileType: string) =>
     }
 
     const reader = new FileReader()
-    const file = fileToImport.files[0]
     const zip = isZip(file);
     const repository: Repository = repositoryContainer.repository
 
     reader.onload = (upload) => {
       dispatch(uploadTempFile(file.name, fileType, upload.target.result))
-      dispatch({type: HIDE})
       if (zip) {
         if (fileType === SWAGGER) {
           dispatch({type: IMPORT_STARTED})
