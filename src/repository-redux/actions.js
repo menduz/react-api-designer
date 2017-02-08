@@ -127,15 +127,18 @@ export const addBulkFiles = (files:Array)  =>
     if (!repositoryContainer.isLoaded)
       return dispatch(error(FILE_ADD_FAILED, REPOSITORY_NOT_LOADED))
     const repository: Repository = repositoryContainer.repository
-    files.forEach(f => {
-      mkdirs(f.filename, repository)(dispatch, getState, {repositoryContainer}).then(c => {
-        if (!repository.getByPathString('/' + f.filename)) {
-          const file = repository.addFile(c.parentPath, c.name, f.content)
-          return dispatch(fileAdded(Factory.fileModel(file)))
-        } else {
-          const file = repository.setContent(Path.fromString('/' + f.filename), f.content)
-          return dispatch(fileContentUpdated(Factory.fileModel(file), f.content))
-        }
+
+    Promise.all(files.map(f => mkdirs(f.filename, repository)(dispatch, getState, {repositoryContainer}))).then( () => {
+      files.forEach(f => {
+        mkdirs(f.filename, repository)(dispatch, getState, {repositoryContainer}).then(c => {
+          if (!repository.getByPathString('/' + f.filename)) {
+            const file = repository.addFile(c.parentPath, c.name, f.content)
+            return dispatch(fileAdded(Factory.fileModel(file)))
+          } else {
+            const file = repository.setContent(Path.fromString('/' + f.filename), f.content)
+            return dispatch(fileContentUpdated(Factory.fileModel(file), f.content))
+          }
+        })
       })
     })
   }
@@ -145,17 +148,19 @@ const mkdirs = (filename:string, repository:Repository) =>
     const names = filename.split('/')
     let parentPath = '/'
     let dirname = ''
-    const result = []
+    let sequence = Promise.resolve()
     for(let i = 0; i < names.length - 1; i++) {
       dirname = names[i]
       const path = parentPath + dirname + '/'
       const dir = repository.getByPathString(path);
       if (!dir) {
-        result.push(addDirectory(Path.fromString(parentPath), dirname)(dispatch, getState, {repositoryContainer}))
+        const c = parentPath
+        const d = dirname
+        sequence = sequence.then(() => {return addDirectory(Path.fromString(c), d)(dispatch, getState, {repositoryContainer})})
       }
       parentPath = path
     }
-    return Promise.all(result).then(() => {return Promise.resolve({parentPath:Path.fromString(parentPath), name: names[names.length - 1]})})
+    return sequence.then(() => {return Promise.resolve({parentPath:Path.fromString(parentPath), name: names[names.length - 1]})})
   }
 
 export const addFile = (parentPath: Path, name: string, fileType?: string)  =>

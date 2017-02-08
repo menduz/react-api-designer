@@ -48,7 +48,7 @@ class ZipHelper {
       if (files) {
         return buildContents(zip, files)
       } else {
-        const files = Object.keys(zip.files).map(filename => {
+        const files = Object.keys(zip.files).filter(filename => !filename.endsWith('/')).map(filename => {
           return {filename}
         })
         return buildContents(zip, files)
