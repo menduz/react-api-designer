@@ -1,16 +1,22 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import ToggleButton from 'react-toggle-button'
-import {createMock, deleteMock} from './actions'
+import {createMock, deleteMock, updateMock} from './actions'
+import {getCurrentFilePath} from '../editor/selectors'
 import './Mock.css'
 
 class Mock extends React.Component {
+
+  shouldComponentUpdate(nextProps) {
+    this.props.shouldUpdateMock()
+    return true
+  }
+
   onToggle(value) {
     if (value)
       this.props.stopMock()
     else
       this.props.startMock()
-
   }
 
   render() {
@@ -37,18 +43,22 @@ class Mock extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const {mock} = state
-  if (!mock) return {}
-
+  const {mock, editor} = state
+  const file = getCurrentFilePath(state).toString()
+  if (!mock || !file ) return {}
+  const m = mock.find(c => c.file === file)
+  if (!m) return {}
   return {
-    isUp: mock.isUp
+    isUp: m.isUp,
+    parsedObject: editor.parsedObject
   }
 }
 
 const mapDispatch = dispatch => {
   return {
     startMock: () => dispatch(createMock()),
-    stopMock: () => dispatch(deleteMock())
+    stopMock: () => dispatch(deleteMock()),
+    shouldUpdateMock: () => dispatch(updateMock())
   }
 }
 

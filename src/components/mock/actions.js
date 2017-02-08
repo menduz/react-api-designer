@@ -1,7 +1,10 @@
+//@flow
+
 import MockingService from './service/mocking-service'
 import MockingServiceClient from './service/mocking-service-client'
 import {updateCurrentFile} from '../../components/editor/actions'
 import {getCurrentFileContent} from '../../repository-redux/selectors'
+import {getCurrentFilePath} from '../editor/selectors'
 
 export const START_MOCK = 'DESIGNER/MOCK/START_MOCK'
 export const MOCK_STARTED = 'DESIGNER/MOCK/MOCK_STARTED'
@@ -10,20 +13,24 @@ export const BEGIN_STOP_MOCK = 'DESIGNER/MOCK/BEGIN_STOP_MOCK'
 
 
 
-const startMock = ({
-    type: START_MOCK
+const startMock = (file:string) => ({
+  type: START_MOCK,
+  file
 })
 
-const stopMock = ({
-    type: STOP_MOCK
+const stopMock = (file:string) => ({
+  type: STOP_MOCK,
+  file
 })
 
-const beginStopMock = ({
-  type: BEGIN_STOP_MOCK
+const beginStopMock = (file:string) => ({
+  type: BEGIN_STOP_MOCK,
+  file
 })
 
-const mockStarted = (id, manageKey, baseUri, manageUri) => ({
+const mockStarted = (file, id, manageKey, baseUri, manageUri) => ({
   type: MOCK_STARTED,
+  file,
   id,
   manageKey,
   baseUri,
@@ -32,15 +39,20 @@ const mockStarted = (id, manageKey, baseUri, manageUri) => ({
 
 
 export const createMock = () => (dispatch, getState) => {
-  if (!getState().mock.isUp && !getState().mock.isStarting) {
-    dispatch(startMock)
+  const file = getCurrentFilePath(getState()).toString()
+  const state = getState().mock
+  console.log("createMock:" + file + " " + JSON.stringify(state))
+  const m = state.find(c => c.file === file)
+  console.log("createMock M" + JSON.stringify(m))
+  if (!m || (!m.isUp && !m.isStarting)) {
+    dispatch(startMock(file))
     const mock = new MockingService(new MockingServiceClient())
     const ramlContent = getCurrentFileContent(getState())()
     //@@TODO GET editor.parsedObject from a function!!
     const jsonObject = getState().editor.parsedObject
 
     mock.createMock(ramlContent, jsonObject).then(res => {
-      dispatch(mockStarted(res.id, res.manageKey, res.baseUri, res.manageUri))
+      dispatch(mockStarted(file, res.id, res.manageKey, res.baseUri, res.manageUri))
       addMockBaseUri(ramlContent, res.baseUri)(dispatch, getState)
     }).catch(err => {
       console.log(err)
@@ -50,14 +62,17 @@ export const createMock = () => (dispatch, getState) => {
   }
 }
 
-export const updateMock = (getState) => {
+export const updateMock = () => (dispatch, getState) => {
+  const file = getCurrentFilePath(getState()).toString()
   const state = getState().mock;
-  if (state.isUp) {
+  const m = state.find(c => c.file === file)
+  if (m && m.isUp) {
+    console.log("Updating mock Content")
     const mock = new MockingService(new MockingServiceClient())
     const ramlContent = getCurrentFileContent(getState())()
     //@@TODO GET editor.parsedObject from a function!!
     const jsonObject = getState().editor.parsedObject
-    mock.updateMock(state.id,state.manageKey, ramlContent, jsonObject)
+    mock.updateMock(m.id,m.manageKey, ramlContent, jsonObject)
   }
 }
 
@@ -80,17 +95,21 @@ const removeMockBaseUri = (ramlContent, baseUri) => (dispatch) => {
 }
 
 export const deleteMock = ()  => (dispatch, getState) => {
-  if (getState().mock.isUp && !getState().mock.isStopping) {
-    const baseUri = getState().mock.baseUri
-    dispatch(beginStopMock)
+  const file = getCurrentFilePath(getState()).toString()
+  const state = getState().mock;
+  const m = state.find(c => c.file === file)
+
+  if (m !== undefined && m.isUp && !m.isStopping) {
+    const baseUri = m.baseUri
+    dispatch(beginStopMock(file))
     const mock = new MockingService(new MockingServiceClient())
-    mock.deleteMock(getState().mock.id, getState().mock.manageKey).then(() => {
-      dispatch(stopMock)
+    mock.deleteMock(m.id, m.manageKey).then(() => {
+      dispatch(stopMock(file))
       const ramlContent = getCurrentFileContent(getState())()
       removeMockBaseUri(ramlContent, baseUri)(dispatch)
     }).catch(err => {
       console.log(err)
-      dispatch(stopMock)
+      dispatch(stopMock(file))
     })
   }
 }
