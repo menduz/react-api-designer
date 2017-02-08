@@ -8,8 +8,8 @@ import './Mock.css'
 class Mock extends React.Component {
 
   shouldComponentUpdate(nextProps) {
-    this.props.shouldUpdateMock()
-    return true
+    if (nextProps.parsedObject !== this.props.parsedObject) this.props.shouldUpdateMock()
+    return nextProps.isUp !== this.props.isUp
   }
 
   onToggle(value) {
