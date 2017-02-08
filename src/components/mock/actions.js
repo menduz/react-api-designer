@@ -41,9 +41,7 @@ const mockStarted = (file, id, manageKey, baseUri, manageUri) => ({
 export const createMock = () => (dispatch, getState) => {
   const file = getCurrentFilePath(getState()).toString()
   const state = getState().mock
-  console.log("createMock:" + file + " " + JSON.stringify(state))
   const m = state.find(c => c.file === file)
-  console.log("createMock M" + JSON.stringify(m))
   if (!m || (!m.isUp && !m.isStarting)) {
     dispatch(startMock(file))
     const mock = new MockingService(new MockingServiceClient())
@@ -55,7 +53,7 @@ export const createMock = () => (dispatch, getState) => {
       dispatch(mockStarted(file, res.id, res.manageKey, res.baseUri, res.manageUri))
       addMockBaseUri(ramlContent, res.baseUri)(dispatch, getState)
     }).catch(err => {
-      console.log(err)
+      console.error(err)
       dispatch(stopMock)
     })
 
@@ -67,7 +65,6 @@ export const updateMock = () => (dispatch, getState) => {
   const state = getState().mock;
   const m = state.find(c => c.file === file)
   if (m && m.isUp) {
-    console.log("Updating mock Content")
     const mock = new MockingService(new MockingServiceClient())
     const ramlContent = getCurrentFileContent(getState())()
     //@@TODO GET editor.parsedObject from a function!!
@@ -108,7 +105,7 @@ export const deleteMock = ()  => (dispatch, getState) => {
       const ramlContent = getCurrentFileContent(getState())()
       removeMockBaseUri(ramlContent, baseUri)(dispatch)
     }).catch(err => {
-      console.log(err)
+      console.error(err)
       dispatch(stopMock(file))
     })
   }

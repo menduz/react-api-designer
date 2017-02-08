@@ -38,7 +38,6 @@ class ZipHelper {
     function buildContents(zip, files) {
       return Promise.all(files.map(f => {
         return zip.files[f.filename].async('string').then(c => {
-          console.log({filename: f.filename, content:c})
           return {filename: f.filename, content:c}
         })
       }))

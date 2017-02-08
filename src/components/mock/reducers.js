@@ -10,12 +10,10 @@ const mock = (state = {
   isStopping:false
 }, action) => {
 
-  console.log("mockReducer " + JSON.stringify(action))
-
   if (state.file !== undefined && state.file !== action.file) {
     return state
   }
-  console.log("Continue!")
+
   switch (action.type) {
     case START_MOCK:
       return {
@@ -61,14 +59,11 @@ export default  (state = [], action) => {
       const c = state.find(c => c.file === action.file)
 
       if (!c) {
-        console.log("c: " + c)
         return [
           ...state,
           mock(undefined, action)
         ]
       } else {
-        console.log("c: " + c)
-
         return state.map(t =>
           mock(t, action)
         )
@@ -76,11 +71,9 @@ export default  (state = [], action) => {
     case MOCK_STARTED:
     case STOP_MOCK:
     case BEGIN_STOP_MOCK:
-      const newState =  state.map(t =>
+      return state.map(t =>
         mock(t, action)
       )
-      console.log("newState: " + JSON.stringify(newState))
-      return newState
 
     default:
       return state
