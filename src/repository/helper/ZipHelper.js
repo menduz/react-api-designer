@@ -37,7 +37,7 @@ class ZipHelper {
 
     function buildContents(zip, files) {
       return Promise.all(files.map(f => {
-        return zip.files[f.filename].async('string').then(c => {
+        return ZipHelper.sanitizeZipFiles(zip.files)[f.filename].async('string').then(c => {
           return {filename: f.filename, content:c}
         })
       }))
@@ -48,7 +48,7 @@ class ZipHelper {
       if (files) {
         return buildContents(zip, files)
       } else {
-        const files = Object.keys(zip.files).filter(filename => !filename.endsWith('/')).map(filename => {
+        const files = Object.keys(ZipHelper.sanitizeZipFiles(zip.files)).map(filename => {
           return {filename}
         })
         return buildContents(zip, files)
@@ -61,16 +61,27 @@ class ZipHelper {
 
     return zip.loadAsync(content).then(zip => {
       const result = []
-      Object.keys(zip.files).forEach(function(filename) {
-        //exclude dirs from zip
-        if (!filename.endsWith('/')) {
-          const conflict = (repository.getByPathString(filename))?true:false
-          result.push({filename, override:true, conflict})
-        }
+      Object.keys(ZipHelper.sanitizeZipFiles(zip.files)).forEach(function(filename) {
+        const conflict = (repository.getByPathString(filename))?true:false
+        result.push({filename, override:true, conflict})
       })
       return result
     })
   }
+
+  static sanitizeZipFiles (originalFiles) {
+    const files = {};
+
+    Object.keys(originalFiles).forEach(filename => {
+      if (/^__MACOSX\//.test(filename) || /\/$/.test(filename) || /.DS_Store$/.test(filename)) {
+        return;
+      }
+      files[filename] = originalFiles[filename];
+    });
+
+    return files;
+  }
+
 }
 
 export default ZipHelper

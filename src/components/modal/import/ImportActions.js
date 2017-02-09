@@ -196,7 +196,7 @@ export const importFile = (file: any, fileType: string) =>
             if (conflicts.length > 0) {
               dispatch(showZipConflictDialog())
             } else {
-              saveZipFiles()(dispatch, getState)
+              saveZipFiles()(dispatch, getState, {repositoryContainer})
             }
           })
         }
