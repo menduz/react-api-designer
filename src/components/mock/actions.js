@@ -73,21 +73,48 @@ export const updateMock = () => (dispatch, getState) => {
   }
 }
 
+const baseMockUri = (baseUri, line) => {
+  return 'baseUri: ' + baseUri + " # " + line
+}
+
+
 const addMockBaseUri = (ramlContent, baseUri) => (dispatch) => {
-  const newContent = ramlContent.split('\n').map(line => {
+  let addNewline = true
+
+  let newContent = ramlContent.split('\n').map(line => {
     if (line.trim().startsWith('baseUri')) {
-      return 'baseUri: ' + baseUri + " # " + line
+      addNewline = false
+      return baseMockUri(baseUri, line)
     } else return line
   }).join('\n')
+
+  if (addNewline) {
+    newContent = ramlContent.slice(0, ramlContent.indexOf('\n') + 1) + baseMockUri(baseUri, '\n') +
+      ramlContent.slice(ramlContent.indexOf('\n') + 1, ramlContent.length)
+  }
+
+
   dispatch(updateCurrentFile(newContent))
 }
 
 const removeMockBaseUri = (ramlContent, baseUri) => (dispatch) => {
-  const newContent = ramlContent.split('\n').map(line => {
+
+  const mockUri = baseMockUri(baseUri, '');
+
+  let removeLine = false
+  let newContent = ramlContent.split('\n').map(line => {
     if (line.trim().startsWith('baseUri')) {
-      return line.replace('baseUri: ' + baseUri + ' # ', '')
+      if (line.trim() === mockUri.trim()) removeLine = true
+      return line.replace(mockUri, '')
     } else return line
   }).join('\n')
+
+  if (removeLine) {
+    const value = mockUri + '\n';
+    const idx = ramlContent.indexOf(value);
+    newContent = ramlContent.slice(0, idx) + ramlContent.slice(idx + value.length, ramlContent.length)
+  }
+
   dispatch(updateCurrentFile(newContent))
 }
 
