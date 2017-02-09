@@ -1,4 +1,4 @@
 .zip-conflict-modal div[data-anypoint-component="ModalBody"] {
-    overflow: visible;
+    overflow: auto;
 }
 

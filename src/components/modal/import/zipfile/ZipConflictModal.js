@@ -42,23 +42,17 @@ class ZipConflictModal extends React.Component {
   }
 
   renderZipFiles(files) {
-    const filter = files.filter(f => {return f.conflict})
-    const margin = { marginBottom: 20 };
-
-    if (filter.length > 0) {
-      return filter.map((file) => (
-        //<Label>{file.filename + " " + file.override}</Label>
-        <div style={margin} key={file.filename}>
-          <Checkbox
-            name={file.filename}
-            label={file.filename}
-            onChange={this.onCheckFileChange.bind(this, file.filename)}
-            checked={file.override}
-          />
-        </div>
-      ));
-    }
-    else return [];
+    return files.map((file) => (
+      //<Label>{file.filename + " " + file.override}</Label>
+      <div style={{ marginBottom: 20 }} key={file.filename}>
+        <Checkbox
+          name={file.filename}
+          label={file.filename}
+          onChange={this.onCheckFileChange.bind(this, file.filename)}
+          checked={file.override}
+        />
+      </div>
+    ));
   }
 
   render() {
@@ -70,34 +64,34 @@ class ZipConflictModal extends React.Component {
       zipFiles,
     } = this.props
 
-    const files = this.renderZipFiles(zipFiles);
+    if (!showZipConflictModal) return null
 
-    if (showZipConflictModal) {
-      return (
-        <Modal className="conflict-modal"
-               onCancel={onCancel}
-               onSubmit={onSubmit}
-               onEsc={onCancel}
-               onEnter={onSubmit}
-               onClickOverlay={onCancel}>
+    const files = zipFiles.filter(f => f.conflict)
+    const count = files.reduce(((count, f) => (f.override ? 1 : 0) + count), 0)
 
-          <ModalHeader>
-            <h2>Replace</h2>
-            <h3><bold>{fileNameToImport}</bold> contains files that are already in your project</h3>
-          </ModalHeader>
-          <ModalBody>
-            <div>
-              {files}
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            <Button kind="tertiary" onClick={onCancel} noFill>Cancel</Button>
-            <Button kind="primary" onClick={onSubmit}>Replace</Button>
-          </ModalFooter>
-        </Modal>
-      )
-    }
-    return null
+    return (
+      <Modal className="zip-conflict-modal"
+             onCancel={onCancel}
+             onSubmit={onSubmit}
+             onEsc={onCancel}
+             onEnter={onSubmit}
+             onClickOverlay={onCancel}>
+
+        <ModalHeader>
+          <h2>Replace</h2>
+          <small>{fileNameToImport} contains files that are already in your project</small>
+        </ModalHeader>
+        <ModalBody>
+          <div>
+            {files.length > 0 ? this.renderZipFiles(files) : null}
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          <Button kind="tertiary" onClick={onCancel} noFill>Cancel</Button>
+          <Button kind="primary" onClick={onSubmit}>Replace {files.length == 1 ? 'file' : count + ' files'}</Button>
+        </ModalFooter>
+      </Modal>
+    )
   }
 
 }

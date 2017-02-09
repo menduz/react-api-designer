@@ -19,7 +19,7 @@ export default (state: State = initialState, action: any): State => {
       }
     case actions.SHOW:
       return {
-        ...state,
+        ...initialState,
         showModal: true,
         fileToImport: action.payload.file ? action.payload.file : state.fileToImport
       }
@@ -48,12 +48,13 @@ export default (state: State = initialState, action: any): State => {
     case actions.SHOW_ZIP_CONFLICT_MODAL:
       return {
         ...state,
-        showZipConflictModal: true
+        showZipConflictModal: true,
+        isImporting: false
       }
     case actions.HIDE_ZIP_CONFLICT_MODAL:
       return {
         ...state,
-        showZipConflictModal: false
+        showZipConflictModal: false,
       }
 
     case actions.ADD_ZIP_FILES:
@@ -77,7 +78,8 @@ export default (state: State = initialState, action: any): State => {
     case actions.SHOW_CONFLICT_MODAL:
       return {
         ...state,
-        showConflictModal: true
+        showConflictModal: true,
+        isImporting: false
       }
     case actions.HIDE_CONFLICT_MODAL:
       return {
