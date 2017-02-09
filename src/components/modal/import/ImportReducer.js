@@ -12,11 +12,6 @@ const initialState : State = {
 
 export default (state: State = initialState, action: any): State => {
   switch (action.type) {
-    case actions.HIDE:
-      return {
-        ...state,
-        showModal: false
-      }
     case actions.SHOW:
       return {
         ...initialState,
@@ -51,11 +46,6 @@ export default (state: State = initialState, action: any): State => {
         showZipConflictModal: true,
         isImporting: false
       }
-    case actions.HIDE_ZIP_CONFLICT_MODAL:
-      return {
-        ...state,
-        showZipConflictModal: false,
-      }
 
     case actions.ADD_ZIP_FILES:
       return {
@@ -81,16 +71,14 @@ export default (state: State = initialState, action: any): State => {
         showConflictModal: true,
         isImporting: false
       }
-    case actions.HIDE_CONFLICT_MODAL:
-      return {
-        ...state,
-        showConflictModal: false
-      }
     case actions.IMPORT_STARTED:
       return {
         ...state,
         isImporting: true
       }
+    case actions.HIDE:
+    case actions.HIDE_CONFLICT_MODAL:
+    case actions.HIDE_ZIP_CONFLICT_MODAL:
     case actions.IMPORT_DONE:
     default:
       return initialState
