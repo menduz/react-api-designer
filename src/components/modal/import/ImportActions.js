@@ -132,19 +132,19 @@ export const importFileFromUrl = (url: string, fileType: string) =>
           dispatch({type: IMPORT_DONE})
         }
         else {
-          if (isApiDefinition(response.response)) {
-            function baseName(name, repositoryContainer) {
-              return nextName(name.endsWith('.raml')?name:name + '.raml', repositoryContainer)
-            }
-            convertFromUrl(url, fileType, baseName)
-          } else {
+          // if (isApiDefinition(response.response)) {
+          //   function baseName(name, repositoryContainer) {
+          //     return nextName(name.endsWith('.raml')?name:name + '.raml', repositoryContainer)
+          //   }
+          //   convertFromUrl(url, fileType, baseName)
+          // } else {
             const fileName = nextName(nameFromUrl(url), repositoryContainer)
             dispatch(addFile(fileName, fileType))
             setTimeout(() => {
               dispatch(updateCurrentFile(response.response))
               dispatch({type: IMPORT_DONE})
             }, 1000)
-          }
+          // }
         }
       })
     }
