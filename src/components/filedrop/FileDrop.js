@@ -42,7 +42,7 @@ class FileDrop extends React.Component {
     if (dt) {
       const files = dt.files;
       if (files && files.length > 0) {
-        this.props.openDialog(files[0])
+        this.props.openImportDialog(files[0])
         this.dragOverElem.classList.remove('active');
       }
     }
@@ -69,7 +69,7 @@ class FileDrop extends React.Component {
 
 const mapDispatch = (dispatch) => {
   return {
-    openDialog: (file) => dispatch(openImportDialog(file))
+    openImportDialog: (file) => dispatch(openImportDialog(file))
   }
 }
 

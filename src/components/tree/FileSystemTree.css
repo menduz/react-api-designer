@@ -30,12 +30,9 @@
   right: 40px;
 }
 
-.Tree .folder-menu, .Tree .new-menu, .Tree .file-menu svg {
-  fill: #a0a0a0;
-}
-
-.Tree .file-menu-icon > svg, .Tree .folder-menu-icon > svg, .Tree .plus-icon > svg {
+.Tree .tree-menu svg {
   display: block;
   height: 14px !important;
   width: 14px !important;
+  fill: #a0a0a0;
 }

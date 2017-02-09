@@ -44,38 +44,38 @@ class FileSystemTree extends Component {
     this.props.onToggle(selection.node.path)
   }
 
-  handleSave(path: string) {
-    this.props.saveFile(Path.fromString(path))
+  handleSave(path: Path) {
+    this.props.saveFile(path)
   }
 
-  handleRename(path: string) {
-    this.props.rename(Path.fromString(path))
+  handleRename(path: Path) {
+    this.props.rename(path)
   }
 
-  handleDelete(path: string) {
-    this.props.remove(Path.fromString(path))
+  handleDelete(path: Path) {
+    this.props.remove(path)
   }
 
-  openFileDialog(path: string) {
-    this.props.showNewFileDialog(Path.fromString(path))
+  openFileDialog(path: Path) {
+    this.props.showNewFileDialog(path)
   }
 
-  openFolderDialog(path: string) {
-    this.props.showNewFolderDialog(Path.fromString(path))
+  openFolderDialog(path: Path) {
+    this.props.showNewFolderDialog(path)
   }
 
   renderLeaf({node, path, isSelected}) {
     const options = [
-      {label: 'Save', onClick: this.handleSave.bind(this, path)},
-      {label: 'Rename', onClick: this.handleRename.bind(this, path)},
-      {label: 'Delete', onClick: this.handleDelete.bind(this, path)}
+      {label: 'Save', onClick: this.handleSave.bind(this, node.path)},
+      {label: 'Rename', onClick: this.handleRename.bind(this, node.path)},
+      {label: 'Delete', onClick: this.handleDelete.bind(this, node.path)}
     ]
 
     return (
       <div className="tree-node tree-leaf">
         <label>{node.label}</label>
-        <ContextMenu className="file-menu" options={options}>
-          <Icon className="file-menu-icon" name="contextmenu"/>
+        <ContextMenu className="tree-menu file-menu" options={options}>
+          <Icon name="contextmenu"/>
         </ContextMenu>
       </div>
     )
@@ -83,23 +83,23 @@ class FileSystemTree extends Component {
 
   renderFolder({node, path, isSelected, isExpanded}) {
     const options = [
-      {label: 'Rename', onClick: this.handleRename.bind(this, path)},
-      {label: 'Delete', onClick: this.handleDelete.bind(this, path)}
+      {label: 'Rename', onClick: this.handleRename.bind(this, node.path)},
+      {label: 'Delete', onClick: this.handleDelete.bind(this, node.path)}
     ]
 
     const addOptions = [
-      {label: 'New file', onClick: this.openFileDialog.bind(this, path)},
-      {label: 'New folder', onClick: this.openFolderDialog.bind(this, path)},
+      {label: 'New file', onClick: this.openFileDialog.bind(this, node.path)},
+      {label: 'New folder', onClick: this.openFolderDialog.bind(this, node.path)},
     ]
 
     return (
       <div className="tree-node tree-folder">
         <label>{node.label}</label>
-        <ContextMenu className="folder-menu" options={options}>
-          <Icon className="folder-menu-icon" name="contextmenu"/>
+        <ContextMenu className="tree-menu folder-menu" options={options}>
+          <Icon name="contextmenu"/>
         </ContextMenu>
-        <ContextMenu className="new-menu" options={addOptions}>
-          <Icon className="plus-icon" name="plus"/>
+        <ContextMenu className="tree-menu new-menu" options={addOptions}>
+          <Icon name="plus"/>
         </ContextMenu>
       </div>
     )
