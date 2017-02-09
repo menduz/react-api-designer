@@ -74,3 +74,8 @@ export const addDirectory = (name: string, path: ?Path) =>
     const directoryPath = path ? path : getCurrentDirectory(getState()).path
     dispatch(repository.actions.addDirectory(directoryPath, name))
   }
+
+export const move = (source: Path, destinationDir: Path) =>
+  (dispatch: Dispatch) => {
+    dispatch(repository.actions.moveElement(source, destinationDir))
+  }

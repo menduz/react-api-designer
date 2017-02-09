@@ -40,6 +40,9 @@ export const DIRECTORY_ADD_FAILED = `DESIGNER/${PREFIX}/DIRECTORY_ADD_FAILED`
 export const FILE_CONTENT_UPDATED = `DESIGNER/${PREFIX}/FILE_CONTENT_UPDATED`
 export const FILE_CONTENT_UPDATE_FAILED = `DESIGNER/${PREFIX}/FILE_CONTENT_UPDATE_FAILED`
 
+export const FILE_MOVE = `DESIGNER/${PREFIX}/FILE_MOVE`
+export const FILE_MOVE_FAILED = `DESIGNER/${PREFIX}/FILE_MOVE_FAILED`
+
 export const initFileSystem = (fileTree: RepositoryModel) => ({
     type: INIT_FILE_SYSTEM,
     payload: fileTree
@@ -299,3 +302,41 @@ export const updateFileContent = (path: Path, content: string) =>
         const file = repository.setContent(path, content)
         return dispatch(fileContentUpdated(Factory.fileModel(file), content))
     }
+
+export const moveElement = (source: Path, destinationDir: Path) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
+    if (!repositoryContainer.isLoaded)
+      return dispatch(error(FILE_MOVE_FAILED, REPOSITORY_NOT_LOADED))
+
+    var fromElement, toElement
+    var fileTree = getFileTree(getState())
+
+    if (fileTree) {
+      fromElement = fileTree.getByPath(source)
+      toElement   = fileTree.getByPath(destinationDir)
+    }
+
+    const isInvalidDirectory  = !toElement || (toElement.isDirectory() && !isValidDirectory(toElement));
+    const isInvalidFile       = !isValidFile(fromElement) || !isValidDirectory(fromElement);
+
+    if (isInvalidDirectory || isInvalidFile) {
+      const invalid : Path = isInvalidDirectory ? destinationDir : source
+      return Promise.reject(dispatch(error(FILE_MOVE_FAILED, `${invalid.toString()} is not valid`)))
+    }
+
+    const separator       = '/'
+    const fromPath        = source.toString()
+    const elementName     = fromPath.substr(fromPath.lastIndexOf(separator) + 1, fromPath.length)
+    const destinationPath = Path.fromString(destinationDir.toString() + separator + elementName)
+
+    const repository: Repository = repositoryContainer.repository
+    return repository.move(source, destinationPath)
+      .then(
+        () => {
+          dispatch({
+            type: FILE_MOVE,
+            payload: { source, destination: destinationPath }
+          })
+        }
+      )
+  }

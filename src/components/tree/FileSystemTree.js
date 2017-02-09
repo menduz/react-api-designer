@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 import TreeUI from '@mulesoft/anypoint-components/lib/Tree'
 import {getAll} from './selectors'
 import {fromFileTree} from './model'
-import {pathSelected, folderSelected} from './actions'
+import {pathSelected, folderSelected, move} from './actions'
 import {saveFileWithPath, removeFileWithPath} from "../editor/actions"
 import {openRenameDialog} from "../modal/rename/RenameActions"
 import {openNewFolderDialog} from "../../components/modal/new-folder/NewFolderActions"
@@ -29,6 +29,7 @@ type Props = {
   onToggle: (path: Path, isExpanded: boolean) => void,
   showNewFolderDialog: (path: Path) => void,
   showNewFileDialog: (path: Path) => void,
+  moveFile: () => void,
   saveFile: () => void,
   rename: () => void,
   remove: () => void
@@ -64,6 +65,19 @@ class FileSystemTree extends Component {
     this.props.showNewFolderDialog(path)
   }
 
+  onDrop(path: string, event) {
+    event.stopPropagation()
+    event.preventDefault()
+
+    var fromPath = event.dataTransfer.getData('text/plain')
+
+    this.props.moveFile(Path.fromString(fromPath), Path.fromString(path))
+  }
+
+  onDragStart(path, event){
+    event.dataTransfer.setData('text/plain', path)
+  }
+
   renderLeaf({node, path, isSelected}) {
     const options = [
       {label: 'Save', onClick: this.handleSave.bind(this, node.path)},
@@ -72,7 +86,9 @@ class FileSystemTree extends Component {
     ]
 
     return (
-      <div className="tree-node tree-leaf">
+      <div className="tree-node tree-leaf"
+           draggable="true"
+           onDragStart={this.onDragStart.bind(this, path)}>
         <label>{node.label}</label>
         <ContextMenu className="tree-menu file-menu" options={options}>
           <Icon name="contextmenu"/>
@@ -93,7 +109,11 @@ class FileSystemTree extends Component {
     ]
 
     return (
-      <div className="tree-node tree-folder">
+      <div className="tree-node tree-folder"
+           draggable="true"
+           onDragStart={this.onDragStart.bind(this, path)}
+           onDragOver={event => event.preventDefault()}
+           onDrop={this.onDrop.bind(this, path)}>
         <label>{node.label}</label>
         <ContextMenu className="tree-menu folder-menu" options={options}>
           <Icon name="contextmenu"/>
@@ -153,6 +173,7 @@ const mapDispatch = dispatch => {
     rename: (path: Path) => dispatch(openRenameDialog(path.toString())),
     saveFile: (path: Path) => dispatch(saveFileWithPath(path)),
     remove: (path: Path) => dispatch(removeFileWithPath(path)),
+    moveFile: (from: Path, to: Path) => dispatch(move(from, to)),
     showNewFolderDialog: (path: Path) => dispatch(openNewFolderDialog(path)),
     showNewFileDialog: (path: Path) => dispatch(openNewFileDialog(path))
   }

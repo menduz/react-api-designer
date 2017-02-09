@@ -72,13 +72,12 @@ export default class Repository {
   }
 
   rename(oldName: string, newName: string): Promise<any> {
-    const element = this.getByPathString(oldName);
-    if (element)
-      element.name = newName
+    var element = this.getByPathString(oldName)
+    if (element) element.name = newName
 
     const newCompleteName = oldName.substr(0, oldName.lastIndexOf('/') + 1) + newName
 
-    const promise = this._fileSystem.rename(oldName, newCompleteName);
+    const promise = this._fileSystem.rename(oldName, newCompleteName)
     return promise
       .then(
         () => this,
@@ -122,6 +121,29 @@ export default class Repository {
     return this._fileSystem.createFolder(newDirectory.path.toString())
       .then(() => { directory.children.push(newDirectory) })
       .then(() => newDirectory)
+  }
+
+  move(from: Path, to: Path): Promise<any> {
+    var directory = to.parent()
+    var parent    = this.getByPath(directory)
+    var element   = this.getByPath(from)
+
+    if (!parent || !parent.isDirectory())
+      throw new Error(`${directory.toString()} is not a valid directory`)
+    else if (!element)
+      throw new Error(`${from.toString()} is not a valid directory`)
+
+    element.parent = parent
+    parent.addChild(element)
+
+    const completePath = directory.toString() + from.toString()
+    const promise = this._fileSystem.rename(from.toString(), completePath)
+
+    return promise
+      .then(
+        () => this,
+        () => this
+      )
   }
 
   setContent(path: Path, content: string): File {
