@@ -46,7 +46,8 @@ class RenameModal extends React.Component {
              onCancel={onCancel}
              onSubmit={this.handleSubmit.bind(this)}
              onEsc={onCancel}
-             onClickOverlay={onCancel}>
+             onClickOverlay={onCancel}
+             testId="Rename-Modal">
 
         <TextField className="new-name"
                    value={newName ? newName : name}

@@ -16,7 +16,7 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <FileDrop className='App'>
+      <FileDrop className='App' testId="App">
         <Header/>
         <Split id="leftSplit" minSize={150} defaultSize={200} className="App-content">
           <div className="LeftPanel">

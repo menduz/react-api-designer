@@ -70,12 +70,12 @@ class Errors extends Component {
   render() {
     const {errors} = this.props
     if (!errors || errors.length === 0)
-      return <div className="Errors No-errors">No errors</div>
+      return <div className="Errors No-errors" data-testId="Errors">No errors</div>
 
     const filteredErrors = errors.filter(error => this._filterRootErrors(error))
 
     return (
-      <div className="Errors">
+      <div className="Errors" data-testId="Errors">
         {this._renderFilters(errors)}
         <ol className="Root-errors">
           {this._renderErrors(filteredErrors)}

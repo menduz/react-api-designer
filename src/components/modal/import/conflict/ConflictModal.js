@@ -38,7 +38,8 @@ class ConflictModal extends React.Component {
                onSubmit={onSubmit}
                onEsc={onCancel}
                onEnter={onSubmit}
-               onClickOverlay={onCancel}>
+               onClickOverlay={onCancel}
+               testId="Conflict-Modal">
 
           <ModalHeader>
             <h2>File exists</h2>

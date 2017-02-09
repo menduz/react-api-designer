@@ -51,7 +51,7 @@ class Info extends Component {
     const amount = errors.length
 
     return (
-      <Tabs selectedIndex={selectedTab} stretch={false} className="InfoPanel">
+      <Tabs selectedIndex={selectedTab} stretch={false} className="InfoPanel" testId="Info">
         <TabList className="InfoPanelTabs">
           <Tab onClick={this._onTabSelect.bind(this, 0)}>Preview</Tab>
           <Tab onClick={this._onTabSelect.bind(this, 1)}>

@@ -87,10 +87,11 @@ class FileSystemTree extends Component {
 
     return (
       <div className="tree-node tree-leaf"
+           data-path={path}
            draggable="true"
            onDragStart={this.onDragStart.bind(this, path)}>
         <label>{node.label}</label>
-        <ContextMenu className="tree-menu file-menu" options={options}>
+        <ContextMenu className="tree-menu file-menu" options={options} testId="File-Tree-Context-Menu">
           <Icon name="contextmenu"/>
         </ContextMenu>
       </div>
@@ -110,15 +111,16 @@ class FileSystemTree extends Component {
 
     return (
       <div className="tree-node tree-folder"
+           data-path={path}
            draggable="true"
            onDragStart={this.onDragStart.bind(this, path)}
            onDragOver={event => event.preventDefault()}
            onDrop={this.onDrop.bind(this, path)}>
         <label>{node.label}</label>
-        <ContextMenu className="tree-menu folder-menu" options={options}>
+        <ContextMenu className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
           <Icon name="contextmenu"/>
         </ContextMenu>
-        <ContextMenu className="tree-menu new-menu" options={addOptions}>
+        <ContextMenu className="tree-menu new-menu" options={addOptions} testId="File-Tree-New-Menu">
           <Icon name="plus"/>
         </ContextMenu>
       </div>
@@ -140,6 +142,7 @@ class FileSystemTree extends Component {
             expanded={expanded}
             onSelect={this.handleOnSelect.bind(this)}
             onToggle={this.handleOnToggle.bind(this)}
+            testId="Tree"
           />
           <RenameModalContainer/>
         </div>

@@ -169,7 +169,7 @@ class DesignerEditor extends React.Component {
 
     return (
       <div className="Editor">
-        {this.language.id ? '' : (<EmptyResult className="Empty" message="Select a file"/>)}
+        {this.language.id ? '' : (<EmptyResult className="Empty" testId="Empty-Editor" message="Select a file"/>)}
         <MonacoEditor options={options}
                       requireConfig={requireConfig}
                       context={window.electronAmdContext}
@@ -177,7 +177,8 @@ class DesignerEditor extends React.Component {
                       language={this.language.parent || this.language.id}
                       onChange={this.onChange.bind(this)}
                       editorWillMount={this.editorWillMount.bind(this)}
-                      editorDidMount={this.editorDidMount.bind(this)}/>
+                      editorDidMount={this.editorDidMount.bind(this)}
+                      testId="Editor"/>
       </div>
     )
   }

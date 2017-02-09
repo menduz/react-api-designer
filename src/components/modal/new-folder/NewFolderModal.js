@@ -48,7 +48,7 @@ class NewFolderModal extends React.Component {
              onSubmit={this.handleSubmit.bind(this)}
              onEsc={onCancel}
              onClickOverlay={onCancel}
-      >
+             testId="New-Folder-Modal">
         <TextField value={folderName}
                    placeholder="Name..."
                    onChange={this.onNameChange.bind(this)}

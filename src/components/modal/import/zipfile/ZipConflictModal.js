@@ -75,7 +75,8 @@ class ZipConflictModal extends React.Component {
              onSubmit={onSubmit}
              onEsc={onCancel}
              onEnter={onSubmit}
-             onClickOverlay={onCancel}>
+             onClickOverlay={onCancel}
+             testId="Zip-Conflict-Modal">
 
         <ModalHeader>
           <h2>Replace</h2>

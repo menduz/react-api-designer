@@ -32,7 +32,7 @@ class Header extends Component {
     const {PublishApiModalContainer} = publishApi
     return (
       <div className="App-header">
-        <div className="Left-header">
+        <div className="Left-header" data-testId="Left-Header">
           {projectName ?
             <Icon name="api-designer-color" size={38}/> :
             <Icon name="mulesoft-logo" size={38} fill={"white"}/>
@@ -40,15 +40,15 @@ class Header extends Component {
           <h2>{projectName || 'API designer'}</h2>
         </div>
         <div className="Spinner-parser">{isParsing ? <Spinner size="s"/> : null}</div>
-        <div className="Right-header">
-          <a className="export-menu" onClick={openModal.bind(this)}>
+        <div className="Right-header" data-testId="Right-header">
+          <a className="export-menu" onClick={openModal.bind(this)} data-testId="Export-Button">
             <img src={exchangeIcon} height="20px"/>
           </a>
           <span className="Divider"/>
-          <ContextMenu className="support-menu" options={supportMenuOptions}>
+          <ContextMenu className="support-menu" options={supportMenuOptions} testId="Support-Menu">
             <Icon name="support-small" size={19} fill={"white"}/>
           </ContextMenu>
-          <ContextMenu className="header-menu" options={contextMenuOptions}>
+          <ContextMenu className="header-menu" options={contextMenuOptions} testId="Header-Menu">
             <Icon name="contextmenu" size={19} fill={"white"}/>
           </ContextMenu>
         </div>

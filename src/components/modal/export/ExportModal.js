@@ -54,7 +54,8 @@ class ExportModal extends React.Component {
         <Modal className="export-modal"
                onEnter={this.handleSubmit.bind(this)}
                onEsc={onCancel}
-               onClickOverlay={onCancel}>
+               onClickOverlay={onCancel}
+               testId="Export-Modal">
 
           <ModalHeader>
             <h2>Export</h2>

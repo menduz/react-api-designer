@@ -54,7 +54,8 @@ class FileDrop extends React.Component {
       <div className={cx(className, 'FileDrop')}
            onDragLeave={this.onDragLeave.bind(this)}
            onDragOver={this.onDragOver.bind(this)}
-           onDrop={this.onDrop.bind(this)}>
+           onDrop={this.onDrop.bind(this)}
+           data-testId="File-Drop">
         <div className="FileDragOver" ref={ref => this.dragOverElem = ref}>
           <div>
             <Icon name="download-center-small" fill={"white"}/>

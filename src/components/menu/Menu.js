@@ -43,8 +43,8 @@ class Menu extends React.Component {
     ]
 
     return (
-      <div className="menu">
-        <ContextMenu className="context-menu" options={contextMenuOptions}>
+      <div className="menu" data-testId="File-Menu">
+        <ContextMenu className="context-menu" options={contextMenuOptions} testId="Context-Menu">
           <Icon className="context-menu-icon" name="contextmenu"/>
         </ContextMenu>
 
@@ -53,7 +53,7 @@ class Menu extends React.Component {
         <ZipConflictModalContainer/>
         <ExportModalContainer/>
 
-        <ContextMenu className="add-menu" options={addMenuOptions}>
+        <ContextMenu className="add-menu" options={addMenuOptions} testId="Add-Menu">
           <Icon className="plus-icon" name="plus"/>
         </ContextMenu>
 

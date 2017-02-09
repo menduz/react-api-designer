@@ -66,7 +66,8 @@ class NewFileModal extends React.Component {
              onCancel={onCancel}
              onSubmit={this.handleSubmit.bind(this)}
              onEsc={onCancel}
-             onClickOverlay={onCancel}>
+             onClickOverlay={onCancel}
+             testId="New-File-Modal">
 
         <Select className="selected-file-type"
                 options={fileTypes}

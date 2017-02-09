@@ -24,7 +24,7 @@ class Mock extends React.Component {
       isUp
     } = this.props
     return (
-      <div className="Mock">
+      <div className="Mock" data-testId="Mock">
         <small>Mocking Service</small>
         <div>
           <ToggleButton

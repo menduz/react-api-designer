@@ -76,7 +76,8 @@ class ImportModal extends React.Component {
                onSubmit={this.handleSubmit.bind(this)}
                onEsc={onCancel}
                onEnter={this.handleSubmit.bind(this)}
-               onClickOverlay={onCancel}>
+               onClickOverlay={onCancel}
+               testId="Import-Modal">
 
           <ModalHeader>
             <h2>Import</h2>
