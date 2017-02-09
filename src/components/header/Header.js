@@ -8,12 +8,15 @@ import Icon from '@mulesoft/anypoint-icons/lib/Icon'
 import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
 import {actions as configActions} from './index'
 import supportMenuOptions from './assets/supportOptionsData.json'
+import publishApi from '../modal/publish-api'
+import Storage from '../../Storage'
+
 import './Header.css';
 
 class Header extends Component {
 
   render() {
-    const {isParsing, projectName, theme, showInfoPanelTabs} = this.props
+    const {isParsing, projectName, theme, isModalOpen, openModal, clearModal, showInfoPanelTabs} = this.props
 
     const contextMenuOptions = [
       {
@@ -26,10 +29,7 @@ class Header extends Component {
       }
     ]
 
-    const exportMenuOptions = [1, 2, 3].map(index => {
-      return {label: `Example ${index}`, href: "https://www.google.com", target: "_blank"}
-    })
-
+    const {PublishApiModalContainer} = publishApi
     return (
       <div className="App-header">
         <div className="Left-header">
@@ -41,9 +41,9 @@ class Header extends Component {
         </div>
         <div className="Spinner-parser">{isParsing ? <Spinner size="s"/> : null}</div>
         <div className="Right-header">
-          <ContextMenu className="export-menu" options={exportMenuOptions}>
+          <a className="export-menu" onClick={openModal.bind(this)}>
             <img src={exchangeIcon} height="20px"/>
-          </ContextMenu>
+          </a>
           <span className="Divider"/>
           <ContextMenu className="support-menu" options={supportMenuOptions}>
             <Icon name="support-small" size={19} fill={"white"}/>
@@ -52,23 +52,35 @@ class Header extends Component {
             <Icon name="contextmenu" size={19} fill={"white"}/>
           </ContextMenu>
         </div>
+        {isModalOpen ?
+          <PublishApiModalContainer onClose={() => {}}
+                                    onCancel={clearModal.bind(this)}
+                                    baseUrl={Storage.getValue('baseUrl', '')}
+                                    ownerId={Storage.getValue('ownerId', '')}
+                                    organizationId={Storage.getValue('organizationId', '')}
+                                    projectId={Storage.getValue('projectId', '')}/>
+          : null
+        }
       </div>
     )
   }
 }
 
 const mapStateToProps = state => {
-  const {editor, configuration} = state
+  const {editor, configuration, publishApi} = state
   return {
     isParsing: editor.isParsing,
     theme: configuration.theme,
     showInfoPanelTabs: configuration.showInfoPanelTabs,
+    isModalOpen: publishApi.isOpen
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
     changeTheme: (theme: string) => dispatch(configActions.changeTheme(theme)),
+    openModal: () => dispatch(publishApi.actions.openModal()),
+    clearModal: () => dispatch(publishApi.actions.clear()),
     changeShowInfoPanelTabs: (showTabs: boolean) => dispatch(configActions.showInfoPanelTabs(showTabs))
   }
 }

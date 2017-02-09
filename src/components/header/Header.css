@@ -57,7 +57,7 @@
   text-align: center;
 }
 
-.Right-header > div:first-child {
+.Right-header > a:first-child {
   margin-right: 22px;
   margin-top: 1px;
 }
