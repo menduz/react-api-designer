@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import SplitPane from 'react-split-pane'
 import cx from 'classnames'
 import Drawer from '@mulesoft/anypoint-components/lib/Drawer'
+import Storage from '../../Storage'
 import "./Split.css"
 
 export default class Split extends Component {
@@ -11,15 +12,16 @@ export default class Split extends Component {
   constructor(props) {
     super(props)
 
-    this.sizeKey = 'designer:preference:' + this.props.id + ':locked'
-    this.lockedKey = 'designer:preference:' + this.props.id + ':size'
+    const {id, defaultSize} = this.props
+    this.sizeKey = `${id}:locked`
+    this.lockedKey = `${id}:size`
 
     // should move to the redux store
     this.state = {
       dragging: false,
       hover: false,
-      locked: localStorage.getItem(this.lockedKey) !== 'false', // locked by default
-      size: parseInt(localStorage.getItem(this.sizeKey) || this.props.defaultSize, 10)
+      locked: JSON.parse(Storage.getValue(this.lockedKey, 'true')), // locked by default
+      size: parseInt(Storage.getValue(this.sizeKey, defaultSize), 10)
     }
   }
 
@@ -43,7 +45,7 @@ export default class Split extends Component {
 
   _onToggleLock(locked) {
     this.setState({locked})
-    localStorage.setItem(this.lockedKey, locked)
+    Storage.setValue(this.lockedKey, locked)
   }
 
   _onDragStart() {
@@ -52,7 +54,7 @@ export default class Split extends Component {
 
   _onDragEnd(size) {
     this.setState({dragging: false})
-    localStorage.setItem(this.sizeKey, size)
+    Storage.setValue(this.sizeKey, size)
     window.dispatchEvent(new Event('resize'))
   }
 
@@ -96,7 +98,6 @@ export default class Split extends Component {
   }
 }
 
-
 Split.propTypes = {
   className: React.PropTypes.string,
   id: React.PropTypes.string.isRequired,
@@ -109,4 +110,4 @@ Split.defaultProps = {
   position: 'left', // "top" | "left" | "right" | "bottom"
   minSize: 100,
   defaultSize: 200
-};
+}

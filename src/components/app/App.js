@@ -2,8 +2,7 @@
 
 import React from 'react'
 import {connect} from 'react-redux'
-
-import Header from '../header/Header'
+import {Header} from '../header'
 import Split from '../split/Split'
 import Menu from '../menu/Menu'
 import {Info} from '../info'

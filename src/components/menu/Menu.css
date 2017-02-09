@@ -17,6 +17,8 @@
     width: 20px !important;
 }
 
-.dropdown-menu-popup > ul > li > button {
+.dropdown-menu-popup > ul > li > button,
+.dropdown-menu-popup > ul > li > a {
+    font-family: DIN Pro, sans-serif;
     font-size: 14px;
 }

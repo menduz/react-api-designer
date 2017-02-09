@@ -7,17 +7,16 @@ import TabPanel from '@mulesoft/anypoint-components/lib/TabPanel'
 import TabList from '@mulesoft/anypoint-components/lib/TabList'
 import Tab from '@mulesoft/anypoint-components/lib/Tab'
 import Tabs from '@mulesoft/anypoint-components/lib/Tabs'
+import Storage from '../../Storage'
 import {connect} from 'react-redux'
 import './info.css'
 
 class Info extends Component {
 
-  static KEY = 'designer:preference:infoTab'
-
   constructor(props) {
     super(props)
     this.state = {
-      selectedTab: parseInt(localStorage.getItem(Info.KEY) || 0, 10)
+      selectedTab: parseInt(Storage.getValue('infoTab', 0), 10)
     }
 
     // fix selected tab color
@@ -26,7 +25,7 @@ class Info extends Component {
 
   _onTabSelect(selectedTab) {
     this.setState({selectedTab})
-    localStorage.setItem(Info.KEY, selectedTab)
+    Storage.setValue('infoTab', selectedTab)
   }
 
   render() {

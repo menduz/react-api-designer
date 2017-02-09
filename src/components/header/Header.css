@@ -57,12 +57,12 @@
   text-align: center;
 }
 
-.Right-header > a:first-child {
+.Right-header > div:first-child {
   margin-right: 22px;
   margin-top: 1px;
 }
 
-.Right-header > span:last-child {
+.Right-header > div:last-child {
   margin-right: 30px;
   margin-top: 2px;
 }

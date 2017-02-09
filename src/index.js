@@ -24,6 +24,7 @@ import FileTreeFactory from "./repository/immutable/RepositoryModelFactory"
 import * as fileSystemTree from "./components/tree"
 import FileProvider from './webworker/FileProvider'
 import type {RepositoryContainer} from './RepositoryContainer'
+import * as header from './components/header'
 
 const repositoryContainer: RepositoryContainer = {
   repository: undefined,
@@ -54,7 +55,8 @@ const rootReducer = combineReducers({
     export: exportModal.reducer,
     rename: rename.reducer
   }),
-  mock: mockReducer
+  mock: mockReducer,
+  configuration: header.reducer
 })
 
 const store = createStore(

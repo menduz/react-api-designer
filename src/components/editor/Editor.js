@@ -20,6 +20,7 @@ class DesignerEditor extends React.Component {
     this.editor = null
     this.monaco = null
 
+    this.theme = this.props.theme
     this.language = this.props.language
     this.value = this.props.value
     this.position = this.props.position
@@ -36,6 +37,9 @@ class DesignerEditor extends React.Component {
     if (this.monaco && this.language) {
       if (nextProps.position !== this.position)
         this._revealPosition(nextProps.position)
+
+      if (nextProps.theme !== this.theme)
+        this._changeTheme(nextProps.theme)
 
       if (!this.language.native && nextProps.errors !== this.errors && (nextProps.errors.length !== 0 || this.errors.length !== 0))
         this._showErrors(nextProps.errors)
@@ -56,13 +60,17 @@ class DesignerEditor extends React.Component {
       this.editor.focus()
       update = true
     }
-
     return update
+  }
+
+  _changeTheme(theme) {
+    this.theme = theme
+    this.editor.updateOptions({theme, wordBasedSuggestions: false})
   }
 
   _changeLanguage(language) {
     this.language = language
-    if (this.monaco && this.language)
+    if (this.language)
       this.monaco.editor.setModelLanguage(this.editor.getModel(), this.language.parent || this.language.id)
   }
 
@@ -149,7 +157,7 @@ class DesignerEditor extends React.Component {
 
   render() {
     const options = {
-      theme: this.props.theme || 'vs',
+      theme: this.props.theme,
       selectOnLineNumbers: true,
       roundedSelection: false,
       readOnly: false,
@@ -190,13 +198,14 @@ DesignerEditor.propTypes = {
 const mapStateToProps = state => {
   const editor = getAll(state)
   const value = getCurrentFileContent(state)()
+  const {configuration} = state
   return {
     value,
     language: editor.language,
     position: editor.position,
     errors: editor.errors,
     suggestions: editor.suggestions,
-    theme: editor.theme
+    theme: configuration.theme
   }
 }
 
