@@ -42,7 +42,7 @@ export const openNewFileDialog = (path: ?Path) =>(dispatch: Dispatch, getState: 
   dispatch({
     type: SHOW,
     payload: {
-      nextName: nextName('api.raml', repositoryContainer),
+      nextName: nextName('api.raml', repositoryContainer, path),
       path
     }
   })

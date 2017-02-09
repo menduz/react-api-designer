@@ -29,9 +29,27 @@ class Info extends Component {
   }
 
   render() {
+    const {showInfoPanelTabs} = this.props
+    return showInfoPanelTabs ? this.renderTabs() : this.renderPlain()
+  }
+
+  renderPlain() {
+    const {errors, language} = this.props
+    const title = language.id === 'raml' ? 'RAML Documentation' : `${language.label || ''} Preview`
+
+    return (
+      <div className="InfoPanel">
+        <div className="InfoTitle">{title}</div>
+        {errors.length > 0 ? <Errors/> : <Preview/>}
+      </div>
+    )
+  }
+
+  renderTabs() {
     const {selectedTab} = this.state
     const {errors} = this.props
     const amount = errors.length
+
     return (
       <Tabs selectedIndex={selectedTab} stretch={false} className="InfoPanel">
         <TabList className="InfoPanelTabs">
@@ -41,10 +59,10 @@ class Info extends Component {
             {amount === 1 ? 'Issue' : 'Issues'}
           </Tab>
         </TabList>
-        <TabPanel className="InfoPanelTabContent">
+        <TabPanel className="InfoPanelTabContent Preview-Tab">
           {selectedTab === 0 ? <Preview/> : null}
         </TabPanel>
-        <TabPanel className="InfoPanelTabContent">
+        <TabPanel className="InfoPanelTabContent Issues-Tab">
           {selectedTab === 1 ? <Errors/> : null}
         </TabPanel>
       </Tabs>
@@ -53,9 +71,11 @@ class Info extends Component {
 }
 
 const mapStateToProps = state => {
-  const {editor} = state
+  const {editor, configuration} = state
   return {
-    errors: editor.errors
+    errors: editor.errors,
+    language: editor.language,
+    showInfoPanelTabs: configuration.showInfoPanelTabs
   }
 }
 

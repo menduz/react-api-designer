@@ -108,13 +108,15 @@ let parseTimer = null
 export const updateFile = (text, path: Path, delay = 0) =>
   (dispatch, getState, {worker}) => {
     dispatch(updateFileContent(path, text))
-    dispatch(setPath(path, language(path.toString(), text)))
+
+    const pathString = path.toString()
+    const lang = language(pathString, text);
+    dispatch(setPath(path, lang))
 
     if (parseTimer) clearTimeout(parseTimer)
 
     parseTimer = setTimeout(() => {
-      const pathString = path.toString()
-      switch (getLanguage(getState()).id) {
+      switch (lang.id) {
         case 'raml':
           return parseRaml(text, pathString, dispatch, worker)
         case 'oas':

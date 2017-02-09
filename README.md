@@ -5,9 +5,6 @@
 # (Pre-requisite) need to be logged in into the Mulesoft npm repository (using github credentials with out two factor authetication)
 npm login --registry=https://npm.mulesoft.com --scope=@mulesoft
 
-# copy an internal console file to avoid a not found (tmp step)
-cp bower_components/paper-autocomplete/paper-input-autocomplete.html bower_components/paper-autocomplete/paper-autocomplete.html
-
 # install all other designer dependencies
 npm install
 

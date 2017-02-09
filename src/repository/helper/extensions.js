@@ -30,9 +30,10 @@ const ramlType = (text: string): string => {
   return subType || '1.0'
 }
 
-export const JSON: Language = {id: 'json', native: true}
-export const YAML: Language = {id: 'yaml', native: true}
-export const OAS: Language = {id: 'oas', parent: 'json'}
+export const MD: Language = {id: 'md', native: true, label: 'Markdown'}
+export const JSON: Language = {id: 'json', native: true, label: 'JSON'}
+export const YAML: Language = {id: 'yaml', native: true, label: 'YAML'}
+export const OAS: Language = {id: 'oas', parent: 'json', label: 'OAS'}
 
 export const language = (path: string, text: string): Language => {
   const extension = pathExtension(path, 'txt')
@@ -46,6 +47,9 @@ export const language = (path: string, text: string): Language => {
     case 'yml':
     case 'yaml':
       return line(text, 1).indexOf('swagger') > -1  ? OAS : YAML
+    case 'md':
+    case 'markdown':
+      return MD
     default:
       return {id: extension, native: true}
   }

@@ -2,10 +2,6 @@
   cursor: pointer;
 }
 
-.Errors {
-  padding-top: 10px;
-}
-
 .Errors.No-errors, .Errors .Filter {
   text-align: center;
   color: #cacbcc;
@@ -22,7 +18,7 @@
 
 .Errors ol {
   list-style: none;
-  padding: 2px 0;
+  padding: 0;
 }
 
 .Errors li {
@@ -39,7 +35,7 @@
 }
 
 .Errors ol.Root-errors {
-  margin: 15px 7px;
+  margin: 15px 2px;
 }
 
 .Errors ol.Trace-errors ol {

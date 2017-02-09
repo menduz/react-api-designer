@@ -3,13 +3,11 @@
   z-index: -1;
 }
 
-.App-content .LeftPanel {
-  margin-right: 20px;
-}
-
 .App-content .menu {
   height: 35px;
   border-bottom: 2px solid rgba(39,47,51,.1);
+  padding-right: 20px;
+  color: #8d8d8e;
 }
 
 /* hide editor scrollbar and tab list active selector while dragging */

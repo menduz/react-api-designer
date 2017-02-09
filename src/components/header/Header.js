@@ -13,12 +13,18 @@ import './Header.css';
 class Header extends Component {
 
   render() {
-    const {isParsing, projectName, theme} = this.props
+    const {isParsing, projectName, theme, showInfoPanelTabs} = this.props
 
-    const contextMenuOptions = [{
-      label: `${theme === 'vs' ? 'Dark' : 'Light'} Theme`,
-      onClick: this.props.changeTheme.bind(this, theme === 'vs' ? 'vs-dark' : 'vs')
-    }]
+    const contextMenuOptions = [
+      {
+        label: `${theme === 'vs' ? 'Dark' : 'Light'} Theme`,
+        onClick: this.props.changeTheme.bind(this, theme === 'vs' ? 'vs-dark' : 'vs')
+      },
+      {
+        label: `${showInfoPanelTabs ? 'No tabs' : 'Tabs'} for right Panel`,
+        onClick: this.props.changeShowInfoPanelTabs.bind(this, !showInfoPanelTabs)
+      }
+    ]
 
     const exportMenuOptions = [1, 2, 3].map(index => {
       return {label: `Example ${index}`, href: "https://www.google.com", target: "_blank"}
@@ -56,12 +62,14 @@ const mapStateToProps = state => {
   return {
     isParsing: editor.isParsing,
     theme: configuration.theme,
+    showInfoPanelTabs: configuration.showInfoPanelTabs,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    changeTheme: (theme: string) => dispatch(configActions.changeTheme(theme))
+    changeTheme: (theme: string) => dispatch(configActions.changeTheme(theme)),
+    changeShowInfoPanelTabs: (showTabs: boolean) => dispatch(configActions.showInfoPanelTabs(showTabs))
   }
 }
 

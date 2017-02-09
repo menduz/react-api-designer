@@ -19,9 +19,8 @@ class Preview extends Component {
   }
 
   static _consolePreview(language, parsedObject) {
-    return parsedObject && language.type &&
-      (language.type === '1.0' || language.type === '0.8' ||
-      language.type === 'Library' || language.type === 'Overlay' || language.type === 'Extension');
+    const t = language.type
+    return parsedObject && t && (t === '1.0' || t === '0.8' || t === 'Library' || t === 'Overlay' || t === 'Extension')
   }
 
   static _empty() {
@@ -32,16 +31,18 @@ class Preview extends Component {
     const {parsedObject, language, text} = this.props
 
     switch (language.id) {
-      case 'oas':
       case 'raml':
+      case 'oas':
         return !Preview._consolePreview(language, parsedObject) ? Preview._empty() :
-          <AngularConsole raml={parsedObject}/>;
+          <AngularConsole raml={parsedObject}/>
+      case 'json':
+        return !parsedObject ? Preview._empty() :
+          <JSONTree data={parsedObject} theme={Preview._theme} hideRoot={true} invertTheme={false}/>
       case 'md':
         return !text ? Preview._empty() :
-          <ReactMarkdown source={text} className="md-preview"/>;
+          <ReactMarkdown source={text} className="md-preview"/>
       default:
-        return !parsedObject ? Preview._empty() :
-          <JSONTree data={parsedObject} theme={Preview._theme} hideRoot={true} invertTheme={false}/>;
+        return Preview._empty()
     }
   }
 
