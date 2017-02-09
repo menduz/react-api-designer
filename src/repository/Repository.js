@@ -58,16 +58,14 @@ export default class Repository {
   }
 
   saveAll(): Promise<File[]> {
-    const files = this._getDirtyFiles();
+    var files = this._getDirtyFiles()
     this._updateSavedFiles(files)
 
-    const promises: Array<Promise> = [];
+    var promises: Array<Promise> = []
 
     files.forEach(file => {
-      file.getContent().then(content => {
-        const promise = this._fileSystem.save(file.path.toString(), content);
-        promises.push(promise)
-      })
+      var promise = file.save(this._fileSystem)
+      promises.push(promise)
     })
 
     return Promise.all(promises)
@@ -140,31 +138,32 @@ export default class Repository {
   }
 
   _getDirtyFiles(): File[] {
-    function getChildrenFrom(element: Element): Array<Element>{
-      const children: Array<Element> = [];
-      if (element.isDirectory()) {
-        const dir = ((element) : Directory);
-        dir.children.forEach(child => {
-          if (child.isDirectory()) {
-            children.concat(getChildrenFrom(child))
-          } else {
-            children.push(child)
-          }
-        })
-      }
+    function getDirtyChildren(dir: Directory): Array<Element>{
+      var children = []
+
+      dir.children.forEach(child => {
+        if (child.isDirectory()) {
+          children = children.concat(getDirtyChildren(child))
+        } else {
+          const file = (child : File)
+          if (file.dirty) { children.push(child) }
+        }
+      })
+
       return children
     }
 
-    const elements: Array<Element> = [];
+    var files = []
 
     this._root.children.forEach(child => {
       if (child.isDirectory()) {
-        elements.concat(getChildrenFrom(child))
+        files = files.concat(getDirtyChildren(child))
       } else {
-        elements.push(child)
+        const file = (child : File)
+        if (file.dirty) files.push(file)
       }
     })
-    return elements
+    return files
   }
 
   _updateSavedFiles(files: File[]): void {

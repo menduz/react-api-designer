@@ -35,7 +35,8 @@ export default (state: State = initialState, action: any): State => {
       return {
         ...state,
         showModal: true,
-        fileName: action.payload
+        fileName: action.payload.nextName,
+        path: action.payload.path
       }
     case actions.HIDE:
       return initialState

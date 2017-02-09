@@ -7,7 +7,7 @@ import TextField from '@mulesoft/anypoint-components/lib/TextField'
 
 type Props = {
   newName?: string,
-  oldName?: string,
+  oldName: string,
   showModal: boolean,
   onSubmit: (newName: string) => void,
   onCancel: () => void,
@@ -30,12 +30,15 @@ class RenameModal extends React.Component {
 
   render() {
     const {
+      oldName,
       newName,
       onCancel,
       showModal
     } = this.props
 
     if (!showModal) return null
+
+    const name = oldName.substr(oldName.lastIndexOf('/') + 1, oldName.length)
 
     return (
       <Modal className="rename"
@@ -46,8 +49,7 @@ class RenameModal extends React.Component {
              onClickOverlay={onCancel}>
 
         <TextField className="new-name"
-                   value={newName}
-                   placeholder="New name..."
+                   value={newName ? newName : name}
                    onChange={this.onNameChange.bind(this)}
                    autoFocus/>
       </Modal>

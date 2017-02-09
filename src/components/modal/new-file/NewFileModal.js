@@ -9,6 +9,7 @@ import TextField from '@mulesoft/anypoint-components/lib/TextField'
 import Icon from '@mulesoft/anypoint-icons/lib/Icon'
 import type {FileType} from './NewFileModel'
 import {fileTypes} from './NewFileModel'
+import {Path} from '../../../repository'
 import './NewFile.css'
 
 type Props = {
@@ -20,7 +21,8 @@ type Props = {
   onFileTypeChange: (file: FileType) => void,
   onFragmentTypeChange: (file: FileType) => void,
   onNameChange: () => void,
-  showModal: Boolean
+  showModal: Boolean,
+  path?: Path
 }
 
 class NewFileModal extends React.Component {
@@ -35,12 +37,13 @@ class NewFileModal extends React.Component {
       fileName,
       fileType,
       fragmentType,
+      path,
       onSubmit
     } = this.props
 
     if (fileName) {
       const type = fileType && fileType.subTypes ? fragmentType : fileType
-      onSubmit(fileName, type ? type.value : undefined)
+      onSubmit(fileName, type ? type.value : undefined, path ? path : undefined)
     }
   }
 

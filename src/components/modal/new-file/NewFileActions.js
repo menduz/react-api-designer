@@ -4,6 +4,7 @@ import {addFile} from "../../tree/actions";
 import type {FileType} from './NewFileModel'
 import type {Dispatch, GetState, ExtraArgs} from '../../../types/types'
 import {nextName} from '../../../repository/helper/utils'
+import {Path} from '../../../repository'
 
 export const CHANGE_FRAGMENT = 'newFile/CHANGE_FRAGMENT'
 export const CHANGE_TYPE = 'newFile/CHANGE_TYPE'
@@ -37,10 +38,13 @@ export const changeName = (name: string) => ({
   payload: name
 })
 
-export const openNewFileDialog = () => (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs) => {
+export const openNewFileDialog = (path: ?Path) =>(dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs) => {
   dispatch({
     type: SHOW,
-    payload: nextName('api.raml', repositoryContainer)
+    payload: {
+      nextName: nextName('api.raml', repositoryContainer),
+      path
+    }
   })
 }
 
@@ -48,9 +52,10 @@ export const closeNewFileDialog = () => ({
   type: HIDE
 })
 
-export const add = (name: string, type:? string) =>
+export const add = (name: string, type:? string, path: ?Path) =>
   (dispatch: Dispatch) => {
-    dispatch(addFile(name, type))
+    const currentPath = path ? path : Path.emptyPath(true)
+    dispatch(addFile(name, type, currentPath))
     dispatch(closeNewFileDialog())
   }
 

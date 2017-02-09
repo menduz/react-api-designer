@@ -18,7 +18,8 @@ export default (state: State = initialState, action: any): State => {
     case actions.SHOW:
       return {
         ...state,
-        showModal: true
+        showModal: true,
+        path: action.payload ? action.payload : state.path
       }
     case actions.HIDE:
     case actions.CLEAR:

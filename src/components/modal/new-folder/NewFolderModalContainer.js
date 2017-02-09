@@ -12,14 +12,15 @@ const mapState = (rootState) => {
   const state: State = getAll(rootState)
   return {
     showModal: state.showModal,
-    folderName: state.folderName
+    folderName: state.folderName,
+    path: state.path
   }
 }
 
 const mapDispatch = (dispatch) => {
   return {
-    onSubmit: (name) => {
-      dispatch(addDirectory(name))
+    onSubmit: (name, path) => {
+      dispatch(addDirectory(name, path))
       dispatch(closeNewFolderDialog())
     },
     onCancel: () => dispatch(closeNewFolderDialog()),

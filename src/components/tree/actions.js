@@ -62,15 +62,15 @@ export const folderSelected = (path: Path): void =>
     }
   }
 
-export const addFile = (name: string, fileType?: string) =>
+export const addFile = (name: string, fileType: ?string, path: ?Path) =>
   (dispatch: Dispatch, getState: GetState) => {
-    const directory = getCurrentDirectory(getState())
-    dispatch(repository.actions.addFile(directory.path, name, fileType))
-    dispatch(pathSelected(directory.path.append(name)))
+    const directoryPath = path ? path : getCurrentDirectory(getState()).path
+    dispatch(repository.actions.addFile(directoryPath, name, fileType))
+    dispatch(pathSelected(directoryPath.append(name)))
   }
 
-export const addDirectory = (name: string) =>
+export const addDirectory = (name: string, path: ?Path) =>
   (dispatch: Dispatch, getState: GetState) => {
-    const directory = getCurrentDirectory(getState())
-    dispatch(repository.actions.addDirectory(directory.path, name))
+    const directoryPath = path ? path : getCurrentDirectory(getState()).path
+    dispatch(repository.actions.addDirectory(directoryPath, name))
   }

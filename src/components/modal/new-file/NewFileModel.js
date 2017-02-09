@@ -1,17 +1,20 @@
 //@flow
 
-export type State = {
-  fileName: string,
-  fileType: FileType,
-  fragmentType: FileType,
-  showModal: boolean
-}
+import {Path} from '../../../repository'
 
 export type FileType = {
   value: string,
   label: string,
   defaultName: string,
   subTypes:? FileType[],
+}
+
+export type State = {
+  fileName: string,
+  fileType: FileType,
+  fragmentType: FileType,
+  showModal: boolean,
+  path?: Path
 }
 
 export const fileTypes: FileType[] = [

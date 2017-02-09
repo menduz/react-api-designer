@@ -8,6 +8,8 @@ import {fromFileTree} from './model'
 import {pathSelected, folderSelected} from './actions'
 import {saveFileWithPath, removeFileWithPath} from "../editor/actions"
 import {openRenameDialog} from "../modal/rename/RenameActions"
+import {openNewFolderDialog} from "../../components/modal/new-folder/NewFolderActions"
+import {openNewFileDialog} from "../../components/modal/new-file/NewFileActions"
 import RenameModalContainer from "../modal/rename/RenameModalContainer"
 
 import type {Node} from './model'
@@ -25,6 +27,8 @@ type Props = {
   expanded: [string],
   onSelect: (path: Path) => void,
   onToggle: (path: Path, isExpanded: boolean) => void,
+  showNewFolderDialog: (path: Path) => void,
+  showNewFileDialog: (path: Path) => void,
   saveFile: () => void,
   rename: () => void,
   remove: () => void
@@ -52,6 +56,14 @@ class FileSystemTree extends Component {
     this.props.remove(Path.fromString(path))
   }
 
+  openFileDialog(path: string) {
+    this.props.showNewFileDialog(Path.fromString(path))
+  }
+
+  openFolderDialog(path: string) {
+    this.props.showNewFolderDialog(Path.fromString(path))
+  }
+
   renderLeaf({node, path, isSelected}) {
     const options = [
       {label: 'Save', onClick: this.handleSave.bind(this, path)},
@@ -75,11 +87,19 @@ class FileSystemTree extends Component {
       {label: 'Delete', onClick: this.handleDelete.bind(this, path)}
     ]
 
+    const addOptions = [
+      {label: 'New file', onClick: this.openFileDialog.bind(this, path)},
+      {label: 'New folder', onClick: this.openFolderDialog.bind(this, path)},
+    ]
+
     return (
       <div className="tree-node tree-folder">
         <label>{node.label}</label>
-        <ContextMenu className="file-menu" options={options}>
-          <Icon className="file-menu-icon" name="contextmenu"/>
+        <ContextMenu className="folder-menu" options={options}>
+          <Icon className="folder-menu-icon" name="contextmenu"/>
+        </ContextMenu>
+        <ContextMenu className="new-menu" options={addOptions}>
+          <Icon className="plus-icon" name="plus"/>
         </ContextMenu>
       </div>
     )
@@ -132,7 +152,9 @@ const mapDispatch = dispatch => {
     onToggle: (path: Path) => dispatch(folderSelected(path)),
     rename: (path: Path) => dispatch(openRenameDialog(path.toString())),
     saveFile: (path: Path) => dispatch(saveFileWithPath(path)),
-    remove: (path: Path) => dispatch(removeFileWithPath(path))
+    remove: (path: Path) => dispatch(removeFileWithPath(path)),
+    showNewFolderDialog: (path: Path) => dispatch(openNewFolderDialog(path)),
+    showNewFileDialog: (path: Path) => dispatch(openNewFileDialog(path))
   }
 }
 

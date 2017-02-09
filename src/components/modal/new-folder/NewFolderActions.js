@@ -1,5 +1,7 @@
 // @flow
 
+import {Path} from '../../../repository'
+
 export const CHANGE_NAME = 'newFolder/CHANGE_NAME';
 export const CLEAR = 'newFolder/CLEAR';
 export const SHOW = 'newFolder/SHOW_DIALOG';
@@ -10,8 +12,9 @@ export const changeName = (name: string) => ({
   payload: name
 });
 
-export const openNewFolderDialog = () => ({
-  type: SHOW
+export const openNewFolderDialog = (path: ?Path) => ({
+  type: SHOW,
+  payload: path
 })
 
 export const closeNewFolderDialog = () => ({

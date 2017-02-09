@@ -55,10 +55,6 @@ export const fileSaved = (file: FileModel) => ({
     payload: file
 })
 
-const allFilesSaved = (files: FileModel[]) => {
-  files.forEach(file => fileSaved(file))
-}
-
 export const fileRenamed = (element: ElementModel, name: string) => ({
     type: FILE_RENAMED,
     payload: {element, name}
@@ -219,7 +215,7 @@ export const saveAll = () =>
       .then(
         (files) => {
           var fileModels = files.map(file => Factory.fileModel(file))
-          dispatch(allFilesSaved(fileModels))
+          fileModels.forEach(file => dispatch(fileSaved(file)))
         },
         () => { dispatch(error(FILE_SAVE_FAILED, 'Error on save')) })
   }

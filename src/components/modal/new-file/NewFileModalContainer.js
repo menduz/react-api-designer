@@ -7,6 +7,7 @@ import type {State, FileType} from './NewFileModel'
 import NewFileModal from './NewFileModal'
 import {getAll} from './NewFileSelectors'
 import {changeFileType, changeName, closeNewFileDialog, changeFragmentType, add} from './NewFileActions'
+import {Path} from '../../../repository'
 
 const mapState = (rootState) => {
   const state : State = getAll(rootState)
@@ -14,13 +15,14 @@ const mapState = (rootState) => {
     fileName: state.fileName,
     fileType: state.fileType,
     fragmentType: state.fragmentType,
-    showModal: state.showModal
+    showModal: state.showModal,
+    path: state.path
   }
 }
 
 const mapDispatch = (dispatch) => {
   return {
-    onSubmit: (name: string, fileType:? string) => dispatch(add(name, fileType)),
+    onSubmit: (name: string, fileType:? string, path: ?Path) => dispatch(add(name, fileType, path)),
     onCancel: () => dispatch(closeNewFileDialog()),
     onFileTypeChange: (type: FileType) => dispatch(changeFileType(type)),
     onFragmentTypeChange: (type: FileType) => dispatch(changeFragmentType(type)),

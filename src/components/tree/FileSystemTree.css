@@ -13,21 +13,27 @@
     padding-bottom: 10px;
 }
 
-.Tree .tree-node .file-menu {
+.Tree .tree-node .file-menu, .Tree .tree-node .folder-menu, .Tree .tree-node .new-menu {
     display: none;
 }
 
-.Tree .tree-node:hover .file-menu {
+.Tree .tree-node:hover .file-menu, .Tree .tree-node:hover .folder-menu, .Tree .tree-node:hover .new-menu {
     display: inline-block;
 }
 
-.Tree .file-menu {
+.Tree .file-menu, .Tree .folder-menu {
     float: right;
     cursor: pointer;
     padding-right: 4px;
 }
 
-.Tree .file-menu-icon > svg {
+.Tree .new-menu {
+    float: right;
+    cursor: pointer;
+    padding-right: 9px;
+}
+
+.Tree .file-menu-icon > svg, .Tree .folder-menu-icon > svg, .Tree .plus-icon > svg {
     display: block;
     height: 14px !important;
     width: 14px !important;
