@@ -44,10 +44,13 @@ class Mock extends React.Component {
 
 const mapStateToProps = state => {
   const {mock, editor} = state
-  const file = getCurrentFilePath(state).toString()
-  if (!mock || !file ) return {}
-  const m = mock.find(c => c.file === file)
+  const path = getCurrentFilePath(state)
+  if (!mock || !path ) return {}
+
+  const filePath = path.toString();
+  const m = mock.find(c => c.file === filePath)
   if (!m) return {}
+
   return {
     isUp: m.isUp,
     parsedObject: editor.parsedObject
