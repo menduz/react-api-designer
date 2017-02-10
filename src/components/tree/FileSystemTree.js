@@ -1,39 +1,13 @@
 //@flow
 
 import React, {Component} from 'react'
-import {connect} from 'react-redux'
 import TreeUI from '@mulesoft/anypoint-components/lib/Tree'
-import {getAll} from './selectors'
-import {fromFileTree} from './model'
-import {pathSelected, folderSelected, move} from './actions'
-import {saveFileWithPath, removeFileWithPath} from "../editor/actions"
-import {openRenameDialog} from "../modal/rename/RenameActions"
-import {openNewFolderDialog} from "../../components/modal/new-folder/NewFolderActions"
-import {openNewFileDialog} from "../../components/modal/new-file/NewFileActions"
 import RenameModalContainer from "../modal/rename/RenameModalContainer"
-
-import type {Node} from './model'
-
-import './FileSystemTree.css'
-import {getFileTree} from "../../repository-redux/selectors"
 import {Path} from '../../repository'
-
 import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
 import Icon from '@mulesoft/anypoint-icons/lib/Icon'
+import './FileSystemTree.css'
 
-type Props = {
-  nodes: [Node],
-  selected: [string],
-  expanded: [string],
-  onSelect: (path: Path) => void,
-  onToggle: (path: Path, isExpanded: boolean) => void,
-  showNewFolderDialog: (path: Path) => void,
-  showNewFileDialog: (path: Path) => void,
-  moveFile: () => void,
-  saveFile: () => void,
-  rename: () => void,
-  remove: () => void
-}
 
 class FileSystemTree extends Component {
 
@@ -65,20 +39,20 @@ class FileSystemTree extends Component {
     this.props.showNewFolderDialog(path)
   }
 
-  onDrop(path: string, event) {
+  onDrop(path: Path, event) {
     event.stopPropagation()
     event.preventDefault()
 
-    var fromPath = event.dataTransfer.getData('text/plain')
-
-    this.props.moveFile(Path.fromString(fromPath), Path.fromString(path))
+    const from = event.dataTransfer.getData('text/plain');
+    if (from)
+      this.props.moveFile(Path.fromString(from), path)
   }
 
-  onDragStart(path, event){
-    event.dataTransfer.setData('text/plain', path)
+  onDragStart(path: Path, event) {
+    event.dataTransfer.setData('text/plain', path.toString())
   }
 
-  renderLeaf({node, path, isSelected}) {
+  renderLeaf({node, isSelected}) {
     const options = [
       {label: 'Save', onClick: this.handleSave.bind(this, node.path)},
       {label: 'Rename', onClick: this.handleRename.bind(this, node.path)},
@@ -87,9 +61,9 @@ class FileSystemTree extends Component {
 
     return (
       <div className="tree-node tree-leaf"
-           data-path={path}
+           data-path={node.path.toString()}
            draggable="true"
-           onDragStart={this.onDragStart.bind(this, path)}>
+           onDragStart={this.onDragStart.bind(this, node.path)}>
         <label>{node.label}</label>
         <ContextMenu className="tree-menu file-menu" options={options} testId="File-Tree-Context-Menu">
           <Icon name="contextmenu"/>
@@ -98,7 +72,7 @@ class FileSystemTree extends Component {
     )
   }
 
-  renderFolder({node, path, isSelected, isExpanded}) {
+  renderFolder({node, isSelected, isExpanded}) {
     const options = [
       {label: 'Rename', onClick: this.handleRename.bind(this, node.path)},
       {label: 'Delete', onClick: this.handleDelete.bind(this, node.path)}
@@ -111,11 +85,11 @@ class FileSystemTree extends Component {
 
     return (
       <div className="tree-node tree-folder"
-           data-path={path}
+           data-path={node.path.toString()}
            draggable="true"
-           onDragStart={this.onDragStart.bind(this, path)}
+           onDragStart={this.onDragStart.bind(this, node.path)}
            onDragOver={event => event.preventDefault()}
-           onDrop={this.onDrop.bind(this, path)}>
+           onDrop={this.onDrop.bind(this, node.path)}>
         <label>{node.label}</label>
         <ContextMenu className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
           <Icon name="contextmenu"/>
@@ -154,33 +128,5 @@ class FileSystemTree extends Component {
   }
 }
 
-const mapStateToProps = (rootState): Props => {
-  const state = getAll(rootState)
-  if (!state) return {}
-
-  const fileTree = getFileTree(rootState)
-  const nodes: ?Node[] = fileTree ? fromFileTree(fileTree) : undefined
-  const expanded = state.expandedFolders.toArray().map(p => p.toString())
-  const selected = state.currentPath ? [state.currentPath.toString()] : []
-  return {
-    nodes,
-    selected,
-    expanded
-  }
-}
-
-const mapDispatch = dispatch => {
-  return {
-    onSelect: (path: Path) => dispatch(pathSelected(path)),
-    onToggle: (path: Path) => dispatch(folderSelected(path)),
-    rename: (path: Path) => dispatch(openRenameDialog(path.toString())),
-    saveFile: (path: Path) => dispatch(saveFileWithPath(path)),
-    remove: (path: Path) => dispatch(removeFileWithPath(path)),
-    moveFile: (from: Path, to: Path) => dispatch(move(from, to)),
-    showNewFolderDialog: (path: Path) => dispatch(openNewFolderDialog(path)),
-    showNewFileDialog: (path: Path) => dispatch(openNewFileDialog(path))
-  }
-}
-
-export default connect(mapStateToProps, mapDispatch)(FileSystemTree)
+export default FileSystemTree
 

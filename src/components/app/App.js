@@ -7,7 +7,7 @@ import Split from '../split/Split'
 import Menu from '../menu/Menu'
 import {Info} from '../info'
 import {Editor} from '../editor'
-import {FileSystemTree} from '../tree'
+import {FileSystemTreeContainer} from '../tree'
 import FileDrop from '../filedrop/FileDrop'
 
 import './App.css'
@@ -21,7 +21,7 @@ export default class App extends React.Component {
         <Split id="leftSplit" minSize={150} defaultSize={200} className="App-content">
           <div className="LeftPanel">
             <Menu/>
-            <FileSystemTree/>
+            <FileSystemTreeContainer/>
           </div>
           <Split id="rightSplit" minSize={300} defaultSize={400} position="right" className="RightPanel">
             <Editor/>

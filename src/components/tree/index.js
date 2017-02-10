@@ -6,4 +6,5 @@ export {actions}
 import * as selectors from './selectors'
 export {selectors}
 export {default as FileSystemTree} from './FileSystemTree'
+export {default as FileSystemTreeContainer} from './FileSystemTreeContainer'
 export {default as reducer} from './reducer'
