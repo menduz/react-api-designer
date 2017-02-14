@@ -87,6 +87,9 @@ export default class Repository {
     if (!file) return Promise.reject()
 
     return file.remove(this._fileSystem)
+      .then(() => {
+        file.parent.removeChild(file)
+      })
   }
 
   deleteDirectory(path: Path): Promise<Directory> {

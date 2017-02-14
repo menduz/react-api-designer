@@ -23,7 +23,7 @@ class Directory extends Element {
 
   removeChild(child: Element) {
     this._children = this._children
-      .filter((c) => c === child)
+      .filter((c) => c !== child)
 
     return child
   }
