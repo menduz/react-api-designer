@@ -33,7 +33,7 @@ const reducer = (state: State = initialState, action: {type: string, payload: an
       if (!state.fileTree) return state
       return {
         ...state,
-        fileTree: state.fileTree.renameElement(action.payload.element, action.payload.name)
+        fileTree: state.fileTree.removeElement(action.payload.oldPath).updateElement(action.payload.element)
       }
     case FILE_ADDED:
     case FILE_SAVED:

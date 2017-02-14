@@ -22,14 +22,6 @@ export class RepositoryModel {
     return this._root.getByPath(Path.fromString(path))
   }
 
-  renameElement(element: ElementModel, name: string): RepositoryModel {
-    const newPath = Path.fromString(element.path.toString().substr(0, element.path.toString().lastIndexOf('/') + 1) + name)
-
-    return this
-      .removeElement(element.path)
-      .updateElement(element.withName(name).withPath(newPath))
-  }
-
   moveElement(from: Path, to: Path): RepositoryModel {
     const element = this.getByPath(from)
     if (!element) return this

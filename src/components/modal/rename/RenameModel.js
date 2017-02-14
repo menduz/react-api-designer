@@ -2,6 +2,6 @@
 
 export type State = {
   newName?: string,
-  oldName: string,
+  path: string,
   showModal: boolean
 }

@@ -22,7 +22,10 @@ const mapState = (rootState) => {
 
 const mapDispatch = (dispatch) => {
   return {
-    onSubmit: (name: string, fileType:? string, path: ?Path) => dispatch(add(name, fileType, path)),
+    onSubmit: (name: string, fileType:? string, path: ?Path) => {
+      var currentPath = path ? path : Path.emptyPath(true)
+      dispatch(add(name, fileType, currentPath))
+    },
     onCancel: () => dispatch(closeNewFileDialog()),
     onFileTypeChange: (type: FileType) => dispatch(changeFileType(type)),
     onFragmentTypeChange: (type: FileType) => dispatch(changeFragmentType(type)),

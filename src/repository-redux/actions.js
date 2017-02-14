@@ -58,9 +58,9 @@ export const fileSaved = (file: FileModel) => ({
     payload: file
 })
 
-export const fileRenamed = (element: ElementModel, name: string) => ({
+export const fileRenamed = (oldPath: Path, element: ElementModel) => ({
     type: FILE_RENAMED,
-    payload: {element, name}
+    payload: {oldPath, element}
 })
 
 export const fileDeleted = (path: Path) => ({
@@ -223,26 +223,22 @@ export const saveAll = () =>
         () => { dispatch(error(FILE_SAVE_FAILED, 'Error on save')) })
   }
 
-export const rename = (oldName: string, newName: string) =>
+export const rename = (path: string, newName: string) =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
     if (!repositoryContainer.isLoaded)
       return Promise.reject(dispatch(error(FILE_RENAME_FAILED, REPOSITORY_NOT_LOADED)))
 
-    const oldPath = getFileTree(getState()) ? getFileTree(getState()).getByPathString(oldName) : undefined
+    const element = getFileTree(getState()) ? getFileTree(getState()).getByPathString(path) : undefined
 
-    if (!oldPath || (oldPath.isDirectory() && !isValidDirectory(oldPath)))
-      return Promise.reject(dispatch(error(FILE_RENAME_FAILED, `${oldName} is not valid directory`)))
-    else {
-      if (!isValidFile(oldPath))
-        return Promise.reject(dispatch(error(FILE_RENAME_FAILED, `${oldName} is not valid file`)))
-    }
+    if (!element || !isValidDirectory(element) || !isValidFile(element))
+      return Promise.reject(dispatch(error(FILE_RENAME_FAILED, `${path} is not valid`)))
 
     const repository: Repository = repositoryContainer.repository
     dispatch({type: FILE_RENAME_STARTED})
 
-    return repository.rename(oldName, newName)
+    return repository.rename(path, newName)
       .then(
-        () => dispatch(fileRenamed(oldPath, newName)),
+        (elem) => dispatch(fileRenamed(Path.fromString(path), Factory.elementModel(elem))),
         () => { dispatch(error(FILE_RENAME_FAILED, 'Error on renameElement')) }
       )
   }
@@ -308,34 +304,28 @@ export const moveElement = (source: Path, destinationDir: Path) =>
     if (!repositoryContainer.isLoaded)
       return dispatch(error(FILE_MOVE_FAILED, REPOSITORY_NOT_LOADED))
 
-    var fromElement, toElement
     var fileTree = getFileTree(getState())
+    if (!fileTree) return Promise.reject()
 
-    if (fileTree) {
-      fromElement = fileTree.getByPath(source)
-      toElement   = fileTree.getByPath(destinationDir)
-    }
+    var fromElement = fileTree.getByPath(source)
+    var toElement   = fileTree.getByPath(destinationDir)
 
-    const isInvalidDirectory  = !toElement || (toElement.isDirectory() && !isValidDirectory(toElement));
-    const isInvalidFile       = !isValidFile(fromElement) || !isValidDirectory(fromElement);
+    const isInvalidDestination  = !isValidDirectory(toElement)
+    const isInvalidSource       = !isValidFile(fromElement) || !isValidDirectory(fromElement)
 
-    if (isInvalidDirectory || isInvalidFile) {
-      const invalid : Path = isInvalidDirectory ? destinationDir : source
+    if (isInvalidDestination || isInvalidSource) {
+      const invalid : Path = isInvalidDestination ? destinationDir : source
       return Promise.reject(dispatch(error(FILE_MOVE_FAILED, `${invalid.toString()} is not valid`)))
     }
 
-    const separator       = '/'
-    const fromPath        = source.toString()
-    const elementName     = fromPath.substr(fromPath.lastIndexOf(separator) + 1, fromPath.length)
-    const destinationPath = Path.fromString(destinationDir.toString() + separator + elementName)
-
+    const destinationPath = Path.fromString(destinationDir.toString() + '/' + fromElement.name)
     const repository: Repository = repositoryContainer.repository
     return repository.move(source, destinationPath)
       .then(
-        () => {
+        (element) => {
           dispatch({
             type: FILE_MOVE,
-            payload: { source, destination: destinationPath }
+            payload: { source, destination: element.path }
           })
         }
       )

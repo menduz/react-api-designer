@@ -379,6 +379,7 @@ class LocalStorageFileSystem extends FileSystem {
           //move all child items
           LocalStorageHelper.forEach((entry) => {
             if (entry.path.toLowerCase() !== source.toLowerCase() &&
+              entry.path !== destination &&
               entry.path.indexOf(source) === 0) {
               let newPath = destination + entry.path.substring(source.length)
               LocalStorageHelper.remove(entry.path)

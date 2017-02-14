@@ -7,7 +7,7 @@ import TextField from '@mulesoft/anypoint-components/lib/TextField'
 
 type Props = {
   newName?: string,
-  oldName: string,
+  path: string,
   showModal: boolean,
   onSubmit: (newName: string) => void,
   onCancel: () => void,
@@ -22,15 +22,15 @@ class RenameModal extends React.Component {
   }
 
   handleSubmit() {
-    const {oldName, newName} = this.props
+    const {path, newName} = this.props
 
-    if (oldName && newName)
-      this.props.onSubmit(oldName, newName)
+    if (path && newName)
+      this.props.onSubmit(path, newName)
   }
 
   render() {
     const {
-      oldName,
+      path,
       newName,
       onCancel,
       showModal
@@ -38,7 +38,7 @@ class RenameModal extends React.Component {
 
     if (!showModal) return null
 
-    const name = oldName.substr(oldName.lastIndexOf('/') + 1, oldName.length)
+    const name = path.substr(path.lastIndexOf('/') + 1, path.length)
 
     return (
       <Modal className="rename"

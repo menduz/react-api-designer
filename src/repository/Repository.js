@@ -58,31 +58,28 @@ export default class Repository {
   }
 
   saveAll(): Promise<File[]> {
-    var files = this._getDirtyFiles()
-    this._updateSavedFiles(files)
-
     var promises: Array<Promise> = []
+    var files = this._getDirtyFiles()
 
     files.forEach(file => {
       var promise = file.save(this._fileSystem)
       promises.push(promise)
     })
 
-    return Promise.all(promises)
+    return Promise.all(promises).then(files => files)
   }
 
-  rename(oldName: string, newName: string): Promise<any> {
-    var element = this.getByPathString(oldName)
-    if (element) element.name = newName
+  rename(path: string, newName: string): Promise<Element> {
+    var element = this.getByPathString(path)
+    if (!element) return Promise.reject()
 
-    const newCompleteName = oldName.substr(0, oldName.lastIndexOf('/') + 1) + newName
+    const newPath = path.substr(0, path.lastIndexOf('/') + 1) + newName
+    const promise = this._fileSystem.rename(path, newPath)
+    element.name = newName
 
-    const promise = this._fileSystem.rename(oldName, newCompleteName)
     return promise
-      .then(
-        () => this,
-        () => this
-      )
+      .then(() => element)
+      .catch(() => element)
   }
 
   deleteFile(path: Path): Promise<File> {
@@ -123,27 +120,22 @@ export default class Repository {
       .then(() => newDirectory)
   }
 
-  move(from: Path, to: Path): Promise<any> {
-    var directory = to.parent()
-    var parent    = this.getByPath(directory)
+  move(from: Path, to: Path): Promise<Element> {
+    var newParent = this.getByPath(to.parent())
     var element   = this.getByPath(from)
 
-    if (!parent || !parent.isDirectory())
-      throw new Error(`${directory.toString()} is not a valid directory`)
+    if (!newParent || !newParent.isDirectory())
+      throw new Error(`${newParent.path.toString()} is not a valid directory`)
     else if (!element)
       throw new Error(`${from.toString()} is not a valid directory`)
 
-    element.parent = parent
-    parent.addChild(element)
-
-    const completePath = directory.toString() + from.toString()
-    const promise = this._fileSystem.rename(from.toString(), completePath)
+    const promise = this._fileSystem.rename(from.toString(), to.toString())
+    element.parent = newParent
+    newParent.addChild(element)
 
     return promise
-      .then(
-        () => this,
-        () => this
-      )
+      .then(() => element)
+      .catch(() => element)
   }
 
   setContent(path: Path, content: string): File {
@@ -159,36 +151,18 @@ export default class Repository {
     return ZipHelper.buildZip(this.root)
   }
 
-  _getDirtyFiles(): File[] {
-    function getDirtyChildren(dir: Directory): Array<Element>{
-      var children = []
-
-      dir.children.forEach(child => {
-        if (child.isDirectory()) {
-          children = children.concat(getDirtyChildren(child))
-        } else {
-          const file = (child : File)
-          if (file.dirty) { children.push(child) }
-        }
-      })
-
-      return children
-    }
-
+  _getDirtyFiles(dir: ?Directory): File[] {
+    var directory = dir ? dir : this._root
     var files = []
 
-    this._root.children.forEach(child => {
+    directory.children.forEach(child => {
       if (child.isDirectory()) {
-        files = files.concat(getDirtyChildren(child))
+        files = files.concat(this._getDirtyFiles(child))
       } else {
         const file = (child : File)
         if (file.dirty) files.push(file)
       }
     })
     return files
-  }
-
-  _updateSavedFiles(files: File[]): void {
-    files.forEach(file => file.saveState())
   }
 }

@@ -11,17 +11,17 @@ export const changeName = (name: string) => ({
   payload: name
 })
 
-export const openRenameDialog = (oldName: string) => ({
+export const openRenameDialog = (path: string) => ({
   type: SHOW,
-  payload: oldName
+  payload: path
 })
 
 export const closeRenameDialog = () => ({
   type: HIDE
 })
 
-export const renameWith = (oldName: string, newName: string) =>
+export const renameWith = (path: string, newName: string) =>
   (dispatch) => {
-    dispatch(rename(oldName, newName))
+    dispatch(rename(path, newName))
     dispatch(closeRenameDialog())
   }

@@ -2,11 +2,13 @@
 
 import {connect} from 'react-redux'
 
-import type {State} from './NewFolderModel'
 import NewFolderModal from './NewFolderModal'
+
+import type {State} from './NewFolderModel'
 import {getAll} from './NewFolderSelectors'
 import {changeName, closeNewFolderDialog} from './NewFolderActions'
-import {addDirectory} from "../../tree/actions";
+import {addDirectory} from "../../tree/actions"
+import {Path} from '../../../repository'
 
 const mapState = (rootState) => {
   const state: State = getAll(rootState)
@@ -20,7 +22,8 @@ const mapState = (rootState) => {
 const mapDispatch = (dispatch) => {
   return {
     onSubmit: (name, path) => {
-      dispatch(addDirectory(name, path))
+      var currentPath = path ? path : Path.emptyPath(true)
+      dispatch(addDirectory(name, currentPath))
       dispatch(closeNewFolderDialog())
     },
     onCancel: () => dispatch(closeNewFolderDialog()),

@@ -12,14 +12,14 @@ const mapState = (rootState) => {
   const state: State = getAll(rootState)
   return {
     newName: state.newName,
-    oldName: state.oldName,
+    path: state.path,
     showModal: state.showModal
   }
 }
 
 const mapDispatch = (dispatch) => {
   return {
-    onSubmit: (oldName: string, newName: string) => dispatch(renameWith(oldName, newName)),
+    onSubmit: (path: string, newName: string) => dispatch(renameWith(path, newName)),
     onCancel: () => dispatch(closeRenameDialog()),
     onNameChange: (name: string) => dispatch(changeName(name))
   }

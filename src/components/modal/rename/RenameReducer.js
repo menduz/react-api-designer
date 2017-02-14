@@ -19,7 +19,7 @@ export default (state: State = initialState, action: any): State => {
     case actions.SHOW:
       return {
         ...state,
-        oldName: action.payload,
+        path: action.payload,
         showModal: true
       }
     case actions.HIDE:
