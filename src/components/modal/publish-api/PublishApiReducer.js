@@ -52,25 +52,26 @@ export default (state: State = initialState, action: any): State => {
       }
 
     case actions.ADD_TAG:
-      var tags = state.form['tags']
+      const addTags = new Set(state.form['tags'] || [])
+      addTags.add(action.payload.tag)
 
       return {
         ...state,
         form: {
           ...state.form,
-          tags: tags ? tags.add(action.payload.tag) : new Set([action.payload.tag]),
+          tags: addTags,
           tag: undefined
         }
       }
     case actions.REMOVE_TAG:
-      var tags = state.form['tags']
-      tags.delete(action.payload.tag)
+      const removeTags = new Set(state.form['tags'])
+      removeTags.delete(action.payload.tag)
 
       return {
         ...state,
         form: {
           ...state.form,
-          tags: tags
+          tags: removeTags
         }
       }
   }

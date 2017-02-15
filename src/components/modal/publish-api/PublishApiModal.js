@@ -59,7 +59,7 @@ class PublishApiModal extends React.Component {
              onClickOverlay={onCancel}
              className="publish-api-modal">
         <ModalHeader>
-          <h2>Publish Api</h2>
+          <h2>Publish API</h2>
         </ModalHeader>
         <ModalBody>
           {content}
@@ -84,17 +84,17 @@ class PublishApiModal extends React.Component {
     return (
       <div>
         <div className="form-row">
-          <Label>Name</Label>
+          <Label className="required">Name</Label>
           <TextField value={name}
-                     placeholder="Name"
+                     placeholder="Name..."
                      disabled={isFetching}
                      onChange={this.handleNameChange.bind(this)}
                      required/>
         </div>
         <div className="form-row">
-          <Label>Version</Label>
+          <Label className="required">Version</Label>
           <TextField value={version}
-                     placeholder="Version"
+                     placeholder="Version..."
                      disabled={isFetching}
                      onChange={this.handleVersionChange.bind(this)}
                      required/>
@@ -109,7 +109,7 @@ class PublishApiModal extends React.Component {
           <div className="tags">
             <TextField className="tag-name"
                        value={tag}
-                       placeholder="Tag"
+                       placeholder="Tag..."
                        disabled={isFetching}
                        onChange={this.handleTagChange.bind(this)}/>
             <Button className="save-tag-button"

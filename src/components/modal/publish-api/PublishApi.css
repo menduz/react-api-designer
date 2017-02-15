@@ -1,29 +1,34 @@
-.error {
-  color: #d9534f;
-  padding-top: 5px;
-}
-
 .publish-api-modal {
   font-family: DIN Pro, sans-serif;
 }
 
-.form-row > div {
-  padding-top: 10px;
-  padding-bottom: 10px;
+.publish-api-modal label.required:after {
+  content: ' (required)';
+  color: gray;
 }
 
-div > .form-row:last-child > div {
+.publish-api-modal .error {
+  color: #d9534f;
+  padding-top: 5px;
+}
+
+.publish-api-modal .form-row > div {
+  margin-top: 2px;
+  margin-bottom: 15px;
+}
+
+.publish-api-modal div > .form-row:last-child > div {
   padding-bottom: 0;
 }
 
-.tags {
+.publish-api-modal .tags {
     display: flex;
 }
 
-.tags > .tag-name {
+.publish-api-modal .tags > .tag-name {
     width: 80%;
 }
 
-.tags > .save-tag-button {
+.publish-api-modal .tags > .save-tag-button {
     margin-left: 20px;
 }

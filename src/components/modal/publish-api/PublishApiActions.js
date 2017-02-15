@@ -56,13 +56,11 @@ export const publish = (remoteApi: PublishApiRemoteApi, name: string, version: s
     dispatch(startFetching())
 
     remoteApi.createVersion(name, version, tags)
-      .then(
-        (response: PublishApiResponse) => {
+      .then((response: PublishApiResponse) => {
           dispatch(successfullyFetched(response.apiName))
-        },
-        () => {
-          dispatch(errorOnPublish('An error has occurred while publishing.'))
-        }
-      )
+      }).catch((error) => {
+        console.error(error)
+        dispatch(errorOnPublish('An error has occurred while publishing.'))
+      })
   }
 }

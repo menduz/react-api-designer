@@ -62,12 +62,12 @@ export default class OasRamlConverter {
     }
 
 
-    var fsResolver = {
+    const fsResolver = {
       canRead: function (url) {
         return this.read(url) != null;
       },
       read: function (url) {
-        var path = toRelative(url.url);
+        const path = toRelative(url.url);
         const file = files.filter(c => c.filename === path)
         if (file.length === 0) {
           throw new Error('Could not load content for file ' + path);
@@ -106,9 +106,16 @@ export default class OasRamlConverter {
       }
 
       new converter.Converter(fromFormat, toFormat).convertData(text, o)
-        .then(result => { resolve(stringify(result)) })
+        .then(result => { resolve(OasRamlConverter._stringify(result)) })
         .catch(error => { reject(error) })
     })
+  }
+
+  static _stringify(data) {
+    if (!data) return ''
+    if (typeof data === 'string') return data
+    const result = JSON.stringify(data, null, 2);
+    return result === '{}' ? '' : result;
   }
 
 }
