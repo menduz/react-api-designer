@@ -1,0 +1,29 @@
+.Editor {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.Editor .Empty {
+    position: absolute;
+    padding-top: 15%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    background: white;
+}
+
+.monaco-editor .suggest-widget > .tree {
+    width: inherit;
+    height: inherit;
+    position: relative;
+    background-color: inherit;
+}
+
+.monaco-list-rows {
+    margin-right: 0;
+}

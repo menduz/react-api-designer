@@ -1,0 +1,18 @@
+.Console-toolbar {
+  padding: 5px 10px 9px;
+  display: inline-flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.Console-toolbar .Mock {
+  text-align: right;
+}
+
+.Spinner-console {
+  padding-top: 3px;
+}
+
+.Spinner-console.hide > div {
+  display: none;
+}

@@ -1,4 +1,21 @@
-node_modules/
-.idea/
-dist/
-*.iml
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# dependencies
+node_modules
+bower_components
+
+# testing
+coverage
+
+# production
+build
+out
+public/static
+public/shared
+public/assets
+
+# misc
+.DS_Store
+.env
+npm-debug.log
+.idea

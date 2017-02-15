@@ -1,0 +1,17 @@
+[
+  {
+    "label": "Getting Started Guide",
+    "href": "https://docs.mulesoft.com/api-manager/designing-your-api",
+    "target": "_blank"
+  },
+  {
+    "label": "RAML Specification",
+    "href": "https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md",
+    "target": "_blank"
+  },
+  {
+    "label": "raml.org Website",
+    "href": "http://raml.org/",
+    "target": "_blank"
+  }
+]

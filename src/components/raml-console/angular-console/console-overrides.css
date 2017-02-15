@@ -1,0 +1,168 @@
+.angular-container .raml-console-title {
+  font-size: 26px;
+  text-align: left;
+  padding-left: 4px;
+}
+
+.angular-container .raml-console-resource-root {
+  min-height: 45px;
+}
+
+.angular-container .raml-console-toggle-all {
+  margin-top: 30px;
+}
+
+.angular-container .raml-console-resource-section-title {
+  font-size: 17px;
+}
+
+.angular-container .raml-console-has-sidebar-collapsed .raml-console-resource-panel-primary {
+  overflow: auto;
+}
+
+.angular-container .raml-console-resource-panel-primary-row {
+  padding: 10px;
+}
+
+.angular-container .raml-console-resource-panel-primary-row .raml-console-response-container {
+  padding-top: 10px !important;
+}
+
+.angular-container .raml-console-documentation-header, .angular-container .raml-console-documentation-active .raml-console-document-header {
+  background: #f4f5f6;
+  border-color: transparent;
+}
+
+.angular-container .raml-console-resource-heading {
+  font-size: 14px;
+}
+
+.angular-container .raml-console-resource-list-root, .angular-container .raml-console-resource {
+  border-color: #e5e6e7;
+  margin-top: 0;
+}
+
+.angular-container .raml-console-resource {
+  padding-left: 25px;
+}
+
+.angular-container .raml-console-flag {
+  border: none;
+  border-radius: 0;
+  background-color: #eee;
+}
+
+.angular-container .raml-console-tab-list {
+  position: relative;
+  padding-left: 0;
+  flex-wrap: wrap;
+}
+
+.angular-container .raml-console-resource.raml-console-is-active {
+  border: none;
+  background: #ddd;
+}
+
+.angular-container .raml-console-resource-close-btn:before {
+  top: -5px;
+  right: 3px;
+}
+
+.angular-container .raml-console-resource.raml-console-is-active .raml-console-resource-path-active,
+.angular-container .raml-console-documentation-active .raml-console-resource-path-active,
+.angular-container .raml-console-resource.raml-console-is-active span,
+.angular-container .raml-console-resource.raml-console-is-active button {
+  color: black;
+}
+
+.angular-container .raml-console-resource-path-container {
+  padding: 15px 0 0 0;
+}
+
+.angular-container .raml-console-tab-label {
+  font-size: 11px;
+  padding-top: 4px;
+}
+
+.angular-container .raml-console-tab-label::before {
+  left: 0;
+  right: 0;
+  top: 3px;
+  bottom: -4px;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  transform: none;
+  -webkit-transform: none;
+  -moz-webkit-transform: none;
+  -ms-webkit-transform: none;
+}
+
+.angular-container .raml-console-tab-get::before {
+  background: #62bee0;
+}
+.angular-container .raml-console-tab-post::before {
+  background: #54ad9f;
+}
+.angular-container .raml-console-tab-delete::before {
+  background: #f17070;
+}
+.angular-container .raml-console-tab-patch::before {
+  background: #6785da;
+}
+.angular-container .raml-console-tab-put::before {
+  background: #85639a;
+}
+
+.angular-container .raml-console-tab.raml-console-is-active .raml-console-tab-label::before {
+  background-color: #fafafa;
+}
+
+.angular-container .raml-console-tab {
+  width: 90px;
+  height: 20px;
+  margin: 0 -15px 0 0;
+}
+
+.angular-container .raml-console-resource-level-description {
+  margin-top: 0;
+}
+
+.angular-container .raml-console-marked-content p,
+.angular-container .raml-console-resource-panel-primary p {
+  font-family: "DIN Pro", sans-serif;
+  font-size: 13px;
+}
+
+.angular-container .raml-console-resource-heading-a {
+  font-size: 14px;
+}
+
+.angular-container ol.raml-console-resources-container-no-title {
+  margin-top: 0;
+}
+
+.angular-container .raml-console-resource-section {
+  margin-top: 20px;
+}
+
+.angular-container .raml-console-resource-panel-primary,
+.angular-container .raml-console-resource-response .raml-console-flag,
+.angular-container .raml-console-resource-btn {
+  font-size: 14px;
+}
+
+.angular-container .raml-console-response-container {
+  min-height: 0;
+}
+
+.angular-container .raml-console-resource-panel {
+  min-height: 0;
+  border: none;
+}
+
+.angular-container h3.raml-console-resource-heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  margin-right: 0;
+}

@@ -1,0 +1,55 @@
+{
+  "name": "api-designer",
+  "version": "0.1.0",
+  "description": "A web editor for creating and sharing RAML API specifications",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mulesoft/react-api-designer.git"
+  },
+  "main": "./src/index.js",
+  "scripts": {
+    "start": "webpack -d && react-scripts start",
+    "build": "webpack && react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "flow": "flow",
+    "build-worker": "webpack -d --watch"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^4.0.1",
+    "flow-bin": "^0.37.4",
+    "json-loader": "^0.5.4",
+    "react-scripts": "^0.8.5",
+    "request": "^2.79.0",
+    "webpack": "^1.14.0"
+  },
+  "dependencies": {
+    "@mulesoft/anypoint-components": "^2.42.0",
+    "@mulesoft/anypoint-icons": "^4.2.0",
+    "@mulesoft/anypoint-styles": "^1.1.0",
+    "api-console": "^3.0.13",
+    "babel-preset-react": "^6.22.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "browser-request": "^0.3.3",
+    "classnames": "^2.2.5",
+    "immutable": "^3.8.1",
+    "jszip": "^3.1.3",
+    "monaco-editor": "^0.8.1",
+    "oas-raml-converter": "^0.1.3",
+    "raml-1-parser": "^1.1.14",
+    "raml-suggestions": "^0.0.27",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-file-download": "^0.3.2",
+    "react-json-tree": "^0.10.1",
+    "react-markdown": "^2.4.4",
+    "react-monaco-editor": "^0.7.3",
+    "react-redux": "^4.4.5",
+    "react-split-pane": "^0.1.57",
+    "react-toggle-button": "^2.1.0",
+    "redux": "^3.5.2",
+    "redux-logger": "^2.7.4",
+    "redux-thunk": "^2.1.0"
+  }
+}

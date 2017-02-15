@@ -1,0 +1,38 @@
+.Tree-loading {
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 200;
+}
+
+.Tree .tree-leaf {
+  width: 100%;
+}
+.Tree label {
+  cursor: pointer;
+}
+
+.Tree .tree-node {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.Tree .file-menu, .Tree .folder-menu {
+  position: absolute;
+  top: 11px;
+  right: 20px;
+  cursor: pointer;
+}
+
+.Tree .new-menu {
+  position: absolute;
+  cursor: pointer;
+  top: 11px;
+  right: 40px;
+}
+
+.Tree .tree-menu svg {
+  display: block;
+  height: 14px !important;
+  width: 14px !important;
+  fill: #a0a0a0;
+}

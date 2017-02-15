@@ -1,0 +1,43 @@
+.import-modal div[data-anypoint-component="ModalBody"] {
+  overflow: visible;
+}
+
+.import-modal .input-file {
+  margin-top: 15px;
+}
+
+.import-modal .import-url, .import-modal .import-file {
+  margin-top: 15px;
+}
+
+.import-modal .import-file div[data-anypoint-component="TextField"] {
+  width: 70%;
+}
+
+.import-modal .input-type {
+  position: relative;
+}
+
+.import-modal .input-type .info-small-icon {
+  position: absolute;
+  right: -24px;
+  top: 13px;
+}
+
+.Popover-in-modal {
+  background-color: #272f33;
+  color: #fff;
+  font-family: DIN Pro, sans-serif;
+  font-size: 13px;
+  padding: 7px 10px;
+  max-width: 310px;
+}
+
+.Popover-in-modal a {
+  color: #fff;
+  padding-left: 5px;
+}
+
+div[data-reactroot] > .rc-trigger-popup {
+  z-index: 2000
+}

@@ -1,0 +1,27 @@
+.Preview .No-preview {
+  text-align: center;
+  color: #cacbcc;
+  padding-top: 10px;
+}
+
+.Preview > ul {
+  background: transparent !important;
+}
+
+.Preview .md-preview pre {
+  padding: 5px 8px;
+  border: 1px solid #c6cada;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 3px;
+  font-family: Source Code Pro, monospace;
+  font-size: 14px;
+}
+
+/* Makes the arrow from the tree looks blackish */
+.Preview li > div > div {
+  color: #c8c9ca !important;
+}
+
+.Preview li > div ~ span {
+  color: #bbbbbb !important;
+}

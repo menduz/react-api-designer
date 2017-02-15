@@ -1,0 +1,24 @@
+.context-menu, .add-menu {
+    float: right;
+    cursor: pointer;
+}
+
+.context-menu > span > div {
+    margin-top: 7px;
+}
+
+.add-menu > span > div {
+    margin: 7px 5px 0 0;
+}
+
+.context-menu-icon > svg, .plus-icon > svg {
+    display: block;
+    height: 20px !important;
+    width: 20px !important;
+}
+
+.dropdown-menu-popup > ul > li > button,
+.dropdown-menu-popup > ul > li > a {
+    font-family: DIN Pro, sans-serif;
+    font-size: 14px;
+}

@@ -1,0 +1,50 @@
+.InfoPanel {
+  font-family: DIN Pro, sans-serif;
+  margin-left: 20px;
+  white-space: normal;
+  height: 100%;
+  position: relative;
+}
+
+.InfoPanel pre {
+  overflow: auto;
+}
+
+.InfoPanel .InfoTitle {
+  border-bottom: 2px solid rgba(39,47,51,.1);
+  padding: 7px 0 6px 20px;
+  margin-left: -20px;
+  font-size: 15px;
+}
+
+.InfoPanel .InfoPanelTabs {
+  border-bottom: 2px rgba(39, 47, 51, .1) solid;
+  margin-left: -20px;
+}
+
+.InfoPanel .InfoPanelTabs ul {
+  margin: 0 0 5px;
+}
+
+.InfoPanel .InfoPanelTabs li {
+  width: 80px;
+  margin: 0 17px;
+  padding: 6px 10px 2px;
+}
+
+.InfoPanel .InfoPanelTabs li:after {
+  display: none;
+}
+.InfoPanel .InfoPanelTabContent {
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: absolute;
+  top: 35px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.InfoPanel .InfoPanelTabContent.Issues-Tab .Errors{
+  padding-top: 10px;
+}
