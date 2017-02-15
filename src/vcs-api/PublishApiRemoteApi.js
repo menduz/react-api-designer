@@ -10,8 +10,8 @@ class PublishApiRemoteApi extends RemoteApi {
     return this._get(['api', name])
   }
 
-  createVersion(name: string, version: string): Promise<PublishApiResponse> {
-    return this._post(['api', name, version])
+  createVersion(name: string, version: string, tags: Array<string>): Promise<PublishApiResponse> {
+    return this._post(['api', name, version], {tags})
   }
 
   _baseProjectUrl(): string {

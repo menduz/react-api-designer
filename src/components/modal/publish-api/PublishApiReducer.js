@@ -4,7 +4,7 @@ import * as actions from './PublishApiActions'
 import type {State} from  './PublishApiModel'
 
 const initialState: State = {
-  form: {},
+  form: {tags: new Set()},
   isFetching: false,
   isFetched: false,
   isOpen: false
@@ -49,6 +49,30 @@ export default (state: State = initialState, action: any): State => {
         isFetched: false,
         link: undefined,
         error: action.payload.error
+      }
+
+    case actions.ADD_TAG:
+      const addTags = new Set(state.form['tags'] || [])
+      addTags.add(action.payload.tag)
+
+      return {
+        ...state,
+        form: {
+          ...state.form,
+          tags: addTags,
+          tag: undefined
+        }
+      }
+    case actions.REMOVE_TAG:
+      const removeTags = new Set(state.form['tags'])
+      removeTags.delete(action.payload.tag)
+
+      return {
+        ...state,
+        form: {
+          ...state.form,
+          tags: removeTags
+        }
       }
   }
 

@@ -7,7 +7,7 @@ import {getAll} from './PublishApiSelectors'
 import PublishApiModal from './PublishApiModal'
 
 import type {State} from "./PublishApiModel"
-import {changeValue, publish, clear} from "./PublishApiActions"
+import {changeValue, publish, clear, removeTag, addTag} from "./PublishApiActions"
 import PublishApiRemoteApi from "../../../vcs-api/PublishApiRemoteApi"
 
 const mapState = (rootState) => {
@@ -15,6 +15,8 @@ const mapState = (rootState) => {
   return {
     name: state.form['name'],
     version: state.form['version'],
+    tag: state.form['tag'],
+    tags: [...state.form['tags']],
     isFetching: state.isFetching,
     isFetched: state.isFetched,
     link: state.link,
@@ -31,9 +33,12 @@ const mapDispatch = (dispatch, props: ContainerProps) => {
     props.authorization)
 
   return {
+    onTagChange: (tag: string) => dispatch(changeValue('tag', tag)),
+    onTagRemove: (tag: string) => dispatch(removeTag(tag)),
+    onSubmitTag: (tag: string) => dispatch(addTag(tag)),
     onNameChange: (name: string) => dispatch(changeValue('name', name)),
     onVersionChange: (version: string) => dispatch(changeValue('version', version)),
-    onSubmit: (name: string, version: string) => dispatch(publish(remoteApi, name, version)),
+    onSubmit: (name: string, version: string, tags: Array<string>) => dispatch(publish(remoteApi, name, version, tags)),
     onCancel: () => {
       dispatch(clear())
       if (props.onClose) props.onClose()
