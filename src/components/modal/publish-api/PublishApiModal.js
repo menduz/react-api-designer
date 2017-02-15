@@ -8,6 +8,8 @@ import ModalBody from '@mulesoft/anypoint-components/lib/ModalBody'
 import ModalFooter from '@mulesoft/anypoint-components/lib/ModalFooter'
 import Label from '@mulesoft/anypoint-components/lib/Label'
 import TextField from '@mulesoft/anypoint-components/lib/TextField'
+import Pill from '@mulesoft/anypoint-components/lib/Pill'
+import Pills from '@mulesoft/anypoint-components/lib/Pills'
 import './PublishApi.css'
 
 class PublishApiModal extends React.Component {
@@ -18,7 +20,7 @@ class PublishApiModal extends React.Component {
   }
 
   handleSave() {
-    this.props.onSubmit(this.props.name, this.props.version)
+    this.props.onSubmit(this.props.name, this.props.version, this.props.tags)
   }
 
   handleNameChange(event: any) {
@@ -31,8 +33,16 @@ class PublishApiModal extends React.Component {
       this.props.onVersionChange(event.value)
   }
 
+  handleTagChange(event: any) {
+    this.props.onTagChange(event.value)
+  }
+
+  handleSaveTag() {
+    this.props.onSubmitTag(this.props.tag)
+  }
+
   render() {
-    const {name, version, isFetching, isFetched, link, error, onCancel} = this.props
+    const {name, version, tag, tags, isFetching, isFetched, link, error, onCancel} = this.props
 
     const canSubmit = this.canSubmit()
 
@@ -40,7 +50,7 @@ class PublishApiModal extends React.Component {
     if (isFetched) {
       content = PublishApiModal.link(link)
     } else {
-      content = this.form(name, version, isFetching)
+      content = this.form(name, version, tag, tags, isFetching)
     }
 
     return (
@@ -70,7 +80,7 @@ class PublishApiModal extends React.Component {
     )
   }
 
-  form(name, version, isFetching) {
+  form(name, version, tag, tags, isFetching) {
     return (
       <div>
         <div className="form-row">
@@ -88,6 +98,28 @@ class PublishApiModal extends React.Component {
                      disabled={isFetching}
                      onChange={this.handleVersionChange.bind(this)}
                      required/>
+        </div>
+        <div className="form-row">
+          <Label>Tags</Label>
+          <Pills>
+            {tags ? tags.map(tag => (
+              <Pill key={tag} onRemove={() => this.props.onTagRemove(tag)}>{tag}</Pill>
+            )) : null}
+          </Pills>
+          <div className="tags">
+            <TextField className="tag-name"
+                       value={tag}
+                       placeholder="Tag"
+                       disabled={isFetching}
+                       onChange={this.handleTagChange.bind(this)}/>
+            <Button className="save-tag-button"
+                    kind="primary"
+                    disabled={!tag}
+                    onClick={this.handleSaveTag.bind(this)}
+                    noFill>
+              Add
+            </Button>
+          </div>
         </div>
       </div>
     )
@@ -114,6 +146,8 @@ class PublishApiModal extends React.Component {
 type Props = {
   name: string,
   version: string,
+  tag?: string,
+  tags: Array<string>,
 
   error?: string,
   link?: string,
@@ -123,7 +157,10 @@ type Props = {
   onCancel: () => void,
   onSubmit: () => void,
   onNameChange?: (name: string) => void,
-  onVersionChange?: (version: string) => void
+  onVersionChange?: (version: string) => void,
+  onTagChange: (tag: string) => void,
+  onTagRemove: (tag: string) => void,
+  onSubmitTag: (tag: string) => void
 }
 
 export default PublishApiModal

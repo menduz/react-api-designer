@@ -15,3 +15,15 @@
 div > .form-row:last-child > div {
   padding-bottom: 0;
 }
+
+.tags {
+    display: flex;
+}
+
+.tags > .tag-name {
+    width: 80%;
+}
+
+.tags > .save-tag-button {
+    margin-left: 20px;
+}
