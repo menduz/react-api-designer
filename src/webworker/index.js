@@ -1,7 +1,10 @@
 export default class WebWorker {
 
   constructor(fileRepository) {
-    this.worker = new Worker(`${window.PUBLIC_URL || process.env.PUBLIC_URL}/static/js/api-designer-worker.js`)
+    const codeStr = `self.importScripts('${window.requireConfig.worker}')`
+    const codeBlob = new Blob([codeStr], {type: 'application/javascript'})
+    const codeUrl = URL.createObjectURL(codeBlob)
+    this.worker = new Worker(codeUrl)
 
     this.parsing = false
     this.parsingPending = new Map()
