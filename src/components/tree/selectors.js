@@ -26,9 +26,9 @@ export const getCurrentDirectory = (rootState: any): DirectoryModel => {
   if (!currentElement) return fileTree.root
 
   if (currentElement.isDirectory())
-    return ((currentElement: any): DirectoryModel)
+    return currentElement.asDirectoryModel()
 
   const parent = fileTree.getByPath(currentElement.path.parent())
-  return parent ? ((parent: any): DirectoryModel) : fileTree.root
+  return parent ? parent.asDirectoryModel() : fileTree.root
 
 }

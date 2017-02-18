@@ -26,6 +26,8 @@ import FileProvider from './webworker/FileProvider'
 import type {RepositoryContainer} from './RepositoryContainer'
 import * as header from './components/header'
 import publishApi from './components/modal/publish-api'
+import VcsFileSystem from './repository/file-system/VcsFileSystem'
+import VcsRemoteApi from './vcs-api/VcsRemoteApi'
 
 const repositoryContainer: RepositoryContainer = {
   repository: undefined,
@@ -68,7 +70,16 @@ const store = createStore(
 
 // Load Repository
 
-Repository.fromFileSystem(new LocalStorageFileSystem())
+const baseUrl = localStorage.getItem('baseUrl')
+const projectId = localStorage.getItem('projectId')
+const ownerId = localStorage.getItem('ownerId')
+const organizationId = localStorage.getItem('organizationId')
+
+const fileSystem = baseUrl && projectId && ownerId && organizationId ?
+  new VcsFileSystem(new VcsRemoteApi(baseUrl, projectId, ownerId, organizationId)):
+  new LocalStorageFileSystem()
+
+Repository.fromFileSystem(fileSystem)
   .then((repository) => {
     repositoryContainer.repository = repository
     repositoryContainer.isLoaded = true

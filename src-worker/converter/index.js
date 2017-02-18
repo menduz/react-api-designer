@@ -1,5 +1,3 @@
-//@flow
-
 import converter from 'oas-raml-converter'
 import request from 'browser-request'
 import {language, OAS} from '../../src/repository/helper/extensions'

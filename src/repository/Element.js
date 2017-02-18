@@ -1,7 +1,8 @@
 // @flow
 
-import Directory from './Directory'
 import Path from './Path'
+import File from './File'
+import Directory from './Directory'
 import FileSystem from './file-system/FileSystem'
 
 class Element {
@@ -26,11 +27,17 @@ class Element {
     return this._parent.path.append(this._name)
   }
 
+  asFile(): File { throw new Error('Not implemented method') }
+
+  asDirectory(): Directory { throw new Error('Not implemented method') }
+
   isDirectory(): boolean { throw new Error('Not implemented method') }
 
   getByPath(path: Path): ?Element { throw new Error('Not implemented method') }
 
   remove(fileSystem: FileSystem): Promise<Element> { throw new Error('Not implemented method') }
+
+  clone(parent: Directory): Element { throw new Error('Not implemented method') }
 }
 
 export default Element

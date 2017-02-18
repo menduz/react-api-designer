@@ -1,5 +1,3 @@
-//@flow
-
 import MockingService from './service/mocking-service'
 import MockingServiceClient from './service/mocking-service-client'
 import {updateCurrentFile} from '../../components/editor/actions'

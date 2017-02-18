@@ -1,5 +1,3 @@
-// @flow
-
 import React, {Component} from 'react'
 import {Preview} from '../preview'
 import {Errors} from '../errors'

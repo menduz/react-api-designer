@@ -20,7 +20,8 @@ const reducer = (state: State = initialState, action: {type: string, payload: an
     case INIT_FILE_SYSTEM:
       return {
         ...state,
-        fileTree: action.payload
+        fileTree: action.payload,
+        contents: Map()
       }
     case DIRECTORY_DELETED:
     case FILE_DELETED:

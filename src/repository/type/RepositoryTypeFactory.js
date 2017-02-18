@@ -35,8 +35,8 @@ class RepositoryTypeFactory {
 
   static fromElementModel(element: ElementModel): RepositoryElementType {
     return element.isDirectory()
-      ? RepositoryTypeFactory.fromDirectoryModel(((element: any): DirectoryModel))
-      : RepositoryTypeFactory.fromFileModel(((element: any): FileModel))
+      ? RepositoryTypeFactory.fromDirectoryModel(element.asDirectoryModel())
+      : RepositoryTypeFactory.fromFileModel(element.asFileModel())
   }
 }
 
