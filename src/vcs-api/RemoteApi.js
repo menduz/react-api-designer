@@ -1,51 +1,62 @@
-import request from 'browser-request';
+import request from 'browser-request'
 
+const PATCH = 'PATCH'
 const POST = 'POST'
 const GET = 'GET'
 const DELETE = 'DELETE'
 const PUT = 'PUT'
-export const SEPARATOR = '/';
+export const SEPARATOR = '/'
 
 class RemoteApi {
-  constructor(baseUrl: string, ownerId: string, organizationId: string, authorization?: string) {
+
+  constructor(baseUrl: string) {
     this.baseUrl = baseUrl
-    this.ownerId = ownerId
-    this.organizationId = organizationId
-    this.authorization = authorization
   }
 
-  _get(pathElements: string[]): Promise {
-    return this._request(GET, pathElements)
+  _get(pathElements: string[], parseResult: ?boolean): Promise {
+    return this._request(GET, pathElements, undefined, parseResult)
   }
 
-  _delete(pathElements: string[]): Promise {
-    return this._request(DELETE, pathElements)
+  _delete(pathElements: string[], parseResult: ?boolean): Promise {
+    return this._request(DELETE, pathElements, undefined, parseResult)
   }
 
-  _post(pathElements: string[], body: {}): Promise {
-    return this._request(POST, pathElements, body)
+  _post(pathElements: string[], body: {}, parseResult: ?boolean): Promise {
+    return this._request(POST, pathElements, body, parseResult)
   }
 
-  _request(method, pathElements, body: {}): Promise {
+  _patch(pathElements: string[], body: {}, parseResult: ?boolean): Promise {
+    return this._request(PATCH, pathElements, body, parseResult)
+  }
+
+  _put(pathElements: string[], body: {}, parseResult: ?boolean): Promise {
+    return this._request(PUT, pathElements, body, parseResult)
+  }
+
+  _request(method, pathElements, body: {}, parseResult: ?boolean): Promise {
     return new Promise((resolve, reject) => {
-      const url = this._url(pathElements);
-      const headers = this._vcsHeaders();
-      request(RemoteApi.requestOptions(method, url, headers, body),
+      const url = this._url(pathElements)
+      const headers = this._headers()
+      request(RemoteApi.requestOptions(method, url, headers, body, parseResult),
         (error, response, body) => {
-          if (error) reject(error)
-          else resolve(RemoteApi._resolveBody(body))
+          if (RemoteApi._isError(error, response))
+            reject(RemoteApi._extractError(error, response))
+          else resolve(body)
         })
-    });
+    })
   }
 
-  static _resolveBody(body) {
-    if (body === undefined && body === null) return
-    if (typeof body === 'object') return body
-    try {
-      return RemoteApi._resolveBody(JSON.parse(body))
-    } catch (e) {
-      return body
-    }
+  static _extractError(error, response) {
+    return error ||
+      {
+        status: response.statusCode,
+        statusText: response.statusText,
+        body: response.body
+      }
+  }
+
+  static _isError(error, response) {
+    return error || (response.statusCode < 200 || response.statusCode >= 300)
   }
 
   _url(elements): string {
@@ -56,34 +67,19 @@ class RemoteApi {
     return this.baseUrl
   }
 
-  _vcsHeaders() {
-    return {
-      'x-owner-id': this.ownerId,
-      'x-organization-id': this.organizationId,
-      'Authorization': this.authorization
-    }
+  //noinspection JSMethodCanBeStatic
+  _headers() {
+    return {}
   }
 
-  static requestOptions(method: string, url: string, headers: {}, body: {}) {
+  static requestOptions(method: string, url: string, headers: {}, body: {}, parseResult: boolean = true) {
     return {
       method: method,
       uri: url,
-      json: body,
+      json: parseResult,
+      body: body || {},
       headers: headers
     }
-  }
-
-  static vcsPath(path: string) {
-    return path.startsWith('/') ? path.slice(1) : path;
-  }
-
-  static vcsPathForUri(path: string) {
-    const relativePath = RemoteApi.vcsPath(path);
-    return RemoteApi.scapeVcsPath(relativePath)
-  }
-
-  static scapeVcsPath(path: string) {
-    return path.replace('/', '%5C')
   }
 }
 

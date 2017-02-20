@@ -8,11 +8,6 @@ import './Editor.css'
 import {getAll} from "./selectors"
 import {getCurrentFileContent} from "../../repository-redux/selectors"
 
-const requireConfig = {
-  url: `${window.PUBLIC_URL || process.env.PUBLIC_URL}/static/js/vs/loader.js`,
-  paths: {'vs': `${window.PUBLIC_URL || process.env.PUBLIC_URL}/static/js/vs`}
-}
-
 class DesignerEditor extends React.Component {
   constructor(props) {
     super(props)
@@ -171,7 +166,7 @@ class DesignerEditor extends React.Component {
       <div className="Editor">
         {this.language.id ? '' : (<EmptyResult className="Empty" testId="Empty-Editor" message="Select a file"/>)}
         <MonacoEditor options={options}
-                      requireConfig={requireConfig}
+                      requireConfig={window.requireConfig}
                       context={window.electronAmdContext}
                       value={this.value}
                       language={this.language.parent || this.language.id}

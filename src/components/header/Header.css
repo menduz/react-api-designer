@@ -44,7 +44,6 @@
   height: 100%;
   float: right;
   background: black;
-  width: 170px;
   align-items: center;
   align-content: center;
   justify-content: flex-end;
@@ -52,27 +51,26 @@
 
 .Right-header > * {
   cursor: pointer;
-  margin-right: 19px;
-  width: 14px;
+  margin-right: 10px;
   text-align: center;
+  width: 20px;
 }
 
-.Right-header > a:first-child {
-  margin-right: 22px;
-  margin-top: 1px;
+.Right-header > :first-child {
+  margin-left: 20px;
 }
 
-.Right-header > div:last-child {
-  margin-right: 30px;
+.Right-header > :last-child {
+  margin-right: 20px;
   margin-top: 2px;
 }
 
-.Right-header > .Divider {
-  width: 2px;
-  margin-right: 22px;
+.divider {
+  stroke: #595959;
+  stroke-width: 1;
+  cursor: auto;
 }
 
-.Divider {
-  height: 30px;
-  border-left: 1px solid #595959;
+.consume-menu, .export-menu {
+  margin-top: 1px;
 }

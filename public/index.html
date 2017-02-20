@@ -15,5 +15,13 @@
 
     <!--Imports for polymer implementation of the console -->
     <!--<link rel="import" href="%PUBLIC_URL%/static/js/api-console-imports/polymer-console/console-imports.html">-->
+
+    <script>
+      window.requireConfig = {
+        url: '%PUBLIC_URL%/static/js/vs/loader.js',
+        paths: {'vs': '%PUBLIC_URL%/static/js/vs'},
+        worker: window.location.origin + '/%PUBLIC_URL%/static/js/api-designer-worker.js'
+      }
+    </script>
   </body>
 </html>

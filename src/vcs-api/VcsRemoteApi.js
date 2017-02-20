@@ -1,7 +1,9 @@
-import RemoteApi, {SEPARATOR} from './RemoteApi'
+import {SEPARATOR} from './RemoteApi'
+import ExchangeApi from './ExchangeApi'
 import {PathMetadata, EntryMetadata, ContentData} from './VcsElements'
 
-class VcsRemoteApi extends RemoteApi {
+class VcsRemoteApi extends ExchangeApi {
+
   constructor(baseUrl: string, projectId: string, ownerId: string, organizationId: string) {
     super(baseUrl, ownerId, organizationId)
     this.projectId = projectId
@@ -21,7 +23,7 @@ class VcsRemoteApi extends RemoteApi {
   }
 
   deleteFile(path: string): Promise {
-    return this._delete(['files', VcsRemoteApi.vcsPathForUri(path)])
+    return this._delete(['files', VcsRemoteApi.vcsPathForUri(path)], false)
   }
 
   moveFile(from: string, to: string): Promise {

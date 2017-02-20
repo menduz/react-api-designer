@@ -1,0 +1,113 @@
+/*TODO add a css wrapper in order save clashes*/
+
+.consume-api-modal {
+  font-family: "DIN Pro", sans-serif;
+  width: 800px;
+}
+
+.consume-api-modal .consume-api-body {
+  padding-top: 0;
+  margin-top: 10px;
+}
+
+.consume-api-modal .search-panel {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 11;
+}
+
+.consume-api-modal .consume-api-content {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.consume-api-modal .fragment {
+  display: inline-flex;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.consume-api-modal .fragment.odd {
+  background-color: #f4f5f6;
+  border-color: #b7bbbf;
+}
+
+.consume-api-modal .fragment-left {
+  padding-left: 10px;
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+}
+
+.consume-api-modal .fragment-left > *,
+.consume-api-modal .fragment-mid > *,
+.consume-api-modal .fragment-right > * {
+  padding-bottom: 5px;
+}
+
+.consume-api-modal .fragment-left > :first-child,
+.consume-api-modal .fragment-mid > :first-child,
+.consume-api-modal .fragment-right > :first-child {
+  padding-top: 20px;
+}
+
+.consume-api-modal .fragment-left > :last-child,
+.consume-api-modal .fragment-mid > :last-child,
+.consume-api-modal .fragment-right > :last-child {
+  padding-bottom: 20px;
+}
+
+.consume-api-modal .fragment-mid {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 15px;
+}
+
+.consume-api-modal .fragment-right {
+  padding-right: 10px;
+}
+
+.consume-api-modal .fragment-title {
+  font-weight: bolder;
+  font-size: 18px;
+}
+
+.consume-api-modal .fragment-description,
+.consume-api-modal .amount-of-rating {
+  font-size: 14px;
+}
+
+.consume-api-modal .fragment-rating div {
+  font-size: 1em !important;
+}
+
+.consume-api-modal .rating {
+  display: inline-flex;
+}
+
+.consume-api-modal .amount-of-rating {
+  padding: 4px;
+}
+
+.consume-api-modal .search-spinner {
+  min-height: 140px;
+  margin-top: 60px;
+  margin-left: 45%;
+}
+
+.consume-api-modal .error-zone {
+  margin-top: 10px;
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+.consume-api-modal .search-footer {
+  display: inline-flex;
+  justify-content: space-between;
+}
