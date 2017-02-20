@@ -89,7 +89,7 @@ class ZipConflictModal extends React.Component {
         </ModalBody>
         <ModalFooter>
           <Button kind="tertiary" onClick={onCancel} noFill>Cancel</Button>
-          <Button kind="primary" onClick={onSubmit}>Replace {files.length == 1 ? 'file' : count + ' files'}</Button>
+          <Button kind="primary" onClick={onSubmit} disabled={count === 0}>Replace {count === 1 ? 'file' : count + ' files'}</Button>
         </ModalFooter>
       </Modal>
     )

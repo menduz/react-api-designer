@@ -1,4 +1,5 @@
 export class PathMetadata {
+
   path: string
 
   constructor(path: string) {
@@ -21,12 +22,13 @@ export class PathMetadata {
   }
 
   name(): string {
-    const pathElements = this.pathMembers();
+    const pathElements = this.pathMembers()
     return pathElements[pathElements.length - 1]
   }
 }
 
 export class EntryMetadata extends PathMetadata {
+
   type: EntryMetadata.FILE | EntryMetadata.FOLDER
 
   constructor(path: string, type: EntryMetadata.FILE | EntryMetadata.FOLDER) {
@@ -48,7 +50,7 @@ export class EntryMetadata extends PathMetadata {
 }
 
 export class ContentData extends EntryMetadata {
-  content: string;
+  content: string
 
   constructor(path: string, content: string) {
     super(path, EntryMetadata.FILE)

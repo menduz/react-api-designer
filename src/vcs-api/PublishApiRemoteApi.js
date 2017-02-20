@@ -1,9 +1,17 @@
-import RemoteApi, {SEPARATOR} from './RemoteApi'
+import {SEPARATOR} from './RemoteApi'
+import ExchangeApi from './ExchangeApi'
 
-class PublishApiRemoteApi extends RemoteApi {
-  constructor(baseUrl: string, projectId: string, ownerId: string, organizationId: string, authorization: string) {
+class PublishApiRemoteApi extends ExchangeApi {
+
+  constructor(baseUrl: string,
+              projectId: string,
+              ownerId: string,
+              organizationId: string,
+              apiPlatformOrganizationId: string,
+              authorization: string) {
     super(baseUrl, ownerId, organizationId, authorization)
     this.projectId = projectId
+    this.apiPlatformOrganizationId = apiPlatformOrganizationId
   }
 
   versions(name: string): Promise {
@@ -16,6 +24,15 @@ class PublishApiRemoteApi extends RemoteApi {
 
   _baseProjectUrl(): string {
     return [super._baseProjectUrl(), 'projects', this.projectId].join(SEPARATOR)
+  }
+
+  _headers() {
+    return Object.assign({},
+      super._headers(),
+      {
+        'apiplatform-organization-id': this.apiPlatformOrganizationId
+      }
+    )
   }
 }
 

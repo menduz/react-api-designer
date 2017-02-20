@@ -1,6 +1,7 @@
-import RemoteApi from './RemoteApi'
+import ExchangeApi from './ExchangeApi'
 
-class ProjectRemoteApi extends RemoteApi {
+class ProjectRemoteApi extends ExchangeApi {
+
   constructor(baseUrl: string, ownerId: string, organizationId: string) {
     super(baseUrl, ownerId, organizationId)
   }
@@ -11,6 +12,14 @@ class ProjectRemoteApi extends RemoteApi {
 
   openProject(projectId: string): Promise {
     return this._get(['projects', projectId, 'open'])
+  }
+
+  deleteProject(projectId: string): Promise {
+    return this._delete(['projects', projectId])
+  }
+
+  editProject(projectId: string, project: ProjectDefinition): Promise {
+    return this._put(['projects', projectId], project)
   }
 
   getProject(projectId: string): Promise<ProjectResponse> {
@@ -56,17 +65,17 @@ export type CreateProjectResponse = {
 }
 
 export type ProjectResponse = {
-  id:string,
-  storageId:string,
-  version:number,
-  organizationId:string,
-  name:string,
-  type:string,
-  vcsType:string,
-  externalUri:string,
-  externalUriSchema:string,
-  createdBy:string,
-  createdDate:number
+  id: string,
+  storageId: string,
+  version: number,
+  organizationId: string,
+  name: string,
+  type: string,
+  vcsType: string,
+  externalUri: string,
+  externalUriSchema: string,
+  createdBy: string,
+  createdDate: number
 }
 
 export default ProjectRemoteApi

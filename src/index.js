@@ -26,6 +26,7 @@ import FileProvider from './webworker/FileProvider'
 import type {RepositoryContainer} from './RepositoryContainer'
 import * as header from './components/header'
 import publishApi from './components/modal/publish-api'
+import consumeApi from './components/modal/consume-api'
 
 const repositoryContainer: RepositoryContainer = {
   repository: undefined,
@@ -50,6 +51,7 @@ const rootReducer = combineReducers({
   [editor.NAME]: editor.reducer,
   [fileSystemTree.NAME]: fileSystemTree.reducer,
   [publishApi.constants.NAME]: publishApi.reducer,
+  [consumeApi.name]: consumeApi.reducer,
   dialogs: combineReducers({
     newFolder: newFolder.reducer,
     newFile: newFile.reducer,
