@@ -204,7 +204,7 @@ class LocalStorageFileSystem extends FileSystem {
   save(files: FileData[]): Promise<Entry> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        files.forEach(this.saveFile)
+        files.forEach((f) => this.saveFile(f))
         resolve(this._loadDirectory('/'))
       }, LocalStorageFileSystem.delay)
     })
