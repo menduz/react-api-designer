@@ -1,6 +1,5 @@
 // @flow
-import Directory from '../Directory'
-import Element from '../Element'
+import {Element, Directory} from '../Element'
 import Repository from '../Repository'
 
 import JSZip from 'jszip'

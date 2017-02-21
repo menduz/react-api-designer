@@ -26,6 +26,8 @@ import FileProvider from './webworker/FileProvider'
 import type {RepositoryContainer} from './RepositoryContainer'
 import * as header from './components/header'
 import publishApi from './components/modal/publish-api'
+import VcsFileSystem from './repository/file-system/VcsFileSystem'
+import VcsRemoteApi from './vcs-api/VcsRemoteApi'
 import consumeApi from './components/modal/consume-api'
 
 const repositoryContainer: RepositoryContainer = {
@@ -70,7 +72,16 @@ const store = createStore(
 
 // Load Repository
 
-Repository.fromFileSystem(new LocalStorageFileSystem())
+const baseUrl = localStorage.getItem('baseUrl') // || 'https://dev.anypoint.mulesoft.com/designcenter/api-designer'
+const projectId = localStorage.getItem('projectId') // || 'f69c9a09-0a17-44fe-860a-b076a44c31b8'
+const ownerId = localStorage.getItem('ownerId') // || 'd365610a-8e56-42da-a3fc-73b548371cc6'
+const organizationId = localStorage.getItem('organizationId') // || 'b13cbf39-787d-4d1f-9c72-22275ecc0d59'
+
+const fileSystem = baseUrl && projectId && ownerId && organizationId ?
+  new VcsFileSystem(new VcsRemoteApi(baseUrl, projectId, ownerId, organizationId)):
+  new LocalStorageFileSystem()
+
+Repository.fromFileSystem(fileSystem)
   .then((repository) => {
     repositoryContainer.repository = repository
     repositoryContainer.isLoaded = true

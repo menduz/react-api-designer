@@ -19,7 +19,7 @@ class Header extends Component {
 
   render() {
     const {
-      isParsing, projectName, theme, isExchangeOpen, isConsumeOpen, openConsumeModal,
+      progress, projectName, theme, isExchangeOpen, isConsumeOpen, openConsumeModal,
       openExchangeModal, clearExchangeModal, clearConsumeModal, showInfoPanelTabs, isAnyPointMode
     } = this.props
 
@@ -47,25 +47,25 @@ class Header extends Component {
           }
           <h2>{projectName || 'API designer'}</h2>
         </div>
-        <div className="Spinner-parser">{isParsing ? <Spinner size="s"/> : null}</div>
+        <div className="Spinner-parser">{progress ? <Spinner size="s"/> : null}</div>
         <div className="Right-header" data-testId="Right-header">
           {isAnyPointMode ? [
-              <a className="consume-menu"
-                 key="consume-menu"
-                 onClick={openConsumeModal.bind(this)}
-                 data-testId="Consume-Button">
-                <img src={consumeIcon} height="20px"/>
-              </a>,
-              <a className="export-menu"
-                 key="export-menu"
-                 onClick={openExchangeModal.bind(this)}
-                 data-testId="Export-Button">
-                <img src={exchangeIcon} height="20px"/>
-              </a>,
-              <svg className="divider" key="divider" height="30" width="20">
-                <line x1="10" y1="0" x2="10" y2="30"/>
-              </svg>
-            ] : null
+            <a className="consume-menu"
+               key="consume-menu"
+               onClick={openConsumeModal.bind(this)}
+               data-testId="Consume-Button">
+              <img src={consumeIcon} height="20px"/>
+            </a>,
+            <a className="export-menu"
+               key="export-menu"
+               onClick={openExchangeModal.bind(this)}
+               data-testId="Export-Button">
+              <img src={exchangeIcon} height="20px"/>
+            </a>,
+            <svg className="divider" key="divider" height="30" width="20">
+              <line x1="10" y1="0" x2="10" y2="30"/>
+            </svg>
+          ] : null
           }
           <ContextMenu className="support-menu" options={supportMenuOptions} testId="Support-Menu">
             <Icon name="support-small" size={19} fill={"white"}/>
@@ -90,9 +90,9 @@ class Header extends Component {
 }
 
 const mapStateToProps = state => {
-  const {editor, configuration, publishApi, consumeApi} = state
+  const {editor, repository, configuration, publishApi, consumeApi} = state
   return {
-    isParsing: editor.isParsing,
+    progress: editor.isParsing || repository.progress,
     theme: configuration.theme,
     showInfoPanelTabs: configuration.showInfoPanelTabs,
     isExchangeOpen: publishApi.isOpen,

@@ -22,8 +22,8 @@ export const fromFileTree = (fileTree: RepositoryModel) : Node[] => {
 
 const fromElement = (element: ElementModel): Node => {
   return element.isDirectory()
-    ? fromDirectory(((element: any): DirectoryModel))
-    : fromFile(((element: any): FileModel))
+    ? fromDirectory(element.asDirectoryModel())
+    : fromFile(element.asFileModel())
 }
 
 const fromDirectory = (directory: DirectoryModel): Node => {

@@ -1,4 +1,3 @@
-import {File} from '../repository'
 import {Repository} from '../repository'
 
 type RepositoryContainer = {
@@ -15,9 +14,9 @@ class FileProvider {
 
   getFile(path): Promise<string> {
     const repository = this.repositoryContainer.repository;
-    const byPathString = repository && repository.getByPathString(path);
+    const byPathString = repository && repository.getByPathString(path)
     if (byPathString && !byPathString.isDirectory()) {
-      const file = ((byPathString: any): File);
+      const file = byPathString.asFile()
       return file.getContent()
     } else {
       return Promise.reject('')

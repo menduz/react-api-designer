@@ -1,7 +1,7 @@
 // @flow
 
 import FileSystem, {EntryFolder} from './FileSystem'
-import type {Path, Entry} from './FileSystem'
+import type {Path, Entry, FileData} from './FileSystem'
 
 const LOCAL_PERSISTENCE_KEY = 'localStorageFilePersistence'
 
@@ -19,7 +19,7 @@ const localStorageEntry = (name: string, path: string, type: 'folder' | 'file',
   name, path, type, meta, children, content
 })
 
-const toEntry = (entry: LocalStorageEntry) => {
+const toEntry = (entry: LocalStorageEntry): Entry => {
   const children = entry.children && entry.children.map(toEntry)
 
   return {
@@ -67,7 +67,6 @@ class LocalStorageHelper {
     let item = localStorage.getItem(LOCAL_PERSISTENCE_KEY + '.' + path)
     if (item) return (JSON.parse(item): LocalStorageEntry)
   }
-
 
   static remove(path: Path) {
     localStorage.removeItem(LOCAL_PERSISTENCE_KEY + '.' + path)
@@ -129,17 +128,14 @@ class LocalStorageFileSystem extends FileSystem {
    */
   static delay = 500
 
-  supportsFolders = true
-
   _validatePath(path: Path): ValidationResult {
-    if (path.indexOf('/') !== 0) {
-      return {valid: false, reason: 'Path should start with "/"'}
-    }
-    return {valid: true}
+    return path.indexOf('/') !== 0 ?
+      {valid: false, reason: 'Path should start with "/"'} :
+      {valid: true}
   }
 
   _isValidParent(path: Path): boolean {
-    let parent = this._extractParentPath(path)
+    const parent = this._extractParentPath(path)
     return LocalStorageHelper.has(parent) || parent === ''
   }
 
@@ -154,31 +150,19 @@ class LocalStorageFileSystem extends FileSystem {
   }
 
   _extractNameFromPath(path: Path): string {
-    let pathInfo = this._validatePath(path)
-
-    if (!pathInfo.valid) {
-      throw new Error('Invalid Path!')
-    }
+    if (!this._validatePath(path).valid) throw new Error('Invalid Path!')
 
     // When the path is ended in '/'
-    if (path.lastIndexOf('/') === path.length - 1) {
-      path = path.slice(0, -1)
-    }
+    path = path.lastIndexOf('/') === path.length - 1 ? path.slice(0, -1) : path
 
     return path.slice(path.lastIndexOf('/') + 1)
   }
 
   _extractParentPath(path: Path): Path {
-    let pathInfo = this._validatePath(path)
-
-    if (!pathInfo.valid) {
-      throw new Error('Invalid Path!')
-    }
+    if (!this._validatePath(path).valid) throw new Error('Invalid Path!')
 
     // When the path is ended in '/'
-    if (path.lastIndexOf('/') === path.length - 1) {
-      path = path.slice(0, -1)
-    }
+    path = path.lastIndexOf('/') === path.length - 1 ? path.slice(0, -1) : path
 
     return path.slice(0, path.lastIndexOf('/'))
   }
@@ -189,78 +173,77 @@ class LocalStorageFileSystem extends FileSystem {
   directory(path: Path): Promise<Entry> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        let isValidPath: ValidationResult = this._validatePath(path)
-
-        if (!isValidPath.valid) {
-          reject(isValidPath.reason)
-          return // deferred.promise
-        }
-
-        if (!LocalStorageHelper.has('/')) {
-          LocalStorageHelper.set(path, localStorageEntry(
-            '',
-            '/',
-            'folder',
-            {
-              'created': Math.round(new Date().getTime() / 1000.0)
-            },
-            undefined,
-            undefined
-          ))
-        }
-
-        let folder = this._findFolder(path)
-        folder ? resolve(toEntry(folder)) : reject()
-
+        resolve(this._loadDirectory(path))
       }, LocalStorageFileSystem.delay)
     })
+  }
+
+  _loadDirectory(path: Path): Entry {
+    if (!this._validatePath(path).valid)
+      throw new Error(this._validatePath(path).reason)
+
+    if (!LocalStorageHelper.has('/')) {
+      LocalStorageHelper.set(path, localStorageEntry(
+        '',
+        '/',
+        'folder',
+        {'created': Math.round(new Date().getTime() / 1000.0)},
+        undefined,
+        undefined
+      ))
+    }
+
+    const folder = this._findFolder(path)
+    if(!folder) throw new Error(`Folder does not exists: ${path}`)
+    return toEntry(folder)
   }
 
   /**
    * Persist a file to an existing folder.
    */
-  save(path: Path, content: string): Promise<any> {
+  save(files: FileData[]): Promise<Entry> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        let name: string = this._extractNameFromPath(path)
-        let entry: ?LocalStorageEntry = LocalStorageHelper.get(path)
-
-        if (!this._isValidParent(path)) {
-          reject(new Error(`Parent folder does not exists: ${path}`))
-          return // deferred.promise
-        }
-
-        let file: LocalStorageEntry
-        if (entry) {
-          if (entry.type === EntryFolder) {
-            reject('file has the same name as a folder')
-            return // deferred.promise
-          }
-          entry.content = content
-
-          let meta = entry.meta
-          if (meta)
-            meta['lastUpdated'] = Math.round(new Date().getTime() / 1000.0)
-
-          file = entry
-        } else {
-          file = localStorageEntry(
-            name,
-            path,
-            'file',
-            {
-              'created': Math.round(new Date().getTime() / 1000.0)
-            },
-            undefined,
-            content
-          )
-        }
-
-        LocalStorageHelper.set(path, file)
-        resolve()
-
+        files.forEach((f) => this.saveFile(f))
+        resolve(this._loadDirectory('/'))
       }, LocalStorageFileSystem.delay)
     })
+  }
+
+  saveFile(fileData: FileData) {
+    const {path, content} = fileData
+    const name: string = this._extractNameFromPath(path)
+    const entry: ?LocalStorageEntry = LocalStorageHelper.get(path)
+
+    if (!this._isValidParent(path))
+      throw new Error(`Parent folder does not exists: ${path}`)
+
+    let file: LocalStorageEntry
+    if (entry) {
+      if (entry.type === EntryFolder)
+        throw new Error('file has the same name as a folder')
+
+      const meta = entry.meta || {}
+      if (meta)
+        meta['lastUpdated'] = Math.round(new Date().getTime() / 1000.0)
+
+      file = {
+        ...entry,
+        content,
+        meta
+      }
+    } else {
+      file = localStorageEntry(
+        name,
+        path,
+        'file',
+        {'created': Math.round(new Date().getTime() / 1000.0)},
+        undefined,
+        content
+      )
+    }
+
+    LocalStorageHelper.set(path, file)
   }
 
   /**
@@ -343,7 +326,7 @@ class LocalStorageFileSystem extends FileSystem {
   /**
    * Renames a file or directory
    */
-  rename(source: Path, destination: Path): Promise<any> {
+  rename(source: Path, destination: Path, isDirectory: boolean): Promise<any> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         let sourceEntry: ?LocalStorageEntry = LocalStorageHelper.get(source)
@@ -393,28 +376,6 @@ class LocalStorageFileSystem extends FileSystem {
       }, LocalStorageFileSystem.delay)
     })
   }
-
-  // exportFiles() {
-  //     let jszip = new $window.JSZip()
-  //     LocalStorageHelper.forEach((item) => {
-  //         // Skip root folder
-  //         if (item.path === '/') {
-  //             return
-  //         }
-  //
-  //         // Skip meta files
-  //         if (item.name.slice(-5) === '.meta') {
-  //             return
-  //         }
-  //
-  //         let path = item.path.slice(1) // Remove starting slash
-  //         item.type === 'folder' ? jszip.folder(path) : jszip.file(path, item.content)
-  //     })
-  //
-  //     let fileName = $prompt('Please enter a ZIP file name:', 'api.zip')
-  //     fileName && $window.saveAs(jszip.generate({type: 'blob'}), fileName)
-  // }
-
 }
 
 export default LocalStorageFileSystem

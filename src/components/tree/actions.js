@@ -32,7 +32,7 @@ export const pathSelected = (path: Path) : Promise =>
     const currentPath = editor.selectors.getCurrentFilePath(getState())
     if (currentPath === path.toString()) return Promise.resolve()
 
-    const file: File = ((element: any): File)
+    const file: File = element.asFile()
     return file.getContent()
       .then((content) => {
         dispatch(editor.actions.updateFile(content, path))

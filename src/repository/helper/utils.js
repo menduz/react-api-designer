@@ -16,3 +16,13 @@ export const nextName = (name: string, repositoryContainer: RepositoryContainer,
   return result;
 }
 
+export type Tuple<A, B> = {first: A, second: B}
+
+export const zipArrays = <A, B>(a: A[], b: B[], ): Tuple<A, B>[] => {
+  const length = Math.min(a.length, b.length)
+  const result = []
+  for (let i = 0; i < length; i++) {
+    result.push({first: a[i], second: b[i]})
+  }
+  return result
+}

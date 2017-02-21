@@ -4,11 +4,11 @@ import FileSystem from './file-system/FileSystem'
 import type {Entry} from './file-system/FileSystem'
 
 import Path from './Path'
-import File from './File'
-import Element from './Element'
-import Directory from './Directory'
+import {Element, File, Directory} from './Element'
 import ElementFactory from './ElementFactory'
 import ZipHelper from './helper/ZipHelper'
+import {zipArrays} from './helper/utils'
+import type {Tuple} from './helper/utils'
 
 export default class Repository {
   _fileSystem: FileSystem
@@ -40,14 +40,14 @@ export default class Repository {
     const element = this.getByPath(path)
     if (!element || element.isDirectory()) return
 
-    return ((element: any): File)
+    return element.asFile()
   }
 
   getDirectoryByPath(path: Path): ?Directory {
     const element = this.getByPath(path)
     if (!element || !element.isDirectory()) return
 
-    return ((element: any): Directory)
+    return element.asDirectory()
   }
 
   saveFile(path: Path): Promise<File> {
@@ -57,24 +57,35 @@ export default class Repository {
     return file.save(this._fileSystem)
   }
 
-  saveAll(): Promise<File[]> {
-    var promises: Array<Promise> = []
-    var files = this._getDirtyFiles()
+  saveFiles(files: File[], currentFile: ?Path): Promise<SaveResult> {
+    return Promise.all(files.map(file => file.getContent()))
+      .then(contents => {
+        const tuples: Tuple<File, string>[] = zipArrays(files, contents)
+        const fileDataList = tuples
+          .map(t => ({path: t.first.path.toString(), content: t.second}))
 
-    files.forEach(file => {
-      var promise = file.save(this._fileSystem)
-      promises.push(promise)
-    })
+        return this._fileSystem.save(fileDataList)
+      }).then(entry => {
+        files.forEach(f => f.clear())
+        const repository = this._updateDirectory(ElementFactory.directory(this._fileSystem, entry))
 
-    return Promise.all(promises).then(files => files)
+        const newFile = currentFile ? this.getFileByPath(currentFile) : null
+        if (!newFile) return {repository}
+        return newFile.getContent()
+          .then(c => ({repository, file: newFile, content: c}))
+      })
+  }
+
+  saveAll(currentFile: ?Path): Promise<Repository> {
+    return this.saveFiles(this._getDirtyFiles(), currentFile)
   }
 
   rename(path: string, newName: string): Promise<Element> {
-    var element = this.getByPathString(path)
+    const element = this.getByPathString(path)
     if (!element) return Promise.reject()
 
     const newPath = path.substr(0, path.lastIndexOf('/') + 1) + newName
-    const promise = this._fileSystem.rename(path, newPath)
+    const promise = this._fileSystem.rename(path, newPath, element.isDirectory())
     element.name = newName
 
     return promise
@@ -87,9 +98,7 @@ export default class Repository {
     if (!file) return Promise.reject()
 
     return file.remove(this._fileSystem)
-      .then(() => {
-        file.parent.removeChild(file)
-      })
+      .then(() => file.parent.removeChild(file) )
   }
 
   deleteDirectory(path: Path): Promise<Directory> {
@@ -104,9 +113,8 @@ export default class Repository {
     if (!element || !element.isDirectory())
       throw new Error(`${path.toString()} is not a valid directory`)
 
-    const directory = ((element: any): Directory)
-    const file = File.dirty(name, content, directory)
-    directory.addChild(file)
+    const file = File.dirty(this._fileSystem, name, content, element.asDirectory())
+    element.asDirectory().addChild(file)
 
     return file
   }
@@ -115,7 +123,7 @@ export default class Repository {
     const element = this.getByPath(path)
     if (!element || !element.isDirectory()) return Promise.reject()
 
-    const directory: Directory = ((element: any): Directory)
+    const directory: Directory = element.asDirectory()
     const newDirectory = new Directory(name, [], directory)
 
     return this._fileSystem.createFolder(newDirectory.path.toString())
@@ -124,8 +132,8 @@ export default class Repository {
   }
 
   move(from: Path, to: Path): Promise<Element> {
-    var newParent = this.getByPath(to.parent())
-    var element   = this.getByPath(from)
+    const newParent = this.getByPath(to.parent())
+    const element   = this.getByPath(from)
 
     if (!newParent || !newParent.isDirectory())
       throw new Error(`${newParent.path.toString()} is not a valid directory`)
@@ -133,8 +141,8 @@ export default class Repository {
       throw new Error(`${from.toString()} is not a valid directory`)
 
     const promise = this._fileSystem.rename(from.toString(), to.toString())
-    element.parent = newParent
-    newParent.addChild(element)
+    element.parent = newParent.asDirectory()
+    newParent.asDirectory().addChild(element)
 
     return promise
       .then(() => element)
@@ -155,17 +163,26 @@ export default class Repository {
   }
 
   _getDirtyFiles(dir: ?Directory): File[] {
-    var directory = dir ? dir : this._root
-    var files = []
+    const directory = dir ? dir : this._root
+    let files = []
 
-    directory.children.forEach(child => {
+    directory.children.forEach((child: Element) => {
       if (child.isDirectory()) {
-        files = files.concat(this._getDirtyFiles(child))
+        files = files.concat(this._getDirtyFiles(child.asDirectory()))
       } else {
-        const file = (child : File)
+        const file = child.asFile()
         if (file.dirty) files.push(file)
       }
     })
     return files
   }
+
+  _updateDirectory(newRoot: Directory): Repository {
+    const oldRoot = this._root
+    newRoot.mergeWith(oldRoot)
+
+    return this
+  }
 }
+
+export type SaveResult = {repository: Repository, file: File, content: string}
