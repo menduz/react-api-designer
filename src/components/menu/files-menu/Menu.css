@@ -1,0 +1,38 @@
+.context-menu, .add-menu {
+  float: right;
+  cursor: pointer;
+}
+
+.add-menu > span > div {
+  margin: 0 5px 0 0;
+}
+
+.context-menu-icon > svg, .plus-icon > svg {
+  display: block;
+  height: 20px !important;
+  width: 20px !important;
+}
+
+.dropdown-menu-popup > ul > li > button,
+.dropdown-menu-popup > ul > li > a {
+  font-family: DIN Pro, sans-serif;
+  font-size: 14px;
+}
+
+.App-content .menu {
+  height: 35px;
+  border-bottom: 2px solid rgba(39, 47, 51, .1);
+  padding-right: 17px;
+  padding-left: 10px;
+  color: #8d8d8e;
+  background-color: white;
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-family: "DIN Pro", sans-serif;
+}
+
+.App-content .menu .menu-name {
+  font-size: 18px;
+}

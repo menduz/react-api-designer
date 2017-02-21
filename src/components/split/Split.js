@@ -87,7 +87,7 @@ export default class Split extends Component {
     const leftPrimary = position === 'left'
 
     return (
-      <SplitPane className={classNames} data-testId="Split-Pane"
+      <SplitPane className={classNames} data-test-id="Split-Pane"
                  split="vertical" primary={leftPrimary ? "first" : "second"}
                  minSize={minSize} size={isOpen ? size : Split.MIN_SIZE} onChange={this._onDrag.bind(this)}
                  onDragStarted={this._onDragStart.bind(this)} onDragFinished={this._onDragEnd.bind(this)}>

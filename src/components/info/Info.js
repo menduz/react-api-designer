@@ -49,10 +49,10 @@ class Info extends Component {
     const amount = errors.length
 
     return (
-      <Tabs selectedIndex={selectedTab} stretch={false} className="InfoPanel" testId="Info">
+      <Tabs selectedIndex={selectedTab} stretch={false} className="InfoPanel">
         <TabList className="InfoPanelTabs">
-          <Tab onClick={this._onTabSelect.bind(this, 0)}>Preview</Tab>
-          <Tab onClick={this._onTabSelect.bind(this, 1)}>
+          <Tab testId="previewTab" onClick={this._onTabSelect.bind(this, 0)}>Preview</Tab>
+          <Tab testId="errorTab" onClick={this._onTabSelect.bind(this, 1)}>
             <strong className="Counter"> {amount !== 0 ? amount : null} </strong>
             {amount === 1 ? 'Issue' : 'Issues'}
           </Tab>

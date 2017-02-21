@@ -63,7 +63,7 @@ class ConsumeApi extends Component {
                     query={query}
                     placeholder="Search for fragments"
                     id="consume-search"
-                    test-id="test-consume-search"/>
+                    testId="test-consume-search"/>
           </div>
           <div className="consume-api-content">
             {isSearching ?

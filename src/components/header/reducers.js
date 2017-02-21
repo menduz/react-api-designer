@@ -1,10 +1,11 @@
-import {CHANGE_THEME, SHOW_INFO_PANEL_TABS, TOGGLE_ANY_POINT_MODE} from './actions'
+import {CHANGE_THEME, SHOW_INFO_PANEL_TABS, TOGGLE_CONSUME_MODE, TOGGLE_EXCHANGE_MODE} from './actions'
 import Storage from '../../Storage'
 
 const initialState = {
   theme: Storage.getValue('theme', 'vs'),
   showInfoPanelTabs: Storage.getValue('showInfoPanelTabs', 'true') === 'true',
-  isAnyPointMode: Storage.getValue('isAnyPointMode', 'true') === 'true'
+  isExchangeMode: Storage.getValue('isExchangeMode', 'true') === 'true',
+  isConsumeMode: Storage.getValue('isConsumeMode', 'true') === 'true'
 }
 
 export default(state = initialState, action) => {
@@ -19,10 +20,15 @@ export default(state = initialState, action) => {
         ...state,
         showInfoPanelTabs: action.payload.showTabs
       }
-    case TOGGLE_ANY_POINT_MODE:
+    case TOGGLE_CONSUME_MODE:
       return {
         ...state,
-        isAnyPointMode: action.payload.changeMode
+        isConsumeMode: action.payload.changeMode
+      }
+    case TOGGLE_EXCHANGE_MODE:
+      return {
+        ...state,
+        isExchangeMode: action.payload.changeMode
       }
     default:
       return state

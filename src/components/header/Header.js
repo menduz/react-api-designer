@@ -2,25 +2,22 @@
 
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
 import exchangeIcon from './assets/PublishExchangeIcon.svg'
-import consumeIcon from './assets/ConsumeExchangeIcon.svg'
+import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
 import Icon from '@mulesoft/anypoint-icons/lib/Icon'
 import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
 import {actions as configActions} from './index'
 import supportMenuOptions from './assets/supportOptionsData.json'
 import publishApi from '../modal/publish-api'
 import Storage from '../../Storage'
-import consumeApi from '../modal/consume-api'
-
 import './Header.css';
 
 class Header extends Component {
 
   render() {
     const {
-      progress, projectName, theme, isExchangeOpen, isConsumeOpen, openConsumeModal,
-      openExchangeModal, clearExchangeModal, clearConsumeModal, showInfoPanelTabs, isAnyPointMode
+      progress, projectName, theme, isExchangeOpen, openExchangeModal, clearExchangeModal,
+      showInfoPanelTabs, isConsumeMode, isExchangeMode
     } = this.props
 
     const contextMenuOptions = [
@@ -31,41 +28,37 @@ class Header extends Component {
         label: `${showInfoPanelTabs ? 'No tabs' : 'Tabs'} for right Panel`,
         onClick: this.props.changeShowInfoPanelTabs.bind(this, !showInfoPanelTabs)
       }, {
-        label: `${isAnyPointMode ? 'Standalone' : 'Anypoint'} Mode`,
-        onClick: this.props.toggleAnyPointMode.bind(this, !isAnyPointMode)
+        label: `${isConsumeMode ? 'Disable' : 'Enable'} Consume Mode`,
+        onClick: this.props.toggleConsumeMode.bind(this, !isConsumeMode)
+      }, {
+        label: `${isExchangeMode ? 'Disable' : 'Enable'} Exchange Mode`,
+        onClick: this.props.toggleExchangeMode.bind(this, !isExchangeMode)
       }
     ]
 
     const {PublishApiModalContainer} = publishApi
-    const {ConsumeApi} = consumeApi
     return (
       <div className="App-header">
-        <div className="Left-header" data-testId="Left-Header">
+        <div className="Left-header">
           {projectName ?
             <Icon name="api-designer-color" size={38}/> :
             <Icon name="mulesoft-logo" size={38} fill={"white"}/>
           }
-          <h2>{projectName || 'API designer'}</h2>
+          <h2 data-test-id="projectName">{projectName || 'API designer'}</h2>
         </div>
         <div className="Spinner-parser">{progress ? <Spinner size="s"/> : null}</div>
-        <div className="Right-header" data-testId="Right-header">
-          {isAnyPointMode ? [
-            <a className="consume-menu"
-               key="consume-menu"
-               onClick={openConsumeModal.bind(this)}
-               data-testId="Consume-Button">
-              <img src={consumeIcon} height="20px"/>
-            </a>,
-            <a className="export-menu"
-               key="export-menu"
-               onClick={openExchangeModal.bind(this)}
-               data-testId="Export-Button">
-              <img src={exchangeIcon} height="20px"/>
-            </a>,
-            <svg className="divider" key="divider" height="30" width="20">
-              <line x1="10" y1="0" x2="10" y2="30"/>
-            </svg>
-          ] : null
+        <div className="Right-header">
+          {isExchangeMode ? [
+              <a className="export-menu"
+                 key="export-menu"
+                 onClick={openExchangeModal.bind(this)}
+                 data-test-id="Export-Button">
+                <img src={exchangeIcon} height="20px"/>
+              </a>,
+              <svg className="divider" key="divider" height="30" width="20">
+                <line x1="10" y1="0" x2="10" y2="30"/>
+              </svg>
+            ] : null
           }
           <ContextMenu className="support-menu" options={supportMenuOptions} testId="Support-Menu">
             <Icon name="support-small" size={19} fill={"white"}/>
@@ -83,21 +76,20 @@ class Header extends Component {
                                     projectId={Storage.getValue('projectId', '')}/>
           : null
         }
-        {isConsumeOpen ? <ConsumeApi onCancel={clearConsumeModal.bind(this)}/> : null}
       </div>
     )
   }
 }
 
 const mapStateToProps = state => {
-  const {editor, repository, configuration, publishApi, consumeApi} = state
+  const {editor, configuration, publishApi, repository} = state
   return {
     progress: editor.isParsing || repository.progress,
     theme: configuration.theme,
     showInfoPanelTabs: configuration.showInfoPanelTabs,
     isExchangeOpen: publishApi.isOpen,
-    isConsumeOpen: consumeApi.isOpen,
-    isAnyPointMode: configuration.isAnyPointMode
+    isConsumeMode: configuration.isConsumeMode,
+    isExchangeMode: configuration.isExchangeMode
   }
 }
 
@@ -105,11 +97,10 @@ const mapDispatchToProps = dispatch => {
   return {
     changeTheme: (theme: string) => dispatch(configActions.changeTheme(theme)),
     openExchangeModal: () => dispatch(publishApi.actions.openModal()),
-    openConsumeModal: () => dispatch(consumeApi.actions.openModal()),
     clearExchangeModal: () => dispatch(publishApi.actions.clear()),
-    clearConsumeModal: () => dispatch(consumeApi.actions.clear()),
     changeShowInfoPanelTabs: (showTabs: boolean) => dispatch(configActions.showInfoPanelTabs(showTabs)),
-    toggleAnyPointMode: (changeMode: boolean) => dispatch(configActions.changeAnyPointMode(changeMode))
+    toggleConsumeMode: (changeMode: boolean) => dispatch(configActions.changeConsumeMode(changeMode)),
+    toggleExchangeMode: (changeMode: boolean) => dispatch(configActions.changeExchangeMode(changeMode))
   }
 }
 

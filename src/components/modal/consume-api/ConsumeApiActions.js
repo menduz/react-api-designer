@@ -327,7 +327,7 @@ export const searchFragments = (query: string) => {
         console.log(fragments)
         dispatch(isSearching(false))
         dispatch(fragmentsChanged(mockedExample))
-      }, (error) => {
+      }).catch((error) => {
         dispatch(isSearching(false))
         dispatch(showError(error.toString()))
       })

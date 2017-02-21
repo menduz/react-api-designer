@@ -1,0 +1,16 @@
+.dependency-menu {
+  margin-top: 30px;
+}
+
+.dependency-menu.menu {
+  padding-right: 20px;
+}
+
+.dependency-menu .consume-menu {
+  cursor: pointer;
+}
+
+.consume-menu > img {
+  display: block;
+}
+

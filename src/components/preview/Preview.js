@@ -47,7 +47,7 @@ class Preview extends Component {
   }
 
   render() {
-    return <div className="Preview" data-testId="Preview">{this._render()}</div>
+    return <div className="Preview" data-test-id="Preview">{this._render()}</div>
   }
 }
 
