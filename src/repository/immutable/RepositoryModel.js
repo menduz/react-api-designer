@@ -13,6 +13,7 @@ export class RepositoryModel {
   get root(): DirectoryModel { return this._root }
 
   static empty(): RepositoryModel {
+    // eslint-disable-next-line
     return new RepositoryModel(DirectoryModel.directory('', Path.emptyPath(), List()))
   }
 
@@ -112,7 +113,7 @@ export class DirectoryModel extends ElementModel {
     if (parentPath.isEmpty()) return this.withChild(element)
 
     const child = this._children.get(parentPath.first())
-    if (!child || !child.isDirectory()) throw `'${parentPath.toString()}' is not a valid path.`
+    if (!child || !child.isDirectory()) throw new Error(`'${parentPath.toString()}' is not a valid path.`)
 
     return this.withChild(child.asDirectoryModel().updateElement(parentPath.shift(), element))
   }
@@ -121,7 +122,7 @@ export class DirectoryModel extends ElementModel {
     if (parentPath.isEmpty()) return this.withChildren(this._children.remove(name))
 
     const child = this._children.get(parentPath.first())
-    if (!child || !child.isDirectory()) throw `'${parentPath.toString()}' is not a valid directory.`
+    if (!child || !child.isDirectory()) throw new Error(`'${parentPath.toString()}' is not a valid directory.`)
 
     return this.withChild(child.asDirectoryModel().removeElement(parentPath.shift(), name))
   }

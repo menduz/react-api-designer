@@ -1,24 +1,24 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import consumeApi from '../../modal/consume-api'
+import consumeIndex from '../../modal/consume-api'
 import consumeColorIcon from './assets/ConsumeExchangeColorIcon.svg'
 import './DependencyMenu.css'
 
 class DependencyMenu extends React.Component {
 
   render() {
-    const {isConsumeOpen, isConsumeMode, openConsumeModal, clearConsumeModal} = this.props
-    const {ConsumeApi} = consumeApi
+    const {isConsumeOpen, isConsumeMode} = this.props
+    const {ConsumeApi} = consumeIndex
     return isConsumeMode ? (
-      <div className="dependency-menu menu">
+      <div className="dependency-menu menu" data-test-id="Dependencies-Menu">
         <span className="menu-name">Dependencies</span>
 
         <div className="dependency-content">
-          <a className="consume-menu" onClick={openConsumeModal.bind(this)} data-test-id="Consume-Button">
-            <img src={consumeColorIcon} height="20px"/>
+          <a className="consume-menu" onClick={this.props.openConsumeModal.bind(this)} data-test-id="Consume-Button">
+            <img src={consumeColorIcon} role="presentation" height="20px"/>
           </a>
         </div>
-        {isConsumeOpen ? <ConsumeApi onCancel={clearConsumeModal.bind(this)}/> : null}
+        {isConsumeOpen ? <ConsumeApi onCancel={this.props.clearConsumeModal.bind(this)}/> : null}
       </div>
     ) : null
   }
@@ -34,8 +34,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    openConsumeModal: () => dispatch(consumeApi.actions.openModal()),
-    clearConsumeModal: () => dispatch(consumeApi.actions.clear())
+    openConsumeModal: () => dispatch(consumeIndex.actions.openModal()),
+    clearConsumeModal: () => dispatch(consumeIndex.actions.clear())
   }
 }
 

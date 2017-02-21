@@ -38,7 +38,6 @@ class Element {
   clone(parent: Directory): Element { throw new Error('Not implemented method') }
 }
 
-
 class State {
   _fileSystem: FileSystem
   _file: File
@@ -58,11 +57,13 @@ class State {
 
   remove(path: Path): [Promise<any>, State] {
     const promise = this._fileSystem.remove(path.toString())
+    // eslint-disable-next-line
     return [promise.then(() => this), new RemovedState(this._fileSystem, this._file)]
   }
 
   clone(file: File): State { throw new Error('Not implemented method') }
 
+  // eslint-disable-next-line
   clear(): State { return new EmptyState(this._fileSystem, this._file) }
 }
 
@@ -82,6 +83,7 @@ class DirtyState extends State {
 
   setContent(content: string): State {
     if (content === this._originalContent)
+      // eslint-disable-next-line
       return new LoadedState(this._fileSystem, this._file, content)
 
     this._content = content
@@ -92,6 +94,7 @@ class DirtyState extends State {
 
   save(path: Path): [Promise<any>, State] {
     const promise = this._fileSystem.save([{path: path.toString(), content: this._content}])
+    // eslint-disable-next-line
     return [promise, new LoadedState(this._fileSystem, this._file, this._content)]
   }
 
@@ -144,8 +147,6 @@ class LoadingState extends State {
 
 class EmptyState extends State {
 
-  constructor(fileSystem: FileSystem, file: File) { super(fileSystem, file) }
-
   getContent(): [Promise<string>, State] {
     const contentPromise: Promise<string> = this._fileSystem.load(this._file.path.toString())
     return [contentPromise, new LoadingState(this._fileSystem, this._file, contentPromise)]
@@ -161,8 +162,6 @@ class EmptyState extends State {
 }
 
 class RemovedState extends State {
-
-  constructor(fileSystem: FileSystem, file: File) { super(fileSystem, file) }
 
   getContent(): [Promise<string>, State] { throw new Error('This file has been removed') }
 

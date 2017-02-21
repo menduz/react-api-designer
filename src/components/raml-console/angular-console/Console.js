@@ -32,7 +32,9 @@ class Console extends Component {
 
   render() {
     return (
-      <div className="angular-container" ref={angularContainer => this.angularContainer = angularContainer}>
+      <div className="angular-container"
+           data-test-id="Raml-Console"
+           ref={angularContainer => this.angularContainer = angularContainer}>
         <div className="Console-toolbar">
           <div className="Spinner-console hide" ref={spinner => this.spinner = spinner}>
             <Spinner size="s"/>

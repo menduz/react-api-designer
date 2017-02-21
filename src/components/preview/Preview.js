@@ -1,4 +1,4 @@
-//@flow
+// @flow
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {Console as AngularConsole} from '../raml-console/angular-console'
@@ -24,7 +24,7 @@ class Preview extends Component {
   }
 
   static _empty() {
-    return <div className="No-preview">No preview</div>
+    return <div className="No-preview" data-test-id="No-Preview">No preview</div>
   }
 
   _render() {

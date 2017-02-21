@@ -22,8 +22,9 @@ import {save} from "../../editor/actions"
 import './Menu.css'
 
 class Menu extends React.Component {
+
   render() {
-    let {
+    const {
       showNewFolderDialog,
       showNewFileDialog,
       showImportDialog,

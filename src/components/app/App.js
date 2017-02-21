@@ -13,24 +13,21 @@ import FileDrop from '../filedrop/FileDrop'
 
 import './App.css'
 
-export default class App extends React.Component {
+const App = () => (
+  <FileDrop className='App' testId="App">
+    <Header/>
+    <Split id="leftSplit" minSize={150} defaultSize={200} className="App-content">
+      <div className="LeftPanel">
+        <Menu/>
+        <FileSystemTreeContainer/>
+        <DependencyMenu/>
+      </div>
+      <Split id="rightSplit" minSize={300} defaultSize={400} position="right" className="RightPanel">
+        <Editor/>
+        <Info/>
+      </Split>
+    </Split>
+  </FileDrop>
+)
 
-  render() {
-    return (
-      <FileDrop className='App' testId="App">
-        <Header/>
-        <Split id="leftSplit" minSize={150} defaultSize={200} className="App-content">
-          <div className="LeftPanel">
-            <Menu/>
-            <FileSystemTreeContainer/>
-            <DependencyMenu/>
-          </div>
-          <Split id="rightSplit" minSize={300} defaultSize={400} position="right" className="RightPanel">
-            <Editor/>
-            <Info/>
-          </Split>
-        </Split>
-      </FileDrop>
-    )
-  }
-}
+export default App

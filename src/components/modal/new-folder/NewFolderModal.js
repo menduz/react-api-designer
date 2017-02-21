@@ -20,10 +20,7 @@ class NewFolderModal extends React.Component {
   props: Props
 
   handleSubmit() {
-    const {
-      folderName,
-      path
-    } = this.props
+    const {folderName, path} = this.props
 
     if (folderName) this.props.onSubmit(folderName, path)
   }
@@ -33,15 +30,9 @@ class NewFolderModal extends React.Component {
   }
 
   render() {
-    const {
-      folderName,
-      onCancel,
-      showModal
-    } = this.props
+    const {folderName, onCancel, showModal} = this.props
 
-    if (!showModal) return null
-
-    return (
+    return showModal ? (
       <Modal className="new-folder"
              title="Add new folder"
              onCancel={onCancel}
@@ -53,9 +44,9 @@ class NewFolderModal extends React.Component {
                    placeholder="Name..."
                    onChange={this.onNameChange.bind(this)}
                    autoFocus
-        />
+                   testId="New-Folder-Input-Name"/>
       </Modal>
-    )
+    ) : null
   }
 }
 

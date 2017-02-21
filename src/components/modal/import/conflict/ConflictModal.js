@@ -24,39 +24,31 @@ class ConflictModal extends React.Component {
   props: Props
 
   render() {
-    const {
-      onSubmit,
-      onCancel,
-      showConflictModal,
-      fileNameToImport
-    } = this.props
+    const {onSubmit, onCancel, showConflictModal, fileNameToImport} = this.props
 
-    if (showConflictModal) {
-      return (
-        <Modal className="conflict-modal"
-               onCancel={onCancel}
-               onSubmit={onSubmit}
-               onEsc={onCancel}
-               onEnter={onSubmit}
-               onClickOverlay={onCancel}
-               testId="Conflict-Modal">
+    return showConflictModal ? (
+      <Modal className="conflict-modal"
+             onCancel={onCancel}
+             onSubmit={onSubmit}
+             onEsc={onCancel}
+             onEnter={onSubmit}
+             onClickOverlay={onCancel}
+             testId="Conflict-Modal">
 
-          <ModalHeader>
-            <h2>File exists</h2>
-          </ModalHeader>
-          <ModalBody>
-            <Label>{fileNameToImport} exists, do you want to replace it?</Label>
-          </ModalBody>
+        <ModalHeader>
+          <h2>File exists</h2>
+        </ModalHeader>
+        <ModalBody>
+          <Label testId="Conflict-Description">{fileNameToImport} exists, do you want to replace it?</Label>
+        </ModalBody>
 
-          <ModalFooter>
-            <Button kind="tertiary" onClick={onCancel} noFill>Cancel</Button>
-            <Button kind="primary" onClick={onSubmit}>Replace</Button>
-          </ModalFooter>
+        <ModalFooter>
+          <Button kind="tertiary" onClick={onCancel} noFill testId="Conflict-Cancel-Button">Cancel</Button>
+          <Button kind="primary" onClick={onSubmit} testId="Conflict-Submit-Button">Replace</Button>
+        </ModalFooter>
 
-        </Modal>
-      )
-    }
-    return null
+      </Modal>
+    ) : null
   }
 }
 

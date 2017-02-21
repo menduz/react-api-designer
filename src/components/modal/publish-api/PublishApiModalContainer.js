@@ -10,6 +10,15 @@ import type {State} from "./PublishApiModel"
 import {changeValue, publish, clear, removeTag, addTag} from "./PublishApiActions"
 import PublishApiRemoteApi from "../../../vcs-api/PublishApiRemoteApi"
 
+type ContainerProps = {
+  onClose: () => void,
+  baseUrl: string,
+  projectId: string,
+  ownerId: string,
+  organizationId: string,
+  authorization: string
+}
+
 const mapState = (rootState) => {
   const state: State = getAll(rootState)
   return {
@@ -55,15 +64,6 @@ PublishApiModalContainer.propTypes = {
   ownerId: React.PropTypes.string,
   organizationId: React.PropTypes.string,
   authorization: React.PropTypes.string
-}
-
-type ContainerProps = {
-  onClose: () => void,
-  baseUrl: string,
-  projectId: string,
-  ownerId: string,
-  organizationId: string,
-  authorization: string
 }
 
 export default PublishApiModalContainer

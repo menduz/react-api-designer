@@ -112,7 +112,7 @@ class DesignerEditor extends React.Component {
         ...suggestion,
         kind: suggestion.insertText.lastIndexOf(':') > -1 ?
           this.monaco.languages.CompletionItemKind.Property :
-          this.monaco.languages.CompletionItemKind.Value // chose Kind based on category?
+          this.monaco.languages.CompletionItemKind.Value // choose Kind based on category?
       }
     }))
     this.onSuggestCallback = null

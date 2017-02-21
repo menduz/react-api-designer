@@ -43,7 +43,9 @@ export const suggest = (text, cursorPosition, path, repository) =>
       .then(result => {
         dispatch(suggestionResult(result))
       })
-      .catch(e => { dispatch(suggestionResult([])) })
+      .catch(e => {
+        dispatch(suggestionResult([]))
+      })
   }
 
 const setPath = (path, language) => ({
@@ -61,16 +63,16 @@ const parseResult = (parsedObject, errors) => ({
   parsedObject: parsedObject
 })
 
-const mapUnexpectedError = (error) =>{
-  return { message: error.message, startLineNumber: 1, endLineNumber: 1, startColumn: 0}
+const mapUnexpectedError = (error) => {
+  return {message: error.message, startLineNumber: 1, endLineNumber: 1, startColumn: 0}
 }
 
-const parserError = (error, dispatch) =>{
+const parserError = (error, dispatch) => {
   if (error === 'aborted') console.log('Aborting old parse request')
   else dispatch(parseResult(null, [error]))
-};
+}
 
-const parseJson = function (text, path, dispatch, worker) {
+const parseJson = (text, path, dispatch, worker) => {
   dispatch(parsingRequest())
 
   const promise = worker.jsonParse({text})
@@ -81,28 +83,23 @@ const parseJson = function (text, path, dispatch, worker) {
   }
 }
 
-const parseRaml = function (text, path, dispatch, worker) {
+const parseRaml = (text, path, dispatch, worker) => {
   dispatch(parsingRequest())
   const promise = worker.ramlParse({path})
   if (promise) {
-    promise.then(result => dispatch(parseResult(result.specification, result.errors))).
-    catch(error => parserError(mapUnexpectedError(error), dispatch))
+    promise.then(result => dispatch(parseResult(result.specification, result.errors)))
+      .catch(error => parserError(mapUnexpectedError(error), dispatch))
   }
 }
 
-const parseOas = function (text, path, dispatch, worker) {
+const parseOas = (text, path, dispatch, worker) => {
   dispatch(parsingRequest())
   const promise = worker.oasParse({text})
   if (promise) {
-    promise.then(result => dispatch(parseResult(result.specification, result.errors))).
-    catch(error => parserError(mapUnexpectedError(error), dispatch))
+    promise.then(result => dispatch(parseResult(result.specification, result.errors)))
+      .catch(error => parserError(mapUnexpectedError(error), dispatch))
   }
 }
-
-export const updateCurrentFile = (text, delay = 0) =>
-  (dispatch, getState) => {
-    dispatch(updateFile(text, getCurrentFilePath(getState()), delay))
-  }
 
 let parseTimer = null
 export const updateFile = (text, path: Path, delay = 0) =>
@@ -110,7 +107,7 @@ export const updateFile = (text, path: Path, delay = 0) =>
     dispatch(updateFileContent(path, text))
 
     const pathString = path.toString()
-    const lang = language(pathString, text);
+    const lang = language(pathString, text)
     dispatch(setPath(path, lang))
 
     if (parseTimer) clearTimeout(parseTimer)
@@ -127,6 +124,11 @@ export const updateFile = (text, path: Path, delay = 0) =>
           dispatch(parseResult({}, []))
       }
     }, delay)
+  }
+
+export const updateCurrentFile = (text, delay = 0) =>
+  (dispatch, getState) => {
+    dispatch(updateFile(text, getCurrentFilePath(getState()), delay))
   }
 
 export const saveCurrentFile = () => (dispatch, getState) => {

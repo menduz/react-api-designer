@@ -5,7 +5,7 @@ import type {RepositoryElementType} from './RepositoryType'
 import Path from '../Path'
 
 import RepositoryModelFactory from '../immutable/RepositoryModelFactory'
-import {RepositoryModel, DirectoryModel, FileModel} from '../immutable/RepositoryModel'
+import {RepositoryModel, FileModel} from '../immutable/RepositoryModel'
 
 class RepositoryTypeHelper {
   repository: RepositoryModel

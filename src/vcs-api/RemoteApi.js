@@ -1,12 +1,12 @@
-import request from 'browser-request';
+import request from 'browser-request'
 
 const POST = 'POST'
 const GET = 'GET'
 const DELETE = 'DELETE'
-const PUT = 'PUT'
-export const SEPARATOR = '/';
+export const SEPARATOR = '/'
 
 class RemoteApi {
+
   constructor(baseUrl: string, ownerId: string, organizationId: string, authorization?: string) {
     this.baseUrl = baseUrl
     this.ownerId = ownerId
@@ -28,15 +28,15 @@ class RemoteApi {
 
   _request(method, pathElements, body: {}, jsonResult: ?boolean): Promise {
     return new Promise((resolve, reject) => {
-      const url = this._url(pathElements);
-      const headers = this._vcsHeaders();
+      const url = this._url(pathElements)
+      const headers = this._vcsHeaders()
       request(RemoteApi.requestOptions(method, url, headers, body, jsonResult),
         (error, response, body) => {
           if (error) reject(error)
           else if (RemoteApi._isError(response)) reject(RemoteApi._extractError(response))
           else resolve(RemoteApi._resolveBody(body, jsonResult))
         })
-    });
+    })
   }
 
   static _resolveBody(body, jsonResult: ?boolean) {
@@ -90,11 +90,11 @@ class RemoteApi {
   }
 
   static vcsPath(path: string) {
-    return path.startsWith('/') ? path.slice(1) : path;
+    return path.startsWith('/') ? path.slice(1) : path
   }
 
   static vcsPathForUri(path: string) {
-    const relativePath = RemoteApi.vcsPath(path);
+    const relativePath = RemoteApi.vcsPath(path)
     return RemoteApi.scapeVcsPath(relativePath)
   }
 

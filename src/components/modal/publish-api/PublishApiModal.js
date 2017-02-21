@@ -15,10 +15,6 @@ import './PublishApi.css'
 class PublishApiModal extends React.Component {
   props: Props
 
-  constructor(props: Props) {
-    super(props)
-  }
-
   handleSave() {
     this.props.onSubmit(this.props.name, this.props.version, this.props.tags)
   }
@@ -45,16 +41,10 @@ class PublishApiModal extends React.Component {
     const {name, version, tag, tags, isFetching, isFetched, link, error, onCancel} = this.props
 
     const canSubmit = this.canSubmit()
-
-    let content
-    if (isFetched) {
-      content = PublishApiModal.link(link)
-    } else {
-      content = this.form(name, version, tag, tags, isFetching)
-    }
+    const content = isFetched ? PublishApiModal.link(link) : this.form(name, version, tag, tags, isFetching)
 
     return (
-      <Modal testId="project-create-modal"
+      <Modal testId="Publish-Modal"
              onEsc={onCancel}
              onClickOverlay={onCancel}
              className="publish-api-modal">
@@ -63,14 +53,14 @@ class PublishApiModal extends React.Component {
         </ModalHeader>
         <ModalBody>
           {content}
-          <div className="error">
+          <div className="error" data-test-id="Publish-Error">
             <span>{error}</span>
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button kind="tertiary" noFill onClick={onCancel}>Cancel</Button>
+          <Button kind="tertiary" noFill onClick={onCancel} testId="Publish-Cancel-Button">Cancel</Button>
           {isFetched ? null :
-            <Button kind="primary" disabled={isFetching || !canSubmit}
+            <Button kind="primary" disabled={isFetching || !canSubmit} testId="Publish-Submit-Button"
                     isLoading={isFetching} onClick={this.handleSave.bind(this)}>
               Publish
             </Button>
@@ -89,19 +79,21 @@ class PublishApiModal extends React.Component {
                      placeholder="Name..."
                      disabled={isFetching}
                      onChange={this.handleNameChange.bind(this)}
-                     required/>
+                     required
+                     testId="Publish-Input-Name"/>
         </div>
-        <div className="form-row">
+        <div className="form-row" data-test-id="Publish-Version-Row">
           <Label className="required">Version</Label>
           <TextField value={version}
                      placeholder="Version..."
                      disabled={isFetching}
                      onChange={this.handleVersionChange.bind(this)}
-                     required/>
+                     required
+                     testId="Publish-Input-Version"/>
         </div>
         <div className="form-row">
           <Label>Tags</Label>
-          <Pills>
+          <Pills testId="Publish-Tags-Pills">
             {tags ? tags.map(tag => (
               <Pill key={tag} onRemove={() => this.props.onTagRemove(tag)}>{tag}</Pill>
             )) : null}
@@ -111,12 +103,14 @@ class PublishApiModal extends React.Component {
                        value={tag}
                        placeholder="Tag..."
                        disabled={isFetching}
-                       onChange={this.handleTagChange.bind(this)}/>
+                       onChange={this.handleTagChange.bind(this)}
+                       testId="Publish-Tag-Input-Name"/>
             <Button className="save-tag-button"
                     kind="primary"
                     disabled={!tag}
                     onClick={this.handleSaveTag.bind(this)}
-                    noFill>
+                    noFill
+                    testId="Publish-Save-Tag">
               Add
             </Button>
           </div>

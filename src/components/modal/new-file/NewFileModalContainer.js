@@ -10,7 +10,7 @@ import {changeFileType, changeName, closeNewFileDialog, changeFragmentType, add}
 import {Path} from '../../../repository'
 
 const mapState = (rootState) => {
-  const state : State = getAll(rootState)
+  const state: State = getAll(rootState)
   return {
     fileName: state.fileName,
     fileType: state.fileType,
@@ -22,8 +22,8 @@ const mapState = (rootState) => {
 
 const mapDispatch = (dispatch) => {
   return {
-    onSubmit: (name: string, fileType:? string, path: ?Path) => {
-      var currentPath = path ? path : Path.emptyPath(true)
+    onSubmit: (name: string, fileType: ?string, path: ?Path) => {
+      const currentPath = path ? path : Path.emptyPath(true)
       dispatch(add(name, fileType, currentPath))
     },
     onCancel: () => dispatch(closeNewFileDialog()),

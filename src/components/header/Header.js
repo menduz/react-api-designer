@@ -44,18 +44,18 @@ class Header extends Component {
             <Icon name="api-designer-color" size={38}/> :
             <Icon name="mulesoft-logo" size={38} fill={"white"}/>
           }
-          <h2 data-test-id="projectName">{projectName || 'API designer'}</h2>
+          <h2 data-test-id="Project-Name">{projectName || 'API designer'}</h2>
         </div>
-        <div className="Spinner-parser">{progress ? <Spinner size="s"/> : null}</div>
+        <div className="Spinner-parser">{progress ? <Spinner data-test-id="Progress-Spinner" size="s"/> : null}</div>
         <div className="Right-header">
           {isExchangeMode ? [
               <a className="export-menu"
                  key="export-menu"
                  onClick={openExchangeModal.bind(this)}
                  data-test-id="Export-Button">
-                <img src={exchangeIcon} height="20px"/>
+                <img src={exchangeIcon} role="presentation" height="20px"/>
               </a>,
-              <svg className="divider" key="divider" height="30" width="20">
+              <svg data-test-id="Divider" className="divider" key="divider" height="30" width="20">
                 <line x1="10" y1="0" x2="10" y2="30"/>
               </svg>
             ] : null

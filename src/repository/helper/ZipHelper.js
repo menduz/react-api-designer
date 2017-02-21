@@ -4,13 +4,12 @@ import Repository from '../Repository'
 
 import JSZip from 'jszip'
 
-
 class ZipHelper {
 
-  static buildZip(root:Directory):Promise<> {
-    const zip = new JSZip
+  static buildZip(root: Directory): Promise<> {
+    const zip = new JSZip()
 
-    function addToZip(element:Element, parentDirZip: JSZip):Promise<> {
+    const addToZip = (element: Element, parentDirZip: JSZip): Promise<> => {
       if (element.isDirectory()) {
         const zipFolder = parentDirZip.folder(element.name)
         if (element.children.isEmpty) return Promise.resolve()
@@ -22,27 +21,26 @@ class ZipHelper {
           parentDirZip.file(element.name, content)
         })
       }
-
     }
 
-    return Promise.all (root.children.map(c => {
+    return Promise.all(root.children.map(c => {
       return addToZip(c, zip)
     })).then(() => {
-      return zip.generateAsync({type:"blob"})
+      return zip.generateAsync({type: "blob"})
     })
   }
 
-  static filesContents(content:any, files:Array) {
+  static filesContents(content: any, files: Array) {
 
-    function buildContents(zip, files) {
+    const buildContents = (zip, files) => {
       return Promise.all(files.map(f => {
         return ZipHelper.sanitizeZipFiles(zip.files)[f.filename].async('string').then(c => {
-          return {filename: f.filename, content:c}
+          return {filename: f.filename, content: c}
         })
       }))
     }
 
-    var zip = new JSZip();
+    const zip = new JSZip()
     return zip.loadAsync(content).then(zip => {
       if (files) {
         return buildContents(zip, files)
@@ -55,32 +53,31 @@ class ZipHelper {
     })
   }
 
-  static listZipFiles(repository:Repository, content:any) {
-    var zip = new JSZip();
+  static listZipFiles(repository: Repository, content: any) {
+    const zip = new JSZip()
 
     return zip.loadAsync(content).then(zip => {
       const result = []
-      Object.keys(ZipHelper.sanitizeZipFiles(zip.files)).forEach(function(filename) {
-        const conflict = (repository.getByPathString(filename))?true:false
-        result.push({filename, override:true, conflict})
+      Object.keys(ZipHelper.sanitizeZipFiles(zip.files)).forEach((filename) => {
+        const conflict = !!(repository.getByPathString(filename))
+        result.push({filename, override: true, conflict})
       })
       return result
     })
   }
 
-  static sanitizeZipFiles (originalFiles) {
-    const files = {};
+  static sanitizeZipFiles(originalFiles) {
+    const files = {}
 
     Object.keys(originalFiles).forEach(filename => {
       if (/^__MACOSX\//.test(filename) || /\/$/.test(filename) || /.DS_Store$/.test(filename)) {
-        return;
+        return
       }
-      files[filename] = originalFiles[filename];
-    });
+      files[filename] = originalFiles[filename]
+    })
 
-    return files;
+    return files
   }
-
 }
 
 export default ZipHelper

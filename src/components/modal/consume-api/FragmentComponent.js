@@ -8,15 +8,15 @@ export default class FragmentComponent extends Component {
   render() {
     const {fragment, handleFragmentSelection, isOdd} = this.props
     return (
-      <div className={cx('fragment', {'odd': isOdd})}>
+      <div className={cx('fragment', {'odd': isOdd})} data-test-id="Fragment">
         <div className="fragment-left">
           <span className="fragment-title">{fragment.name}</span>
           <span className="fragment-description">{fragment.description}</span>
           <div className="rating">
-            <Rating className="fragment-rating" testId="fragment-rating-test" rating={fragment.rating} disabled/>
+            <Rating className="fragment-rating" testId="Fragment-Rating" rating={fragment.rating} disabled/>
             <span className="amount-of-rating">
-                  {` (${fragment.numberOfRates} vote${fragment.numberOfRates !== 1 ? 's' : ''})`}
-                </span>
+              {` (${fragment.numberOfRates} vote${fragment.numberOfRates !== 1 ? 's' : ''})`}
+            </span>
           </div>
         </div>
         <div className="fragment-mid">

@@ -50,7 +50,6 @@ export default (state: State = initialState, action: any): State => {
         link: undefined,
         error: action.payload.error
       }
-
     case actions.ADD_TAG:
       const addTags = new Set(state.form['tags'] || [])
       addTags.add(action.payload.tag)
@@ -74,7 +73,7 @@ export default (state: State = initialState, action: any): State => {
           tags: removeTags
         }
       }
+    default:
+      return state
   }
-
-  return state
 }

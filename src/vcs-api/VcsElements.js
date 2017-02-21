@@ -9,11 +9,13 @@ export class PathMetadata {
   parentPath(): string {
     return this.pathMembers()
       .slice(-1)
+      // eslint-disable-next-line
       .join(EntryMetadata.SEPARATOR)
   }
 
   pathMembers(): string[] {
     return this.path
+      // eslint-disable-next-line
       .split(EntryMetadata.SEPARATOR)
   }
 

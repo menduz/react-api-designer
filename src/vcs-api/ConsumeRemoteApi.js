@@ -2,10 +2,6 @@ import RemoteApi from './RemoteApi'
 
 export default class ConsumeRemoteApi extends RemoteApi {
 
-  constructor(baseUrl: string) {
-    super(baseUrl)
-  }
-
   queryFragments(query: string): Promise {
     return this._post([],
       ConsumeRemoteApi.generateBody(query, "{organizationId, name, description, rating, numberOfRates, version, groupId, assetId}"), true)

@@ -137,7 +137,9 @@ export const addDirectory = (parentPath: Path, name: string) =>
     const repository: Repository = repositoryContainer.repository
     return repository.addDirectory(parentPath, name)
       .then(
-        (directory) => { dispatch(directoryAdded(Factory.directoryModel(directory))) }
+        (directory) => {
+          dispatch(directoryAdded(Factory.directoryModel(directory)))
+        }
       )
       .catch(
         (err) => dispatch(error(DIRECTORY_ADD_FAILED, err || 'Error on create directory'))
@@ -218,6 +220,18 @@ export const saveFile = (path: Path) =>
       .catch(
         (err) => dispatch(error(FILE_SAVE_FAILED, err || 'Error on save'))
       )
+  }
+
+export const updateFileContent = (path: Path, content: string) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): any => {
+    if (!repositoryContainer.isLoaded)
+      return dispatch(error(FILE_CONTENT_UPDATE_FAILED, REPOSITORY_NOT_LOADED))
+    if (!isValidFile(path))
+      return dispatch(error(FILE_CONTENT_UPDATE_FAILED, `${path.toString()} is not valid file`))
+
+    const repository: Repository = repositoryContainer.repository
+    const file = repository.setContent(path, content)
+    return dispatch(fileContentUpdated(Factory.fileModel(file), content))
   }
 
 export const saveAll = () =>
@@ -311,18 +325,6 @@ export const remove = (path: Path) =>
     } else {
       return removeFile(path, dispatch, repository)
     }
-  }
-
-export const updateFileContent = (path: Path, content: string) =>
-  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): any => {
-    if (!repositoryContainer.isLoaded)
-      return dispatch(error(FILE_CONTENT_UPDATE_FAILED, REPOSITORY_NOT_LOADED))
-    if (!isValidFile(path))
-      return dispatch(error(FILE_CONTENT_UPDATE_FAILED, `${path.toString()} is not valid file`))
-
-    const repository: Repository = repositoryContainer.repository
-    const file = repository.setContent(path, content)
-    return dispatch(fileContentUpdated(Factory.fileModel(file), content))
   }
 
 export const moveElement = (source: Path, destinationDir: Path) =>

@@ -23,6 +23,7 @@ export default class Path {
   }
 
   static emptyPath = (absolute: boolean = true): Path => {
+    // eslint-disable-next-line
     return absolute ? new AbsoluteEmptyPath() : new RelativeEmptyPath()
   }
 
@@ -30,6 +31,7 @@ export default class Path {
     const filteredElements = elements.filter((s) => s && s.length > 0).toList()
 
     if (filteredElements.isEmpty()) return Path.emptyPath(absolute)
+    // eslint-disable-next-line
     return absolute ? new AbsolutePathImpl(filteredElements) : new RelativePathImpl(filteredElements)
   }
 

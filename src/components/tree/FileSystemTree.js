@@ -106,22 +106,20 @@ class FileSystemTree extends Component {
 
     return nodes ?
       (<div>
-          <TreeUI
-            className="Tree"
-            getLeaf={this.renderLeaf.bind(this)}
-            getFolder={this.renderFolder.bind(this)}
-            getEmpty={()=> 'Empty'}
-            nodes={nodes}
-            selected={selected}
-            expanded={expanded}
-            onSelect={this.handleOnSelect.bind(this)}
-            onToggle={this.handleOnToggle.bind(this)}
-            testId="Tree"
-          />
+          <TreeUI className="Tree"
+                  getLeaf={this.renderLeaf.bind(this)}
+                  getFolder={this.renderFolder.bind(this)}
+                  getEmpty={()=> 'Empty'}
+                  nodes={nodes}
+                  selected={selected}
+                  expanded={expanded}
+                  onSelect={this.handleOnSelect.bind(this)}
+                  onToggle={this.handleOnToggle.bind(this)}
+                  testId="Tree"/>
           <RenameModalContainer/>
         </div>
       ) : (
-      <div className="Tree-loading">
+      <div className="Tree-loading" data-test-id="Tree-Loading">
         Loading...
       </div>
     )

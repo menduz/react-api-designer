@@ -36,7 +36,7 @@ class Info extends Component {
     const title = language.id === 'raml' ? 'RAML Documentation' : `${language.label || ''} Preview`
 
     return (
-      <div className="InfoPanel">
+      <div className="InfoPanel" data-test-id="Info-Panel">
         <div className="InfoTitle">{title}</div>
         {errors.length > 0 ? <Errors/> : <Preview/>}
       </div>
@@ -51,8 +51,8 @@ class Info extends Component {
     return (
       <Tabs selectedIndex={selectedTab} stretch={false} className="InfoPanel">
         <TabList className="InfoPanelTabs">
-          <Tab testId="previewTab" onClick={this._onTabSelect.bind(this, 0)}>Preview</Tab>
-          <Tab testId="errorTab" onClick={this._onTabSelect.bind(this, 1)}>
+          <Tab testId="Preview-Tab" onClick={this._onTabSelect.bind(this, 0)}>Preview</Tab>
+          <Tab testId="Error-Tab" onClick={this._onTabSelect.bind(this, 1)}>
             <strong className="Counter"> {amount !== 0 ? amount : null} </strong>
             {amount === 1 ? 'Issue' : 'Issues'}
           </Tab>

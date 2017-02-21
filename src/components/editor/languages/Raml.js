@@ -67,6 +67,7 @@ const tokens = () => {
       flowScalars: [[/"/, "string", '@string."'], [/'/, "string", "@string.'"]],
       blockStyle: [[/[>|][0-9]*[+-]?$/, "operators", "@multiString"]],
       flowNumber: [[/@numberInteger(?=[ \t]*[,\]\}])/, "number"], [/@numberFloat(?=[ \t]*[,\]\}])/, "number.float"], [/@numberOctal(?=[ \t]*[,\]\}])/, "number.octal"], [/@numberHex(?=[ \t]*[,\]\}])/, "number.hex"], [/@numberInfinity(?=[ \t]*[,\]\}])/, "number.infinity"], [/@numberNaN(?=[ \t]*[,\]\}])/, "number.nan"], [/@numberDate(?=[ \t]*[,\]\}])/, "number.date"]],
+      // eslint-disable-next-line
       tagHandle: [[/\![^ ]*/, "tag"]],
       anchor: [[/[&*][^ ]+/, "namespace"]]
     }

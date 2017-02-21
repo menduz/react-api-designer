@@ -9,19 +9,17 @@ export const MOCK_STARTED = 'DESIGNER/MOCK/MOCK_STARTED'
 export const STOP_MOCK = 'DESIGNER/MOCK/STOP_MOCK'
 export const BEGIN_STOP_MOCK = 'DESIGNER/MOCK/BEGIN_STOP_MOCK'
 
-
-
-const startMock = (file:string) => ({
+const startMock = (file: string) => ({
   type: START_MOCK,
   file
 })
 
-const stopMock = (file:string) => ({
+const stopMock = (file: string) => ({
   type: STOP_MOCK,
   file
 })
 
-const beginStopMock = (file:string) => ({
+const beginStopMock = (file: string) => ({
   type: BEGIN_STOP_MOCK,
   file
 })
@@ -35,6 +33,27 @@ const mockStarted = (file, id, manageKey, baseUri, manageUri) => ({
   manageUri
 })
 
+const baseMockUri = (baseUri, line) => {
+  return 'baseUri: ' + baseUri + " # " + line
+}
+
+const addMockBaseUri = (ramlContent, baseUri) => (dispatch) => {
+  let addNewline = true
+
+  let newContent = ramlContent.split('\n').map(line => {
+    if (line.trim().startsWith('baseUri')) {
+      addNewline = false
+      return baseMockUri(baseUri, line)
+    } else return line
+  }).join('\n')
+
+  if (addNewline) {
+    newContent = ramlContent.slice(0, ramlContent.indexOf('\n') + 1) + baseMockUri(baseUri, '\n') +
+      ramlContent.slice(ramlContent.indexOf('\n') + 1, ramlContent.length)
+  }
+
+  dispatch(updateCurrentFile(newContent))
+}
 
 export const createMock = () => (dispatch, getState) => {
   const file = getCurrentFilePath(getState()).toString()
@@ -54,7 +73,6 @@ export const createMock = () => (dispatch, getState) => {
       console.error(err)
       dispatch(stopMock)
     })
-
   }
 }
 
@@ -67,32 +85,8 @@ export const updateMock = () => (dispatch, getState) => {
     const ramlContent = getCurrentFileContent(getState())()
     //@@TODO GET editor.parsedObject from a function!!
     const jsonObject = getState().editor.parsedObject
-    mock.updateMock(m.id,m.manageKey, ramlContent, jsonObject)
+    mock.updateMock(m.id, m.manageKey, ramlContent, jsonObject)
   }
-}
-
-const baseMockUri = (baseUri, line) => {
-  return 'baseUri: ' + baseUri + " # " + line
-}
-
-
-const addMockBaseUri = (ramlContent, baseUri) => (dispatch) => {
-  let addNewline = true
-
-  let newContent = ramlContent.split('\n').map(line => {
-    if (line.trim().startsWith('baseUri')) {
-      addNewline = false
-      return baseMockUri(baseUri, line)
-    } else return line
-  }).join('\n')
-
-  if (addNewline) {
-    newContent = ramlContent.slice(0, ramlContent.indexOf('\n') + 1) + baseMockUri(baseUri, '\n') +
-      ramlContent.slice(ramlContent.indexOf('\n') + 1, ramlContent.length)
-  }
-
-
-  dispatch(updateCurrentFile(newContent))
 }
 
 const removeMockBaseUri = (ramlContent, baseUri) => (dispatch) => {
@@ -116,7 +110,7 @@ const removeMockBaseUri = (ramlContent, baseUri) => (dispatch) => {
   dispatch(updateCurrentFile(newContent))
 }
 
-export const deleteMock = ()  => (dispatch, getState) => {
+export const deleteMock = () => (dispatch, getState) => {
   const file = getCurrentFilePath(getState()).toString()
   const state = getState().mock;
   const m = state.find(c => c.file === file)

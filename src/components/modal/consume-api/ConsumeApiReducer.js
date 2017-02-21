@@ -52,6 +52,7 @@ export default (state = initialState, action: any) => {
         ...state,
         isMock: action.payload
       }
+    default:
+      return state
   }
-  return state
 }
