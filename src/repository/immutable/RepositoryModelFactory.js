@@ -3,9 +3,7 @@
 import {List} from 'immutable'
 
 import Path from '../Path'
-import File from '../File'
-import Element from '../Element'
-import Directory from '../Directory'
+import {Element, File, Directory} from '../Element'
 import Repository from '../Repository'
 import {FileModel, DirectoryModel, RepositoryModel, ElementModel} from './RepositoryModel'
 
@@ -17,7 +15,7 @@ class RepositoryModelFactory {
   }
 
   static directoryModel(directory: Directory): DirectoryModel {
-    const children = List.of(... directory.children)
+    const children = List.of(...directory.children)
       .map((element) => RepositoryModelFactory.elementModel(element))
       .toList()
 

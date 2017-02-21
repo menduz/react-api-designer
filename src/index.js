@@ -70,10 +70,10 @@ const store = createStore(
 
 // Load Repository
 
-const baseUrl = localStorage.getItem('baseUrl')
-const projectId = localStorage.getItem('projectId')
-const ownerId = localStorage.getItem('ownerId')
-const organizationId = localStorage.getItem('organizationId')
+const baseUrl = localStorage.getItem('baseUrl') // || 'https://dev.anypoint.mulesoft.com/designcenter/api-designer'
+const projectId = localStorage.getItem('projectId') // || 'f69c9a09-0a17-44fe-860a-b076a44c31b8'
+const ownerId = localStorage.getItem('ownerId') // || 'd365610a-8e56-42da-a3fc-73b548371cc6'
+const organizationId = localStorage.getItem('organizationId') // || 'b13cbf39-787d-4d1f-9c72-22275ecc0d59'
 
 const fileSystem = baseUrl && projectId && ownerId && organizationId ?
   new VcsFileSystem(new VcsRemoteApi(baseUrl, projectId, ownerId, organizationId)):

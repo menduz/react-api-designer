@@ -14,7 +14,7 @@ import './Header.css';
 class Header extends Component {
 
   render() {
-    const {isParsing, projectName, theme, isModalOpen, openModal, clearModal, showInfoPanelTabs} = this.props
+    const {progress, projectName, theme, isModalOpen, openModal, clearModal, showInfoPanelTabs} = this.props
 
     const contextMenuOptions = [
       {
@@ -37,7 +37,7 @@ class Header extends Component {
           }
           <h2>{projectName || 'API designer'}</h2>
         </div>
-        <div className="Spinner-parser">{isParsing ? <Spinner size="s"/> : null}</div>
+        <div className="Spinner-parser">{progress ? <Spinner size="s"/> : null}</div>
         <div className="Right-header" data-testId="Right-header">
           <a className="export-menu" onClick={openModal.bind(this)} data-testId="Export-Button">
             <img src={exchangeIcon} height="20px"/>
@@ -65,9 +65,9 @@ class Header extends Component {
 }
 
 const mapStateToProps = state => {
-  const {editor, configuration, publishApi} = state
+  const {editor, repository, configuration, publishApi} = state
   return {
-    isParsing: editor.isParsing,
+    progress: editor.isParsing || repository.progress,
     theme: configuration.theme,
     showInfoPanelTabs: configuration.showInfoPanelTabs,
     isModalOpen: publishApi.isOpen

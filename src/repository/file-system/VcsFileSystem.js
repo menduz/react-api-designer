@@ -5,6 +5,50 @@ import {EntryMetadata, ContentData} from "../../vcs-api/VcsElements";
 
 import FileSystem from './FileSystem'
 import type {Path, Entry, FileData} from './FileSystem'
+import {fileEntry, folderEntry, ENTRY_SEPARATOR} from './FileSystem'
+
+class EntryFactory {
+  static fromBasicMetadata(elements: EntryMetadata[]) {
+    const children = EntryFactory.entriesInPath(elements, '', 0)
+    return folderEntry('', ENTRY_SEPARATOR, children)
+  }
+
+  static entriesInPath(items: EntryMetadata[], path: string, level: number): Entry[] {
+    if (items.length === 0) return []
+
+    const deeperItems = items
+      .filter(e => e.pathMembers().length > level + 1)
+
+    const validItems = items
+      .filter(e => e.pathMembers().length === level + 1)
+      .filter(f => f.path.startsWith(path))
+
+    const folders: Entry[] = validItems
+      .filter(e => e.type === EntryMetadata.FOLDER)
+      .map(e => EntryFactory.folderEntry(e, deeperItems))
+
+    const files: Entry[] = validItems
+      .filter(e => e.type === EntryMetadata.FILE)
+      .map(e => EntryFactory.fileEntry(e))
+
+    return folders.concat(files)
+  }
+
+  static folderEntry(metadata: EntryMetadata, deeperItems: EntryMetadata[]): Entry {
+    const name = metadata.name();
+    const path = ENTRY_SEPARATOR + metadata.path;
+    const children = EntryFactory.entriesInPath(deeperItems, metadata.path, metadata.pathLength());
+
+    return folderEntry(name, path, children)
+  }
+
+  static fileEntry(metadata: EntryMetadata): Entry {
+    const name = metadata.name();
+    const path = ENTRY_SEPARATOR + metadata.path;
+
+    return fileEntry(name, path)
+  }
+}
 
 class VcsFileSystem extends FileSystem {
   _vcsApi: VcsRemoteApi
@@ -45,49 +89,6 @@ class VcsFileSystem extends FileSystem {
   rename(source: Path, destination: Path, isDirectory: boolean) {
     if (isDirectory) return Promise.resolve()
     return this._vcsApi.moveFile(source, destination)
-  }
-}
-
-class EntryFactory {
-  static fromBasicMetadata(elements: EntryMetadata[]) {
-    const children = EntryFactory.entriesInPath(elements, '', 0)
-    return Entry.folder('', Entry.SEPARATOR, children)
-  }
-
-  static entriesInPath(items: EntryMetadata[], path: string, level: number): Entry[] {
-    if (items.length === 0) return []
-
-    const deeperItems = items
-      .filter(e => e.pathMembers().length > level + 1)
-
-    const validItems = items
-      .filter(e => e.pathMembers().length === level + 1)
-      .filter(f => f.path.startsWith(path))
-
-    const folders: Entry[] = validItems
-      .filter(e => e.type === EntryMetadata.FOLDER)
-      .map(e => EntryFactory.folderEntry(e, deeperItems))
-
-    const files: Entry[] = validItems
-      .filter(e => e.type === EntryMetadata.FILE)
-      .map(e => EntryFactory.fileEntry(e))
-
-    return folders.concat(files)
-  }
-
-  static folderEntry(metadata: EntryMetadata, deeperItems: EntryMetadata[]): Entry {
-    const name = metadata.name();
-    const path = Entry.SEPARATOR + metadata.path;
-    const children = EntryFactory.entriesInPath(deeperItems, metadata.path, metadata.pathLength());
-
-    return Entry.folder(name, path, children)
-  }
-
-  static fileEntry(metadata: EntryMetadata): Entry {
-    const name = metadata.name();
-    const path = Entry.SEPARATOR + metadata.path;
-
-    return Entry.file(name, path)
   }
 }
 

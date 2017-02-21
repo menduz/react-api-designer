@@ -4,15 +4,11 @@ import FileSystem from './file-system/FileSystem'
 import type {Entry} from './file-system/FileSystem'
 
 import Path from './Path'
-import File from './File'
-import Element from './Element'
-import Directory from './Directory'
+import {Element, File, Directory} from './Element'
 import ElementFactory from './ElementFactory'
 import ZipHelper from './helper/ZipHelper'
 import {zipArrays} from './helper/utils'
 import type {Tuple} from './helper/utils'
-
-export type SaveResult = {repository: Repository, file: File, content: string}
 
 export default class Repository {
   _fileSystem: FileSystem
@@ -61,7 +57,7 @@ export default class Repository {
     return file.save(this._fileSystem)
   }
 
-  saveFiles(files: File[], currentFile: Path): Promise<SaveResult> {
+  saveFiles(files: File[], currentFile: ?Path): Promise<SaveResult> {
     return Promise.all(files.map(file => file.getContent()))
       .then(contents => {
         const tuples: Tuple<File, string>[] = zipArrays(files, contents)
@@ -72,16 +68,16 @@ export default class Repository {
       }).then(entry => {
         files.forEach(f => f.clear())
         const repository = this._updateDirectory(ElementFactory.directory(this._fileSystem, entry))
-        const newFile = this.getFileByPath(currentFile)
-        if (!newFile) throw new Error('File no longer exists')
 
+        const newFile = currentFile ? this.getFileByPath(currentFile) : null
+        if (!newFile) return {repository}
         return newFile.getContent()
           .then(c => ({repository, file: newFile, content: c}))
       })
   }
 
-  saveAll(): Promise<Repository> {
-    return this.saveFiles(this._getDirtyFiles())
+  saveAll(currentFile: ?Path): Promise<Repository> {
+    return this.saveFiles(this._getDirtyFiles(), currentFile)
   }
 
   rename(path: string, newName: string): Promise<Element> {
@@ -188,3 +184,5 @@ export default class Repository {
     return this
   }
 }
+
+export type SaveResult = {repository: Repository, file: File, content: string}

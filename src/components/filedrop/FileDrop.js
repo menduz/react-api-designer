@@ -23,7 +23,7 @@ class FileDrop extends React.Component {
 
   onDragOver(event) {
     const dt = event.dataTransfer;
-    if (dt && dt.types && Array.prototype.indexOf.call(dt.types, "Files") != -1) {
+    if (dt && dt.types && Array.prototype.indexOf.call(dt.types, "Files") !== -1) {
       dt.dropEffect = 'copy'
       window.clearTimeout(this.dragTimer);
       this.dragOverElem.classList.add('active');

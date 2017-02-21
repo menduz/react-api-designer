@@ -16,12 +16,12 @@ class VcsRemoteApi extends RemoteApi {
       .then(elements => elements.map(EntryMetadata.fromObject))
   }
 
-  file(path: string): Promise {
-    return this._get(['files', VcsRemoteApi.vcsPathForUri(path)])
+  file(path: string): Promise<string> {
+    return this._get(['files', VcsRemoteApi.vcsPathForUri(path)], false)
   }
 
   deleteFile(path: string): Promise {
-    return this._delete(['files', VcsRemoteApi.vcsPathForUri(path)])
+    return this._delete(['files', VcsRemoteApi.vcsPathForUri(path)], false)
   }
 
   moveFile(from: string, to: string): Promise {

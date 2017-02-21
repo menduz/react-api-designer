@@ -14,38 +14,53 @@ class RemoteApi {
     this.authorization = authorization
   }
 
-  _get(pathElements: string[]): Promise {
-    return this._request(GET, pathElements)
+  _get(pathElements: string[], jsonResult: ?boolean): Promise {
+    return this._request(GET, pathElements, undefined, jsonResult)
   }
 
-  _delete(pathElements: string[]): Promise {
-    return this._request(DELETE, pathElements)
+  _delete(pathElements: string[], jsonResult: ?boolean): Promise {
+    return this._request(DELETE, pathElements, undefined, jsonResult)
   }
 
-  _post(pathElements: string[], body: {}): Promise {
-    return this._request(POST, pathElements, body)
+  _post(pathElements: string[], body: {}, jsonResult: ?boolean): Promise {
+    return this._request(POST, pathElements, body, jsonResult)
   }
 
-  _request(method, pathElements, body: {}): Promise {
+  _request(method, pathElements, body: {}, jsonResult: ?boolean): Promise {
     return new Promise((resolve, reject) => {
       const url = this._url(pathElements);
       const headers = this._vcsHeaders();
-      request(RemoteApi.requestOptions(method, url, headers, body),
+      request(RemoteApi.requestOptions(method, url, headers, body, jsonResult),
         (error, response, body) => {
           if (error) reject(error)
-          else resolve(RemoteApi._resolveBody(body))
+          else if (RemoteApi._isError(response)) reject(RemoteApi._extractError(response))
+          else resolve(RemoteApi._resolveBody(body, jsonResult))
         })
     });
   }
 
-  static _resolveBody(body) {
-    if (body === undefined && body === null) return
-    if (typeof body === 'object') return body
+  static _resolveBody(body, jsonResult: ?boolean) {
+    if (body === undefined || body === null || body === '') return
     try {
-      return RemoteApi._resolveBody(JSON.parse(body))
+      if (typeof body === 'object')
+        return jsonResult === false ? JSON.stringify(body, null, 2) : body
+
+      return RemoteApi._resolveBody(JSON.parse(body), jsonResult)
     } catch (e) {
       return body
     }
+  }
+
+  static _extractError(response) {
+    return {
+      status: response.statusCode,
+      statusText: response.statusText,
+      body: response.body
+    }
+  }
+
+  static _isError(response) {
+    return response.statusCode < 200 || response.statusCode >= 300
   }
 
   _url(elements): string {
@@ -64,11 +79,12 @@ class RemoteApi {
     }
   }
 
-  static requestOptions(method: string, url: string, headers: {}, body: {}) {
+  static requestOptions(method: string, url: string, headers: {}, body: {}, jsonResult: boolean = true) {
     return {
       method: method,
       uri: url,
-      json: body,
+      json: jsonResult,
+      body: body || {},
       headers: headers
     }
   }

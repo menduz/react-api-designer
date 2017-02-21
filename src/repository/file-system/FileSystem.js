@@ -148,20 +148,20 @@ export type Entry = {
   children: ?Entry[],
 }
 
-Entry.folder = (name: string, path: Path, children: Entry[]): Entry => {
-  return { name, path, children, type: 'folder'}
+
+export const EntryFolder = 'folder'
+export const EntryFile = 'file'
+export const ENTRY_SEPARATOR = '/'
+
+export const folderEntry = (name: string, path: Path, children: Entry[]): Entry => {
+  return { name, path, children, type: EntryFolder}
 }
 
-Entry.file = (name: string, path: Path): Entry => {
-  return { name, path, type: 'file'}
+export const fileEntry = (name: string, path: Path): Entry => {
+  return { name, path, type: EntryFile}
 }
-
-Entry.SEPARATOR = '/'
 
 export type FileData = {
   path: string,
   content: string
 }
-
-export const EntryFolder = 'folder'
-export const EntryFile = 'file'
