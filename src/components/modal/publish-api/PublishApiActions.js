@@ -9,14 +9,12 @@ export const SUCCESSFULLY_FETCH = 'publishApi/SUCCESSFULLY_FETCH'
 export const PUBLISH_ERROR = 'publishApi/PUBLISH_ERROR'
 export const REMOVE_TAG = 'publishApi/REMOVE_TAG'
 export const ADD_TAG = 'publishApi/ADD_TAG'
+export const PUBLISH_BOTH_APIS = 'publishApi/PUBLISH_BOTH_APIS'
 
+import * as constants from './PublishApiConstants'
 import type {GetState} from '../../../types'
 import PublishRemoteApi from "../../../remote-api/PublishRemoteApi"
 import type {PublishApiResponse} from "../../../remote-api/PublishRemoteApi"
-
-export const openModal = () => ({
-  type: OPEN
-})
 
 export const clear = () => ({
   type: CLEAR
@@ -31,14 +29,14 @@ export const startFetching = () => ({
   type: START_FETCHING
 })
 
-export const successfullyFetched = (link: string) => ({
+export const successfullyFetched = (response: string, source: string) => ({
   type: SUCCESSFULLY_FETCH,
-  payload: {link}
+  payload: {response, source}
 })
 
-export const errorOnPublish = (error: string) => ({
+export const errorOnPublish = (error: string, source: string) => ({
   type: PUBLISH_ERROR,
-  payload: {error}
+  payload: {error, source}
 })
 
 export const removeTag = (tag: string) => ({
@@ -51,19 +49,63 @@ export const addTag = (tag: string) => ({
   payload: {tag}
 })
 
+export const togglePublishBothApis = (publishBoth: boolean) => ({
+  type: PUBLISH_BOTH_APIS,
+  payload: {publishBoth}
+})
+
 type Dispatch = (a: any) => void
 
-export const publish = (name: string, version: string, tags: Array<string>) =>
-  (dispatch: Dispatch, getState: GetState) => {
-    dispatch(startFetching())
-
-    const dataProvider = selectors.getRemoteApiDataProvider(getState());
+export const openModal = () => {
+  return (dispatch: Dispatch, getState, {dataProvider}: XApiDataProvider) => {
     const remoteApi = new PublishRemoteApi(dataProvider)
-    remoteApi.createVersion(name, version, tags)
-      .then((response: PublishApiResponse) => {
-        dispatch(successfullyFetched(response.apiName))
-      }).catch((error) => {
-        console.error(error)
-        dispatch(errorOnPublish('An error has occurred while publishing.'))
+    remoteApi.getLastVersion()
+      .then((lastVersion) => {
+        Object.keys(lastVersion).forEach((key) => {
+          dispatch(changeValue(key, lastVersion[key]))
+        })
+        dispatch({type: OPEN})
+      })
+      .catch((error) => {
+        console.log("")
+        dispatch({type: OPEN})
       })
   }
+}
+
+const formatErrorMessage = (error: any, source: string) => {
+  return `An error has occurred while publishing in ${source}: ${error && error.body ? error.body.message + '. Status: ' + error.status : ''}`;
+}
+
+export const publish = (name: string, version: string, tags: Array<string>, mainFile: string,
+                        assetId: string, groupId: string, platform: boolean, exchange: boolean) => {
+  return (dispatch: Dispatch, getState: GetState) => {
+    dispatch(startFetching())
+    const dataProvider = selectors.getRemoteApiDataProvider(getState());
+    const remoteApi = new PublishRemoteApi(dataProvider)
+
+    if (platform) {
+      //publishing to platform
+      remoteApi.publishToPlatform(name, version, tags)
+        .then((response: PublishApiResponse) => {
+          dispatch(successfullyFetched(response, constants.PLATFORM))
+        })
+        .catch((error) => {
+          console.error(error)
+          dispatch(errorOnPublish(formatErrorMessage(error, constants.PLATFORM), constants.PLATFORM))
+        })
+    }
+
+    if (exchange) {
+      //publishing to exchange
+      remoteApi.publishToExchange(name, version, tags, mainFile, assetId, groupId)
+        .then((response: PublishApiResponse) => {
+          dispatch(successfullyFetched(response, constants.EXCHANGE))
+        })
+        .catch((error) => {
+          console.error(error)
+          dispatch(errorOnPublish(formatErrorMessage(error, constants.EXCHANGE), constants.EXCHANGE))
+        })
+    }
+  }
+}

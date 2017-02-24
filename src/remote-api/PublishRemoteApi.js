@@ -1,25 +1,23 @@
 import {SEPARATOR} from './RemoteApi'
 import RemoteApi from './RemoteApi'
 
-class PublishApiRemoteApi extends RemoteApi {
+class PublishRemoteApi extends RemoteApi {
 
-  versions(name: string): Promise {
-    return this._get(['api', name])
+  getLastVersion(): Promise<ApiVersionResponse> {
+    return this._get(['getLastVersion'], {})
   }
 
-  createVersion(name: string, version: string, tags: Array<string>): Promise<PublishApiResponse> {
-    return this._post(['api', name, version], {tags})
+  publishToExchange(name: string, version: string, tags: Array<string>,
+                    main: string, assetId: string, groupId: string): Promise<PublishApiResponse> {
+    return this._post(['publish', 'exchange'], {name, version, tags, main, assetId, groupId})
+  }
+
+  publishToPlatform(name: string, version: string, tags: Array<string>): Promise<PublishApiResponse> {
+    return this._post(['publish', 'platform'], {name, version, tags})
   }
 
   get baseUrl() {
     return [super.baseUrl, 'projects', this.projectId].join(SEPARATOR)
-  }
-
-  _headers() {
-    return {
-      ...super._headers(),
-      'apiplatform-organization-id': this.organizationId
-    }
   }
 }
 
@@ -30,4 +28,12 @@ export type PublishApiResponse = {
   versionName: string
 }
 
-export default PublishApiRemoteApi
+export type ApiVersionResponse = {
+  assetId: ?string,
+  groupId: ?string,
+  apiName: ?string,
+  main: ?string,
+  version: ?string
+}
+
+export default PublishRemoteApi
