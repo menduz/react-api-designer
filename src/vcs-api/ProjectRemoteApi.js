@@ -1,9 +1,10 @@
 import ExchangeApi from './ExchangeApi'
+import type {XApiDataProvider} from 'XApiDataProvider'
 
 class ProjectRemoteApi extends ExchangeApi {
 
-  constructor(baseUrl: string, ownerId: string, organizationId: string) {
-    super(baseUrl, ownerId, organizationId)
+  constructor(data: XApiDataProvider) {
+    super(data)
   }
 
   createProject(project: ProjectDefinition): Promise<CreateProjectResponse> {

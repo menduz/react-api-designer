@@ -1,12 +1,12 @@
 import {SEPARATOR} from './RemoteApi'
 import ExchangeApi from './ExchangeApi'
 import {PathMetadata, EntryMetadata, ContentData} from './VcsElements'
+import type {XApiDataProvider} from 'XApiDataProvider'
 
 class VcsRemoteApi extends ExchangeApi {
 
-  constructor(baseUrl: string, projectId: string, ownerId: string, organizationId: string) {
-    super(baseUrl, ownerId, organizationId)
-    this.projectId = projectId
+  constructor(dataProvider: XApiDataProvider) {
+    super(dataProvider)
   }
 
   /**

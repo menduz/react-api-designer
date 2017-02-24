@@ -7,8 +7,7 @@ import {getAll} from './PublishApiSelectors'
 import PublishApiModal from './PublishApiModal'
 
 import type {State} from "./PublishApiModel"
-import {changeValue, publish, clear, removeTag, addTag} from "./PublishApiActions"
-import PublishApiRemoteApi from "../../../vcs-api/PublishApiRemoteApi"
+import {changeValue, publish, clear, removeTag, addTag, togglePublishBothApis} from "./PublishApiActions"
 
 type ContainerProps = {
   onClose: () => void,
@@ -21,7 +20,11 @@ type ContainerProps = {
 
 const mapState = (rootState) => {
   const state: State = getAll(rootState)
+  const {configuration} = rootState
   return {
+    groupId: state.form['groupId'],
+    assetId: state.form['assetId'],
+    main: state.form['main'],
     name: state.form['name'],
     version: state.form['version'],
     tag: state.form['tag'],
@@ -29,25 +32,26 @@ const mapState = (rootState) => {
     isFetching: state.isFetching,
     isFetched: state.isFetched,
     link: state.link,
-    error: state.error
+    error: state.error,
+    publishToBothApis: state.publishToBothApis,
+    publishToExchange: configuration.publishToExchange
   }
 }
 
 const mapDispatch = (dispatch, props: ContainerProps) => {
-  const remoteApi = new PublishApiRemoteApi(
-    props.baseUrl,
-    props.projectId,
-    props.ownerId,
-    props.organizationId,
-    props.authorization)
-
   return {
+    onPublishToBothApis: (publishBoth: boolean) => dispatch(togglePublishBothApis(publishBoth)),
     onTagChange: (tag: string) => dispatch(changeValue('tag', tag)),
     onTagRemove: (tag: string) => dispatch(removeTag(tag)),
     onSubmitTag: (tag: string) => dispatch(addTag(tag)),
     onNameChange: (name: string) => dispatch(changeValue('name', name)),
     onVersionChange: (version: string) => dispatch(changeValue('version', version)),
-    onSubmit: (name: string, version: string, tags: Array<string>) => dispatch(publish(remoteApi, name, version, tags)),
+    onAssetIdChange: (assetId: string) => dispatch(changeValue('assetId', assetId)),
+    onGroupIdChange: (groupId: string) => dispatch(changeValue('groupId', groupId)),
+    onMainFileChange: (main: string) => dispatch(changeValue('main', main)),
+    onSubmit: (name: string, version: string, tags: Array<string>, main: string, assetId: string, groupId: string,
+               platform: boolean, exchange: boolean) =>
+      dispatch(publish(name, version, tags, main, assetId, groupId, platform, exchange)),
     onCancel: () => {
       dispatch(clear())
       if (props.onClose) props.onClose()
@@ -58,12 +62,7 @@ const mapDispatch = (dispatch, props: ContainerProps) => {
 const PublishApiModalContainer = connect(mapState, mapDispatch)(PublishApiModal)
 
 PublishApiModalContainer.propTypes = {
-  onClose: React.PropTypes.func.isRequired,
-  baseUrl: React.PropTypes.string,
-  projectId: React.PropTypes.string,
-  ownerId: React.PropTypes.string,
-  organizationId: React.PropTypes.string,
-  authorization: React.PropTypes.string
+  onClose: React.PropTypes.func.isRequired
 }
 
-export default PublishApiModalContainer
+export default connect(mapState, mapDispatch)(PublishApiModal)

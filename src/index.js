@@ -29,6 +29,7 @@ import publishApi from './components/modal/publish-api'
 import VcsFileSystem from './repository/file-system/VcsFileSystem'
 import VcsRemoteApi from './vcs-api/VcsRemoteApi'
 import consumeApi from './components/modal/consume-api'
+import {localStorageDataProvider} from './vcs-api/XApiDataProvider'
 
 const repositoryContainer: RepositoryContainer = {
   repository: undefined,
@@ -38,9 +39,11 @@ const repositoryContainer: RepositoryContainer = {
 const repositoryMock = new FileProvider(repositoryContainer)
 const worker = new WebWorker(repositoryMock)
 
+
 let thunkMiddleware = thunk.withExtraArgument({
   worker,
-  repositoryContainer
+  repositoryContainer,
+  dataProvider: localStorageDataProvider
 })
 
 const middleware = [thunkMiddleware]
@@ -71,15 +74,9 @@ const store = createStore(
 )
 
 // Load Repository
-
-const baseUrl = localStorage.getItem('baseUrl') // || 'https://dev.anypoint.mulesoft.com/designcenter/api-designer'
-const projectId = localStorage.getItem('projectId') // || 'f69c9a09-0a17-44fe-860a-b076a44c31b8'
-const ownerId = localStorage.getItem('ownerId') // || 'd365610a-8e56-42da-a3fc-73b548371cc6'
-const organizationId = localStorage.getItem('organizationId') // || 'b13cbf39-787d-4d1f-9c72-22275ecc0d59'
-
-const fileSystem = baseUrl && projectId && ownerId && organizationId ?
-  new VcsFileSystem(new VcsRemoteApi(baseUrl, projectId, ownerId, organizationId)):
-  new LocalStorageFileSystem()
+const fileSystem = localStorageDataProvider.projectId()
+  ? new VcsFileSystem(new VcsRemoteApi(localStorageDataProvider))
+  : new LocalStorageFileSystem()
 
 Repository.fromFileSystem(fileSystem)
   .then((repository) => {

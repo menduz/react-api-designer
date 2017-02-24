@@ -1,4 +1,5 @@
 import RemoteApi from './RemoteApi'
+import type {XApiDataProvider} from 'XApiDataProvider'
 
 export default class ConsumeRemoteApi extends RemoteApi {
 
@@ -9,6 +10,7 @@ export default class ConsumeRemoteApi extends RemoteApi {
 
   _headers() {
     return {
+      ...super._headers(),
       'content-type': 'application/json',
       'accept': 'application/json'
     }

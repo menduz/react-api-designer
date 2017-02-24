@@ -2,6 +2,7 @@
 
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
+
 import exchangeIcon from './assets/PublishExchangeIcon.svg'
 import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
 import Icon from '@mulesoft/anypoint-icons/lib/Icon'
@@ -9,7 +10,7 @@ import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
 import {actions as configActions} from './index'
 import supportMenuOptions from './assets/supportOptionsData.json'
 import publishApi from '../modal/publish-api'
-import Storage from '../../Storage'
+
 import './Header.css';
 
 class Header extends Component {
@@ -17,7 +18,7 @@ class Header extends Component {
   render() {
     const {
       progress, projectName, theme, isExchangeOpen, openExchangeModal, clearExchangeModal,
-      showInfoPanelTabs, isConsumeMode, isExchangeMode
+      showInfoPanelTabs, isConsumeMode, isExchangeMode, publishToExchange
     } = this.props
 
     const contextMenuOptions = [
@@ -33,6 +34,9 @@ class Header extends Component {
       }, {
         label: `${isExchangeMode ? 'Disable' : 'Enable'} Exchange Mode`,
         onClick: this.props.toggleExchangeMode.bind(this, !isExchangeMode)
+      }, {
+        label: `${publishToExchange ? 'Disable' : 'Enable'} Publish to Exchange`,
+        onClick: this.props.togglePublishExchange.bind(this, !publishToExchange)
       }
     ]
 
@@ -68,12 +72,7 @@ class Header extends Component {
           </ContextMenu>
         </div>
         {isExchangeOpen ?
-          <PublishApiModalContainer onClose={() => {}}
-                                    onCancel={clearExchangeModal.bind(this)}
-                                    baseUrl={Storage.getValue('baseUrl', '')}
-                                    ownerId={Storage.getValue('ownerId', '')}
-                                    organizationId={Storage.getValue('organizationId', '')}
-                                    projectId={Storage.getValue('projectId', '')}/>
+          <PublishApiModalContainer onClose={() => {}} onCancel={clearExchangeModal.bind(this)}/>
           : null
         }
       </div>
@@ -89,7 +88,8 @@ const mapStateToProps = state => {
     showInfoPanelTabs: configuration.showInfoPanelTabs,
     isExchangeOpen: publishApi.isOpen,
     isConsumeMode: configuration.isConsumeMode,
-    isExchangeMode: configuration.isExchangeMode
+    isExchangeMode: configuration.isExchangeMode,
+    publishToExchange: configuration.publishToExchange
   }
 }
 
@@ -100,7 +100,8 @@ const mapDispatchToProps = dispatch => {
     clearExchangeModal: () => dispatch(publishApi.actions.clear()),
     changeShowInfoPanelTabs: (showTabs: boolean) => dispatch(configActions.showInfoPanelTabs(showTabs)),
     toggleConsumeMode: (changeMode: boolean) => dispatch(configActions.changeConsumeMode(changeMode)),
-    toggleExchangeMode: (changeMode: boolean) => dispatch(configActions.changeExchangeMode(changeMode))
+    toggleExchangeMode: (changeMode: boolean) => dispatch(configActions.changeExchangeMode(changeMode)),
+    togglePublishExchange: (changeMode: boolean) => dispatch(configActions.changePublishExchange(changeMode))
   }
 }
 

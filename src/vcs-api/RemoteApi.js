@@ -1,4 +1,5 @@
 import request from 'browser-request'
+import type {XApiDataProvider} from 'XApiDataProvider'
 
 const POST = 'POST'
 const GET = 'GET'
@@ -6,12 +7,28 @@ const DELETE = 'DELETE'
 export const SEPARATOR = '/'
 
 class RemoteApi {
+  constructor(dataProvider: XApiDataProvider) {
+    this.dataProvider = dataProvider
+  }
 
-  constructor(baseUrl: string, ownerId: string, organizationId: string, authorization?: string) {
-    this.baseUrl = baseUrl
-    this.ownerId = ownerId
-    this.organizationId = organizationId
-    this.authorization = authorization
+  get baseUrl() {
+    return this.dataProvider.baseUrl()
+  }
+
+  get ownerId() {
+    return this.dataProvider.ownerId()
+  }
+
+  get organizationId() {
+    return this.dataProvider.organizationId()
+  }
+
+  get authorization() {
+    return this.dataProvider.authorization()
+  }
+
+  get projectId() {
+    return this.dataProvider.projectId()
   }
 
   _get(pathElements: string[], jsonResult: ?boolean): Promise {
@@ -29,7 +46,7 @@ class RemoteApi {
   _request(method, pathElements, body: {}, jsonResult: ?boolean): Promise {
     return new Promise((resolve, reject) => {
       const url = this._url(pathElements)
-      const headers = this._vcsHeaders()
+      const headers = this._headers()
       request(RemoteApi.requestOptions(method, url, headers, body, jsonResult),
         (error, response, body) => {
           if (error) reject(error)
@@ -71,7 +88,7 @@ class RemoteApi {
     return this.baseUrl
   }
 
-  _vcsHeaders() {
+  _headers() {
     return {
       'x-owner-id': this.ownerId,
       'x-organization-id': this.organizationId,

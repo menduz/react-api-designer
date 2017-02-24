@@ -2,13 +2,66 @@
 
 import * as actions from './PublishApiActions'
 import type {State} from  './PublishApiModel'
+import * as constants from './PublishApiConstants'
 
 const initialState: State = {
   form: {tags: new Set()},
-  isFetching: false,
-  isFetched: false,
-  isOpen: false
+  isFetching: {
+    [constants.EXCHANGE]: false,
+    [constants.PLATFORM]: false
+  },
+  isFetched: {
+    [constants.EXCHANGE]: false,
+    [constants.PLATFORM]: false
+  },
+  link: {
+    [constants.EXCHANGE]: undefined,
+    [constants.PLATFORM]: undefined
+  },
+  error: {
+    [constants.EXCHANGE]: undefined,
+    [constants.PLATFORM]: undefined
+  },
+  isOpen: false,
+  publishToBothApis: false
 }
+
+//TODO CHANGE LINK FOR RESPONSE
+const successfullyFetchState = (state, response, source) => ({
+    ...state,
+    isFetching: {
+      ...state.isFetching,
+      [source]: false
+    },
+    isFetched: {
+      ...state.isFetched,
+      [source]: true
+    },
+    link: {
+      ...state.link,
+      [source]: response
+    }
+  })
+
+const errorState = (state, error, source) => ({
+    ...state,
+    isFetching: {
+      ...state.isFetching,
+      [source]: false
+    },
+    isFetched: {
+      ...state.isFetched,
+      [source]: false
+    },
+    link: {
+      ...state.link,
+      [source]: undefined
+    },
+    error: {
+      ...state.error,
+      [source]: error
+    }
+  })
 
 export default (state: State = initialState, action: any): State => {
   switch (action.type) {
@@ -30,25 +83,45 @@ export default (state: State = initialState, action: any): State => {
     case actions.START_FETCHING:
       return {
         ...state,
-        isFetching: true,
-        isFetched: false,
-        link: undefined,
-        error: undefined
+        isFetching: {
+          [constants.EXCHANGE]: true,
+          [constants.PLATFORM]: true
+        },
+        isFetched: {
+          [constants.EXCHANGE]: false,
+          [constants.PLATFORM]: false
+        },
+        link: {
+          [constants.EXCHANGE]: undefined,
+          [constants.PLATFORM]: undefined
+        },
+        error: {
+          [constants.EXCHANGE]: undefined,
+          [constants.PLATFORM]: undefined
+        },
+      }
+    case actions.PUBLISH_BOTH_APIS:
+      return {
+        ...state,
+        publishToBothApis: action.payload.publishBoth
       }
     case actions.SUCCESSFULLY_FETCH:
-      return {
-        ...state,
-        isFetching: false,
-        isFetched: true,
-        link: action.payload.link
+      switch (action.payload.source) {
+        case constants.PLATFORM:
+          return successfullyFetchState(state, action.payload.response, constants.PLATFORM)
+        case constants.EXCHANGE:
+          return successfullyFetchState(state, action.payload.response, constants.EXCHANGE)
+        default:
+          return state
       }
     case actions.PUBLISH_ERROR:
-      return {
-        ...state,
-        isFetching: false,
-        isFetched: false,
-        link: undefined,
-        error: action.payload.error
+      switch (action.payload.source) {
+        case constants.PLATFORM:
+          return errorState(state, action.payload.error, constants.PLATFORM)
+        case constants.EXCHANGE:
+          return errorState(state, action.payload.error, constants.EXCHANGE)
+        default:
+          return state
       }
     case actions.ADD_TAG:
       const addTags = new Set(state.form['tags'] || [])

@@ -1,21 +1,10 @@
 import RemoteApi from './RemoteApi'
+import type {XApiDataProvider} from 'XApiDataProvider'
 
 class ExchangeApi extends RemoteApi {
 
-  constructor(baseUrl: string, ownerId: string, organizationId: string, authorization?: string) {
-    super(baseUrl)
-    this.baseUrl = baseUrl
-    this.ownerId = ownerId
-    this.organizationId = organizationId
-    this.authorization = authorization
-  }
-
-  _headers() {
-    return {
-      'x-owner-id': this.ownerId,
-      'x-organization-id': this.organizationId,
-      'Authorization': this.authorization
-    }
+  constructor(dataProvider: XApiDataProvider) {
+    super(dataProvider)
   }
 
   static vcsPath(path: string) {
