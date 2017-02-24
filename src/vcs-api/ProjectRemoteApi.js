@@ -2,10 +2,6 @@ import ExchangeApi from './ExchangeApi'
 
 class ProjectRemoteApi extends ExchangeApi {
 
-  constructor(baseUrl: string, ownerId: string, organizationId: string) {
-    super(baseUrl, ownerId, organizationId)
-  }
-
   createProject(project: ProjectDefinition): Promise<CreateProjectResponse> {
     return this._post(['projects'], project)
   }

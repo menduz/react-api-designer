@@ -3,17 +3,6 @@ import ExchangeApi from './ExchangeApi'
 
 class PublishApiRemoteApi extends ExchangeApi {
 
-  constructor(baseUrl: string,
-              projectId: string,
-              ownerId: string,
-              organizationId: string,
-              apiPlatformOrganizationId: string,
-              authorization: string) {
-    super(baseUrl, ownerId, organizationId, authorization)
-    this.projectId = projectId
-    this.apiPlatformOrganizationId = apiPlatformOrganizationId
-  }
-
   versions(name: string): Promise {
     return this._get(['api', name])
   }
@@ -27,12 +16,10 @@ class PublishApiRemoteApi extends ExchangeApi {
   }
 
   _headers() {
-    return Object.assign({},
-      super._headers(),
-      {
-        'apiplatform-organization-id': this.apiPlatformOrganizationId
-      }
-    )
+    return {
+      ...super._headers(),
+      'apiplatform-organization-id': this.organizationId
+    }
   }
 }
 

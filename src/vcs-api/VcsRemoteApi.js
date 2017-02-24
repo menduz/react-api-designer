@@ -4,15 +4,9 @@ import {PathMetadata, EntryMetadata, ContentData} from './VcsElements'
 
 class VcsRemoteApi extends ExchangeApi {
 
-  constructor(baseUrl: string, projectId: string, ownerId: string, organizationId: string) {
-    super(baseUrl, ownerId, organizationId)
-    this.projectId = projectId
-  }
-
   /**
    *  @return Promise with the files in the project
    */
-
   files(): Promise<EntryMetadata[]> {
     return this._get(['files'])
       .then(elements => elements.map(EntryMetadata.fromObject))

@@ -2,7 +2,6 @@
 
 import React from 'react'
 
-import {Header} from '../header'
 import Split from '../split/Split'
 import Menu from '../menu/files-menu/Menu'
 import DependencyMenu from '../menu/dependencies-menu/DependencyMenu'
@@ -15,7 +14,6 @@ import './App.css'
 
 const App = () => (
   <FileDrop className='App' testId="App">
-    <Header/>
     <Split id="leftSplit" minSize={150} defaultSize={200} className="App-content">
       <div className="LeftPanel">
         <Menu/>

@@ -9,6 +9,7 @@ export const PUBLISH_ERROR = 'publishApi/PUBLISH_ERROR'
 export const REMOVE_TAG = 'publishApi/REMOVE_TAG'
 export const ADD_TAG = 'publishApi/ADD_TAG'
 
+import type {GetState, ExtraArgs} from '../../../types/types'
 import PublishApiRemoteApi from "../../../vcs-api/PublishApiRemoteApi"
 import type {PublishApiResponse} from "../../../vcs-api/PublishApiRemoteApi"
 
@@ -51,16 +52,16 @@ export const addTag = (tag: string) => ({
 
 type Dispatch = (a: any) => void
 
-export const publish = (remoteApi: PublishApiRemoteApi, name: string, version: string, tags: Array<string>) => {
-  return (dispatch: Dispatch) => {
+export const publish = (name: string, version: string, tags: Array<string>) =>
+  (dispatch: Dispatch, getState: GetState, {contextProvider}: ExtraArgs) => {
     dispatch(startFetching())
 
+    const remoteApi = new PublishApiRemoteApi(contextProvider)
     remoteApi.createVersion(name, version, tags)
       .then((response: PublishApiResponse) => {
-          dispatch(successfullyFetched(response.apiName))
+        dispatch(successfullyFetched(response.apiName))
       }).catch((error) => {
         console.error(error)
         dispatch(errorOnPublish('An error has occurred while publishing.'))
       })
   }
-}

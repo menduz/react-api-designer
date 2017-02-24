@@ -9,6 +9,7 @@ export default class ConsumeRemoteApi extends RemoteApi {
 
   _headers() {
     return {
+      ...super._headers(),
       'content-type': 'application/json',
       'accept': 'application/json'
     }
