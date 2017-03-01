@@ -17,7 +17,7 @@ class Header extends Component {
           }
           <h2 data-test-id="Project-Name">{projectName || 'API designer'}</h2>
         </div>
-        <HeaderOptions/>
+        <HeaderOptions showAdvancedOptions={true}/>
       </div>
     )
   }
