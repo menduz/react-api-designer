@@ -20,17 +20,18 @@
 }
 
 .App-content .menu {
-  height: 35px;
-  border-bottom: 2px solid rgba(39, 47, 51, .1);
   padding-right: 17px;
   padding-left: 10px;
-  color: #8d8d8e;
-  background-color: white;
   display: inline-flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   font-family: "DIN Pro", sans-serif;
+
+  margin-bottom: 7px;
+  color: #58595a;
+  height: 50px;
+  background-color: #e8e9ea;
 }
 
 .App-content .menu .menu-name {

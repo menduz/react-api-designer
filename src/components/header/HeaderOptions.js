@@ -13,7 +13,7 @@ class HeaderOptions extends Component {
 
   render() {
     const {
-      progress, isExchangeOpen, clearExchangeModal, isExchangeMode
+      progress, isExchangeOpen, clearExchangeModal, isExchangeMode, showSupport
     } = this.props
 
     const {PublishApiModalContainer} = publishApi
@@ -41,12 +41,13 @@ class HeaderOptions extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
   const {editor, configuration, publishApi, repository} = state
   return {
     progress: editor.isParsing || repository.progress,
     isExchangeOpen: publishApi.isOpen,
-    isExchangeMode: configuration.isExchangeMode
+    isExchangeMode: configuration.isExchangeMode,
+    showSupport: ownProps.showSupport
   }
 }
 
