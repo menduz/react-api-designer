@@ -5,7 +5,7 @@ import TabPanel from '@mulesoft/anypoint-components/lib/TabPanel'
 import TabList from '@mulesoft/anypoint-components/lib/TabList'
 import Tab from '@mulesoft/anypoint-components/lib/Tab'
 import Tabs from '@mulesoft/anypoint-components/lib/Tabs'
-import Storage from '../../Storage'
+import Storage from '../../storage'
 import {connect} from 'react-redux'
 import './info.css'
 

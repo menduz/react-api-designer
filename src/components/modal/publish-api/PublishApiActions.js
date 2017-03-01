@@ -1,4 +1,5 @@
 // @flow
+import {selectors} from '../../../bootstrap'
 
 export const CLEAR = 'publishApi/CLEAR'
 export const OPEN = 'publishApi/OPEN'
@@ -9,9 +10,9 @@ export const PUBLISH_ERROR = 'publishApi/PUBLISH_ERROR'
 export const REMOVE_TAG = 'publishApi/REMOVE_TAG'
 export const ADD_TAG = 'publishApi/ADD_TAG'
 
-import type {GetState, ExtraArgs} from '../../../types/types'
-import PublishApiRemoteApi from "../../../vcs-api/PublishApiRemoteApi"
-import type {PublishApiResponse} from "../../../vcs-api/PublishApiRemoteApi"
+import type {GetState} from '../../../types'
+import PublishRemoteApi from "../../../remote-api/PublishRemoteApi"
+import type {PublishApiResponse} from "../../../remote-api/PublishRemoteApi"
 
 export const openModal = () => ({
   type: OPEN
@@ -53,10 +54,11 @@ export const addTag = (tag: string) => ({
 type Dispatch = (a: any) => void
 
 export const publish = (name: string, version: string, tags: Array<string>) =>
-  (dispatch: Dispatch, getState: GetState, {contextProvider}: ExtraArgs) => {
+  (dispatch: Dispatch, getState: GetState) => {
     dispatch(startFetching())
 
-    const remoteApi = new PublishApiRemoteApi(contextProvider)
+    const dataProvider = selectors.getRemoteApiDataProvider(getState());
+    const remoteApi = new PublishRemoteApi(dataProvider)
     remoteApi.createVersion(name, version, tags)
       .then((response: PublishApiResponse) => {
         dispatch(successfullyFetched(response.apiName))

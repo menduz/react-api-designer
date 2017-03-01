@@ -1,4 +1,4 @@
-import Storage from '../../Storage'
+import Storage from '../../storage'
 
 export const CHANGE_THEME = `DESIGNER/HEADER/CHANGE_THEME`
 export const SHOW_INFO_PANEL_TABS = `DESIGNER/HEADER/SHOW_TABS`

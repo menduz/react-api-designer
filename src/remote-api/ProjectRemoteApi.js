@@ -1,6 +1,6 @@
-import ExchangeApi from './ExchangeApi'
+import RemoteApi from './RemoteApi'
 
-class ProjectRemoteApi extends ExchangeApi {
+class ProjectRemoteApi extends RemoteApi {
 
   createProject(project: ProjectDefinition): Promise<CreateProjectResponse> {
     return this._post(['projects'], project)
@@ -11,7 +11,7 @@ class ProjectRemoteApi extends ExchangeApi {
   }
 
   deleteProject(projectId: string): Promise {
-    return this._delete(['projects', projectId])
+    return this._delete(['projects', projectId], false)
   }
 
   editProject(projectId: string, project: ProjectDefinition): Promise {

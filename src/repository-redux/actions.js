@@ -11,8 +11,9 @@ import {isValidDirectory, isValidFile, getFileTree} from './selectors'
 import {getCurrentFilePath} from '../components/editor/selectors'
 import {clean} from '../components/editor/actions'
 
-import type {Dispatch, GetState, ExtraArgs} from '../types/types'
+import type {Dispatch, GetState, ExtraArgs} from '../types'
 
+export const LOADING_FILE_SYSTEM = `DESIGNER/${PREFIX}/LOADING_FILE_SYSTEM`
 export const INIT_FILE_SYSTEM = `DESIGNER/${PREFIX}/INIT_FILE_SYSTEM`
 
 export const FILE_ADDED = `DESIGNER/${PREFIX}/FILE_ADDED`
@@ -44,6 +45,10 @@ export const FILE_CONTENT_UPDATE_FAILED = `DESIGNER/${PREFIX}/FILE_CONTENT_UPDAT
 export const FILE_MOVE_STARTED = `DESIGNER/${PREFIX}/FILE_MOVE_STARTED`
 export const FILE_MOVED = `DESIGNER/${PREFIX}/FILE_MOVE`
 export const FILE_MOVE_FAILED = `DESIGNER/${PREFIX}/FILE_MOVE_FAILED`
+
+export const loadingFileSystem = () => ({
+  type: LOADING_FILE_SYSTEM
+})
 
 export const initFileSystem = (fileTree: RepositoryModel) => ({
   type: INIT_FILE_SYSTEM,

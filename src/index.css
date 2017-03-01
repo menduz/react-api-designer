@@ -17,3 +17,8 @@ html {
 div[data-anypoint-component="Modal"] {
   min-width: 400px;
 }
+
+.DesignerStandalone .App-content {
+  padding-top: 60px;
+  z-index: -1;
+}

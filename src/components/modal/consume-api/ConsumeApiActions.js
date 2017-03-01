@@ -1,8 +1,7 @@
 import {List} from 'immutable'
 import {Fragment} from './Fragment'
-import ConsumeRemoteApi from '../../../vcs-api/ConsumeRemoteApi'
-import {URL} from './ConsumeApiConstants'
-import type {XApiDataProvider} from '../../../vcs-api/XApiDataProvider'
+import ConsumeRemoteApi from '../../../remote-api/ConsumeRemoteApi'
+import {selectors} from '../../../bootstrap'
 
 export const FRAGMENTS_CHANGED = 'CONSUME_API/FRAGMENTS_CHANGED'
 export const OPEN_MODAL = 'CONSUME_API/OPEN_MODAL'
@@ -80,7 +79,7 @@ export const handleFragmentSelection = (index: number, fragment: Fragment, selec
 export const searchFragments = (query: string) => {
   return (dispatch: Dispatch, getState) => {
     dispatch(isSearching(true))
-    var dataProvider : XApiDataProvider = {url: () => URL}
+    const dataProvider = selectors.getRemoteApiDataProvider(getState());
     const consumeRemoteApi = new ConsumeRemoteApi(dataProvider)
     const mockedExample: List<Fragment> = List.of(
       {

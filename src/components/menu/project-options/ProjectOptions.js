@@ -17,7 +17,7 @@ class ProjectOptions extends Component {
 
     const contextMenuOptions = [
       {
-        label: `${theme === 'vs' ? 'Dark' : 'Light'} Theme`,
+        label: `${theme === 'vs' ? 'Dark' : 'Light'} Editor`,
         onClick: this.props.changeTheme.bind(this, theme === 'vs' ? 'vs-dark' : 'vs')
       }, {
         label: `${showInfoPanelTabs ? 'No tabs' : 'Tabs'} for right Panel`,

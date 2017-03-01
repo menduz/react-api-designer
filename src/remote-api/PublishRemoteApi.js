@@ -1,7 +1,7 @@
 import {SEPARATOR} from './RemoteApi'
-import ExchangeApi from './ExchangeApi'
+import RemoteApi from './RemoteApi'
 
-class PublishApiRemoteApi extends ExchangeApi {
+class PublishApiRemoteApi extends RemoteApi {
 
   versions(name: string): Promise {
     return this._get(['api', name])
@@ -11,8 +11,8 @@ class PublishApiRemoteApi extends ExchangeApi {
     return this._post(['api', name, version], {tags})
   }
 
-  _baseProjectUrl(): string {
-    return [super._baseProjectUrl(), 'projects', this.projectId].join(SEPARATOR)
+  get baseUrl() {
+    return [super.baseUrl, 'projects', this.projectId].join(SEPARATOR)
   }
 
   _headers() {

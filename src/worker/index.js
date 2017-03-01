@@ -1,22 +1,32 @@
+import FileProvider from './FileProvider'
+
 export default class WebWorker {
 
-  constructor(fileRepository) {
-    const codeStr = `self.importScripts('${window.requireConfig.worker}')`
-    const codeBlob = new Blob([codeStr], {type: 'application/javascript'})
-    const codeUrl = URL.createObjectURL(codeBlob)
-    this.worker = new Worker(codeUrl)
-
+  constructor(fileRepository: FileProvider) {
     this.parsing = false
     this.parsingPending = new Map()
+    this.worker = WebWorker.init()
 
-    this._listen('requestFile', (req) => {
-      const path = req.path;
-      fileRepository.getFile(path).then(content => {
-        this._post('requestFile', {path, content})
-      }).catch(error => {
-        this._post('requestFile', {path, error})
+    if (this.worker) {
+      this._listen('requestFile', (req) => {
+        const path = req.path;
+        fileRepository.getFile(path).then(content => {
+          this._post('requestFile', {path, content})
+        }).catch(error => {
+          this._post('requestFile', {path, error})
+        })
       })
-    })
+    }
+  }
+
+  static init() {
+    const w = window
+    if (!w.requireConfig|| !w.Blob || !w.URL  || !w.Worker) return null
+
+    const codeStr = `self.importScripts('${w.requireConfig.worker}')`
+    const codeBlob = new w.Blob([codeStr], {type: 'application/javascript'})
+    const codeUrl = w.URL.createObjectURL(codeBlob)
+    return new w.Worker(codeUrl)
   }
 
   oasParse(data) {

@@ -1,13 +1,14 @@
 import request from 'browser-request'
-import type {XApiDataProvider} from './XApiDataProvider'
+import type {RemoteApiDataProvider} from './model'
 
 const POST = 'POST'
+const PUT = 'PUT'
 const GET = 'GET'
 const DELETE = 'DELETE'
 export const SEPARATOR = '/'
 
 class RemoteApi {
-  constructor(dataProvider: XApiDataProvider) {
+  constructor(dataProvider: RemoteApiDataProvider) {
     this.dataProvider = dataProvider
   }
 
@@ -41,6 +42,10 @@ class RemoteApi {
 
   _post(pathElements: string[], body: {}, jsonResult: ?boolean): Promise {
     return this._request(POST, pathElements, body, jsonResult)
+  }
+
+  _put(pathElements: string[], body: {}, jsonResult: ?boolean): Promise {
+    return this._request(PUT, pathElements, body, jsonResult)
   }
 
   _request(method, pathElements, body: {}, jsonResult: ?boolean): Promise {
@@ -81,18 +86,14 @@ class RemoteApi {
   }
 
   _url(elements): string {
-    return this._baseProjectUrl() + SEPARATOR + elements.join(SEPARATOR)
-  }
-
-  _baseProjectUrl(): string {
-    return this.baseUrl
+    return this.baseUrl + SEPARATOR + elements.join(SEPARATOR)
   }
 
   _headers() {
     return {
-      'x-owner-id': this.ownerId,
+      'Authorization': this.authorization,
       'x-organization-id': this.organizationId,
-      'Authorization': this.authorization
+      'x-owner-id': this.ownerId,
     }
   }
 
@@ -104,19 +105,6 @@ class RemoteApi {
       body: body || {},
       headers: headers
     }
-  }
-
-  static vcsPath(path: string) {
-    return path.startsWith('/') ? path.slice(1) : path
-  }
-
-  static vcsPathForUri(path: string) {
-    const relativePath = RemoteApi.vcsPath(path)
-    return RemoteApi.scapeVcsPath(relativePath)
-  }
-
-  static scapeVcsPath(path: string) {
-    return path.replace('/', '%5C')
   }
 }
 

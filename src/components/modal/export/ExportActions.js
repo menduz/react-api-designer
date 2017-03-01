@@ -4,7 +4,7 @@ import Repository from '../../../repository/Repository'
 
 import {FILE_SAVE_FAILED, error} from "../../../repository-redux/actions"
 
-import type {Dispatch, GetState, ExtraArgs} from '../../../types/types'
+import type {Dispatch, GetState, ExtraArgs} from '../../../types'
 import findRamlRoot from '../../../repository/helper/ramlDefinition'
 
 const fileDownload = require('react-file-download')

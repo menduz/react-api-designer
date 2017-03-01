@@ -1,6 +1,6 @@
 //@flow
 
-import {RepositoryContainer} from '../../RepositoryContainer'
+import {RepositoryContainer} from '../../types'
 import {Path, Directory, Repository} from '../../repository'
 
 export const nextName = (name: string, repositoryContainer: RepositoryContainer, path: ?Path): string => {

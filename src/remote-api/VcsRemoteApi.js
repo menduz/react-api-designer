@@ -1,8 +1,8 @@
 import {SEPARATOR} from './RemoteApi'
-import ExchangeApi from './ExchangeApi'
+import RemoteApi from './RemoteApi'
 import {PathMetadata, EntryMetadata, ContentData} from './VcsElements'
 
-class VcsRemoteApi extends ExchangeApi {
+class VcsRemoteApi extends RemoteApi {
 
   /**
    *  @return Promise with the files in the project
@@ -45,8 +45,21 @@ class VcsRemoteApi extends ExchangeApi {
     return this._get(['files', VcsRemoteApi.vcsPathForUri(path), 'logs', logId])
   }
 
-  _baseProjectUrl(): string {
-    return [super._baseProjectUrl(), 'projects', this.projectId].join(SEPARATOR)
+  get baseUrl() {
+    return [super.baseUrl, 'projects', this.projectId].join(SEPARATOR)
+  }
+
+  static vcsPath(path: string) {
+    return path.startsWith('/') ? path.slice(1) : path;
+  }
+
+  static vcsPathForUri(path: string) {
+    const relativePath = VcsRemoteApi.vcsPath(path);
+    return VcsRemoteApi.scapeVcsPath(relativePath)
+  }
+
+  static scapeVcsPath(path: string) {
+    return path.replace(/\//g, '%5C')
   }
 }
 

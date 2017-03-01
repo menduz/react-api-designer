@@ -7,6 +7,10 @@ export default class ConsumeRemoteApi extends RemoteApi {
       ConsumeRemoteApi.generateBody(query, "{organizationId, name, description, rating, numberOfRates, version, groupId, assetId}"), true)
   }
 
+  get baseUrl() {
+    return super.baseUrl + '/exchange/graphql'
+  }
+
   _headers() {
     return {
       ...super._headers(),

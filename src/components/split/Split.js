@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import SplitPane from 'react-split-pane'
 import cx from 'classnames'
 import Drawer from '@mulesoft/anypoint-components/lib/Drawer'
-import Storage from '../../Storage'
+import Storage from '../../storage'
 import "./Split.css"
 
 export default class Split extends Component {

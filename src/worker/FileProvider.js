@@ -1,11 +1,6 @@
-import {Repository} from '../repository'
+import {RepositoryContainer} from '../types'
 
-type RepositoryContainer = {
-  repository: ?Repository,
-  isLoaded: boolean
-}
-
-class FileProvider {
+export default class FileProvider {
   repositoryContainer: RepositoryContainer
 
   constructor(repositoryContainer) {
@@ -23,5 +18,3 @@ class FileProvider {
     }
   }
 }
-
-export default FileProvider

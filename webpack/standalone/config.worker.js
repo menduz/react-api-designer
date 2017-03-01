@@ -1,10 +1,12 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require('path');
+const projectRootPath = path.resolve(__dirname, '../../')
 
 module.exports = {
-  entry: './src-worker/index.js',
+  entry: path.resolve(projectRootPath, './src-worker/index.js'),
   output: {
-    path: __dirname + '/public/static/js',
-    filename: 'api-designer-worker.js',
+    path: path.resolve(projectRootPath, './public/static/js'),
+    filename: 'worker.js',
   },
   module: {
     loaders: [
@@ -13,7 +15,7 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'babel-loader',
         query: {
-          presets: ['es2015', 'react', 'stage-0']
+          presets: ['es2015', 'react', 'stage-2']
         }
       },
       {

@@ -12,18 +12,20 @@ import {
   FILE_RENAME_STARTED, DIRECTORY_ADD_STARTED, FILE_MOVE_STARTED,
   DIRECTORY_ADD_FAILED, FILE_ADD_FAILED, FILE_SAVE_FAILED,
   FILE_RENAME_FAILED, DIRECTORY_DELETE_FAILED, FILE_DELETE_FAILED,
-  FILE_CONTENT_UPDATE_FAILED, FILE_MOVE_FAILED
+  FILE_CONTENT_UPDATE_FAILED, FILE_MOVE_FAILED, LOADING_FILE_SYSTEM
 } from './actions'
 
 const initialState: State = {
   fileTree: undefined,
   contents: Map(),
-  progress: false,
+  progress: true,
   error: ''
 }
 
 const reducer = (state: State = initialState, action: {type: string, payload: any}): State => {
   switch (action.type) {
+    case LOADING_FILE_SYSTEM:
+      return initialState
     case INIT_FILE_SYSTEM:
       return {
         ...state,

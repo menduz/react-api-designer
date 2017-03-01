@@ -16,12 +16,17 @@ class RepositoryModelFactory {
 
   static directoryModel(directory: Directory): DirectoryModel {
     const children = List.of(...directory.children)
+      .filter((element) => !RepositoryModelFactory.isMetaFile(element))
       .map((element) => RepositoryModelFactory.elementModel(element))
       .toList()
 
     return DirectoryModel.directory(directory.name,
       directory.path,
       children)
+  }
+
+  static isMetaFile(element: Element): boolean {
+    return !element.isDirectory() && element.asFile().extension === 'meta'
   }
 
   static fileModel(file: File): FileModel {

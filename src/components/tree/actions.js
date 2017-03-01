@@ -3,7 +3,7 @@
 import {PREFIX} from './index'
 
 import {Repository} from '../../repository'
-import type {Dispatch, GetState, ExtraArgs} from '../../types/types'
+import type {Dispatch, GetState, ExtraArgs} from '../../types'
 
 import * as editor from "../editor"
 import * as repository from "../../repository-redux"

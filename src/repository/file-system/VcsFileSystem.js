@@ -1,7 +1,7 @@
 // @flow
 
-import VcsRemoteApi from "../../vcs-api/VcsRemoteApi";
-import {EntryMetadata, ContentData} from "../../vcs-api/VcsElements";
+import VcsRemoteApi from "../../remote-api/VcsRemoteApi";
+import {EntryMetadata, ContentData} from "../../remote-api/VcsElements";
 
 import FileSystem from './FileSystem'
 import type {Path, Entry, FileData} from './FileSystem'

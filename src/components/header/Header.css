@@ -10,14 +10,6 @@
   z-index: 1;
 }
 
-.App-header .Spinner-parser {
-  display: inline-flex;
-  flex-grow: 1;
-  align-self: center;
-  justify-content: flex-end;
-  margin-right: 30px;
-}
-
 .Left-header > span {
   margin-left: 16px;
   position: relative;
@@ -40,11 +32,26 @@
   color: #f9f9f9;
 }
 
+.HeaderOptions {
+  display: inline-flex;
+  flex-grow: 1;
+  align-self: center;
+  justify-content: flex-end;
+  margin-right: 30px;
+}
+
+.HeaderOptions .Spinner {
+  display: inline-flex;
+  flex-grow: 1;
+  align-self: center;
+  justify-content: flex-end;
+  margin-right: 30px;
+}
+
 .Right-header {
   display: flex;
   height: 100%;
   float: right;
-  background: black;
   align-items: center;
   align-content: center;
   justify-content: flex-end;
