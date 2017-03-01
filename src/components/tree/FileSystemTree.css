@@ -4,6 +4,14 @@
   font-weight: 200;
 }
 
+.Tree {
+  height: inherit;
+}
+
+.Tree .TreeUi {
+  height: inherit;
+}
+
 .Tree .tree-leaf {
   width: 100%;
 }

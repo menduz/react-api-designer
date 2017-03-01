@@ -141,11 +141,13 @@ export default class Repository {
       throw new Error(`${from.toString()} is not a valid directory`)
 
     const promise = this._fileSystem.rename(from.toString(), to.toString())
-    element.parent = newParent.asDirectory()
-    newParent.asDirectory().addChild(element)
 
     return promise
-      .then(() => element)
+      .then(() => {
+        element.parent = newParent.asDirectory()
+        newParent.asDirectory().addChild(element)
+        return element
+      })
       .catch(() => element)
   }
 
