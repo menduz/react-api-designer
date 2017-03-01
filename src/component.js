@@ -2,7 +2,7 @@
 
 import "./index.css";
 import {combineReducers} from "redux";
-import {actions} from "./bootstrap";
+import * as bootstrap from "./bootstrap";
 import * as editor from "./components/editor";
 import * as repository from "./repository-redux";
 import mockReducer from "./components/mock/reducers";
@@ -23,6 +23,7 @@ import App from "./components/app/App";
 import HeaderOptions from "./components/header/HeaderOptions";
 
 const reducers = {
+  [bootstrap.NAME]: bootstrap.reducer,
   [repository.NAME]: repository.reducer,
   [editor.NAME]: editor.reducer,
   [fileSystemTree.NAME]: fileSystemTree.reducer,
@@ -49,6 +50,7 @@ const thunk = {
   repositoryContainer
 }
 
+const actions = bootstrap.actions
 export {
   App,
   HeaderOptions,

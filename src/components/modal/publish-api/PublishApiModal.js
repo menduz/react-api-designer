@@ -12,6 +12,7 @@ import TextField from '@mulesoft/anypoint-components/lib/TextField'
 import Pill from '@mulesoft/anypoint-components/lib/Pill'
 import Pills from '@mulesoft/anypoint-components/lib/Pills'
 import Checkbox from '@mulesoft/anypoint-components/lib/Checkbox'
+import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
 
 import './PublishApi.css'
 
@@ -67,21 +68,15 @@ class PublishApiModal extends React.Component {
     this.props.onPublishToBothApis(!this.props.publishToBothApis)
   }
 
-  isDoneFetching(): Boolean {
-    const {isFetching} = this.props
-    return isFetching.exchange && isFetching.platform
-  }
+  isVariableComplete(variable, isFetching = false): Boolean {
+    const {publishToBothApis, publishToExchange} = this.props
 
-  isAllFetched(): Boolean {
-    const {publishToBothApis, publishToExchange, isFetched} = this.props
-
-    if (publishToBothApis) {
-      return isFetched.exchange && isFetched.platform
-    } else if (publishToExchange && !publishToBothApis) {
-      return isFetched.exchange
-    } else {
-      return isFetched.platform
-    }
+    if (publishToBothApis)
+      return isFetching ? variable.exchange || variable.platform : variable.exchange && variable.platform
+    else if (publishToExchange && !publishToBothApis)
+      return variable.exchange
+    else
+      return variable.platform
   }
 
   handleErrors() {
@@ -89,29 +84,49 @@ class PublishApiModal extends React.Component {
     const errors = []
     if (error.platform) {
       errors.push(
-        <div className="error" key='error-platform'>
-          {error.platform}
+        <div key='error-platform'>
+          <h3>API Manager error</h3>
+          <div className="error">
+            {error.platform}
+          </div>
         </div>
       )
     }
     if (error.exchange) {
       errors.push(
-        <div className="error" key='error-exchange'>
-          {error.exchange}
+        <div key='error-exchange'>
+          <h3>Exchange error</h3>
+          <div className="error">
+            {error.exchange}
+          </div>
         </div>
       )
     }
     return errors
   }
 
+  handlePartialAnswers(isFetching: boolean, isAllFetched: boolean) {
+    if (!isFetching && !isAllFetched) {
+      const {link} = this.props
+      let answer = ''
+      if (link.platform)
+        answer = (PublishApiModal.generatePlatformResponse(link.platform))
+      if (link.exchange)
+        answer = PublishApiModal.generateExchangeResponse(link.exchange)
+      return answer
+    }
+    return null
+  }
+
   render() {
     const {name, version, tag, tags, onCancel, publishToExchange} = this.props
 
-    const isFetching = this.isDoneFetching()
-    const isFetched = this.isAllFetched()
+    const isFetching = this.isVariableComplete(this.props.isFetching, true)
+    const isFetched = this.isVariableComplete(this.props.isFetched)
     const canSubmit = this.canSubmit()
     const content = isFetched ? this.link() : this.form(name, version, tag, tags, isFetching)
     const errors = this.handleErrors()
+    const partialAnswers = this.handlePartialAnswers(isFetching, isFetched)
 
     return (
       <Modal testId="Publish-Modal"
@@ -122,10 +137,17 @@ class PublishApiModal extends React.Component {
           <h2>Publish API to {publishToExchange ? 'Exchange' : 'API Platform' }</h2>
         </ModalHeader>
         <ModalBody>
+          {partialAnswers ?
+            <div className="partial-answers" data-test-id="Publish-Partial-Answers">
+              {partialAnswers}
+            </div> : null
+          }
+          {errors ?
+            <div className="error-container" data-test-id="Publish-Error">
+              {errors}
+            </div> : null
+          }
           {content}
-          <div className="error-container" data-test-id="Publish-Error">
-            {errors}
-          </div>
         </ModalBody>
         <ModalFooter className="publish-footer">
           <div className="left-side">
@@ -139,7 +161,7 @@ class PublishApiModal extends React.Component {
             {isFetched ? null :
               <Button kind="primary" disabled={isFetching || !canSubmit} testId="Publish-Submit-Button"
                       isLoading={isFetching} onClick={this.handleSave.bind(this)}>
-                Publish
+                {isFetching ? 'Publishing...' : 'Publish'}
               </Button>
             }
           </div>
@@ -182,80 +204,89 @@ class PublishApiModal extends React.Component {
   }
 
   form(name: string, version: string, tag: ?string, tags: Array<string>, isFetching: ?Boolean) {
+    const {isLoading, publishToExchange, publishToBothApis} = this.props
     return (
-      <div>
-        {this.props.publishToExchange ? this.addExchangeFormFields(isFetching) : null}
-        <div className="form-row">
-          <Label className="required">Name</Label>
-          <TextField value={name}
-                     placeholder="Name..."
-                     disabled={isFetching}
-                     onChange={this.handleNameChange.bind(this)}
-                     required
-                     testId="Publish-Input-Name"/>
-        </div>
-        <div className="form-row">
-          <Label className="required">Version</Label>
-          <TextField value={version}
-                     placeholder="Version..."
-                     disabled={isFetching}
-                     onChange={this.handleVersionChange.bind(this)}
-                     required
-                     testId="Publish-Input-Version"/>
-        </div>
-        <div className="form-row">
-          <Label>Tags</Label>
-          <Pills testId="Publish-Tags-Pills">
-            {tags ? tags.map(tag => (
-                <Pill key={tag} onRemove={() => this.props.onTagRemove(tag)}>{tag}</Pill>
-              )) : null}
-          </Pills>
-          <div className="tags">
-            <TextField className="tag-name"
-                       value={tag}
-                       placeholder="Tag..."
+      isLoading ? <div className="search-spinner"><Spinner size="l"/></div> :
+        <div>
+          {publishToExchange ? this.addExchangeFormFields(isFetching) : null}
+          <div className="form-row">
+            <Label className="required">Name</Label>
+            <TextField value={name}
+                       placeholder="Name..."
                        disabled={isFetching}
-                       onChange={this.handleTagChange.bind(this)}
-                       testId="Publish-Tag-Input-Name"/>
-            <Button className="save-tag-button"
-                    kind="primary"
-                    disabled={!tag}
-                    onClick={this.handleSaveTag.bind(this)}
-                    noFill
-                    testId="Publish-Save-Tag">
-              Add
-            </Button>
+                       onChange={this.handleNameChange.bind(this)}
+                       required
+                       testId="Publish-Input-Name"/>
           </div>
+          <div className="form-row">
+            <Label className="required">Version</Label>
+            <TextField value={version}
+                       placeholder="Version..."
+                       disabled={isFetching}
+                       onChange={this.handleVersionChange.bind(this)}
+                       required
+                       testId="Publish-Input-Version"/>
+          </div>
+          {!publishToExchange || publishToBothApis ?
+            <div className="form-row">
+              <Label>Tags</Label>
+              <Pills testId="Publish-Tags-Pills">
+                {tags ? tags.map(tag => (
+                    <Pill key={tag} onRemove={() => this.props.onTagRemove(tag)}>{tag}</Pill>
+                  )) : null}
+              </Pills>
+              <div className="tags">
+                <TextField className="tag-name"
+                           value={tag}
+                           placeholder="Tag..."
+                           disabled={isFetching}
+                           onChange={this.handleTagChange.bind(this)}
+                           testId="Publish-Tag-Input-Name"/>
+                <Button className="save-tag-button"
+                        kind="primary"
+                        disabled={!tag}
+                        onClick={this.handleSaveTag.bind(this)}
+                        noFill
+                        testId="Publish-Save-Tag">
+                  Add
+                </Button>
+              </div>
+            </div> : null
+          }
+        </div>
+    )
+  }
+
+  static generateExchangeResponse(response: any) {
+    return (
+      <div key='answer-exchange'>
+        <h3>Successfully published to Exchange</h3>
+        <div className="answer">AssetId: {response.assetId}</div>
+        <div className="answer">GroupId: {response.groupId}</div>
+        <div className="answer">Version: {response.version}</div>
+      </div>
+    )
+  }
+
+  static generatePlatformResponse(response: any) {
+    return (
+      <div key='answer-platform'>
+        <h3>Successfully published to API Manager</h3>
+        <div className="answer">
+          Published {response.apiName} version {response.versionName}.
+          Click <a href={response.url} target="_blank">here</a> to view it.
         </div>
       </div>
     )
   }
 
-  static generateResponseText(response: any) {
-    return [
-      <div key='res-asset-field'>{`assetId: ${response.assetId}`}</div>,
-      <div key='res-group-field'>{`groupId: ${response.groupId}`}</div>,
-      <div key='res-version-field'>{`version: ${response.version}`}</div>
-    ]
-  }
-
   link() {
     const links = []
     const {link} = this.props
-    if (link.platform) {
-      links.push(
-        <div key='link-platform'>
-          {PublishApiModal.generateResponseText(link.platform)}
-        </div>
-      )
-    }
-    if (link.exchange) {
-      links.push(
-        <div key='link-exchange'>
-          {PublishApiModal.generateResponseText(link.exchange)}
-        </div>
-      )
-    }
+    if (link.platform)
+      links.push(PublishApiModal.generatePlatformResponse(link.platform))
+    if (link.exchange)
+      links.push(PublishApiModal.generateExchangeResponse(link.exchange))
     return links
   }
 
@@ -280,6 +311,7 @@ type Props = {
   groupId: string,
   assetId: string,
   main: string,
+  isLoading: boolean,
   error: {
     platform: ?string,
     exchange: ?string,

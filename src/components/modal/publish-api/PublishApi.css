@@ -12,6 +12,11 @@
   padding-top: 5px;
 }
 
+.publish-api-modal .answer {
+  color: green;
+  padding-top: 5px;
+}
+
 .publish-api-modal .form-row > div {
   margin-top: 2px;
   margin-bottom: 15px;
@@ -22,15 +27,36 @@
 }
 
 .publish-api-modal .tags {
-    display: flex;
+  display: flex;
 }
 
 .publish-api-modal .tags > .tag-name {
-    width: 80%;
+  width: 80%;
 }
 
 .publish-api-modal .tags > .save-tag-button {
-    margin-left: 20px;
+  margin-left: 20px;
+}
+
+.publish-api-modal .search-spinner {
+  min-height: 140px;
+  margin-top: 60px;
+  margin-left: 40%;
+}
+
+.publish-api-modal h3 {
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.publish-api-modal .error-container > div:first-child > h3,
+.publish-api-modal .partial-answers > div:first-child > h3 {
+  margin-top: 0;
+}
+
+.publish-api-modal .error-container,
+.publish-api-modal .partial-answers {
+  margin-bottom: 15px;
 }
 
 .publish-footer {

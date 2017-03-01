@@ -28,6 +28,7 @@ const mapState = (rootState) => {
     isFetched: state.isFetched,
     link: state.link,
     error: state.error,
+    isLoading: state.isLoading,
     publishToBothApis: state.publishToBothApis,
     publishToExchange: configuration.publishToExchange
   }

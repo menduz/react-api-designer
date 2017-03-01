@@ -10,14 +10,19 @@ export const PUBLISH_ERROR = 'publishApi/PUBLISH_ERROR'
 export const REMOVE_TAG = 'publishApi/REMOVE_TAG'
 export const ADD_TAG = 'publishApi/ADD_TAG'
 export const PUBLISH_BOTH_APIS = 'publishApi/PUBLISH_BOTH_APIS'
+export const FINISH_LOADING = 'publishApi/FINISH_LOADING'
 
-import * as constants from './PublishApiConstants'
 import type {GetState} from '../../../types'
 import PublishRemoteApi from "../../../remote-api/PublishRemoteApi"
 import type {PublishApiResponse} from "../../../remote-api/PublishRemoteApi"
+import * as constants from './PublishApiConstants'
 
 export const clear = () => ({
   type: CLEAR
+})
+
+export const finishLoading = () => ({
+  type: FINISH_LOADING
 })
 
 export const changeValue = (name: string, value: string) => ({
@@ -25,8 +30,9 @@ export const changeValue = (name: string, value: string) => ({
   payload: {name, value}
 })
 
-export const startFetching = () => ({
-  type: START_FETCHING
+export const startFetching = (source: string) => ({
+  type: START_FETCHING,
+  payload: {source}
 })
 
 export const successfullyFetched = (response: string, source: string) => ({
@@ -57,44 +63,36 @@ export const togglePublishBothApis = (publishBoth: boolean) => ({
 type Dispatch = (a: any) => void
 
 export const openModal = () => {
-  return (dispatch: Dispatch, getState, {dataProvider}: XApiDataProvider) => {
+  return (dispatch: Dispatch, getState: GetState) => {
+
+    const dataProvider = selectors.getRemoteApiDataProvider(getState())
     const remoteApi = new PublishRemoteApi(dataProvider)
     remoteApi.getLastVersion()
       .then((lastVersion) => {
         Object.keys(lastVersion).forEach((key) => {
           dispatch(changeValue(key, lastVersion[key]))
         })
-        dispatch({type: OPEN})
+        dispatch(finishLoading())
       })
       .catch((error) => {
-        console.log("")
-        dispatch({type: OPEN})
+        dispatch(errorOnPublish(error ? error.msg ? error.msg : error : 'An error occurred while getting the last version', ''))
+        dispatch(finishLoading())
       })
+      dispatch({type: OPEN})
   }
 }
 
 const formatErrorMessage = (error: any, source: string) => {
-  return `An error has occurred while publishing in ${source}: ${error && error.body ? error.body.message + '. Status: ' + error.status : ''}`;
+  return `An error has occurred while publishing to ${source}: ${error && error.body ? error.body.message + '. Status: ' + error.status : ''}`
 }
 
 export const publish = (name: string, version: string, tags: Array<string>, mainFile: string,
                         assetId: string, groupId: string, platform: boolean, exchange: boolean) => {
   return (dispatch: Dispatch, getState: GetState) => {
-    dispatch(startFetching())
-    const dataProvider = selectors.getRemoteApiDataProvider(getState());
-    const remoteApi = new PublishRemoteApi(dataProvider)
+    dispatch(startFetching(!platform && exchange ? constants.EXCHANGE : !exchange && platform ? constants.PLATFORM : constants.BOTH))
 
-    if (platform) {
-      //publishing to platform
-      remoteApi.publishToPlatform(name, version, tags)
-        .then((response: PublishApiResponse) => {
-          dispatch(successfullyFetched(response, constants.PLATFORM))
-        })
-        .catch((error) => {
-          console.error(error)
-          dispatch(errorOnPublish(formatErrorMessage(error, constants.PLATFORM), constants.PLATFORM))
-        })
-    }
+    const dataProvider = selectors.getRemoteApiDataProvider(getState())
+    const remoteApi = new PublishRemoteApi(dataProvider)
 
     if (exchange) {
       //publishing to exchange
@@ -105,6 +103,19 @@ export const publish = (name: string, version: string, tags: Array<string>, main
         .catch((error) => {
           console.error(error)
           dispatch(errorOnPublish(formatErrorMessage(error, constants.EXCHANGE), constants.EXCHANGE))
+        })
+    }
+
+    if (platform) {
+      //publishing to platform
+      remoteApi.publishToPlatform(name, version, tags)
+        .then((response: PublishApiResponse) => {
+          const url = `/apiplatform/${dataProvider.domain()}/admin/#/organizations/${dataProvider.organizationId()}/dashboard/apis/${response.apiId}/versions/${response.versionId}/contracts`
+          dispatch(successfullyFetched({...response, url}, constants.PLATFORM))
+        })
+        .catch((error) => {
+          console.error(error)
+          dispatch(errorOnPublish(formatErrorMessage(error, constants.PLATFORM), constants.PLATFORM))
         })
     }
   }

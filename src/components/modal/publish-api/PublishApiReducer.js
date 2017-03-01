@@ -23,7 +23,8 @@ const initialState: State = {
     [constants.PLATFORM]: undefined
   },
   isOpen: false,
-  publishToBothApis: false
+  publishToBothApis: false,
+  isLoading: false
 }
 
 //TODO CHANGE LINK FOR RESPONSE
@@ -70,7 +71,13 @@ export default (state: State = initialState, action: any): State => {
     case actions.OPEN:
       return {
         ...state,
-        isOpen: true
+        isOpen: true,
+        isLoading: true
+      }
+    case actions.FINISH_LOADING:
+      return {
+        ...state,
+        isLoading: false
       }
     case actions.CHANGE_VALUE:
       return {
@@ -81,24 +88,45 @@ export default (state: State = initialState, action: any): State => {
         }
       }
     case actions.START_FETCHING:
-      return {
-        ...state,
-        isFetching: {
-          [constants.EXCHANGE]: true,
-          [constants.PLATFORM]: true
-        },
-        isFetched: {
-          [constants.EXCHANGE]: false,
-          [constants.PLATFORM]: false
-        },
-        link: {
-          [constants.EXCHANGE]: undefined,
-          [constants.PLATFORM]: undefined
-        },
-        error: {
-          [constants.EXCHANGE]: undefined,
-          [constants.PLATFORM]: undefined
-        },
+      switch (action.payload.source) {
+        case constants.PLATFORM:
+          return {
+            ...state,
+            isFetching: {
+              [constants.EXCHANGE]: false,
+              [constants.PLATFORM]: true
+            },
+            error: {
+              [constants.EXCHANGE]: undefined,
+              [constants.PLATFORM]: undefined
+            }
+          }
+        case constants.EXCHANGE:
+          return {
+            ...state,
+            isFetching: {
+              [constants.EXCHANGE]: true,
+              [constants.PLATFORM]: false
+            },
+            error: {
+              [constants.EXCHANGE]: undefined,
+              [constants.PLATFORM]: undefined
+            }
+          }
+        case constants.BOTH:
+          return {
+            ...state,
+            isFetching: {
+              [constants.EXCHANGE]: true,
+              [constants.PLATFORM]: true
+            },
+            error: {
+              [constants.EXCHANGE]: undefined,
+              [constants.PLATFORM]: undefined
+            }
+          }
+        default:
+          return state
       }
     case actions.PUBLISH_BOTH_APIS:
       return {

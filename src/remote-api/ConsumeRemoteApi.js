@@ -1,5 +1,4 @@
 import RemoteApi from './RemoteApi'
-import type {XApiDataProvider} from 'XApiDataProvider'
 
 export default class ConsumeRemoteApi extends RemoteApi {
 

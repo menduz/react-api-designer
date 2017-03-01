@@ -1,9 +1,9 @@
 // @flow
 
 import State from './model'
-import { INIT, CLEAN, INITIALIZING } from './actions'
+import {INIT, CLEAN, INITIALIZING} from './constants'
 
-const initialState:State = {
+const initialState: State = {
   initializing: true,
   remoteApiDataProvider: null
 }
@@ -13,13 +13,13 @@ const reducer = (state: State = initialState, action: {type: string, payload: an
     case INITIALIZING:
       return {
         ...state,
-        initializing: true
+        initializing: true,
+        remoteApiDataProvider: action.payload
       }
     case INIT:
       return {
         ...state,
         initializing: false,
-        remoteApiDataProvider: action.payload
       }
     case CLEAN:
       return {

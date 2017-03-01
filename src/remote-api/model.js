@@ -5,5 +5,6 @@ export type RemoteApiDataProvider = {
   authorization: () => string,
   ownerId: () => string,
   organizationId: () => string,
-  projectId: () => string
+  projectId: () => string,
+  domain: () => string
 }

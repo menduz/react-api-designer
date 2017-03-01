@@ -9,12 +9,7 @@ import supportMenuOptions from '../support/assets/supportOptionsData.json'
 
 class ProjectOptions extends Component {
   render() {
-    const {
-      showInfoPanelTabs,
-      isConsumeMode,
-      isExchangeMode,
-      theme
-    } = this.props
+    const {theme} = this.props
 
     const contextMenuOptions = [
       {
@@ -44,10 +39,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    changeTheme: (theme: string) => dispatch(configActions.changeTheme(theme)),
-    changeShowInfoPanelTabs: (showTabs: boolean) => dispatch(configActions.showInfoPanelTabs(showTabs)),
-    toggleConsumeMode: (changeMode: boolean) => dispatch(configActions.changeConsumeMode(changeMode)),
-    toggleExchangeMode: (changeMode: boolean) => dispatch(configActions.changeExchangeMode(changeMode))
+    changeTheme: (theme: string) => dispatch(configActions.changeTheme(theme))
   }
 }
 

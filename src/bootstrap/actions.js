@@ -9,7 +9,6 @@ import VcsRemoteApi from "../remote-api/VcsRemoteApi";
 import type {RemoteApiDataProvider} from "../remote-api/model";
 import {INIT, CLEAN, INITIALIZING} from './constants'
 
-
 export const clean = (remoteApiDataProvider: ?RemoteApiDataProvider) =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): any => {
     repositoryContainer.isLoaded = false
@@ -23,7 +22,7 @@ export const init = (remoteApiDataProvider: ?RemoteApiDataProvider) =>
 
     repositoryContainer.isLoaded = false
     repositoryContainer.repository = undefined
-    dispatch({type: INITIALIZING})
+    dispatch({type: INITIALIZING, payload: remoteApiDataProvider})
     dispatch(loadingFileSystem())
 
 
@@ -43,6 +42,6 @@ export const init = (remoteApiDataProvider: ?RemoteApiDataProvider) =>
       })
       .then((repository) => {
         dispatch(initFileSystem(FileTreeFactory.repository(repository)))
-        dispatch({type: INIT, payload: remoteApiDataProvider})
+        dispatch({type: INIT})
       })
   }
