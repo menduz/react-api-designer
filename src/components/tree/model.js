@@ -32,7 +32,13 @@ const fromElement = (element: ElementModel): Node => {
 }
 
 const fromDirectory = (directory: DirectoryModel): Node => {
-  const children = directory.children.map(fromElement).toArray();
+  const children = directory.children.sort((a, b) => {
+    if (a.isDirectory() && !b.isDirectory()) return -1;
+    if (b.isDirectory() && !a.isDirectory()) return 1;
+    if(a.name < b.name) return -1;
+    if(a.name > b.name) return 1;
+    return 0;
+  }).map(fromElement).toArray();
 
   return {
     path: directory.path,
