@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 
 import {actions as configActions} from '../../header/index'
+import supportMenuOptions from '../support/assets/supportOptionsData.json'
 
 import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
 import Icon from '@mulesoft/anypoint-icons/lib/Icon'
@@ -20,7 +21,8 @@ class ProjectOptions extends Component {
       }, {
         label: `${publishToExchange ? 'Disable' : 'Enable'} Publish to Exchange`,
         onClick: this.props.togglePublishExchange.bind(this, !publishToExchange)
-      }
+      },
+      ...supportMenuOptions.slice(1)
     ]
 
     return (
