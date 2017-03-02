@@ -26,7 +26,10 @@ export default class RamlSuggestions {
   }
 
   static _mapResults(results) {
-    if (!Array.isArray(results)) return []
+    if (!Array.isArray(results)) {
+      console.error('Recieved invalid object from suggestions: ', results)
+      return []
+    }
 
     return results.map(suggestion => {
       return {

@@ -7,7 +7,7 @@ const initialState = {
   showInfoPanelTabs: Storage.getValue('showInfoPanelTabs', 'false') === 'true',
   isExchangeMode: Storage.getValue('isExchangeMode', 'true') === 'true',
   isConsumeMode: Storage.getValue('isConsumeMode', 'false') === 'true',
-  publishToExchange: Storage.getValue('publishToExchange', 'true') === 'true'
+  publishToExchange: Storage.getValue('publishToExchange', 'false') === 'true'
 }
 
 export default(state = initialState, action) => {
