@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 
 import exchangeIcon from './assets/PublishExchangeIcon.svg'
-import publishApi from '../modal/publish-api'
+import publishApi from '../../modal/publish-api'
 
 class PublishApiButton extends Component {
   render() {

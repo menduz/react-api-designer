@@ -29,7 +29,7 @@ const suggestionResult = suggestions => ({
 })
 
 export const suggest = (text, cursorPosition, path, repository) =>
-  (dispatch, getState, {worker}) => {
+  (dispatch, getState, {designerWorker}) => {
     const fileTree = getFileTree(getState())
     if (!fileTree) return
     if (getLanguage(getState()).id !== 'raml') return
@@ -39,7 +39,7 @@ export const suggest = (text, cursorPosition, path, repository) =>
 
     dispatch({type: SUGGESTION_REQUEST})
 
-    worker.ramlSuggest(text, cursorPosition, path, repository)
+    designerWorker.ramlSuggest(text, cursorPosition, path, repository)
       .then(result => {
         dispatch(suggestionResult(result))
       })
@@ -72,10 +72,10 @@ const parserError = (error, dispatch) => {
   else dispatch(parseResult(null, [error]))
 }
 
-const parseJson = (text, path, dispatch, worker) => {
+const parseJson = (text, path, dispatch, designerWorker) => {
   dispatch(parsingRequest())
 
-  const promise = worker.jsonParse({text})
+  const promise = designerWorker.jsonParse({text})
   if (promise) {
     promise.then(result => {
       dispatch(parseResult(result, []))
@@ -83,18 +83,18 @@ const parseJson = (text, path, dispatch, worker) => {
   }
 }
 
-const parseRaml = (text, path, dispatch, worker) => {
+const parseRaml = (text, path, dispatch, designerWorker) => {
   dispatch(parsingRequest())
-  const promise = worker.ramlParse({path})
+  const promise = designerWorker.ramlParse({path})
   if (promise) {
     promise.then(result => dispatch(parseResult(result.specification, result.errors)))
       .catch(error => parserError(mapUnexpectedError(error), dispatch))
   }
 }
 
-const parseOas = (text, path, dispatch, worker) => {
+const parseOas = (text, path, dispatch, designerWorker) => {
   dispatch(parsingRequest())
-  const promise = worker.oasParse({text})
+  const promise = designerWorker.oasParse({text})
   if (promise) {
     promise.then(result => dispatch(parseResult(result.specification, result.errors)))
       .catch(error => parserError(mapUnexpectedError(error), dispatch))
@@ -103,7 +103,7 @@ const parseOas = (text, path, dispatch, worker) => {
 
 let parseTimer = null
 export const updateFile = (text, path: Path, delay = 0) =>
-  (dispatch, getState, {worker}) => {
+  (dispatch, getState, {designerWorker}) => {
     dispatch(updateFileContent(path, text))
 
     const pathString = path.toString()
@@ -115,11 +115,11 @@ export const updateFile = (text, path: Path, delay = 0) =>
     parseTimer = setTimeout(() => {
       switch (lang.id) {
         case 'raml':
-          return parseRaml(text, pathString, dispatch, worker)
+          return parseRaml(text, pathString, dispatch, designerWorker)
         case 'oas':
-          return parseOas(text, pathString, dispatch, worker)
+          return parseOas(text, pathString, dispatch, designerWorker)
         case 'json':
-          return parseJson(text, pathString, dispatch, worker)
+          return parseJson(text, pathString, dispatch, designerWorker)
         default:
           dispatch(parseResult({}, []))
       }

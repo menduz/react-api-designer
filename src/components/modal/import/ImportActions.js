@@ -97,10 +97,10 @@ const toRamlName = (name, repositoryContainer) => {
 }
 
 export const importFileFromUrl = (url: string, fileType: string) =>
-  (dispatch: Dispatch, getState, {worker, repositoryContainer}: ExtraArgs) => {
+  (dispatch: Dispatch, getState, {designerWorker, repositoryContainer}: ExtraArgs) => {
 
     const convertFromUrl = (url, fileType, baseName) => {
-      worker.convertUrlToRaml(url).then(c => {
+      designerWorker.convertUrlToRaml(url).then(c => {
         const fileName = baseName(nameFromUrl(url), repositoryContainer)
         dispatch(addFile(fileName, fileType))
         setTimeout(() => {
@@ -174,11 +174,11 @@ export const saveFile = () => (dispatch: Dispatch, getState) => {
 }
 
 export const importFile = (file: any, fileType: string) =>
-  (dispatch: Dispatch, getState, {worker, repositoryContainer}: ExtraArgs) => {
+  (dispatch: Dispatch, getState, {designerWorker, repositoryContainer}: ExtraArgs) => {
     dispatch({type: IMPORT_STARTED})
 
     const convertSwaggerToRaml = (files) => {
-      worker.convertSwaggerToRaml(files).then(result => {
+      designerWorker.convertSwaggerToRaml(files).then(result => {
         const fileName = toRamlName(nameFromUrl(result.filename), repositoryContainer)
         dispatch(addFile(fileName, fileType))
         setTimeout(() => {

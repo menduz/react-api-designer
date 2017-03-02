@@ -14,7 +14,7 @@ import exportModal from "./components/modal/export";
 import rename from "./components/modal/rename";
 import * as fileSystemTree from "./components/tree";
 import FileProvider from "./worker/FileProvider";
-import type {RepositoryContainer} from "./types";
+import type {RepositoryContainer, AuthSelectors, RemoteApiSelectors, ExtraArgs, GetState} from "./types";
 import * as header from "./components/header";
 import publishApi from "./components/modal/publish-api";
 import consumeApi from "./components/modal/consume-api";
@@ -45,9 +45,23 @@ const repositoryContainer: RepositoryContainer = {
   isLoaded: false
 }
 
-const thunk = {
-  worker : new Worker(new FileProvider(repositoryContainer)),
-  repositoryContainer
+const initThunkArg = (authSelector: AuthSelectors) : ExtraArgs => {
+  const designerWorker = new Worker(window.designerUrls.worker, new FileProvider(repositoryContainer))
+
+  const designerRemoteApiSelectors : RemoteApiSelectors = (getState: GetState) => ({
+    baseUrl: () => window.designerUrls.remoteApi,
+    authorization: () => authSelector.authorization(getState()),
+    ownerId: () => authSelector.ownerId(getState()),
+    organizationId: () => authSelector.organizationId(getState()),
+    organizationDomain: () => authSelector.organizationDomain(getState()),
+    projectId: () => bootstrap.selectors.getProjectId(getState())
+  })
+
+  return {
+    repositoryContainer,
+    designerWorker,
+    designerRemoteApiSelectors
+  }
 }
 
 const actions = bootstrap.actions
@@ -55,9 +69,9 @@ export {
   App,
   HeaderOptions,
 
-  reducers,
-  thunk,
   actions,
+  reducers,
+  initThunkArg,
   ProjectRemoteApi
 }
 

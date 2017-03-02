@@ -79,7 +79,10 @@ export const extension = '.' + id
 export default (monaco, provideCompletionItems) => {
   const languages = monaco.languages;
   languages.register({id, extensions: [extension]})
-  languages.setLanguageConfiguration(id, configurations())
-  languages.setMonarchTokensProvider(id, tokens())
-  languages.registerCompletionItemProvider(id, {provideCompletionItems})
+
+  const disposables = []
+  disposables.push(languages.setLanguageConfiguration(id, configurations()))
+  disposables.push(languages.setMonarchTokensProvider(id, tokens()))
+  disposables.push(languages.registerCompletionItemProvider(id, {provideCompletionItems}))
+  return disposables
 }

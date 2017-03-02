@@ -134,7 +134,7 @@ class PublishApiModal extends React.Component {
              onClickOverlay={onCancel}
              className="publish-api-modal">
         <ModalHeader>
-          <h2>Publish API to {publishToExchange ? 'Exchange' : 'API Platform' }</h2>
+          <h1>Publish API to {publishToExchange ? 'Exchange' : 'API Manager' }</h1>
         </ModalHeader>
         <ModalBody>
           {partialAnswers ?
@@ -152,7 +152,7 @@ class PublishApiModal extends React.Component {
         <ModalFooter className="publish-footer">
           <div className="left-side">
             {(publishToExchange && !isFetched) &&
-            <Checkbox onChange={this.handlePublishBothServices.bind(this)} label="Publish to API Platform"/>}
+            <Checkbox onChange={this.handlePublishBothServices.bind(this)} label="Also publish to API Manager"/>}
           </div>
           <div className="right-side">
             <Button kind="tertiary" noFill onClick={onCancel} testId="Publish-Cancel-Button">
@@ -173,23 +173,25 @@ class PublishApiModal extends React.Component {
   addExchangeFormFields(isFetching: ?Boolean): [any] {
     const {groupId, assetId, main} = this.props
     return [
-      <div className="form-row" key="Form-AssetId">
-        <Label className="required">AssetId</Label>
-        <TextField value={assetId}
-                   placeholder="api-gateway-external"
-                   disabled={isFetching}
-                   onChange={this.handleAssetIdChange.bind(this)}
-                   required
-                   testId="Publish-Input-AssetId"/>
-      </div>,
-      <div className="form-row" key="Form-GroupId">
-        <Label className="required">GroupId</Label>
-        <TextField value={groupId}
-                   placeholder="com.mulesoft"
-                   disabled={isFetching}
-                   onChange={this.handleGroupIdChange.bind(this)}
-                   required
-                   testId="Publish-Input-GroupId"/>
+      <div className="form-row" key="Form-Asset-Group-Ids">
+        <div className="form-col">
+          <Label className="required">GroupId</Label>
+          <TextField value={groupId}
+                     placeholder="com.mulesoft"
+                     disabled={isFetching}
+                     onChange={this.handleGroupIdChange.bind(this)}
+                     required
+                     testId="Publish-Input-GroupId"/>
+        </div>
+        <div className="form-col">
+          <Label className="required">AssetId</Label>
+          <TextField value={assetId}
+                     placeholder="api-gateway-external"
+                     disabled={isFetching}
+                     onChange={this.handleAssetIdChange.bind(this)}
+                     required
+                     testId="Publish-Input-AssetId"/>
+        </div>
       </div>,
       <div className="form-row" key="Form-MainFile">
         <Label className="required">Main File</Label>
@@ -210,22 +212,24 @@ class PublishApiModal extends React.Component {
         <div>
           {publishToExchange ? this.addExchangeFormFields(isFetching) : null}
           <div className="form-row">
-            <Label className="required">Name</Label>
-            <TextField value={name}
-                       placeholder="Name..."
-                       disabled={isFetching}
-                       onChange={this.handleNameChange.bind(this)}
-                       required
-                       testId="Publish-Input-Name"/>
-          </div>
-          <div className="form-row">
-            <Label className="required">Version</Label>
-            <TextField value={version}
-                       placeholder="Version..."
-                       disabled={isFetching}
-                       onChange={this.handleVersionChange.bind(this)}
-                       required
-                       testId="Publish-Input-Version"/>
+            <div className="form-col">
+              <Label className="required">Name</Label>
+              <TextField value={name}
+                         placeholder="Name..."
+                         disabled={isFetching}
+                         onChange={this.handleNameChange.bind(this)}
+                         required
+                         testId="Publish-Input-Name"/>
+            </div>
+            <div className="form-col">
+              <Label className="required">Version</Label>
+              <TextField value={version}
+                         placeholder="Version..."
+                         disabled={isFetching}
+                         onChange={this.handleVersionChange.bind(this)}
+                         required
+                         testId="Publish-Input-Version"/>
+            </div>
           </div>
           {!publishToExchange || publishToBothApis ?
             <div className="form-row">

@@ -1,5 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import {hasProjectSelected} from '../../../bootstrap/selectors'
 import consumeIndex from '../../modal/consume-api'
 import consumeColorIcon from './assets/ConsumeExchangeColorIcon.svg'
 import './DependencyMenu.css'
@@ -28,7 +29,7 @@ const mapStateToProps = state => {
   const {configuration, consumeApi} = state
   return {
     isConsumeOpen: consumeApi.isOpen,
-    isConsumeMode: configuration.isConsumeMode
+    isConsumeMode: configuration.isConsumeMode && hasProjectSelected(state)
   }
 }
 

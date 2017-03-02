@@ -87,7 +87,7 @@ class ImportModal extends React.Component {
              testId="Import-Modal">
 
         <ModalHeader>
-          <h2>Import</h2>
+          <h1>Import</h1>
         </ModalHeader>
 
         <ModalBody>

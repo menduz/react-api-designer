@@ -36,7 +36,7 @@ class ConflictModal extends React.Component {
              testId="Conflict-Modal">
 
         <ModalHeader>
-          <h2>File exists</h2>
+          <h1>File exists</h1>
         </ModalHeader>
         <ModalBody>
           <Label testId="Conflict-Description">{fileNameToImport} exists, do you want to replace it?</Label>

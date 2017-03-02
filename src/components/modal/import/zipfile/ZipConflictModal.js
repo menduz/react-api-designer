@@ -72,7 +72,7 @@ class ZipConflictModal extends React.Component {
              testId="Zip-Conflict-Modal">
 
         <ModalHeader>
-          <h2>Replace</h2>
+          <h1>Replace</h1>
           <small data-test-id="Zip-Header">{fileNameToImport} contains files that are already in your project</small>
         </ModalHeader>
         <ModalBody>

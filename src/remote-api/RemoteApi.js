@@ -1,5 +1,5 @@
 import request from 'browser-request'
-import type {RemoteApiDataProvider} from './model'
+import type {RemoteApiSelectors} from '../types'
 
 const POST = 'POST'
 const PUT = 'PUT'
@@ -8,28 +8,30 @@ const DELETE = 'DELETE'
 export const SEPARATOR = '/'
 
 class RemoteApi {
-  constructor(dataProvider: RemoteApiDataProvider) {
-    this.dataProvider = dataProvider
+  remoteApiDataProvider : RemoteApiSelectors
+
+  constructor(remoteApiDataProvider: RemoteApiSelectors) {
+    this.remoteApiDataProvider = remoteApiDataProvider
   }
 
   get baseUrl() {
-    return this.dataProvider.baseUrl()
+    return this.remoteApiDataProvider.baseUrl()
   }
 
   get ownerId() {
-    return this.dataProvider.ownerId()
+    return this.remoteApiDataProvider.ownerId()
   }
 
   get organizationId() {
-    return this.dataProvider.organizationId()
+    return this.remoteApiDataProvider.organizationId()
   }
 
   get authorization() {
-    return this.dataProvider.authorization()
+    return this.remoteApiDataProvider.authorization()
   }
 
   get projectId() {
-    return this.dataProvider.projectId()
+    return this.remoteApiDataProvider.projectId()
   }
 
   _get(pathElements: string[], jsonResult: ?boolean): Promise {

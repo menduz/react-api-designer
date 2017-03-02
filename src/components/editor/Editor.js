@@ -14,6 +14,7 @@ class DesignerEditor extends React.Component {
 
     this.editor = null
     this.monaco = null
+    this.disposables = []
 
     this.theme = this.props.theme
     this.language = this.props.language
@@ -69,8 +70,12 @@ class DesignerEditor extends React.Component {
       this.monaco.editor.setModelLanguage(this.editor.getModel(), this.language.parent || this.language.id)
   }
 
+  componentWillUnmount() {
+    this.disposables.forEach(d => d.dispose())
+  }
+
   editorWillMount(monaco) {
-    registerRamlLanguage(monaco, (model, position) => {
+    this.disposables = registerRamlLanguage(monaco, (model, position) => {
       return new Promise((resolve) => {
         this.onSuggest(position, resolve)
       })
@@ -166,7 +171,7 @@ class DesignerEditor extends React.Component {
       <div className="Editor">
         {this.language.id ? '' : (<EmptyResult className="Empty" testId="Empty-Editor" message="Select a file"/>)}
         <MonacoEditor options={options}
-                      requireConfig={window.requireConfig}
+                      requireConfig={window.designerUrls}
                       context={window.electronAmdContext}
                       value={this.value}
                       language={this.language.parent || this.language.id}

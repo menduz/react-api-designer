@@ -11,10 +11,15 @@ import {File} from "../../repository"
 import {getCurrentDirectory, getAll} from "./selectors"
 import {Path} from '../../repository'
 
+export const CLEAN = `DESIGNER/${PREFIX}/CLEAN`
 export const NODE_SELECTED = `DESIGNER/${PREFIX}/NODE_SELECTED`
 export const PATH_SELECTED = `DESIGNER/${PREFIX}/PATH_SELECTED`
 export const EXPAND_FOLDER = `DESIGNER/${PREFIX}/EXPAND_FOLDER`
 export const NOT_EXPAND_FOLDER = `DESIGNER/${PREFIX}/NOT_EXPAND_FOLDER`
+
+export const clean = (path: Path) => ({
+  type: CLEAN
+})
 
 export const pathSelected = (path: Path) : Promise =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs) => {

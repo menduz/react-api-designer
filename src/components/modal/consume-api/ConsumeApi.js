@@ -49,7 +49,7 @@ class ConsumeApi extends Component {
              onClickOverlay={onCancel}
              className="consume-api-modal">
         <ModalHeader onClose={onCancel}>
-          <h2>Consume API Fragment</h2>
+          <h1>Consume API Fragment</h1>
         </ModalHeader>
         {error.length > 0 ?
           <div className="error-zone">

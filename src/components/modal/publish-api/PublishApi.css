@@ -19,7 +19,18 @@
 
 .publish-api-modal .form-row > div {
   margin-top: 2px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
+}
+
+.publish-api-modal .form-col {
+  display: inline-block;
+  width: 50%;
+}
+.publish-api-modal .form-col:first-child {
+  padding-right: 10px;
+}
+.publish-api-modal .form-col:last-child {
+  padding-left: 10px;
 }
 
 .publish-api-modal div > .form-row:last-child > div {
@@ -59,8 +70,12 @@
   margin-bottom: 15px;
 }
 
-.publish-footer {
+.publish-api-modal .publish-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.publish-api-modal .left-side {
+  padding-right: 50px;
 }

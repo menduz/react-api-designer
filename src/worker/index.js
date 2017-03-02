@@ -1,32 +1,36 @@
 import FileProvider from './FileProvider'
 
-export default class WebWorker {
+export default class DesignerWorker {
 
-  constructor(fileRepository: FileProvider) {
+  constructor(url: string, fileRepository: FileProvider) {
     this.parsing = false
     this.parsingPending = new Map()
-    this.worker = WebWorker.init()
+    this.worker = DesignerWorker.init(url)
 
-    if (this.worker) {
-      this._listen('requestFile', (req) => {
-        const path = req.path;
-        fileRepository.getFile(path).then(content => {
-          this._post('requestFile', {path, content})
-        }).catch(error => {
-          this._post('requestFile', {path, error})
-        })
+    this._listen('requestFile', (req) => {
+      const path = req.path;
+      fileRepository.getFile(path).then(content => {
+        this._post('requestFile', {path, content})
+      }).catch(error => {
+        this._post('requestFile', {path, error})
       })
-    }
+    })
   }
 
-  static init() {
+  static init(url: string) {
     const w = window
-    if (!w.requireConfig|| !w.Blob || !w.URL  || !w.Worker) return null
+    if (w.Worker && w.Blob && w.URL) {
+      const codeStr = `self.importScripts('${url}')`
+      const codeBlob = new w.Blob([codeStr], {type: 'application/javascript'})
+      const codeUrl = w.URL.createObjectURL(codeBlob)
+      return new w.Worker(codeUrl)
+    }
 
-    const codeStr = `self.importScripts('${w.requireConfig.worker}')`
-    const codeBlob = new w.Blob([codeStr], {type: 'application/javascript'})
-    const codeUrl = w.URL.createObjectURL(codeBlob)
-    return new w.Worker(codeUrl)
+    return {
+      postMessage: () => console.error('Could not initialize Designer Worker:', w.Worker, w.Blob, w.URL),
+      addEventListener: () => false,
+      removeEventListener: () => false
+    }
   }
 
   oasParse(data) {
@@ -99,7 +103,12 @@ export default class WebWorker {
   }
 
   _post(type, payload) {
-    this.worker.postMessage({type, payload})
+    try {
+      this.worker.postMessage({type, payload})
+    } catch (e) {
+      console.error('Error when trying to post to worker', e)
+      this.worker.postMessage({type}) // send just the type, so the flow can continue
+    }
   }
 
   _postAndExpect(type, payload) {

@@ -3,11 +3,12 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
+import {hasProjectSelected} from '../../bootstrap/selectors'
 import Support from '../menu/support/Support'
 import ProjectOptions from '../menu/project-options/ProjectOptions'
 import ProjectOptionsBasic from '../menu/project-options/ProjectOptionsBasic'
 import publishApi from '../modal/publish-api'
-import PublishApiButton from '../publish-api-button/PublishApiButton'
+import PublishApiButton from './publish-api-button/PublishApiButton'
 import './Header.css';
 
 class HeaderOptions extends Component {
@@ -40,7 +41,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     progress: editor.isParsing || repository.progress,
     isExchangeOpen: publishApi.isOpen,
-    isExchangeMode: configuration.isExchangeMode,
+    isExchangeMode: configuration.isExchangeMode && hasProjectSelected(state),
     showAdvancedOptions: ownProps.showAdvancedOptions
   }
 }

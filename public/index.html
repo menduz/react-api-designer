@@ -17,10 +17,12 @@
     <!--<link rel="import" href="%PUBLIC_URL%/static/js/api-console-imports/polymer-console/console-imports.html">-->
 
     <script>
-      window.requireConfig = {
+      window.designerUrls = {
+        remoteApi: 'https://dev.anypoint.mulesoft.com/designcenter/api-designer',
+        worker: window.location.origin + '%PUBLIC_URL%/static/js/worker.js',
+        console: '%PUBLIC_URL%/static/js/api-console/dist/scripts/api-console.js',
         url: '%PUBLIC_URL%/static/js/vs/loader.js',
-        paths: {'vs': '%PUBLIC_URL%/static/js/vs'},
-        worker: window.location.origin + '/%PUBLIC_URL%/static/js/worker.js'
+        paths: {'vs': '%PUBLIC_URL%/static/js/vs'}
       }
     </script>
   </body>

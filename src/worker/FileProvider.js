@@ -12,9 +12,14 @@ export default class FileProvider {
     const byPathString = repository && repository.getByPathString(path)
     if (byPathString && !byPathString.isDirectory()) {
       const file = byPathString.asFile()
-      return file.getContent()
+      try {
+        return file.getContent()
+      } catch (e) {
+        // todo (javok) file.getContent() should return a failed promise, never an error
+        return Promise.reject(`${e.message}: ${path}`)
+      }
     } else {
-      return Promise.reject('')
+      return Promise.reject(`File not found: ${path}`)
     }
   }
 }

@@ -1,35 +1,39 @@
 import type {Dispatch, GetState, ExtraArgs} from '../types'
 import Repository from "../repository/Repository";
 import FileSystem from '../repository/file-system/FileSystem'
-import {initFileSystem, loadingFileSystem} from "../repository-redux/actions";
 import FileTreeFactory from "../repository/immutable/RepositoryModelFactory";
 import VcsFileSystem from "../repository/file-system/VcsFileSystem";
 import LocalStorageFileSystem from "../repository/file-system/LocalStorageFileSystem";
 import VcsRemoteApi from "../remote-api/VcsRemoteApi";
-import type {RemoteApiDataProvider} from "../remote-api/model";
-import {INIT, CLEAN, INITIALIZING} from './constants'
+import {actions as editorActions} from "../components/editor";
+import {actions as treeActions} from "../components/tree";
+import {actions as repositoryActions} from "../repository-redux";
+import {INITIALIZED, CLEAN, INITIALIZING} from './constants'
 
-export const clean = (remoteApiDataProvider: ?RemoteApiDataProvider) =>
+export const clean = () =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): any => {
     repositoryContainer.isLoaded = false
     repositoryContainer.repository = undefined
+    dispatch(editorActions.clean())
+    dispatch(treeActions.clean())
+    dispatch(repositoryActions.loadingFileSystem())
     dispatch({type: CLEAN})
   }
 
 
-export const init = (remoteApiDataProvider: ?RemoteApiDataProvider) =>
-  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): any => {
+export const init = (projectId: string = '') =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerRemoteApiSelectors}: ExtraArgs): any => {
 
-    repositoryContainer.isLoaded = false
-    repositoryContainer.repository = undefined
-    dispatch({type: INITIALIZING, payload: remoteApiDataProvider})
-    dispatch(loadingFileSystem())
+    // clean old state
+    dispatch(clean())
+    // mark as initializing with proper project id
+    dispatch({type: INITIALIZING, payload: projectId})
 
 
     // Create file system
     const fileSystem: FileSystem =
-      remoteApiDataProvider ?
-        new VcsFileSystem(new VcsRemoteApi(remoteApiDataProvider)) :
+      projectId ?
+        new VcsFileSystem(new VcsRemoteApi(designerRemoteApiSelectors(getState))) :
         new LocalStorageFileSystem()
 
 
@@ -41,7 +45,7 @@ export const init = (remoteApiDataProvider: ?RemoteApiDataProvider) =>
         return repository
       })
       .then((repository) => {
-        dispatch(initFileSystem(FileTreeFactory.repository(repository)))
-        dispatch({type: INIT})
+        dispatch(repositoryActions.initFileSystem(FileTreeFactory.repository(repository)))
+        dispatch({type: INITIALIZED})
       })
   }

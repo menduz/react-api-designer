@@ -49,7 +49,7 @@ class ExportModal extends React.Component {
              testId="Export-Modal">
 
         <ModalHeader>
-          <h2>Export</h2>
+          <h1>Export</h1>
         </ModalHeader>
 
         <ModalBody>

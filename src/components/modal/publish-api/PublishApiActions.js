@@ -1,6 +1,4 @@
 // @flow
-import {selectors} from '../../../bootstrap'
-
 export const CLEAR = 'publishApi/CLEAR'
 export const OPEN = 'publishApi/OPEN'
 export const CHANGE_VALUE = 'publishApi/CHANGE_VALUE'
@@ -12,7 +10,7 @@ export const ADD_TAG = 'publishApi/ADD_TAG'
 export const PUBLISH_BOTH_APIS = 'publishApi/PUBLISH_BOTH_APIS'
 export const FINISH_LOADING = 'publishApi/FINISH_LOADING'
 
-import type {GetState} from '../../../types'
+import type {GetState, ExtraArgs} from '../../../types'
 import PublishRemoteApi from "../../../remote-api/PublishRemoteApi"
 import type {PublishApiResponse} from "../../../remote-api/PublishRemoteApi"
 import * as constants from './PublishApiConstants'
@@ -63,10 +61,8 @@ export const togglePublishBothApis = (publishBoth: boolean) => ({
 type Dispatch = (a: any) => void
 
 export const openModal = () => {
-  return (dispatch: Dispatch, getState: GetState) => {
-
-    const dataProvider = selectors.getRemoteApiDataProvider(getState())
-    const remoteApi = new PublishRemoteApi(dataProvider)
+  return (dispatch: Dispatch, getState: GetState, {designerRemoteApiSelectors}: ExtraArgs) => {
+    const remoteApi = new PublishRemoteApi(designerRemoteApiSelectors(getState))
     remoteApi.getLastVersion()
       .then((lastVersion) => {
         Object.keys(lastVersion).forEach((key) => {
@@ -88,10 +84,10 @@ const formatErrorMessage = (error: any, source: string) => {
 
 export const publish = (name: string, version: string, tags: Array<string>, mainFile: string,
                         assetId: string, groupId: string, platform: boolean, exchange: boolean) => {
-  return (dispatch: Dispatch, getState: GetState) => {
+  return (dispatch: Dispatch, getState: GetState, {designerRemoteApiSelectors}: ExtraArgs) => {
     dispatch(startFetching(!platform && exchange ? constants.EXCHANGE : !exchange && platform ? constants.PLATFORM : constants.BOTH))
 
-    const dataProvider = selectors.getRemoteApiDataProvider(getState())
+    const dataProvider = designerRemoteApiSelectors(getState)
     const remoteApi = new PublishRemoteApi(dataProvider)
 
     if (exchange) {
@@ -110,7 +106,7 @@ export const publish = (name: string, version: string, tags: Array<string>, main
       //publishing to platform
       remoteApi.publishToPlatform(name, version, tags)
         .then((response: PublishApiResponse) => {
-          const url = `/apiplatform/${dataProvider.domain()}/admin/#/organizations/${dataProvider.organizationId()}/dashboard/apis/${response.apiId}/versions/${response.versionId}/contracts`
+          const url = `/apiplatform/${dataProvider.organizationDomain()}/admin/#/organizations/${dataProvider.organizationId()}/dashboard/apis/${response.apiId}/versions/${response.versionId}/contracts`
           dispatch(successfullyFetched({...response, url}, constants.PLATFORM))
         })
         .catch((error) => {
