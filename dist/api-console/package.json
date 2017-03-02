@@ -1,0 +1,128 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "api-console@^3.0.13",
+        "scope": null,
+        "escapedName": "api-console",
+        "name": "api-console",
+        "rawSpec": "^3.0.13",
+        "spec": ">=3.0.13 <4.0.0",
+        "type": "range"
+      },
+      "/Users/agustin/tekgen/raml/react-api-designer"
+    ]
+  ],
+  "_from": "api-console@>=3.0.13 <4.0.0",
+  "_id": "api-console@3.0.13",
+  "_inCache": true,
+  "_location": "/api-console",
+  "_nodeVersion": "6.9.0",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/api-console-3.0.13.tgz_1485175710609_0.6337249954231083"
+  },
+  "_npmUser": {
+    "name": "agustinlg",
+    "email": "agustinlg@gmail.com"
+  },
+  "_npmVersion": "3.10.8",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "api-console@^3.0.13",
+    "scope": null,
+    "escapedName": "api-console",
+    "name": "api-console",
+    "rawSpec": "^3.0.13",
+    "spec": ">=3.0.13 <4.0.0",
+    "type": "range"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/api-console/-/api-console-3.0.13.tgz",
+  "_shasum": "8c02cef37c2f79f7dfac05634da06b27473f9582",
+  "_shrinkwrap": null,
+  "_spec": "api-console@^3.0.13",
+  "_where": "/Users/agustin/tekgen/raml/react-api-designer",
+  "author": {
+    "name": "MuleSoft, Inc."
+  },
+  "bugs": {
+    "url": "https://github.com/mulesoft/api-console/issues"
+  },
+  "dependencies": {},
+  "description": "Api-Console for RAML based app",
+  "devDependencies": {
+    "grunt": "~0.4.0",
+    "grunt-angular-templates": "~0.5.7",
+    "grunt-cli": "~0.1.13",
+    "grunt-concurrent": "~1.0.0",
+    "grunt-contrib-clean": "~0.6.0",
+    "grunt-contrib-concat": "~0.5.0",
+    "grunt-contrib-connect": "~0.9.0",
+    "grunt-contrib-copy": "~0.7.0",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-sass": "~0.8.1",
+    "grunt-contrib-uglify": "^0.9.2",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-css-prefix": "~0.2.3",
+    "grunt-karma": "~0.10.1",
+    "grunt-protractor-runner": "~1.1.4",
+    "jasmine-spec-reporter": "~1.1.0",
+    "load-grunt-tasks": "~2.0.0",
+    "serve-static": "~1.8.0"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "8c02cef37c2f79f7dfac05634da06b27473f9582",
+    "tarball": "https://registry.npmjs.org/api-console/-/api-console-3.0.13.tgz"
+  },
+  "files": [
+    "dist",
+    "dist/**",
+    "LICENSE"
+  ],
+  "gitHead": "b755fbd315143ec0f78808e7c77b85bac886efaa",
+  "homepage": "https://github.com/mulesoft/api-console",
+  "keywords": [
+    "api-console",
+    "raml",
+    "api"
+  ],
+  "license": "Apache 2.0",
+  "maintainers": [
+    {
+      "name": "agustinlg",
+      "email": "agustinlg@gmail.com"
+    },
+    {
+      "name": "cesaraugustogarcia",
+      "email": "cesaraugusto86@hotmail.com"
+    },
+    {
+      "name": "christianvogel",
+      "email": "christianvogel84@gmail.com"
+    },
+    {
+      "name": "juan.coen",
+      "email": "juan.coen@mulesoft.com"
+    },
+    {
+      "name": "mulesoft-npm",
+      "email": "mulesoft-npm@mulesoft.com"
+    }
+  ],
+  "name": "api-console",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mulesoft/api-console.git"
+  },
+  "scripts": {
+    "grunt": "grunt",
+    "test": "grunt regression"
+  },
+  "version": "3.0.13"
+}
