@@ -8,7 +8,7 @@ export default class DesignerWorker {
     this.worker = DesignerWorker.init(url)
 
     this._listen('requestFile', (req) => {
-      const path = req.path;
+      const path = req.path
       fileRepository.getFile(path).then(content => {
         this._post('requestFile', {path, content})
       }).catch(error => {
@@ -48,7 +48,7 @@ export default class DesignerWorker {
   parse(fnName, data, pendingKey = fnName) {
     if (this.parsing) {
       // if we already have a parse request pending, reject it as aborted
-      const pending = this.parsingPending.get(pendingKey);
+      const pending = this.parsingPending.get(pendingKey)
       if (pending) pending.reject('aborted')
 
       // leave the parser request as pending
@@ -71,7 +71,7 @@ export default class DesignerWorker {
 
   parsePending(data, pendingKey, fnName) {
     this.parsing = false
-    const pending = this.parsingPending.get(pendingKey);
+    const pending = this.parsingPending.get(pendingKey)
     if (pending) {
       this.parsingPending.delete(pendingKey)
       this[fnName](data)
@@ -98,7 +98,7 @@ export default class DesignerWorker {
 
   _listen(type, fn) {
     this.worker.addEventListener('message', (e) => {
-      if (e.data.type === type) fn(e.data.payload);
+      if (e.data.type === type) fn(e.data.payload)
     }, false)
   }
 
@@ -116,13 +116,13 @@ export default class DesignerWorker {
       const listener = (e) => {
         if (e.data.type === type + '-resolve') {
           this.worker.removeEventListener('message', listener, false)
-          resolve(e.data.payload);
+          resolve(e.data.payload)
         }
         else if (e.data.type === type + '-reject') {
           this.worker.removeEventListener('message', listener, false)
-          reject(e.data.payload);
+          reject(e.data.payload)
         }
-      };
+      }
       this.worker.addEventListener('message', listener, false)
 
       this._post(type, payload)
