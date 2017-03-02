@@ -13,7 +13,7 @@ module.exports = {
     loaders: [
       {
         test: /\.js$/,
-        // todo exlude node_mudules expect oas-raml-converter
+        // todo exclude node_modules expect oas-raml-converter
         // include: [
         //   path.resolve(projectRootPath, './node_modules/oas-raml-converter'),
         //   path.resolve(projectRootPath, './src-index')

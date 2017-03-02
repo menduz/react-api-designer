@@ -5,11 +5,21 @@ import './console-overrides.css'
 class Console extends Component {
 
   componentDidMount() {
+    if (!window.angular){
+      console.error('Cant render console since angular is not present')
+      return
+    }
+
     window.angular.bootstrap(this.angularContainer, ['ramlConsoleApp'])
     this.updateConsole(this.props)
   }
 
   shouldComponentUpdate(nextProps) {
+    if (!window.angular){
+      console.error('Cant update console since angular is not present')
+      return
+    }
+
     this.updateConsole(nextProps)
     return false
   }

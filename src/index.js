@@ -40,7 +40,7 @@ store.dispatch(component.actions.init(projectId))
 
 ReactDOM.render(
   <Provider store={store}>
-    <div className="DesignerStandalone">
+    <div>
       <Header/>
       <App/>
     </div>
