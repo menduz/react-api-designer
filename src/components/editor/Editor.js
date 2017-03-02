@@ -127,21 +127,28 @@ class DesignerEditor extends React.Component {
     return this.editor.getModel().getLineLastNonWhitespaceColumn(Math.min(line, this.editor.getModel().getLineCount()))
   }
 
-  _mapErrors(error) {
-    if (error.trace) return this._mapErrors(error.trace)
+  _mapErrors(errors, parentError) {
+    let markers = []
 
-    return {
-      ...error,
-      endColumn: error.endColumn || this._lineLength(error.startLineNumber),
-      severity: error.isWarning ? this.monaco.Severity.Warning : this.monaco.Severity.Error
-    }
+    errors.forEach(error => {
+      if (error.trace) {
+        markers = markers.concat(this._mapErrors(error.trace, parentError || error))
+      } else {
+        const isWarning = parentError ? parentError.isWarning : error.isWarning
+        markers.push({
+          ...error,
+          endColumn: error.endColumn || this._lineLength(error.startLineNumber),
+          severity: isWarning ? this.monaco.Severity.Warning : this.monaco.Severity.Error
+        })
+      }
+    })
+
+    return markers
   }
 
   _showErrors(errors) {
     this.errors = errors
-
-    const markers = errors.map(error => this._mapErrors(error));
-    this.monaco.editor.setModelMarkers(this.editor.getModel(), '', markers)
+    this.monaco.editor.setModelMarkers(this.editor.getModel(), '', this._mapErrors(errors))
   }
 
   _revealPosition(position) {

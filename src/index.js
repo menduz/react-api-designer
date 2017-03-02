@@ -34,13 +34,13 @@ const store = createStore(
 )
 
 // dispatch init with no project id for a sandbox standalone version
-// const projectId = ''
-const projectId = '0e4a85aa-3ac2-46a7-97f4-c53637243e87'
+const projectId = ''
+// const projectId = '0e4a85aa-3ac2-46a7-97f4-c53637243e87'
 store.dispatch(component.actions.init(projectId))
 
 ReactDOM.render(
   <Provider store={store}>
-    <div className="DesignerStandalone">
+    <div>
       <Header/>
       <App/>
     </div>

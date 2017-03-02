@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import cx from 'classnames'
-import './Errors.css'
 import {goToError} from './actions'
+import './Errors.css'
 
 class Errors extends Component {
 
@@ -16,20 +16,18 @@ class Errors extends Component {
   }
 
   _renderFilters(issues) {
-    let errors = 0
-    let warnings = 0
-    for (let issue of issues) {
-      if (issue.isWarning) warnings++
-      else errors++
-    }
+    const warnings = issues.filter(error => error.isWarning).length
+    const errors = issues.length - warnings
 
     return (
       <div className="Filter">
-        <a className={cx('Filter-errors', { 'toggled': this.state.filterErrors })}
-           data-test-id="Errors-Tab"
-           onClick={this._filterIssues.bind(this, 'error')}>
-          <strong className="Counter">{errors}</strong> {errors === 1 ? 'Error' : 'Errors'}
-        </a>
+        {errors > 0 ?
+          <a className={cx('Filter-errors', { 'toggled': this.state.filterErrors })}
+             data-test-id="Errors-Tab"
+             onClick={this._filterIssues.bind(this, 'error')}>
+            <strong className="Counter">{errors}</strong> {errors === 1 ? 'Error' : 'Errors'}
+          </a> : null
+        }
         <a className={cx('Filter-warnings', { 'toggled': this.state.filterWarnings })}
            data-test-id="Warning-Tab"
            onClick={this._filterIssues.bind(this, 'warning')}>

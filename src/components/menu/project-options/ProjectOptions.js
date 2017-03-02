@@ -8,26 +8,18 @@ import Icon from '@mulesoft/anypoint-icons/lib/Icon'
 
 class ProjectOptions extends Component {
   render() {
-    const {
-      showInfoPanelTabs,
-      isConsumeMode,
-      isExchangeMode,
-      theme
-    } = this.props
+    const {isExchangeMode, theme, publishToExchange} = this.props
 
     const contextMenuOptions = [
       {
         label: `${theme === 'vs' ? 'Dark' : 'Light'} Editor`,
         onClick: this.props.changeTheme.bind(this, theme === 'vs' ? 'vs-dark' : 'vs')
       }, {
-        label: `${showInfoPanelTabs ? 'No tabs' : 'Tabs'} for right Panel`,
-        onClick: this.props.changeShowInfoPanelTabs.bind(this, !showInfoPanelTabs)
-      }, {
-        label: `${isConsumeMode ? 'Disable' : 'Enable'} Consume Mode`,
-        onClick: this.props.toggleConsumeMode.bind(this, !isConsumeMode)
-      }, {
         label: `${isExchangeMode ? 'Disable' : 'Enable'} Exchange Mode`,
         onClick: this.props.toggleExchangeMode.bind(this, !isExchangeMode)
+      }, {
+        label: `${publishToExchange ? 'Disable' : 'Enable'} Publish to Exchange`,
+        onClick: this.props.togglePublishExchange.bind(this, !publishToExchange)
       }
     ]
 
@@ -43,18 +35,16 @@ const mapStateToProps = state => {
   const {configuration} = state
   return {
     theme: configuration.theme,
-    showInfoPanelTabs: configuration.showInfoPanelTabs,
-    isConsumeMode: configuration.isConsumeMode,
-    isExchangeMode: configuration.isExchangeMode
+    isExchangeMode: configuration.isExchangeMode,
+    publishToExchange: configuration.publishToExchange
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
     changeTheme: (theme: string) => dispatch(configActions.changeTheme(theme)),
-    changeShowInfoPanelTabs: (showTabs: boolean) => dispatch(configActions.showInfoPanelTabs(showTabs)),
-    toggleConsumeMode: (changeMode: boolean) => dispatch(configActions.changeConsumeMode(changeMode)),
-    toggleExchangeMode: (changeMode: boolean) => dispatch(configActions.changeExchangeMode(changeMode))
+    toggleExchangeMode: (changeMode: boolean) => dispatch(configActions.changeExchangeMode(changeMode)),
+    togglePublishExchange: (changeMode: boolean) => dispatch(configActions.changePublishExchange(changeMode))
   }
 }
 

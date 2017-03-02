@@ -76,6 +76,6 @@
   align-items: center;
 }
 
-.publish-api-modal .left-side {
-  padding-right: 50px;
+div[data-anypoint-component="Modal"].publish-api-modal {
+  min-width: 550px;
 }

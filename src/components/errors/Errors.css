@@ -2,6 +2,10 @@
   cursor: pointer;
 }
 
+.Errors {
+  margin-left: 20px;
+}
+
 .Errors.No-errors, .Errors .Filter {
   text-align: center;
   color: #cacbcc;
@@ -53,7 +57,7 @@
   border-color: #fff454;
 }
 
-.Filter a.toggled  {
+.Filter a.toggled {
   color: #a6a7a7;
   border-bottom: 3px #a6a7a7 solid;
 }

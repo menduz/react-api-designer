@@ -9,6 +9,7 @@ import {Info} from '../info'
 import {Editor} from '../editor'
 import {FileSystemTreeContainer} from '../tree'
 import FileDrop from '../filedrop/FileDrop'
+import Toasts from '../toasts/Toasts'
 
 import './App.css'
 
@@ -25,6 +26,7 @@ const App = () => (
         <Info/>
       </Split>
     </Split>
+    <Toasts/>
   </FileDrop>
 )
 
