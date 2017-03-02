@@ -31,7 +31,6 @@ const mapStateToProps = state => {
   const {configuration} = state
   return {
     theme: configuration.theme,
-    showInfoPanelTabs: configuration.showInfoPanelTabs,
     isConsumeMode: configuration.isConsumeMode,
     isExchangeMode: configuration.isExchangeMode
   }
