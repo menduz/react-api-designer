@@ -79,7 +79,6 @@ const reducer = (state: State = initialState, action: {type: string, payload: an
     case FILE_DELETE_FAILED:
     case FILE_CONTENT_UPDATE_FAILED:
     case FILE_MOVE_FAILED:
-      // todo show error feedback
       console.error('Repository error:', action.payload)
       return {
         ...state,

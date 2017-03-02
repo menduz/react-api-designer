@@ -21,6 +21,7 @@ import consumeApi from "./components/modal/consume-api";
 import ProjectRemoteApi from "./remote-api/ProjectRemoteApi";
 import App from "./components/app/App";
 import HeaderOptions from "./components/header/HeaderOptions";
+import * as toasts from "./components/toasts"
 
 const reducers = {
   [bootstrap.NAME]: bootstrap.reducer,
@@ -29,6 +30,7 @@ const reducers = {
   [fileSystemTree.NAME]: fileSystemTree.reducer,
   [publishApi.constants.NAME]: publishApi.reducer,
   [consumeApi.name]: consumeApi.reducer,
+  [toasts.NAME]: toasts.reducer,
   dialogs: combineReducers({
     newFolder: newFolder.reducer,
     newFile: newFile.reducer,

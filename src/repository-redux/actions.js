@@ -10,6 +10,8 @@ import {Path} from '../repository'
 import {isValidDirectory, isValidFile, getFileTree} from './selectors'
 import {getCurrentFilePath} from '../components/editor/selectors'
 import {clean} from '../components/editor/actions'
+import {addSuccessToasts} from '../components/toasts/actions'
+import {addErrorToasts} from '../components/toasts/actions'
 
 import type {Dispatch, GetState, ExtraArgs} from '../types'
 
@@ -125,10 +127,11 @@ export const directoryAdded = (directory: DirectoryModel) => ({
   payload: directory
 })
 
-export const error = (type: string, errorMessage: string) => ({
-  type,
-  payload: errorMessage
-})
+export const error = (type: string, errorMessage: string) =>
+  (dispatch: Dispatch): Promise<any> => {
+    dispatch({ type, payload: errorMessage})
+    dispatch(addErrorToasts(errorMessage))
+  }
 
 
 export const addDirectory = (parentPath: Path, name: string) =>
@@ -252,6 +255,7 @@ export const saveAll = () =>
       .then(
         ({repository, file, content}) => {
           dispatch(initFileSystem(Factory.repository(repository)))
+          dispatch(addSuccessToasts('All files saved'))
           if (file)
             dispatch(updateFileContent(file.path, content))
         })
