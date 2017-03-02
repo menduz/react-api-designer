@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {Console as AngularConsole} from '../raml-console/angular-console'
+import {ConsoleLoader} from '../raml-console/angular-console'
 import JSONTree from 'react-json-tree'
 import ReactMarkdown from 'react-markdown'
 import {getCurrentFileContent} from "../../repository-redux/selectors"
@@ -33,8 +33,9 @@ class Preview extends Component {
     switch (language.id) {
       case 'raml':
       case 'oas':
+        const ConsoleWrapper = ConsoleLoader.load(window.designerUrls.console)
         return !Preview._consolePreview(language, parsedObject) ? Preview._empty() :
-          <AngularConsole raml={parsedObject}/>
+          <ConsoleWrapper raml={parsedObject}/>
       case 'json':
         return !parsedObject ? Preview._empty() :
           <JSONTree data={parsedObject} theme={Preview._theme} hideRoot={true} invertTheme={false}/>

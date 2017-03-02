@@ -1,2 +1,2 @@
-import Console from './Console'
-export {Console}
+import ConsoleLoader from './ConsoleLoader'
+export {ConsoleLoader}

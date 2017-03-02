@@ -12,7 +12,7 @@
     "start": "webpack -d --config ./webpack/standalone/config.worker.js && react-scripts start",
     "build": "webpack --config ./webpack/standalone/config.worker.js && react-scripts build",
     "watch-worker": "webpack -d --watch --config ./webpack/standalone/config.worker.js",
-    "build-component": "npm run build-component-worker && npm run build-component-main",
+    "build-component": "npm run build-component-worker && npm run build-component-main && node concat.js",
     "build-component-worker": "webpack --config ./webpack/component/config.worker.js",
     "build-component-main": "webpack --config ./webpack/component/config.js",
     "test": "react-scripts test --env=jsdom",

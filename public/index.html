@@ -11,8 +11,8 @@
     <div id="root"></div>
 
     <!-- Imports for angular implementation of the console -->
-    <link rel="import" href="%PUBLIC_URL%/static/js/api-console-imports/angular-console/console-imports.html">
-    <!--<link rel="stylesheet" href="%PUBLIC_URL%/static/js/api-console/dist/styles/api-console-light-theme.css">-->
+    <!--<link rel="import" href="%PUBLIC_URL%/static/js/api-console-imports/angular-console/console-imports.html">-->
+    <link rel="stylesheet" href="%PUBLIC_URL%/static/js/api-console/dist/styles/api-console-light-theme.css">
 
     <!--Imports for polymer implementation of the console -->
     <!--<link rel="import" href="%PUBLIC_URL%/static/js/api-console-imports/polymer-console/console-imports.html">-->
@@ -21,8 +21,7 @@
       window.designerUrls = {
         remoteApi: 'http://dev.anypoint.mulesoft.com/designcenter/api-designer',
         worker: window.location.origin + '%PUBLIC_URL%/static/js/worker.js',
-        consoleVendor: '%PUBLIC_URL%/static/js/api-console/dist/scripts/api-console-vendor.js',
-        console: '%PUBLIC_URL%/static/js/api-console/dist/scripts/api-console.js',
+        console: '%PUBLIC_URL%/static/js/api-console.js',
         url: '%PUBLIC_URL%/static/js/vs/loader.js',
         paths: {'vs': '%PUBLIC_URL%/static/js/vs'}
       }
