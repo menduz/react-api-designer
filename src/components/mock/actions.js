@@ -3,6 +3,7 @@ import MockingServiceClient from './service/mocking-service-client'
 import {updateCurrentFile} from '../../components/editor/actions'
 import {getCurrentFileContent} from '../../repository-redux/selectors'
 import {getCurrentFilePath} from '../editor/selectors'
+import {addErrorToasts} from '../toasts/actions'
 
 export const START_MOCK = 'DESIGNER/MOCK/START_MOCK'
 export const MOCK_STARTED = 'DESIGNER/MOCK/MOCK_STARTED'
@@ -71,7 +72,8 @@ export const createMock = () => (dispatch, getState) => {
       addMockBaseUri(ramlContent, res.baseUri)(dispatch, getState)
     }).catch(err => {
       console.error(err)
-      dispatch(stopMock)
+      dispatch(stopMock(file))
+      dispatch(addErrorToasts(err.message || err))
     })
   }
 }
@@ -126,6 +128,7 @@ export const deleteMock = () => (dispatch, getState) => {
     }).catch(err => {
       console.error(err)
       dispatch(stopMock(file))
+      dispatch(addErrorToasts(err.message || err))
     })
   }
 }
