@@ -30,6 +30,15 @@ module.exports = {
     net: 'empty',
     tls: 'empty'
   },
+  externals: [{
+    "libxml-xsd": true,
+    "ws": true
+  }],
+  resolve: {
+    alias: {
+      fs: path.resolve(projectRootPath, "./node_modules/raml-1-parser/web-tools/modules/emptyFS.js")
+    }
+  },
   devtool: "source-map",
   plugins: [
     new webpack.optimize.UglifyJsPlugin({

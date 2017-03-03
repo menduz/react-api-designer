@@ -79,7 +79,8 @@ class RemoteApi {
     return {
       status: response.statusCode,
       statusText: response.statusText,
-      body: response.body
+      body: response.body,
+      message: response.body
     }
   }
 

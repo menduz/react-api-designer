@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@mulesoft/anypoint-components": "^2.42.5",
-    "@mulesoft/anypoint-icons": "^4.2.0",
+    "@mulesoft/anypoint-icons": "4.1.0",
     "@mulesoft/anypoint-styles": "^1.1.0",
     "api-console": "^3.0.13",
     "browser-request": "^0.3.3",
