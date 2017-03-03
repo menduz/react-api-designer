@@ -32,9 +32,25 @@ export default class RamlSuggestions {
     }
 
     return results.map(suggestion => {
+
+      //this removes indentation in the last line, because it is added by monaco editor
+      const split = suggestion.text.split('\n');
+      let text = ''
+      if (split.length > 1) {
+        let sep = ''
+        for (let i = 0; i < split.length - 1; i++) {
+          text = text + sep + split[i]
+          sep = '\n'
+        }
+        text = text + '\n\t'
+      } else {
+        text = suggestion.text
+      }
+
       return {
+        replacementPrefix:  suggestion.replacementPrefix || '',
         label: suggestion.displayText || suggestion.text || '',
-        insertText: suggestion.text,
+        insertText: text,
         documentation: suggestion.description,
         detail: suggestion.category !== 'unknown' ? suggestion.category : undefined
         // todo give range property for better competition
