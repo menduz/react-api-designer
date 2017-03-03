@@ -77,8 +77,11 @@ class VcsFileSystem extends FileSystem {
   load(path: Path): Promise<string> {
     return this._vcsApi.file(path)
       .then(result => {
-        if (result.status && result.status === 404) throw result.message // todo (javok) should return a failed promise
-        return result
+        if (result === undefined) {
+          return Promise.reject('Cannot load file ' + path )
+        }
+        if (result.status && result.status === 404) return Promise.reject(result.message)
+        return Promise.resolve(result)
       })
   }
 
