@@ -13,11 +13,7 @@ module.exports = {
     loaders: [
       {
         test: /\.js$/,
-        // todo exclude node_modules expect oas-raml-converter
-        // include: [
-        //   path.resolve(projectRootPath, './node_modules/oas-raml-converter'),
-        //   path.resolve(projectRootPath, './src-index')
-        // ],
+        exclude: /node_modules(?!.*\/oas-raml-converter\/)/,
         loader: 'babel-loader',
         query: {
           presets: ['es2015', 'react', 'stage-2']
@@ -39,19 +35,13 @@ module.exports = {
     new webpack.optimize.UglifyJsPlugin({
       debug: true,
       minimize: true,
-      sourceMap: true,
+      sourceMap: false,
       output: {
         comments: false
       },
       compressor: {
         warnings: false
       }
-    }),
-    new CopyWebpackPlugin([
-      {
-        from: 'node_modules/api-console',
-        to: 'api-console'
-      }
-    ])
+    })
   ]
 }

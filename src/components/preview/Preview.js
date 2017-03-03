@@ -1,13 +1,18 @@
 // @flow
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {Console as AngularConsole} from '../raml-console/angular-console'
+import {ConsoleLoader} from '../raml-console/angular-console'
 import JSONTree from 'react-json-tree'
 import ReactMarkdown from 'react-markdown'
 import {getCurrentFileContent} from "../../repository-redux/selectors"
 import './Preview.css'
 
 class Preview extends Component {
+
+  constructor(props) {
+    super(props)
+    this.consoleWrapper = ConsoleLoader.load(window.designerUrls.console)
+  }
 
   static _theme = {
     scheme: 'monokai',
@@ -29,12 +34,13 @@ class Preview extends Component {
 
   _render() {
     const {parsedObject, language, text} = this.props
+    const ConsoleWrapper = this.consoleWrapper
 
     switch (language.id) {
       case 'raml':
       case 'oas':
         return !Preview._consolePreview(language, parsedObject) ? Preview._empty() :
-          <AngularConsole raml={parsedObject}/>
+          <ConsoleWrapper raml={parsedObject}/>
       case 'json':
         return !parsedObject ? Preview._empty() :
           <JSONTree data={parsedObject} theme={Preview._theme} hideRoot={true} invertTheme={false}/>

@@ -41,15 +41,9 @@ module.exports = {
       }, {
         from: 'node_modules/monaco-editor/min/vs',
         to: 'vs',
-      }, {
-        from: 'node_modules/api-console',
-        to: 'api-console'
-      }, {
-        from: 'src/components/raml-console/angular-console/console-imports.html',
-        to: 'api-console-imports/angular-console/console-imports.html'
-      }, {
-        from: 'src/components/raml-console/polymer-console/console-imports.html',
-        to: 'api-console-imports/polymer-console/console-imports.html'
+      // }, {
+      //   from: 'src/components/raml-console/polymer-console/console-imports.html',
+      //   to: 'api-console-imports/polymer-console/console-imports.html'
       }
     ])
   ]
