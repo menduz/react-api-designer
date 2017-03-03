@@ -71,7 +71,7 @@ class ZipConflictModal extends React.Component {
              onClickOverlay={onCancel}
              testId="Zip-Conflict-Modal">
 
-        <ModalHeader>
+        <ModalHeader className="zip-modal-header">
           <h1>Replace</h1>
           <small data-test-id="Zip-Header">{fileNameToImport} contains files that are already in your project</small>
         </ModalHeader>

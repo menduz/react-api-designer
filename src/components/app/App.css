@@ -3,10 +3,7 @@
   display: none !important;
 }
 
-.Counter {
-  font-family: sans-serif;
-}
-
 .LeftPanel {
   height: 100%;
+  padding-bottom: 55px;
 }

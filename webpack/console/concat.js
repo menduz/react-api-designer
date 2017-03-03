@@ -1,19 +1,8 @@
 const concat = require('concat-files');
 const fs = require('fs');
 
-// rename incorrect console fonts
-[
-  { original: 'Lato-Hairline-Italic.woff2', newName: 'Lato-HairlineItalic.woff2'},
-  { original: 'Lato-Hairline-Italic2.woff2', newName: 'Lato-HairlineItalic2.woff2'}
-].forEach((def) => {
-  const path = './node_modules/api-console/dist/fonts/';
-  const originalPath = path + def.original;
-    if (fs.existsSync(originalPath)) {
-      const newPath = path + def.newName;
-      fs.renameSync(originalPath, newPath)
-    }
-  })
-
+// prefix css first
+require('./prefix-css');
 
 // create concated version for standalone
 const publicStaticJsDir = './public/static/js'

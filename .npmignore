@@ -15,6 +15,7 @@ coverage
 # production
 build
 out
+.tmp
 
 # misc
 .DS_Store

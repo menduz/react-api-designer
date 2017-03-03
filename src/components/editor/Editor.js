@@ -4,9 +4,9 @@ import MonacoEditor from 'react-monaco-editor'
 import EmptyResult from '@mulesoft/anypoint-components/lib/EmptyResult'
 import registerRamlLanguage from './languages/Raml'
 import {suggest, updateCurrentFile, saveCurrentFile} from './actions'
-import './Editor.css'
 import {getAll} from "./selectors"
 import {getCurrentFileContent} from "../../repository-redux/selectors"
+import './Editor.css'
 
 class DesignerEditor extends React.Component {
   constructor(props) {

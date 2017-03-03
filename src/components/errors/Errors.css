@@ -6,6 +6,10 @@
   margin-left: 20px;
 }
 
+.Errors .Counter {
+  font-family: sans-serif;
+}
+
 .Errors.No-errors, .Errors .Filter {
   text-align: center;
   color: #cacbcc;
