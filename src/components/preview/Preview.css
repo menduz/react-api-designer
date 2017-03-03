@@ -4,10 +4,6 @@
   padding-top: 10px;
 }
 
-.Preview > ul {
-  background: transparent !important;
-}
-
 .Preview {
   margin-left: 20px;
 }
@@ -22,10 +18,14 @@
 }
 
 /* Makes the arrow from the tree looks blackish */
-.Preview li > div > div {
+.Preview .json-preview li > div > div {
   color: #c8c9ca !important;
 }
 
-.Preview li > div ~ span {
+.Preview .json-preview > ul {
+  background: transparent !important;
+}
+
+.Preview .json-preview li > div ~ span {
   color: #bbbbbb !important;
 }

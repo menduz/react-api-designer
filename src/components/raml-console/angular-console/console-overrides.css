@@ -1,3 +1,7 @@
+.api-designer-console.angular-container {
+  font-family: DIN Pro, sans-serif;
+}
+
 .angular-container .raml-console-title {
   font-size: 26px;
   text-align: left;
@@ -46,7 +50,9 @@
   padding-left: 25px;
 }
 
-.angular-container .raml-console-flag {
+.angular-container .raml-console-flag,
+.angular-container .raml-console-documentation-security-scheme .raml-console-documentation-scheme
+{
   border: none;
   border-radius: 0;
   background-color: #eee;
@@ -70,8 +76,10 @@
 
 .angular-container .raml-console-resource.raml-console-is-active .raml-console-resource-path-active,
 .angular-container .raml-console-documentation-active .raml-console-resource-path-active,
-.angular-container .raml-console-resource.raml-console-is-active span,
-.angular-container .raml-console-resource.raml-console-is-active button {
+.angular-container .raml-console-resource.raml-console-is-active button,
+/*.angular-container .raml-console-resource.raml-console-is-active span*/
+.api-designer-console .raml-console-sidebar-controls .raml-console-collapse .raml-console-discoverable
+{
   color: black;
 }
 
@@ -128,8 +136,8 @@
   margin-top: 0;
 }
 
-.angular-container .raml-console-marked-content p,
-.angular-container .raml-console-resource-panel-primary p {
+.api-designer-console.angular-container .raml-console-marked-content p,
+.api-designer-console.angular-container .raml-console-resource-panel-primary p {
   font-family: "DIN Pro", sans-serif;
   font-size: 13px;
 }

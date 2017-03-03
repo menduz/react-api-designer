@@ -43,7 +43,7 @@ class Preview extends Component {
           <ConsoleWrapper raml={parsedObject}/>
       case 'json':
         return !parsedObject ? Preview._empty() :
-          <JSONTree data={parsedObject} theme={Preview._theme} hideRoot={true} invertTheme={false}/>
+          <div className="json-preview"><JSONTree data={parsedObject} theme={Preview._theme} hideRoot={true} invertTheme={false}/></div>
       case 'md':
         return !text ? Preview._empty() :
           <ReactMarkdown source={text} className="md-preview"/>

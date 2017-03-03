@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 
-import '../../../../node_modules/api-console/dist/styles/api-console-light-theme.css'
+import '../../../../.tmp/styles/api-console-light-theme.css'
 import './Console.css'
 import './console-overrides.css'
 
@@ -40,7 +40,7 @@ class Console extends Component {
 
   render() {
     return (
-      <div className="angular-container"
+      <div className="angular-container api-designer-console"
            data-test-id="Raml-Console"
            ref={angularContainer => this.angularContainer = angularContainer}>
         <raml-console raml="raml"
