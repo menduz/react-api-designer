@@ -1,6 +1,5 @@
 //@flow
 
-import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {getAll} from './selectors'
 import {fromFileTree} from './model'

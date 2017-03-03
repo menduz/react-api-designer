@@ -94,7 +94,7 @@ export default class FileSystem {
    *
    * Returns a promise that fulfills on success or rejects on fail.
    */
-  save(path: Path, content: string): Promise<void> {
+  save(files: FileData[]): Promise<Entry> {
     throw new Error('Not implemented method')
   }
 
@@ -132,7 +132,7 @@ export default class FileSystem {
    *
    * Returns a promise that fulfills on success or rejects on fail.
    */
-  rename(source: Path, destination: Path): Promise<any> {
+  rename(source: Path, destination: Path, isDirectory: boolean): Promise<any> {
     throw new Error('Not implemented method')
   }
 
@@ -148,5 +148,20 @@ export type Entry = {
   children: ?Entry[],
 }
 
+
 export const EntryFolder = 'folder'
 export const EntryFile = 'file'
+export const ENTRY_SEPARATOR = '/'
+
+export const folderEntry = (name: string, path: Path, children: Entry[]): Entry => {
+  return { name, path, children, type: EntryFolder}
+}
+
+export const fileEntry = (name: string, path: Path): Entry => {
+  return { name, path, type: EntryFile}
+}
+
+export type FileData = {
+  path: string,
+  content: string
+}

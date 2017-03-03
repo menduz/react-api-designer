@@ -1,15 +1,3 @@
-.App-content {
-  padding-top: 60px;
-  z-index: -1;
-}
-
-.App-content .menu {
-  height: 35px;
-  border-bottom: 2px solid rgba(39,47,51,.1);
-  padding-right: 20px;
-  color: #8d8d8e;
-}
-
 /* hide editor scrollbar and tab list active selector while dragging */
 .Split.is-dragging .Editor .decorationsOverviewRuler, .Split.is-dragging [data-anypoint-component="TabList"] > div {
   display: none !important;
@@ -17,4 +5,8 @@
 
 .Counter {
   font-family: sans-serif;
+}
+
+.LeftPanel {
+  height: 100%;
 }

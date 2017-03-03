@@ -1,7 +1,7 @@
 import {List} from 'immutable'
 import {Fragment} from './Fragment'
-import ConsumeRemoteApi from '../../../vcs-api/ConsumeRemoteApi'
-import {URL} from './ConsumeApiConstants'
+import ConsumeRemoteApi from '../../../remote-api/ConsumeRemoteApi'
+import type {Dispatch, GetState, ExtraArgs} from '../../../types'
 
 export const FRAGMENTS_CHANGED = 'CONSUME_API/FRAGMENTS_CHANGED'
 export const OPEN_MODAL = 'CONSUME_API/OPEN_MODAL'
@@ -77,9 +77,9 @@ export const handleFragmentSelection = (index: number, fragment: Fragment, selec
 }
 
 export const searchFragments = (query: string) => {
-  return (dispatch: Dispatch, getState) => {
+  return (dispatch: Dispatch, getState: GetState, {designerRemoteApiSelectors}: ExtraArgs) => {
     dispatch(isSearching(true))
-    const consumeRemoteApi = new ConsumeRemoteApi(URL)
+    const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
     const mockedExample: List<Fragment> = List.of(
       {
         organizationId: "asd23-21sad-1a23s",
@@ -327,7 +327,7 @@ export const searchFragments = (query: string) => {
         console.log(fragments)
         dispatch(isSearching(false))
         dispatch(fragmentsChanged(mockedExample))
-      }, (error) => {
+      }).catch((error) => {
         dispatch(isSearching(false))
         dispatch(showError(error.toString()))
       })

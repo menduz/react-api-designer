@@ -14,6 +14,7 @@ class DesignerEditor extends React.Component {
 
     this.editor = null
     this.monaco = null
+    this.disposables = []
 
     this.theme = this.props.theme
     this.language = this.props.language
@@ -69,8 +70,12 @@ class DesignerEditor extends React.Component {
       this.monaco.editor.setModelLanguage(this.editor.getModel(), this.language.parent || this.language.id)
   }
 
+  componentWillUnmount() {
+    this.disposables.forEach(d => d.dispose())
+  }
+
   editorWillMount(monaco) {
-    registerRamlLanguage(monaco, (model, position) => {
+    this.disposables = registerRamlLanguage(monaco, (model, position) => {
       return new Promise((resolve) => {
         this.onSuggest(position, resolve)
       })
@@ -112,7 +117,7 @@ class DesignerEditor extends React.Component {
         ...suggestion,
         kind: suggestion.insertText.lastIndexOf(':') > -1 ?
           this.monaco.languages.CompletionItemKind.Property :
-          this.monaco.languages.CompletionItemKind.Value // chose Kind based on category?
+          this.monaco.languages.CompletionItemKind.Value // choose Kind based on category?
       }
     }))
     this.onSuggestCallback = null
@@ -122,21 +127,28 @@ class DesignerEditor extends React.Component {
     return this.editor.getModel().getLineLastNonWhitespaceColumn(Math.min(line, this.editor.getModel().getLineCount()))
   }
 
-  _mapErrors(error) {
-    if (error.trace) return this._mapErrors(error.trace)
+  _mapErrors(errors, parentError) {
+    let markers = []
 
-    return {
-      ...error,
-      endColumn: error.endColumn || this._lineLength(error.startLineNumber),
-      severity: error.isWarning ? this.monaco.Severity.Warning : this.monaco.Severity.Error
-    }
+    errors.forEach(error => {
+      if (error.trace) {
+        markers = markers.concat(this._mapErrors(error.trace, parentError || error))
+      } else {
+        const isWarning = parentError ? parentError.isWarning : error.isWarning
+        markers.push({
+          ...error,
+          endColumn: error.endColumn || this._lineLength(error.startLineNumber),
+          severity: isWarning ? this.monaco.Severity.Warning : this.monaco.Severity.Error
+        })
+      }
+    })
+
+    return markers
   }
 
   _showErrors(errors) {
     this.errors = errors
-
-    const markers = errors.map(error => this._mapErrors(error));
-    this.monaco.editor.setModelMarkers(this.editor.getModel(), '', markers)
+    this.monaco.editor.setModelMarkers(this.editor.getModel(), '', this._mapErrors(errors))
   }
 
   _revealPosition(position) {
@@ -166,7 +178,7 @@ class DesignerEditor extends React.Component {
       <div className="Editor">
         {this.language.id ? '' : (<EmptyResult className="Empty" testId="Empty-Editor" message="Select a file"/>)}
         <MonacoEditor options={options}
-                      requireConfig={window.requireConfig}
+                      requireConfig={window.designerUrls}
                       context={window.electronAmdContext}
                       value={this.value}
                       language={this.language.parent || this.language.id}

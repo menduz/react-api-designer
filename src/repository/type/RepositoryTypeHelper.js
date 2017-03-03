@@ -5,7 +5,7 @@ import type {RepositoryElementType} from './RepositoryType'
 import Path from '../Path'
 
 import RepositoryModelFactory from '../immutable/RepositoryModelFactory'
-import {RepositoryModel, DirectoryModel, FileModel} from '../immutable/RepositoryModel'
+import {RepositoryModel, FileModel} from '../immutable/RepositoryModel'
 
 class RepositoryTypeHelper {
   repository: RepositoryModel
@@ -18,8 +18,7 @@ class RepositoryTypeHelper {
     const element = this.repository.getByPathString(path)
     if(!element || !element.isDirectory()) throw new Error(`${path} is not a directory`)
 
-    const directory: DirectoryModel = ((element: any): DirectoryModel)
-    return directory.children
+    return element.asDirectoryModel().children
       .map(child => child.name)
       .toArray()
   }
@@ -43,7 +42,7 @@ class RepositoryTypeHelper {
     const element = this.repository.getByPathString(path)
     if(!element || element.isDirectory()) return ''
 
-    const file: FileModel = ((element: any): FileModel)
+    const file: FileModel = element.asFileModel()
     return file.extension
   }
 }

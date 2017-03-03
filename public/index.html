@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="designer-standalone">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,16 +11,19 @@
     <div id="root"></div>
 
     <!-- Imports for angular implementation of the console -->
-    <link rel="import" href="%PUBLIC_URL%/static/js/api-console-imports/angular-console/console-imports.html">
+    <!--<link rel="import" href="%PUBLIC_URL%/static/js/api-console-imports/angular-console/console-imports.html">-->
+    <link rel="stylesheet" href="%PUBLIC_URL%/static/js/api-console/dist/styles/api-console-light-theme.css">
 
     <!--Imports for polymer implementation of the console -->
     <!--<link rel="import" href="%PUBLIC_URL%/static/js/api-console-imports/polymer-console/console-imports.html">-->
 
     <script>
-      window.requireConfig = {
+      window.designerUrls = {
+        remoteApi: 'http://dev.anypoint.mulesoft.com/designcenter/api-designer',
+        worker: window.location.origin + '%PUBLIC_URL%/static/js/worker.js',
+        console: '%PUBLIC_URL%/static/js/api-console.js',
         url: '%PUBLIC_URL%/static/js/vs/loader.js',
-        paths: {'vs': '%PUBLIC_URL%/static/js/vs'},
-        worker: window.location.origin + '/%PUBLIC_URL%/static/js/api-designer-worker.js'
+        paths: {'vs': '%PUBLIC_URL%/static/js/vs'}
       }
     </script>
   </body>

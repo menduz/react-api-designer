@@ -2,9 +2,7 @@
 
 import FileSystem, {EntryFile, EntryFolder} from './file-system/FileSystem'
 import type {Entry} from './file-system/FileSystem'
-import Directory from './Directory'
-import Element from './Element'
-import File from './File'
+import {Element, File, Directory} from './Element'
 
 class ElementFactory {
   static element(fileSystem: FileSystem, entry: Entry, parent?: Directory): Element {

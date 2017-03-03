@@ -1,5 +1,3 @@
-//@flow
-
 import React from 'react'
 import {connect} from 'react-redux'
 import cx from 'classnames'
@@ -25,7 +23,7 @@ class FileDrop extends React.Component {
 
   onDragOver(event) {
     const dt = event.dataTransfer;
-    if (dt && dt.types && Array.prototype.indexOf.call(dt.types, "Files") != -1) {
+    if (dt && dt.types && Array.prototype.indexOf.call(dt.types, "Files") !== -1) {
       dt.dropEffect = 'copy'
       window.clearTimeout(this.dragTimer);
       this.dragOverElem.classList.add('active');
@@ -54,7 +52,7 @@ class FileDrop extends React.Component {
            onDragLeave={this.onDragLeave.bind(this)}
            onDragOver={this.onDragOver.bind(this)}
            onDrop={this.onDrop.bind(this)}
-           data-testId="File-Drop">
+           data-test-id="File-Drop">
         <div className="FileDragOver" ref={ref => this.dragOverElem = ref}>
           <div>
             <Icon name="download-center-small" fill={"white"}/>

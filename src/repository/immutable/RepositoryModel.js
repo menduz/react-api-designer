@@ -13,6 +13,7 @@ export class RepositoryModel {
   get root(): DirectoryModel { return this._root }
 
   static empty(): RepositoryModel {
+    // eslint-disable-next-line
     return new RepositoryModel(DirectoryModel.directory('', Path.emptyPath(), List()))
   }
 
@@ -59,6 +60,10 @@ export class ElementModel {
 
   isDirectory(): boolean { throw new Error('Not implemented method') }
 
+  asFileModel(): FileModel { throw new Error('Not implemented method') }
+
+  asDirectoryModel(): DirectoryModel { throw new Error('Not implemented method') }
+
   getByPath(path: Path): ?ElementModel { throw new Error('Not implemented method') }
 }
 
@@ -93,6 +98,10 @@ export class DirectoryModel extends ElementModel {
 
   withName(name: string) { return new DirectoryModel(name, this.path, this._children) }
 
+  asFileModel(): FileModel { throw new Error('Trying to cast DirectoryModel to FileModel') }
+
+  asDirectoryModel(): DirectoryModel { return this }
+
   getByPath(path: Path): ?ElementModel {
     if (path.isEmpty()) return this
 
@@ -104,20 +113,18 @@ export class DirectoryModel extends ElementModel {
     if (parentPath.isEmpty()) return this.withChild(element)
 
     const child = this._children.get(parentPath.first())
-    if (!child || !child.isDirectory()) throw `'${parentPath.toString()}' is not a valid path.`
+    if (!child || !child.isDirectory()) throw new Error(`'${parentPath.toString()}' is not a valid path.`)
 
-    const directoryChild = ((child: any): DirectoryModel)
-    return this.withChild(directoryChild.updateElement(parentPath.shift(), element))
+    return this.withChild(child.asDirectoryModel().updateElement(parentPath.shift(), element))
   }
 
   removeElement(parentPath: Path, name: string): DirectoryModel {
     if (parentPath.isEmpty()) return this.withChildren(this._children.remove(name))
 
     const child = this._children.get(parentPath.first())
-    if (!child || !child.isDirectory()) throw `'${parentPath.toString()}' is not a valid directory.`
+    if (!child || !child.isDirectory()) throw new Error(`'${parentPath.toString()}' is not a valid directory.`)
 
-    const directoryChild = ((child: any): DirectoryModel)
-    return this.withChild(directoryChild.removeElement(parentPath.shift(), name))
+    return this.withChild(child.asDirectoryModel().removeElement(parentPath.shift(), name))
   }
 }
 
@@ -136,6 +143,10 @@ export class FileModel extends ElementModel {
   get dirty(): boolean { return this._dirty }
 
   get extension(): string { return this._extension }
+
+  asFileModel(): FileModel { return this }
+
+  asDirectoryModel(): DirectoryModel { throw new Error('Trying to cast FileModel to DirectoryModel') }
 
   getByPath(path: Path): ?ElementModel { return path.isEmpty() ? this : null }
 

@@ -29,18 +29,10 @@ class RenameModal extends React.Component {
   }
 
   render() {
-    const {
-      path,
-      newName,
-      onCancel,
-      showModal
-    } = this.props
+    const {path, newName, onCancel, showModal} = this.props
+    const name = path ? path.substr(path.lastIndexOf('/') + 1, path.length) : ''
 
-    if (!showModal) return null
-
-    const name = path.substr(path.lastIndexOf('/') + 1, path.length)
-
-    return (
+    return showModal ? (
       <Modal className="rename"
              title="Rename"
              onCancel={onCancel}
@@ -52,9 +44,10 @@ class RenameModal extends React.Component {
         <TextField className="new-name"
                    value={newName ? newName : name}
                    onChange={this.onNameChange.bind(this)}
-                   autoFocus/>
+                   autoFocus
+                   testId="Rename-Input"/>
       </Modal>
-    )
+    ) : null
   }
 }
 

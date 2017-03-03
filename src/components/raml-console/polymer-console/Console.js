@@ -36,7 +36,7 @@ class Console extends Component {
   render() {
     const {loading} = this.state
     return (
-      <div className="Console">
+      <div className="Console" data-test-id="Raml-Console">
         <div className="Console-toolbar">
           {loading && <div className="Spinner-console"><Spinner size="s"/></div>}
           <Mock/>

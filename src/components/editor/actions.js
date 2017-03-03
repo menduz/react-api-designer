@@ -29,7 +29,7 @@ const suggestionResult = suggestions => ({
 })
 
 export const suggest = (text, cursorPosition, path, repository) =>
-  (dispatch, getState, {worker}) => {
+  (dispatch, getState, {designerWorker}) => {
     const fileTree = getFileTree(getState())
     if (!fileTree) return
     if (getLanguage(getState()).id !== 'raml') return
@@ -39,11 +39,13 @@ export const suggest = (text, cursorPosition, path, repository) =>
 
     dispatch({type: SUGGESTION_REQUEST})
 
-    worker.ramlSuggest(text, cursorPosition, path, repository)
+    designerWorker.ramlSuggest(text, cursorPosition, path, repository)
       .then(result => {
         dispatch(suggestionResult(result))
       })
-      .catch(e => { dispatch(suggestionResult([])) })
+      .catch(e => {
+        dispatch(suggestionResult([]))
+      })
   }
 
 const setPath = (path, language) => ({
@@ -61,19 +63,19 @@ const parseResult = (parsedObject, errors) => ({
   parsedObject: parsedObject
 })
 
-const mapUnexpectedError = (error) =>{
-  return { message: error.message, startLineNumber: 1, endLineNumber: 1, startColumn: 0}
+const mapUnexpectedError = (error) => {
+  return {message: error.message, startLineNumber: 1, endLineNumber: 1, startColumn: 0}
 }
 
-const parserError = (error, dispatch) =>{
+const parserError = (error, dispatch) => {
   if (error === 'aborted') console.log('Aborting old parse request')
   else dispatch(parseResult(null, [error]))
-};
+}
 
-const parseJson = function (text, path, dispatch, worker) {
+const parseJson = (text, path, dispatch, designerWorker) => {
   dispatch(parsingRequest())
 
-  const promise = worker.jsonParse({text})
+  const promise = designerWorker.jsonParse({text})
   if (promise) {
     promise.then(result => {
       dispatch(parseResult(result, []))
@@ -81,36 +83,31 @@ const parseJson = function (text, path, dispatch, worker) {
   }
 }
 
-const parseRaml = function (text, path, dispatch, worker) {
+const parseRaml = (text, path, dispatch, designerWorker) => {
   dispatch(parsingRequest())
-  const promise = worker.ramlParse({path})
+  const promise = designerWorker.ramlParse({path})
   if (promise) {
-    promise.then(result => dispatch(parseResult(result.specification, result.errors))).
-    catch(error => parserError(mapUnexpectedError(error), dispatch))
+    promise.then(result => dispatch(parseResult(result.specification, result.errors)))
+      .catch(error => parserError(mapUnexpectedError(error), dispatch))
   }
 }
 
-const parseOas = function (text, path, dispatch, worker) {
+const parseOas = (text, path, dispatch, designerWorker) => {
   dispatch(parsingRequest())
-  const promise = worker.oasParse({text})
+  const promise = designerWorker.oasParse({text})
   if (promise) {
-    promise.then(result => dispatch(parseResult(result.specification, result.errors))).
-    catch(error => parserError(mapUnexpectedError(error), dispatch))
+    promise.then(result => dispatch(parseResult(result.specification, result.errors)))
+      .catch(error => parserError(mapUnexpectedError(error), dispatch))
   }
 }
-
-export const updateCurrentFile = (text, delay = 0) =>
-  (dispatch, getState) => {
-    dispatch(updateFile(text, getCurrentFilePath(getState()), delay))
-  }
 
 let parseTimer = null
 export const updateFile = (text, path: Path, delay = 0) =>
-  (dispatch, getState, {worker}) => {
+  (dispatch, getState, {designerWorker}) => {
     dispatch(updateFileContent(path, text))
 
     const pathString = path.toString()
-    const lang = language(pathString, text);
+    const lang = language(pathString, text)
     dispatch(setPath(path, lang))
 
     if (parseTimer) clearTimeout(parseTimer)
@@ -118,15 +115,20 @@ export const updateFile = (text, path: Path, delay = 0) =>
     parseTimer = setTimeout(() => {
       switch (lang.id) {
         case 'raml':
-          return parseRaml(text, pathString, dispatch, worker)
+          return parseRaml(text, pathString, dispatch, designerWorker)
         case 'oas':
-          return parseOas(text, pathString, dispatch, worker)
+          return parseOas(text, pathString, dispatch, designerWorker)
         case 'json':
-          return parseJson(text, pathString, dispatch, worker)
+          return parseJson(text, pathString, dispatch, designerWorker)
         default:
           dispatch(parseResult({}, []))
       }
     }, delay)
+  }
+
+export const updateCurrentFile = (text, delay = 0) =>
+  (dispatch, getState) => {
+    dispatch(updateFile(text, getCurrentFilePath(getState()), delay))
   }
 
 export const saveCurrentFile = () => (dispatch, getState) => {

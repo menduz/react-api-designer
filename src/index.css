@@ -1,19 +1,21 @@
-body {
+/** Overrides anypoint-styles.css small font */
+html.designer-standalone {
+  font-size: 100%;
+  font-family: sans-serif;
+}
+
+html.designer-standalone body {
   margin: 0;
   padding: 0;
 }
 
-/** Overrides anypoint-styles.css small font */
-html {
-  font-size: 100%;
+html.designer-standalone .App-content {
+  padding-top: 60px;
+  z-index: -1;
 }
 
 *, :after, :before {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box
-}
-
-div[data-anypoint-component="Modal"] {
-  min-width: 400px;
 }

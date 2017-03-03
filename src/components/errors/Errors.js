@@ -1,9 +1,8 @@
-//@flow
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import cx from 'classnames'
-import './Errors.css'
 import {goToError} from './actions'
+import './Errors.css'
 
 class Errors extends Component {
 
@@ -17,20 +16,20 @@ class Errors extends Component {
   }
 
   _renderFilters(issues) {
-    let errors = 0
-    let warnings = 0
-    for (let issue of issues) {
-      if (issue.isWarning) warnings++
-      else errors++
-    }
+    const warnings = issues.filter(error => error.isWarning).length
+    const errors = issues.length - warnings
 
     return (
       <div className="Filter">
-        <a className={cx('Filter-errors', { 'toggled': this.state.filterErrors })} href="#"
-           onClick={this._filterIssues.bind(this, 'error')}>
-          <strong className="Counter">{errors}</strong> {errors === 1 ? 'Error' : 'Errors'}
-        </a>
-        <a className={cx('Filter-warnings', { 'toggled': this.state.filterWarnings })} href="#"
+        {errors > 0 ?
+          <a className={cx('Filter-errors', { 'toggled': this.state.filterErrors })}
+             data-test-id="Errors-Tab"
+             onClick={this._filterIssues.bind(this, 'error')}>
+            <strong className="Counter">{errors}</strong> {errors === 1 ? 'Error' : 'Errors'}
+          </a> : null
+        }
+        <a className={cx('Filter-warnings', { 'toggled': this.state.filterWarnings })}
+           data-test-id="Warning-Tab"
            onClick={this._filterIssues.bind(this, 'warning')}>
           <strong className="Counter">{warnings}</strong> {warnings === 1 ? 'Warning' : 'Warnings'}
         </a>
@@ -49,13 +48,11 @@ class Errors extends Component {
   }
 
   _renderErrors(errors, trace = false) {
-    const {onErrorClick} = this.props
-
     return errors.map((error, index) => {
       return (
-        <li key={index} className={error.isWarning ? 'warning' : 'error'}>
+        <li key={`error${index}`} className={error.isWarning ? 'warning' : 'error'}>
           {trace ? <span> ↳ </span> : null}
-          <a onClick={onErrorClick.bind(this, error)}>
+          <a onClick={this.props.onErrorClick.bind(this, error)} data-test-id={`Error-${index}`}>
             {error.message} <strong>({error.startLineNumber}, {error.startColumn})</strong>
           </a>
           {!(error.trace && error.trace.length > 0) ? null :
@@ -70,12 +67,12 @@ class Errors extends Component {
   render() {
     const {errors} = this.props
     if (!errors || errors.length === 0)
-      return <div className="Errors No-errors" data-testId="Errors">No errors</div>
+      return <div className="Errors No-errors" data-test-id="No-Errors">No errors</div>
 
     const filteredErrors = errors.filter(error => this._filterRootErrors(error))
 
     return (
-      <div className="Errors" data-testId="Errors">
+      <div className="Errors" data-test-id="Errors-Panel">
         {this._renderFilters(errors)}
         <ol className="Root-errors">
           {this._renderErrors(filteredErrors)}

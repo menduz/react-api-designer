@@ -26,6 +26,10 @@ class ConsumeApi extends Component {
     this.props.handleFragmentSelection(index, fragment, event.value)
   }
 
+  handleSearchFragment(query) {
+    this.props.searchFragment(query)
+  }
+
   renderFragments(fragments: List<Fragment>) {
     return fragments.map((fragment: Fragment, index) => {
       return <FragmentComponent isOdd={index % 2 !== 0}
@@ -35,25 +39,21 @@ class ConsumeApi extends Component {
     })
   }
 
-  handleSearchFragment(query) {
-    this.props.searchFragment(query)
-  }
-
   render() {
     const {onCancel, fragments, query, submit, isSearching, isSubmitting, error, closeError, onMock, isMock} = this.props
     const numSelectedFragments = fragments.count(fragment => fragment.selected)
 
     return (
-      <Modal testId="project-consume-modal"
+      <Modal testId="Consume-Modal"
              onEsc={onCancel}
              onClickOverlay={onCancel}
              className="consume-api-modal">
         <ModalHeader onClose={onCancel}>
-          <h2>Consume API Fragment</h2>
+          <h1>Consume API Fragment</h1>
         </ModalHeader>
         {error.length > 0 ?
           <div className="error-zone">
-            <Toast title={error} kind="error" onClose={closeError}/>
+            <Toast title={error} kind="error" onClose={closeError} testId="Consume-Error"/>
           </div> : null}
         <ModalBody className="consume-api-body">
           <div className="search-panel">
@@ -63,9 +63,9 @@ class ConsumeApi extends Component {
                     query={query}
                     placeholder="Search for fragments"
                     id="consume-search"
-                    test-id="test-consume-search"/>
+                    testId="Consume-Search"/>
           </div>
-          <div className="consume-api-content">
+          <div className="consume-api-content" data-test-id="Consume-Content">
             {isSearching ?
               <div className="search-spinner"><Spinner size="l"/></div> :
               fragments.size > 0 ?
@@ -76,16 +76,17 @@ class ConsumeApi extends Component {
         </ModalBody>
         <ModalFooter className="search-footer">
           <div className="modal-mocked-zone">
-            <Button kind="tertiary" noFill onClick={onMock.bind(this, !isMock)}>
+            <Button kind="tertiary" noFill onClick={onMock.bind(this, !isMock)} testId="Mock-Consume-Button">
               {`${isMock ? 'Unmock': 'Mock'} Fragments`}
             </Button>
           </div>
           <div className="modal-button-zone">
-            <Button kind="tertiary" noFill onClick={onCancel}>Cancel</Button>
+            <Button kind="tertiary" noFill onClick={onCancel} testId="Cancel-Consume-Button">Cancel</Button>
             <Button kind="primary"
                     isLoading={isSubmitting}
                     disabled={numSelectedFragments === 0}
-                    onClick={submit.bind(this, fragments)}>
+                    onClick={submit.bind(this, fragments)}
+                    testId="Submit-Consume-Button">
               {isSubmitting ?
                 'Submitting...'
                 : `Add ${numSelectedFragments !== 0 ? numSelectedFragments : ''} Dependenc${numSelectedFragments > 1 ? 'ies' : 'y'}`

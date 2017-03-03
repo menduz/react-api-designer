@@ -1,7 +1,7 @@
 import {actions as treeActions} from '../tree/index'
 import {actions as editorActions} from '../editor/index'
 import {Path} from '../../repository/index'
-import type {Dispatch, GetState} from '../../types/types'
+import type {Dispatch, GetState} from '../../types'
 import {selectors} from '../tree';
 
 const goToPosition = (dispatch, error) => {

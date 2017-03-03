@@ -33,7 +33,7 @@ class ImportModal extends React.Component {
   props: Props
 
   getType() {
-    const selectValue = this.props.selectValue;
+    const selectValue = this.props.selectValue
     return ImportModal.IMPORT_TYPES.find(v => v.value === selectValue)
   }
 
@@ -57,6 +57,14 @@ class ImportModal extends React.Component {
     this.props.onUrlChange(event.value)
   }
 
+  getPopoverContent() {
+    return (
+      <div className="Popover-in-modal">
+        {this.getType().info}
+      </div>
+    )
+  }
+
   render() {
     const {
       onCancel,
@@ -69,57 +77,57 @@ class ImportModal extends React.Component {
       fileToImport
     } = this.props
 
-    if (showModal) {
-      return (
-        <Modal className="import-modal"
-               onCancel={onCancel}
-               onSubmit={this.handleSubmit.bind(this)}
-               onEsc={onCancel}
-               onEnter={this.handleSubmit.bind(this)}
-               onClickOverlay={onCancel}
-               testId="Import-Modal">
+    return showModal ? (
+      <Modal className="import-modal"
+             onCancel={onCancel}
+             onSubmit={this.handleSubmit.bind(this)}
+             onEsc={onCancel}
+             onEnter={this.handleSubmit.bind(this)}
+             onClickOverlay={onCancel}
+             testId="Import-Modal">
 
-          <ModalHeader>
-            <h2>Import</h2>
-          </ModalHeader>
+        <ModalHeader>
+          <h1>Import</h1>
+        </ModalHeader>
 
-          <ModalBody>
-            <div className="input-type">
-              <Select name="import-type"
-                      options={ImportModal.IMPORT_TYPES}
-                      value={selectValue}
-                      onChange={onImportTypeChange}
-                      clearable={false}
-              />
-              <Popover className="info-small-icon" content={this.getPopoverContent()} triggerOn={['hover']}
-                       anchorPosition="br">
-                <Icon name="info-small" size={19} fill={"rgb(124, 125, 126)"}/>
-              </Popover>
-            </div>
-            {this.getType().url ?
-              <TextField className="import-url" value={url} type="url" placeholder="Url..."
-                         onChange={this.handleUrlChange.bind(this)} autoFocus/> :
-              <FileUploader id="fileUploader" onChange={onFileUpload} className="import-file" required={true} value={fileToImport}/>
-            }
-          </ModalBody>
+        <ModalBody>
+          <div className="input-type">
+            <Select name="import-type"
+                    options={ImportModal.IMPORT_TYPES}
+                    value={selectValue}
+                    onChange={onImportTypeChange}
+                    clearable={false}
+                    testId="Import-Select"/>
+            <Popover className="info-small-icon"
+                     content={this.getPopoverContent()}
+                     triggerOn={['hover']}
+                     anchorPosition="br"
+                     testId="Import-Popover">
+              <Icon name="info-small" size={19} fill={"rgb(124, 125, 126)"}/>
+            </Popover>
+          </div>
+          {this.getType().url ?
+            <TextField className="import-url" value={url} type="url" placeholder="Url..." testId="Import-Input-URL"
+                       onChange={this.handleUrlChange.bind(this)} autoFocus/> :
+            <FileUploader id="fileUploader"
+                          onChange={onFileUpload}
+                          className="import-file"
+                          required={true}
+                          value={fileToImport}
+                          testId="Import-File-Uploader"/>
+          }
+        </ModalBody>
 
-          <ModalFooter>
-            <Button kind="tertiary" onClick={onCancel} noFill>Cancel</Button>
-            <Button kind="primary" onClick={this.handleSubmit.bind(this)} isLoading={isImporting}>Import</Button>
-          </ModalFooter>
+        <ModalFooter>
+          <Button kind="tertiary" onClick={onCancel} noFill testId="Import-Cancel-Button">Cancel</Button>
+          <Button kind="primary"
+                  onClick={this.handleSubmit.bind(this)}
+                  isLoading={isImporting}
+                  testId="Import-Submit-Button">Import</Button>
+        </ModalFooter>
 
-        </Modal>
-      )
-    }
-    return null
-  }
-
-  getPopoverContent() {
-    return (
-      <div className="Popover-in-modal">
-        {this.getType().info}
-      </div>
-    )
+      </Modal>
+    ) : null
   }
 
   static IMPORT_TYPES = [
@@ -149,7 +157,7 @@ class ImportModal extends React.Component {
       info: 'Note: currently supports OAS (Swagger) v2.0.',
       url: true
     }
-  ];
+  ]
 }
 
 export default ImportModal

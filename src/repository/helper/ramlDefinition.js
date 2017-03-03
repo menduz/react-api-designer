@@ -1,15 +1,14 @@
-//@flows
+// @flow
 
 import Repository from '../Repository'
 import Element from '../Element'
 import {isRamlFile, isApiDefinition} from './extensions'
 
-
-export default (repository:Repository) => {
+export default (repository: Repository) => {
 
   const ramls = []
 
-  function findRaml(elem:Element) {
+  const findRaml = (elem: Element) => {
     if (!elem.isDirectory()) {
       if (isRamlFile(elem.name)) {
         return elem.getContent().then(c => {
@@ -25,11 +24,11 @@ export default (repository:Repository) => {
     }
   }
 
-  return findRaml(repository.root).then(()=> {
-    if(ramls.length === 0) throw Error('Cannot find raml file')
+  return findRaml(repository.root).then(() => {
+    if (ramls.length === 0) throw Error('Cannot find raml file')
     else {
-      const path = ramls[0].toString();
-      return path.startsWith('/')?path.substring(1,path.length):path
+      const path = ramls[0].toString()
+      return path.startsWith('/') ? path.substring(1, path.length) : path
     }
   })
 }

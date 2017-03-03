@@ -1,6 +1,15 @@
+.Mock {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-right: 10px;
+}
+
 .Mock > small {
   color: #3c4b65;
-  padding-right: 6px;
+  padding-right: 5px;
+  font-size: 11px;
+  align-self: center;
 }
 
 .Mock > div {

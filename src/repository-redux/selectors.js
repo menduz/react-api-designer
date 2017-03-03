@@ -10,14 +10,14 @@ export const getAll = (rootState: any): State => rootState[NAME]
 
 export const getFileTree = (rootState: any): ?RepositoryModel => getAll(rootState).fileTree
 
-export const getCurrentFileContent = (rootState: any) => (): ?string => {
-  const currentPath = getCurrentFilePath(rootState)
-  return currentPath ? getFileContent(rootState)(currentPath) : ''
-}
-
 export const getFileContent = (rootState: any) => (path: Path): ?string => {
   const state = getAll(rootState)
   return state.contents.get(path.toString())
+}
+
+export const getCurrentFileContent = (rootState: any) => (): ?string => {
+  const currentPath = getCurrentFilePath(rootState)
+  return currentPath ? getFileContent(rootState)(currentPath) : ''
 }
 
 export const isValidDirectory = (rootState: any) => (path: Path): boolean => {

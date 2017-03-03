@@ -1,0 +1,23 @@
+# npm package should just contain dist folder
+src
+src-worker
+public
+electron
+webpack
+
+# dependencies
+node_modules
+bower_components
+
+# testing
+coverage
+
+# production
+build
+out
+
+# misc
+.DS_Store
+.env
+npm-debug.log
+.idea

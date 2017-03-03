@@ -39,13 +39,21 @@ class FileSystemTree extends Component {
     this.props.showNewFolderDialog(path)
   }
 
-  onDrop(path: Path, event) {
+  onDropInFile(path: Path, event) {
+    this.onDropInFolder(path.parent(), event)
+  }
+
+  onDropInFolder(path: Path, event) {
     event.stopPropagation()
     event.preventDefault()
 
     const from = event.dataTransfer.getData('text/plain');
-    if (from)
+    if (from && Path.fromString(from).parent().toString() !== path.toString())
       this.props.moveFile(Path.fromString(from), path)
+  }
+
+  onRootDrop(event) {
+    this.onDropInFolder(Path.emptyPath(true), event)
   }
 
   onDragStart(path: Path, event) {
@@ -63,7 +71,8 @@ class FileSystemTree extends Component {
       <div className="tree-node tree-leaf"
            data-path={node.path.toString()}
            draggable="true"
-           onDragStart={this.onDragStart.bind(this, node.path)}>
+           onDragStart={this.onDragStart.bind(this, node.path)}
+           onDrop={this.onDropInFile.bind(this, node.path)}>
         <label>{node.label}</label>
         <ContextMenu className="tree-menu file-menu" options={options} testId="File-Tree-Context-Menu">
           <Icon name="contextmenu"/>
@@ -89,7 +98,7 @@ class FileSystemTree extends Component {
            draggable="true"
            onDragStart={this.onDragStart.bind(this, node.path)}
            onDragOver={event => event.preventDefault()}
-           onDrop={this.onDrop.bind(this, node.path)}>
+           onDrop={this.onDropInFolder.bind(this, node.path)}>
         <label>{node.label}</label>
         <ContextMenu className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
           <Icon name="contextmenu"/>
@@ -105,23 +114,23 @@ class FileSystemTree extends Component {
     const {nodes, selected, expanded} = this.props
 
     return nodes ?
-      (<div>
-          <TreeUI
-            className="Tree"
-            getLeaf={this.renderLeaf.bind(this)}
-            getFolder={this.renderFolder.bind(this)}
-            getEmpty={()=> 'Empty'}
-            nodes={nodes}
-            selected={selected}
-            expanded={expanded}
-            onSelect={this.handleOnSelect.bind(this)}
-            onToggle={this.handleOnToggle.bind(this)}
-            testId="Tree"
-          />
+      (<div className="Tree"
+            onDrop={this.onRootDrop.bind(this)}
+            onDragOver={event => event.preventDefault()}>
+          <TreeUI className="TreeUi"
+                  getLeaf={this.renderLeaf.bind(this)}
+                  getFolder={this.renderFolder.bind(this)}
+                  getEmpty={()=> 'Empty'}
+                  nodes={nodes}
+                  selected={selected}
+                  expanded={expanded}
+                  onSelect={this.handleOnSelect.bind(this)}
+                  onToggle={this.handleOnToggle.bind(this)}
+                  testId="Tree"/>
           <RenameModalContainer/>
         </div>
       ) : (
-      <div className="Tree-loading">
+      <div className="Tree-loading" data-test-id="Tree-Loading">
         Loading...
       </div>
     )

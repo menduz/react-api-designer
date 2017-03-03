@@ -9,7 +9,6 @@ import ModalBody from '@mulesoft/anypoint-components/lib/ModalBody'
 import ModalFooter from '@mulesoft/anypoint-components/lib/ModalFooter'
 import Checkbox from '@mulesoft/anypoint-components/lib/Checkbox'
 
-
 import './ZipConflict.css'
 
 type Props = {
@@ -28,16 +27,16 @@ class ZipConflictModal extends React.Component {
   props: Props
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       open: false,
       container: null
-    };
+    }
   }
 
   onCheckFileChange(filename, e) {
-    //e.event.preventDefault();
+    //e.event.preventDefault()
     this.props.zipFileOverrideAction(filename, e.value)
   }
 
@@ -52,17 +51,11 @@ class ZipConflictModal extends React.Component {
           checked={file.override}
         />
       </div>
-    ));
+    ))
   }
 
   render() {
-    const {
-      onSubmit,
-      onCancel,
-      showZipConflictModal,
-      fileNameToImport,
-      zipFiles,
-    } = this.props
+    const {onSubmit, onCancel, showZipConflictModal, fileNameToImport, zipFiles} = this.props
 
     if (!showZipConflictModal) return null
 
@@ -79,17 +72,22 @@ class ZipConflictModal extends React.Component {
              testId="Zip-Conflict-Modal">
 
         <ModalHeader>
-          <h2>Replace</h2>
-          <small>{fileNameToImport} contains files that are already in your project</small>
+          <h1>Replace</h1>
+          <small data-test-id="Zip-Header">{fileNameToImport} contains files that are already in your project</small>
         </ModalHeader>
         <ModalBody>
-          <div>
+          <div data-test-id="Zip-Body-Content">
             {files.length > 0 ? this.renderZipFiles(files) : null}
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button kind="tertiary" onClick={onCancel} noFill>Cancel</Button>
-          <Button kind="primary" onClick={onSubmit} disabled={count === 0}>Replace {count === 1 ? 'file' : count + ' files'}</Button>
+          <Button kind="tertiary" onClick={onCancel} noFill testId="Zip-Cancel-Button">Cancel</Button>
+          <Button kind="primary"
+                  onClick={onSubmit}
+                  disabled={count === 0}
+                  testId="Zip-Submit-Button">
+            Replace {count === 1 ? 'file' : count + ' files'}
+          </Button>
         </ModalFooter>
       </Modal>
     )

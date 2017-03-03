@@ -1,0 +1,10 @@
+.Toast {
+  z-index: 99999;
+  bottom: 10px;
+  right: 6px;
+  position: absolute;
+}
+
+.Toast > button > div {
+  padding-right: 30px;
+}

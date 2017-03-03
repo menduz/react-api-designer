@@ -4,7 +4,7 @@ import Repository from '../../../repository/Repository'
 
 import {FILE_SAVE_FAILED, error} from "../../../repository-redux/actions"
 
-import type {Dispatch, GetState, ExtraArgs} from '../../../types/types'
+import type {Dispatch, GetState, ExtraArgs} from '../../../types'
 import findRamlRoot from '../../../repository/helper/ramlDefinition'
 
 const fileDownload = require('react-file-download')
@@ -24,7 +24,7 @@ export const closeExportDialog = () => ({
 })
 
 export const exportAll = (name: string, type: string) =>
-  (dispatch: Dispatch, getState: GetState, {worker, repositoryContainer}: ExtraArgs) => {
+  (dispatch: Dispatch, getState: GetState, {designerWorker, repositoryContainer}: ExtraArgs) => {
     if (!repositoryContainer.isLoaded)
       return Promise.reject(dispatch(error(FILE_SAVE_FAILED, REPOSITORY_NOT_LOADED)))
 
@@ -49,7 +49,7 @@ export const exportAll = (name: string, type: string) =>
     else {
 
       return findRamlRoot(repository).then(rootPath => {
-        return worker.convertToSwagger(
+        return designerWorker.convertToSwagger(
           rootPath,
           type
         ).then(

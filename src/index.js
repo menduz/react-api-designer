@@ -1,88 +1,49 @@
 //@flow
 
-import React from 'react'
-import ReactDOM from 'react-dom'
-import App from './components/app/App'
-import './index.css'
-import {createStore, applyMiddleware, combineReducers} from 'redux'
-import {Provider} from 'react-redux'
-import thunk from 'redux-thunk'
-import reduxLogger from 'redux-logger'
-import Repository from "./repository/Repository"
-import LocalStorageFileSystem from "./repository/file-system/LocalStorageFileSystem"
-import * as editor from './components/editor'
-import * as repository from './repository-redux'
-import mockReducer from './components/mock/reducers'
-import WebWorker from './webworker'
-import newFolder from './components/modal/new-folder'
-import newFile from './components/modal/new-file'
-import importModal from './components/modal/import'
-import exportModal from './components/modal/export'
-import rename from './components/modal/rename'
-import {initFileSystem} from "./repository-redux/actions"
-import FileTreeFactory from "./repository/immutable/RepositoryModelFactory"
-import * as fileSystemTree from "./components/tree"
-import FileProvider from './webworker/FileProvider'
-import type {RepositoryContainer} from './RepositoryContainer'
-import * as header from './components/header'
-import publishApi from './components/modal/publish-api'
-import consumeApi from './components/modal/consume-api'
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./components/app/App";
+import "./index.css";
+import {createStore, applyMiddleware, combineReducers} from "redux";
+import {Provider} from "react-redux";
+import thunk from "redux-thunk";
+import reduxLogger from "redux-logger";
+import * as component from "./component";
+import {Header} from './components/header'
 
-const repositoryContainer: RepositoryContainer = {
-  repository: undefined,
-  isLoaded: false
+// mock some initial config
+const authSelectors = {
+  authorization: () => `Bearer bd516ec3-75fb-484b-969f-5802f50e5e01`,
+  ownerId: () => 'd365610a-8e56-42da-a3fc-73b548371cc6',
+  organizationId: () => 'b13cbf39-787d-4d1f-9c72-22275ecc0d59',
+  organizationDomain: () => 'mulesoft-inc'
 }
 
-const repositoryMock = new FileProvider(repositoryContainer)
-const worker = new WebWorker(repositoryMock)
-
-let thunkMiddleware = thunk.withExtraArgument({
-  worker,
-  repositoryContainer
-})
-
+// create middleware
+const thunkExtraArg = component.initThunkArg(authSelectors);
+const thunkMiddleware = thunk.withExtraArgument(thunkExtraArg)
 const middleware = [thunkMiddleware]
 if (location.search.indexOf('redux-logger=true') > -1) {
   middleware.push(reduxLogger())
 }
 
-const rootReducer = combineReducers({
-  [repository.NAME]: repository.reducer,
-  [editor.NAME]: editor.reducer,
-  [fileSystemTree.NAME]: fileSystemTree.reducer,
-  [publishApi.constants.NAME]: publishApi.reducer,
-  [consumeApi.name]: consumeApi.reducer,
-  dialogs: combineReducers({
-    newFolder: newFolder.reducer,
-    newFile: newFile.reducer,
-    import: importModal.reducer,
-    export: exportModal.reducer,
-    rename: rename.reducer
-  }),
-  mock: mockReducer,
-  configuration: header.reducer
-})
-
+// create store
 const store = createStore(
-  rootReducer,
+  combineReducers(component.reducers),
   applyMiddleware(...middleware)
 )
 
-// Load Repository
-
-Repository.fromFileSystem(new LocalStorageFileSystem())
-  .then((repository) => {
-    repositoryContainer.repository = repository
-    repositoryContainer.isLoaded = true
-    return repository
-  })
-  .then((repository) => {
-    store.dispatch(initFileSystem(FileTreeFactory.repository(repository)))
-  })
+// dispatch init with no project id for a sandbox standalone version
+const projectId = ''
+// const projectId = '0e4a85aa-3ac2-46a7-97f4-c53637243e87'
+store.dispatch(component.actions.init(projectId))
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <div>
+      <Header/>
+      <App/>
+    </div>
   </Provider>,
   document.getElementById('root')
 )

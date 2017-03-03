@@ -16,18 +16,29 @@ export type Node = {
   children?: Node[]
 }
 
-export const fromFileTree = (fileTree: RepositoryModel) : Node[] => {
-  return fromDirectory(fileTree.root).children
+const fromFile = (file: FileModel): Node => {
+  return {
+    path: file.path,
+    name: file.name,
+    label: `${file.dirty ? '* ' : ''}${file.name}`
+  }
 }
 
 const fromElement = (element: ElementModel): Node => {
   return element.isDirectory()
-    ? fromDirectory(((element: any): DirectoryModel))
-    : fromFile(((element: any): FileModel))
+    // eslint-disable-next-line
+    ? fromDirectory(element.asDirectoryModel())
+    : fromFile(element.asFileModel())
 }
 
 const fromDirectory = (directory: DirectoryModel): Node => {
-  const children = directory.children.map(fromElement).toArray();
+  const children = directory.children.sort((a, b) => {
+    if (a.isDirectory() && !b.isDirectory()) return -1;
+    if (b.isDirectory() && !a.isDirectory()) return 1;
+    if(a.name < b.name) return -1;
+    if(a.name > b.name) return 1;
+    return 0;
+  }).map(fromElement).toArray();
 
   return {
     path: directory.path,
@@ -37,10 +48,6 @@ const fromDirectory = (directory: DirectoryModel): Node => {
   }
 }
 
-const fromFile = (file: FileModel): Node => {
-  return {
-    path: file.path,
-    name: file.name,
-    label: `${file.dirty ? '* ' : ''}${file.name}`
-  }
+export const fromFileTree = (fileTree: RepositoryModel) : Node[] => {
+  return fromDirectory(fileTree.root).children
 }

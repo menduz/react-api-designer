@@ -2,7 +2,7 @@
 
 import {Set} from 'immutable'
 import type {State} from './model'
-import {NODE_SELECTED, PATH_SELECTED, EXPAND_FOLDER, NOT_EXPAND_FOLDER} from './actions'
+import {NODE_SELECTED, PATH_SELECTED, EXPAND_FOLDER, NOT_EXPAND_FOLDER, CLEAN} from './actions'
 
 const initialState: State = {
   currentPath: undefined,
@@ -27,6 +27,8 @@ const reducer = (state: State = initialState, action: {type: string, payload: an
         ...state,
         currentPath: action.payload
       }
+    case CLEAN:
+      return initialState
     default:
       return state
   }

@@ -3,7 +3,7 @@
 import {PREFIX} from './index'
 
 import {Repository} from '../../repository'
-import type {Dispatch, GetState, ExtraArgs} from '../../types/types'
+import type {Dispatch, GetState, ExtraArgs} from '../../types'
 
 import * as editor from "../editor"
 import * as repository from "../../repository-redux"
@@ -11,10 +11,15 @@ import {File} from "../../repository"
 import {getCurrentDirectory, getAll} from "./selectors"
 import {Path} from '../../repository'
 
+export const CLEAN = `DESIGNER/${PREFIX}/CLEAN`
 export const NODE_SELECTED = `DESIGNER/${PREFIX}/NODE_SELECTED`
 export const PATH_SELECTED = `DESIGNER/${PREFIX}/PATH_SELECTED`
 export const EXPAND_FOLDER = `DESIGNER/${PREFIX}/EXPAND_FOLDER`
 export const NOT_EXPAND_FOLDER = `DESIGNER/${PREFIX}/NOT_EXPAND_FOLDER`
+
+export const clean = (path: Path) => ({
+  type: CLEAN
+})
 
 export const pathSelected = (path: Path) : Promise =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs) => {
@@ -32,7 +37,7 @@ export const pathSelected = (path: Path) : Promise =>
     const currentPath = editor.selectors.getCurrentFilePath(getState())
     if (currentPath === path.toString()) return Promise.resolve()
 
-    const file: File = ((element: any): File)
+    const file: File = element.asFile()
     return file.getContent()
       .then((content) => {
         dispatch(editor.actions.updateFile(content, path))

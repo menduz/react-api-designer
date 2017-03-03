@@ -1,6 +1,8 @@
 [ignore]
 .*/node_modules/@mulesoft/.*
 .*/node_modules/oas-raml-converter/.*
+.*/node_modules/react-file-download/.*
+.*/node_modules/fbjs/.*
 
 [include]
 

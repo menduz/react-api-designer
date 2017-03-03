@@ -22,7 +22,7 @@ const mapState = (rootState) => {
 const mapDispatch = (dispatch) => {
   return {
     onSubmit: (name, path) => {
-      var currentPath = path ? path : Path.emptyPath(true)
+      const currentPath = path ? path : Path.emptyPath(true)
       dispatch(addDirectory(name, currentPath))
       dispatch(closeNewFolderDialog())
     },

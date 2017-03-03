@@ -1,5 +1,5 @@
-.import-modal div[data-anypoint-component="ModalBody"] {
-  overflow: visible;
+.import-modal {
+  min-width: 400px !important;
 }
 
 .import-modal .input-file {
@@ -8,10 +8,6 @@
 
 .import-modal .import-url, .import-modal .import-file {
   margin-top: 15px;
-}
-
-.import-modal .import-file div[data-anypoint-component="TextField"] {
-  width: 70%;
 }
 
 .import-modal .input-type {

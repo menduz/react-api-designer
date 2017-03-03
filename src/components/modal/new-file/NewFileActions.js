@@ -2,7 +2,7 @@
 
 import {addFile} from "../../tree/actions";
 import type {FileType} from './NewFileModel'
-import type {Dispatch, GetState, ExtraArgs} from '../../../types/types'
+import type {Dispatch, GetState, ExtraArgs} from '../../../types'
 import {nextName} from '../../../repository/helper/utils'
 import {Path} from '../../../repository'
 

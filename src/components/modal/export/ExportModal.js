@@ -39,53 +39,45 @@ class ExportModal extends React.Component {
   }
 
   render() {
-    const {
-      onCancel,
-      onExportTypeChange,
-      showModal,
-      showError,
-      isExporting,
-      type,
-      exportName
-    } = this.props
+    const {onCancel, onExportTypeChange, showModal, showError, isExporting, type, exportName} = this.props
 
-    if (showModal) {
-      return (
-        <Modal className="export-modal"
-               onEnter={this.handleSubmit.bind(this)}
-               onEsc={onCancel}
-               onClickOverlay={onCancel}
-               testId="Export-Modal">
+    return showModal ? (
+      <Modal className="export-modal"
+             onEnter={this.handleSubmit.bind(this)}
+             onEsc={onCancel}
+             onClickOverlay={onCancel}
+             testId="Export-Modal">
 
-          <ModalHeader>
-            <h2>Export</h2>
-          </ModalHeader>
+        <ModalHeader>
+          <h1>Export</h1>
+        </ModalHeader>
 
-          <ModalBody>
-            <Select name="selected-export-type"
-                    options={ExportModal.EXPORT_TYPES}
-                    value={type}
-                    onChange={onExportTypeChange}
-                    clearable={false}
-            />
-            <TextField className="export-name"
-                       value={exportName}
-                       placeholder="Name..."
-                       onChange={this.onNameChange.bind(this)}
-                       autoFocus
-            />
-          </ModalBody>
+        <ModalBody>
+          <Select name="selected-export-type"
+                  options={ExportModal.EXPORT_TYPES}
+                  value={type}
+                  onChange={onExportTypeChange}
+                  clearable={false}
+                  testId="Export-Select"/>
+          <TextField className="export-name"
+                     value={exportName}
+                     placeholder="Name..."
+                     onChange={this.onNameChange.bind(this)}
+                     autoFocus
+                     testId="Export-Input-Name"/>
+        </ModalBody>
 
-          <ModalFooter>
-            {showError ? <p>Failed export</p> : null}
-            <Button kind="tertiary" onClick={onCancel} noFill>Cancel</Button>
-            <Button kind="primary" onClick={this.handleSubmit.bind(this)} isLoading={isExporting}>Export</Button>
-          </ModalFooter>
+        <ModalFooter>
+          {showError ? <p>Failed export</p> : null}
+          <Button kind="tertiary" onClick={onCancel} noFill testId="Export-Cancel-Button">Cancel</Button>
+          <Button kind="primary"
+                  onClick={this.handleSubmit.bind(this)}
+                  isLoading={isExporting}
+                  testId="Export-Submit-Button">Export</Button>
+        </ModalFooter>
 
-        </Modal>
-      )
-    }
-    return null
+      </Modal>
+    ) : null
   }
 
   static EXPORT_TYPES = [

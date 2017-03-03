@@ -20,11 +20,9 @@ class Mock extends React.Component {
   }
 
   render() {
-    const {
-      isUp
-    } = this.props
+    const {isUp} = this.props
     return (
-      <div className="Mock" data-testId="Mock">
+      <div className="Mock" data-test-id="Mock">
         <small>Mocking Service</small>
         <div>
           <ToggleButton
@@ -45,7 +43,7 @@ class Mock extends React.Component {
 const mapStateToProps = state => {
   const {mock, editor} = state
   const path = getCurrentFilePath(state)
-  if (!mock || !path ) return {}
+  if (!mock || !path) return {}
 
   const filePath = path.toString();
   const m = mock.find(c => c.file === filePath)
