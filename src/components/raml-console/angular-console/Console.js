@@ -1,4 +1,6 @@
 import React, {Component} from 'react'
+
+import '../../../../node_modules/api-console/dist/styles/api-console-light-theme.css'
 import './Console.css'
 import './console-overrides.css'
 

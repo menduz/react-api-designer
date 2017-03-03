@@ -8,6 +8,7 @@ import VcsRemoteApi from "../remote-api/VcsRemoteApi";
 import {actions as editorActions} from "../components/editor";
 import {actions as treeActions} from "../components/tree";
 import {actions as repositoryActions} from "../repository-redux";
+import {addErrorToasts} from '../components/toasts/actions'
 import {INITIALIZED, CLEAN, INITIALIZING} from './constants'
 
 export const clean = () =>
@@ -47,5 +48,7 @@ export const init = (projectId: string = '') =>
       .then((repository) => {
         dispatch(repositoryActions.initFileSystem(FileTreeFactory.repository(repository)))
         dispatch({type: INITIALIZED})
+      }).catch(error => {
+        dispatch(addErrorToasts(error.message || error))
       })
   }

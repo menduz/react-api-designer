@@ -3,18 +3,28 @@ import FileProvider from './FileProvider'
 export default class DesignerWorker {
 
   constructor(url: string, fileRepository: FileProvider) {
+    this.fileRepository = fileRepository
+    this.url = url
+    this.lazyWorker = undefined
+
     this.parsing = false
     this.parsingPending = new Map()
-    this.worker = DesignerWorker.init(url)
+  }
 
-    this._listen('requestFile', (req) => {
-      const path = req.path
-      fileRepository.getFile(path).then(content => {
-        this._post('requestFile', {path, content})
-      }).catch(error => {
-        this._post('requestFile', {path, error})
+  get worker() {
+    if (!this.lazyWorker) {
+      this.lazyWorker = DesignerWorker.init(this.url)
+
+      this._listen('requestFile', (req) => {
+        const path = req.path
+        this.fileRepository.getFile(path).then(content => {
+          this._post('requestFile', {path, content})
+        }).catch(error => {
+          this._post('requestFile', {path, error})
+        })
       })
-    })
+    }
+    return this.lazyWorker
   }
 
   static init(url: string) {

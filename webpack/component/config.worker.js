@@ -35,19 +35,13 @@ module.exports = {
     new webpack.optimize.UglifyJsPlugin({
       debug: true,
       minimize: true,
-      sourceMap: true,
+      sourceMap: false,
       output: {
         comments: false
       },
       compressor: {
         warnings: false
       }
-    }),
-    new CopyWebpackPlugin([
-      {
-        from: 'node_modules/api-console',
-        to: 'api-console'
-      }
-    ])
+    })
   ]
 }

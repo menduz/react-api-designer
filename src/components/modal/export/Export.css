@@ -1,16 +1,12 @@
-.export-modal div[data-anypoint-component="ModalBody"] {
-    overflow: visible;
-}
-
-.export-name {
+.export-modal .export-name {
     margin-top: 15px;
 }
 
-.selected-export-type{
+.export-modal .selected-export-type{
     display: inline-block;
 }
 
-.export-error {
+.export-modal .export-error {
     float: left;
     font-size: small;
     color: #d1344e;

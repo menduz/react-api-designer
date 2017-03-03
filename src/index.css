@@ -19,7 +19,3 @@ html.designer-standalone .App-content {
   -moz-box-sizing: border-box;
   box-sizing: border-box
 }
-
-div[data-anypoint-component="Modal"] {
-  min-width: 400px;
-}

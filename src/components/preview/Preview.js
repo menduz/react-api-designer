@@ -9,6 +9,11 @@ import './Preview.css'
 
 class Preview extends Component {
 
+  constructor(props) {
+    super(props)
+    this.consoleWrapper = ConsoleLoader.load(window.designerUrls.console)
+  }
+
   static _theme = {
     scheme: 'monokai',
     author: 'Juan Longo',
@@ -29,11 +34,11 @@ class Preview extends Component {
 
   _render() {
     const {parsedObject, language, text} = this.props
+    const ConsoleWrapper = this.consoleWrapper
 
     switch (language.id) {
       case 'raml':
       case 'oas':
-        const ConsoleWrapper = ConsoleLoader.load(window.designerUrls.console)
         return !Preview._consolePreview(language, parsedObject) ? Preview._empty() :
           <ConsoleWrapper raml={parsedObject}/>
       case 'json':
