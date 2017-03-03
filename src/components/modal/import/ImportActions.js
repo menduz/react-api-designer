@@ -92,8 +92,13 @@ const nameFromUrl = (url) => {
 }
 
 const toRamlName = (name, repositoryContainer) => {
-  return nextName((name.endsWith(".yaml") || name.endsWith(".json")) ?
-    name.substring(0, name.length - 4) + 'raml' : name, repositoryContainer)
+  const resultName = (name.endsWith(".yaml") || name.endsWith(".json")) ?
+    name.substring(0, name.length - 4) + 'raml' : name;
+  if (!repositoryContainer) {
+    return resultName
+  } else {
+    return nextName(resultName, repositoryContainer)
+  }
 }
 
 export const importFileFromUrl = (url: string, fileType: string) =>
@@ -179,12 +184,14 @@ export const importFile = (file: any, fileType: string) =>
 
     const convertSwaggerToRaml = (files) => {
       designerWorker.convertSwaggerToRaml(files).then(result => {
-        const fileName = toRamlName(nameFromUrl(result.filename), repositoryContainer)
-        dispatch(addFile(fileName, fileType))
-        setTimeout(() => {
-          dispatch(updateCurrentFile(result.content))
+
+        const fileName = toRamlName(result.filename)
+        const filtered = files.filter(c => c.filename !== result.filename)
+
+        filtered.push({filename:fileName, content: result.content, override:true})
+        addBulkFiles(filtered)(dispatch, getState, {repositoryContainer}).then(() => {
           dispatch({type: IMPORT_DONE})
-        }, 1000)
+        })
       }).catch(err => {
         //@@TODO Manage Error
         console.error(err)

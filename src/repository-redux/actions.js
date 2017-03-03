@@ -179,12 +179,12 @@ const mkdirs = (filename: string, repository: Repository) =>
   }
 
 export const addBulkFiles = (files: []) =>
-  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): void => {
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
     if (!repositoryContainer.isLoaded)
       return dispatch(error(FILE_ADD_FAILED, REPOSITORY_NOT_LOADED))
     const repository: Repository = repositoryContainer.repository
 
-    Promise.all(files.map(f => mkdirs(f.filename, repository)(dispatch, getState, {repositoryContainer}))).then(() => {
+    return Promise.all(files.map(f => mkdirs(f.filename, repository)(dispatch, getState, {repositoryContainer}))).then(() => {
       files.forEach(f => {
         mkdirs(f.filename, repository)(dispatch, getState, {repositoryContainer}).then(c => {
           if (!repository.getByPathString('/' + f.filename)) {
