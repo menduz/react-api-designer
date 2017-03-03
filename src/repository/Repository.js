@@ -144,6 +144,7 @@ export default class Repository {
 
     return promise
       .then(() => {
+        element.parent.removeChild(element)
         element.parent = newParent.asDirectory()
         newParent.asDirectory().addChild(element)
         return element
