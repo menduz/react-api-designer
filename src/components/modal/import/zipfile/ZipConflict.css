@@ -1,4 +1,13 @@
 .zip-conflict-modal div[data-anypoint-component="ModalBody"] {
-    overflow: auto;
+  overflow: auto;
 }
 
+.zip-conflict-modal .zip-modal-header {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+.zip-conflict-modal .zip-modal-header > small {
+  margin-top: 5px;
+}
