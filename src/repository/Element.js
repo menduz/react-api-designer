@@ -238,11 +238,11 @@ class File extends Element {
 
 
 class Directory extends Element {
-  _children: Element[]
+  _children: Map<string, Element>
 
   constructor(name: string, children: Element[], parent?: Directory) {
     super(name, parent)
-    this._children = children
+    this._children = new Map(children.map(e => [e._name, e]))
   }
 
   isDirectory() {
@@ -254,17 +254,20 @@ class Directory extends Element {
   asDirectory(): Directory { return this }
 
   get children(): Element[] {
-    return this._children
+    return Array.from(this._children.values())
   }
 
   addChild(child: Element) {
-    this._children.push(child)
+    if (this._children.has(child.name)) return;
+
+    this._children.set(child.name, child)
     return child
   }
 
   removeChild<T>(child: T): T {
-    this._children = this._children
-      .filter((c) => c !== child)
+    const element = ((child: any): Element)
+    this._children
+      .delete(element.name)
 
     return child
   }
@@ -281,7 +284,7 @@ class Directory extends Element {
 
   remove(fileSystem: FileSystem): Promise<Directory> {
     this._children.forEach(children => children.remove(fileSystem))
-    this._children = []
+    this._children = new Map()
 
     const promise = fileSystem.remove(this.path.toString())
     return promise.then(() => this)
@@ -289,18 +292,23 @@ class Directory extends Element {
 
   clone(parent: Directory): Element {
     const newDirectory = new Directory(this._name, [], parent)
-    newDirectory._children = this._children.map(c => c.clone(newDirectory))
+
+    const newChildren = this.children
+      .map(c => c.clone(newDirectory))
+      .map(c => [c.name, c])
+    newDirectory._children = new Map(newChildren)
+
     return newDirectory
   }
 
   _fileChildren(): File[] {
-    return this._children
+    return this.children
       .filter(c => !c.isDirectory())
       .map(c => c.asFile())
   }
 
   _directoryChildren(): Directory[] {
-    return this._children
+    return this.children
       .filter(c => c.isDirectory())
       .map(c => c.asDirectory())
   }
@@ -336,8 +344,7 @@ class Directory extends Element {
   }
 
   _child(name: string): ?Element {
-    return this._children
-      .find(c => c.name === name)
+    return this._children.get(name)
   }
 
   replaceChild(element: Element) {
