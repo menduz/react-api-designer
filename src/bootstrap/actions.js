@@ -23,7 +23,7 @@ export const clean = () =>
 
 
 export const init = (projectId: string = '') =>
-  (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerRemoteApiSelectors}: ExtraArgs): any => {
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerRemoteApiSelectors, designerWorker}: ExtraArgs): any => {
 
     // clean old state
     dispatch(clean())
@@ -51,4 +51,7 @@ export const init = (projectId: string = '') =>
       }).catch(error => {
         dispatch(addErrorToasts(error.message || error))
       })
+
+    // trigger the lazy load of the worker as soon as the designer opens
+    designerWorker.load()
   }

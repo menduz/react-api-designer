@@ -24,7 +24,9 @@ export default (state = initialState, action) => {
       return {
         ...state,
         path: action.path,
-        language: action.language
+        language: action.language,
+        parsedObject: action.clearParseResult ? null : state.parsedObject,
+        errors: action.clearParseResult ? [] : state.errors
       }
     case SET_POSITION:
       return {
