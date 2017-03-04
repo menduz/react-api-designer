@@ -120,6 +120,9 @@ export default class Repository {
   }
 
   addDirectory(path: Path, name: string): Promise<Directory> {
+    const previewsElement = this.getByPath(path.append(name))
+    if (previewsElement) return Promise.resolve(previewsElement.asDirectory())
+
     const element = this.getByPath(path)
     if (!element || !element.isDirectory()) return Promise.reject()
 
@@ -127,7 +130,7 @@ export default class Repository {
     const newDirectory = new Directory(name, [], directory)
 
     return this._fileSystem.createFolder(newDirectory.path.toString())
-      .then(() => { directory.children.push(newDirectory) })
+      .then(() => { directory.addChild(newDirectory) })
       .then(() => newDirectory)
   }
 

@@ -6,6 +6,8 @@ require('./prefix-css');
 
 // create concated version for standalone
 const publicStaticJsDir = './public/static/js'
+if (!fs.existsSync('./public')) fs.mkdirSync('./public')
+if (!fs.existsSync('./public/static')) fs.mkdirSync('./public/static')
 if (!fs.existsSync(publicStaticJsDir)) fs.mkdirSync(publicStaticJsDir)
 
 concat([

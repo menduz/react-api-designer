@@ -8,12 +8,17 @@ export default class DesignerWorker {
     this.lazyWorker = undefined
 
     this.parsing = false
-    this.parsingPending = new Map()
+    this.parsingPending = false
   }
 
   get worker() {
+    this.load()
+    return this.lazyWorker
+  }
+
+  load() {
     if (!this.lazyWorker) {
-      this.lazyWorker = DesignerWorker.init(this.url)
+      this.lazyWorker = DesignerWorker.load(this.url)
 
       this._listen('requestFile', (req) => {
         const path = req.path
@@ -24,10 +29,9 @@ export default class DesignerWorker {
         })
       })
     }
-    return this.lazyWorker
   }
 
-  static init(url: string) {
+  static load(url: string) {
     const w = window
     if (w.Worker && w.Blob && w.URL) {
       const codeStr = `self.importScripts('${url}')`
@@ -52,18 +56,17 @@ export default class DesignerWorker {
   }
 
   ramlParse(data) {
-    return this.parse('ramlParse', data, data.path)
+    return this.parse('ramlParse', data)
   }
 
-  parse(fnName, data, pendingKey = fnName) {
+  parse(fnName, data) {
     if (this.parsing) {
       // if we already have a parse request pending, reject it as aborted
-      const pending = this.parsingPending.get(pendingKey)
-      if (pending) pending.reject('aborted')
+      if (this.parsingPending) this.parsingPending.reject('aborted')
 
       // leave the parser request as pending
       return new Promise((resolve, reject) => {
-        this.parsingPending.set(pendingKey, {resolve, reject})
+        this.parsingPending = {fnName, data, resolve, reject}
       })
     }
 
@@ -71,20 +74,20 @@ export default class DesignerWorker {
     return new Promise((resolve, reject) => {
       this._postAndExpect(fnName, data).then(result => {
         resolve(result)
-        this.parsePending(data, pendingKey, fnName)
+        this.parsePending()
       }).catch(error => {
         reject(error)
-        this.parsePending(data, pendingKey, fnName)
+        this.parsePending()
       })
     })
   }
 
-  parsePending(data, pendingKey, fnName) {
+  parsePending() {
     this.parsing = false
-    const pending = this.parsingPending.get(pendingKey)
+    const pending = this.parsingPending
     if (pending) {
-      this.parsingPending.delete(pendingKey)
-      this[fnName](data)
+      this.parsingPending = false
+      this[pending.fnName](pending.data)
         .then(pending.resolve)
         .catch(pending.reject)
     }

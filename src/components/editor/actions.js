@@ -48,9 +48,9 @@ export const suggest = (text, cursorPosition, path, repository) =>
       })
   }
 
-const setPath = (path, language) => ({
+const setPath = (path, language, clearParseResult) => ({
   type: SET_PATH,
-  path, language
+  path, language, clearParseResult
 })
 
 const parsingRequest = () => ({
@@ -72,32 +72,44 @@ const parserError = (error, dispatch) => {
   else dispatch(parseResult(null, [error]))
 }
 
-const parseJson = (text, path, dispatch, designerWorker) => {
+const parseJson = (text, path, getCurrentPath, dispatch, designerWorker) => {
   dispatch(parsingRequest())
 
   const promise = designerWorker.jsonParse({text})
   if (promise) {
     promise.then(result => {
-      dispatch(parseResult(result, []))
-    }).catch(error => parserError(error, dispatch))
+      if (getCurrentPath() === path) dispatch(parseResult(result, []))
+    }).catch(error => {
+      if (getCurrentPath() === path) parserError(error, dispatch)
+    })
   }
 }
 
-const parseRaml = (text, path, dispatch, designerWorker) => {
+const parseRaml = (text, path, getCurrentPath, dispatch, designerWorker) => {
   dispatch(parsingRequest())
+
   const promise = designerWorker.ramlParse({path})
   if (promise) {
-    promise.then(result => dispatch(parseResult(result.specification, result.errors)))
-      .catch(error => parserError(mapUnexpectedError(error), dispatch))
+    promise.then(result => {
+      if (getCurrentPath() === path) dispatch(parseResult(result.specification, result.errors))
+    })
+    .catch(error => {
+      if (getCurrentPath() === path) parserError(mapUnexpectedError(error), dispatch)
+    })
   }
 }
 
-const parseOas = (text, path, dispatch, designerWorker) => {
+const parseOas = (text, path, getCurrentPath, dispatch, designerWorker) => {
   dispatch(parsingRequest())
+
   const promise = designerWorker.oasParse({text})
   if (promise) {
-    promise.then(result => dispatch(parseResult(result.specification, result.errors)))
-      .catch(error => parserError(mapUnexpectedError(error), dispatch))
+    promise.then(result => {
+      if (getCurrentPath() === path) dispatch(parseResult(result.specification, result.errors))
+    })
+    .catch(error => {
+      if (getCurrentPath() === path) parserError(mapUnexpectedError(error), dispatch)
+    })
   }
 }
 
@@ -108,18 +120,19 @@ export const updateFile = (text, path: Path, delay = 0) =>
 
     const pathString = path.toString()
     const lang = language(pathString, text)
-    dispatch(setPath(path, lang))
+    dispatch(setPath(path, lang, delay === 0))
 
     if (parseTimer) clearTimeout(parseTimer)
 
     parseTimer = setTimeout(() => {
+      const getCurrentPath = () => getCurrentFilePath(getState()).toString()
       switch (lang.id) {
         case 'raml':
-          return parseRaml(text, pathString, dispatch, designerWorker)
+          return parseRaml(text, pathString, getCurrentPath, dispatch, designerWorker)
         case 'oas':
-          return parseOas(text, pathString, dispatch, designerWorker)
+          return parseOas(text, pathString, getCurrentPath, dispatch, designerWorker)
         case 'json':
-          return parseJson(text, pathString, dispatch, designerWorker)
+          return parseJson(text, pathString, getCurrentPath, dispatch, designerWorker)
         default:
           dispatch(parseResult({}, []))
       }

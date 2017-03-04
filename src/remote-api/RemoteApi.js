@@ -76,11 +76,16 @@ class RemoteApi {
   }
 
   static _extractError(response) {
+    const msg =
+      typeof response.body === 'string'
+      ? response.body
+      : response.body.message || response.statusText
+
     return {
       status: response.statusCode,
       statusText: response.statusText,
       body: response.body,
-      message: response.body
+      message: msg
     }
   }
 
