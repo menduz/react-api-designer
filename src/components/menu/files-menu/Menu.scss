@@ -1,0 +1,33 @@
+.App-content .menu {
+  padding-right: 17px;
+  padding-left: 10px;
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-family: "DIN Pro", sans-serif;
+
+  margin-bottom: 2px;
+  color: #58595a;
+  height: 50px;
+  background-color: #e8e9ea;
+
+  .menu-name {
+    font-size: 18px;
+  }
+
+  .context-menu-icon > svg, .plus-icon > svg {
+    display: block;
+    height: 20px !important;
+    width: 20px !important;
+  }
+
+  .context-menu, .add-menu {
+    float: right;
+    cursor: pointer;
+  }
+
+  .add-menu > span > div {
+    margin: 0 5px 0 0;
+  }
+}
