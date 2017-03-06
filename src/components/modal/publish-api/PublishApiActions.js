@@ -106,7 +106,7 @@ export const publish = (name: string, version: string, tags: Array<string>, main
       //publishing to platform
       remoteApi.publishToPlatform(name, version, tags)
         .then((response: PublishApiResponse) => {
-          const url = `/apiplatform/${dataProvider.organizationDomain()}/admin/#/organizations/${dataProvider.organizationId()}/dashboard/apis/${response.apiId}/versions/${response.versionId}/contracts`
+          const url = `/apiplatform/${dataProvider.organizationDomain()}/admin/#/organizations/${dataProvider.organizationId()}/dashboard/apis/${response.apiId}/versions/${response.versionId}`
           dispatch(successfullyFetched({...response, url}, constants.PLATFORM))
         })
         .catch((error) => {
