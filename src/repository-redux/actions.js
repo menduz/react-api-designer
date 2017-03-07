@@ -362,10 +362,8 @@ export const moveElement = (source: Path, destinationDir: Path) =>
     return repository.move(source, destinationPath)
       .then(
         (element) => {
-          dispatch({
-            type: FILE_MOVED,
-            payload: {source, destination: element.path}
-          })
+          dispatch({ type: FILE_MOVED, payload: {source, destination: element.path}})
+          dispatch(addSuccessToasts(`${element.isDirectory() ? 'Directory' : 'File'} '${element.name}' moved`))
         }
       )
       .catch(

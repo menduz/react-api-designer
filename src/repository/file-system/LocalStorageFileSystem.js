@@ -80,14 +80,13 @@ type ValidationResult = {
 
 class LocalStorageFileSystem extends FileSystem {
 
-  _fileNotFoundMessage(path: Path): string {
-    return `file with path="${path}" does not exist`
-  }
+  get persistsEmptyFolders() { return true }
+
+  _fileNotFoundMessage(path: Path): string { return `file with path="${path}" does not exist` }
 
   _addChildren(entry: LocalStorageEntry, fn: (path: Path) => LocalStorageEntry[]): void {
-    if (entry.type === EntryFolder) {
+    if (entry.type === EntryFolder)
       entry.children = fn(entry.path)
-    }
   }
 
   _findFolder(path: Path): ?LocalStorageEntry {

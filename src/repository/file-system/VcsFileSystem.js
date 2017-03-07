@@ -93,6 +93,8 @@ class VcsFileSystem extends FileSystem {
     if (isDirectory) return Promise.resolve()
     return this._vcsApi.moveFile(source, destination)
   }
+
+  get persistsEmptyFolders() { return false }
 }
 
 export default VcsFileSystem

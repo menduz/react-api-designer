@@ -136,6 +136,8 @@ export default class FileSystem {
     throw new Error('Not implemented method')
   }
 
+  get persistsEmptyFolders() { throw new Error('Not implemented method')}
+
 }
 
 export type Path = string

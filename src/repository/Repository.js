@@ -106,6 +106,10 @@ export default class Repository {
     if (!directory) return Promise.reject()
 
     return directory.remove(this._fileSystem)
+      .then(d => {
+        d.parent && d.parent.removeChild(d)
+        return d
+      })
   }
 
   addFile(path: Path, name: string, content: string): File {
@@ -113,7 +117,7 @@ export default class Repository {
     if (!element || !element.isDirectory())
       throw new Error(`${path.toString()} is not a valid directory`)
 
-    const file = File.dirty(this._fileSystem, name, content, element.asDirectory())
+    const file = File.newFile(this._fileSystem, name, content, element.asDirectory())
     element.asDirectory().addChild(file)
 
     return file
@@ -143,16 +147,22 @@ export default class Repository {
     else if (!element)
       throw new Error(`${from.toString()} is not a valid directory`)
 
-    const promise = this._fileSystem.rename(from.toString(), to.toString())
+    if (!this._isMovableInFileSystem(element))
+      return Promise.resolve(element.moveTo(newParent))
 
-    return promise
-      .then(() => {
-        element.parent.removeChild(element)
-        element.parent = newParent.asDirectory()
-        newParent.asDirectory().addChild(element)
-        return element
-      })
-      .catch(() => element)
+    return this._fileSystem.rename(from.toString(), to.toString())
+      .then(() => element.moveTo(newParent))
+
+  }
+
+  _isMovableInFileSystem(element: Element): boolean {
+    if (element.isDirectory()) {
+      const directory = element.asDirectory()
+      return this._fileSystem.persistsEmptyFolders || !directory.isEmpty()
+    } else {
+      const file = element.asFile()
+      return file.persisted
+    }
   }
 
   setContent(path: Path, content: string): File {

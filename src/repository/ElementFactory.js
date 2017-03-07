@@ -32,7 +32,7 @@ class ElementFactory {
   static file(fileSystem: FileSystem, entry: Entry, parent?: Directory): File {
     if (entry.type !== EntryFile) throw new Error('This isn\'t a file entry')
 
-    return File.empty(entry.name, fileSystem, parent)
+    return File.persistedFile(entry.name, fileSystem, parent)
   }
 }
 
