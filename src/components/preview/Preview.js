@@ -5,6 +5,7 @@ import {ConsoleLoader} from '../raml-console/angular-console'
 import JSONTree from 'react-json-tree'
 import ReactMarkdown from 'react-markdown'
 import {getCurrentFileContent} from "../../repository-redux/selectors"
+import {getLanguage, getParsedObject} from "../editor/selectors"
 import './Preview.css'
 
 class Preview extends Component {
@@ -23,23 +24,19 @@ class Preview extends Component {
     base0D: '#a31515',
   }
 
-  static _consolePreview(language, parsedObject) {
-    const t = language.type
-    return parsedObject && t && (t === '1.0' || t === '0.8' || t === 'Library' || t === 'Overlay' || t === 'Extension')
-  }
-
   static _empty() {
     return <div className="No-preview" data-test-id="No-Preview">No preview</div>
   }
 
   _render() {
-    const {parsedObject, language, text} = this.props
-    const ConsoleWrapper = this.consoleWrapper
+    const {parsedObject, language, text, show} = this.props
+    if (!show) return Preview._empty()
 
+    const ConsoleWrapper = this.consoleWrapper
     switch (language.id) {
       case 'raml':
       case 'oas':
-        return !Preview._consolePreview(language, parsedObject) ? Preview._empty() :
+        return !parsedObject ? Preview._empty() :
           <ConsoleWrapper raml={parsedObject}/>
       case 'json':
         return !parsedObject ? Preview._empty() :
@@ -57,13 +54,12 @@ class Preview extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  const {editor} = state
+const mapStateToProps = (state) => {
   const text = getCurrentFileContent(state)()
   return {
     text,
-    parsedObject: editor.parsedObject,
-    language: editor.language
+    parsedObject: getParsedObject(state),
+    language: getLanguage(state)
   }
 }
 

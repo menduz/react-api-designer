@@ -16,3 +16,11 @@
 .Spinner-console.hide > div {
   display: none;
 }
+
+.api-designer-console {
+  &.hide-resources {
+    #raml-console-resources-container {
+      display: none;
+    }
+  }
+}
