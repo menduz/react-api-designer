@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 
 import {actions as configActions} from '../../header/index'
+import {getTheme, isConsumeMode, isExchangeMode} from '../../header/selectors'
 
 import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
 import Icon from '@mulesoft/anypoint-icons/lib/Icon'
@@ -28,11 +29,10 @@ class ProjectOptions extends Component {
 }
 
 const mapStateToProps = state => {
-  const {configuration} = state
   return {
-    theme: configuration.theme,
-    isConsumeMode: configuration.isConsumeMode,
-    isExchangeMode: configuration.isExchangeMode
+    theme: getTheme(state),
+    isConsumeMode: isConsumeMode(state),
+    isExchangeMode: isExchangeMode(state)
   }
 }
 

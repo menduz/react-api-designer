@@ -1,6 +1,8 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {hasProjectSelected} from '../../../bootstrap/selectors'
+import {isConsumeMode} from '../../header/selectors'
+import {isOpen} from '../../modal/consume-api/selectors'
 import consumeIndex from '../../modal/consume-api'
 import consumeColorIcon from './assets/ConsumeExchangeColorIcon.svg'
 import './DependencyMenu.css'
@@ -26,10 +28,9 @@ class DependencyMenu extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const {configuration, consumeApi} = state
   return {
-    isConsumeOpen: consumeApi.isOpen,
-    isConsumeMode: configuration.isConsumeMode && hasProjectSelected(state)
+    isConsumeOpen: isOpen(state),
+    isConsumeMode: isConsumeMode(state) && hasProjectSelected(state)
   }
 }
 

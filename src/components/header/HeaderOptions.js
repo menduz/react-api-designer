@@ -4,6 +4,10 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
 import {hasProjectSelected} from '../../bootstrap/selectors'
+import {isParsing} from '../editor/selectors'
+import {isExchangeMode} from '../header/selectors'
+import {isOpen} from '../modal/publish-api/PublishApiSelectors'
+import {getProgress} from '../../repository-redux/selectors'
 import Support from '../menu/support/Support'
 import ProjectOptions from '../menu/project-options/ProjectOptions'
 import ProjectOptionsBasic from '../menu/project-options/ProjectOptionsBasic'
@@ -37,11 +41,10 @@ class HeaderOptions extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const {editor, configuration, publishApi, repository} = state
   return {
-    progress: editor.isParsing || repository.progress,
-    isExchangeOpen: publishApi.isOpen,
-    isExchangeMode: configuration.isExchangeMode && hasProjectSelected(state),
+    progress: isParsing(state) || getProgress(state),
+    isExchangeOpen: isOpen(state),
+    isExchangeMode: isExchangeMode(state) && hasProjectSelected(state),
     showAdvancedOptions: ownProps.showAdvancedOptions
   }
 }

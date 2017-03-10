@@ -7,6 +7,10 @@ import {getFileTree} from "../../repository-redux/selectors";
 
 export const getAll = (state: any): State => state[NAME]
 
+export const getExpandedFolders = (state: any): State => getAll(state).expandedFolders
+
+export const getCurrentPath = (state: any): State => getAll(state).currentPath
+
 export const getCurrentElement = (rootState: any): ?ElementModel => {
   const state = getAll(rootState)
   const fileTree = getFileTree(rootState)

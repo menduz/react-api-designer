@@ -13,6 +13,7 @@ import Toast from '@mulesoft/anypoint-components/lib/Toast'
 import consumeIndex from './index'
 import {List} from 'immutable'
 import {Fragment} from './Fragment'
+import {getFragments, getQuery, isMock, isSubmitting, isSearching, getError} from './selectors'
 import './ConsumeApi.css'
 import FragmentComponent from './FragmentComponent'
 
@@ -100,14 +101,13 @@ class ConsumeApi extends Component {
 }
 
 const mapStateToProps = state => {
-  const {consumeApi} = state
   return {
-    fragments: consumeApi.fragments,
-    query: consumeApi.query,
-    isSearching: consumeApi.isSearching,
-    error: consumeApi.error,
-    isSubmitting: consumeApi.isSubmitting,
-    isMock: consumeApi.isMock
+    fragments: getFragments(state),
+    query: getQuery(state),
+    isSearching: isSearching(state),
+    error: getError(state),
+    isSubmitting: isSubmitting(state),
+    isMock: isMock(state)
   }
 }
 

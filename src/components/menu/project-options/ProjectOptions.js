@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 
 import {hasProjectSelected} from '../../../bootstrap/selectors'
+import {getTheme, isExchangeMode, getPublishToExchange} from '../../header/selectors'
 import {actions as configActions} from '../../header/index'
 import supportMenuOptions from '../support/assets/supportOptionsData.json'
 
@@ -41,11 +42,10 @@ class ProjectOptions extends Component {
 }
 
 const mapStateToProps = state => {
-  const {configuration} = state
   return {
-    theme: configuration.theme,
-    isExchangeMode: configuration.isExchangeMode,
-    publishToExchange: configuration.publishToExchange,
+    theme: getTheme(state),
+    isExchangeMode: isExchangeMode(state),
+    publishToExchange: getPublishToExchange(state),
     hasProjectSelected: hasProjectSelected(state)
   }
 }

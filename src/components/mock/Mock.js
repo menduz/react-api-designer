@@ -2,7 +2,8 @@ import React from 'react'
 import {connect} from 'react-redux'
 import ToggleButton from 'react-toggle-button'
 import {createMock, deleteMock, updateMock} from './actions'
-import {getCurrentFilePath} from '../editor/selectors'
+import {getCurrentFilePath, getParsedObject} from '../editor/selectors'
+import {getAll} from './selectors'
 import './Mock.css'
 
 class Mock extends React.Component {
@@ -41,7 +42,7 @@ class Mock extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const {mock, editor} = state
+  const mock = getAll(state)
   const path = getCurrentFilePath(state)
   if (!mock || !path) return {}
 
@@ -51,7 +52,7 @@ const mapStateToProps = state => {
 
   return {
     isUp: m.isUp,
-    parsedObject: editor.parsedObject
+    parsedObject: getParsedObject(state)
   }
 }
 

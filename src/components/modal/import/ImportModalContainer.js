@@ -4,19 +4,16 @@ import {connect} from 'react-redux'
 
 import ImportModal from './ImportModal'
 
-import type {State} from './ImportModel'
-
-import {getAll} from './ImportSelectors'
+import {getShowModal, getSelectValue, isImporting, getFileToImport, getUrl} from './ImportSelectors'
 import {closeImportDialog, changeType, changeUrl, uploadFile, importFileFromUrl, importFile} from './ImportActions'
 
 const mapState = (rootState) => {
-  const state: State = getAll(rootState)
   return {
-    selectValue: state.selectValue,
-    showModal: state.showModal,
-    fileToImport: state.fileToImport,
-    url: state.url,
-    isImporting: state.isImporting
+    selectValue: getSelectValue(rootState),
+    showModal: getShowModal(rootState),
+    fileToImport: getFileToImport(rootState),
+    url: getUrl(rootState),
+    isImporting: isImporting(rootState)
   }
 }
 

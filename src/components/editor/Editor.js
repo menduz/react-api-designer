@@ -4,7 +4,8 @@ import MonacoEditor from 'react-monaco-editor'
 import EmptyResult from '@mulesoft/anypoint-components/lib/EmptyResult'
 import registerRamlLanguage from './languages/Raml'
 import {suggest, updateCurrentFile, saveCurrentFile} from './actions'
-import {getAll} from "./selectors"
+import {getLanguage, getErrors, getSuggestions, getPosition} from "./selectors"
+import {getTheme} from "./../header/selectors"
 import {getCurrentFileContent} from "../../repository-redux/selectors"
 import './Editor.css'
 
@@ -204,16 +205,14 @@ DesignerEditor.propTypes = {
 }
 
 const mapStateToProps = state => {
-  const editor = getAll(state)
   const value = getCurrentFileContent(state)()
-  const {configuration} = state
   return {
     value,
-    language: editor.language,
-    position: editor.position,
-    errors: editor.errors,
-    suggestions: editor.suggestions,
-    theme: configuration.theme
+    language: getLanguage(state),
+    position: getPosition(state),
+    errors: getErrors(state),
+    suggestions: getSuggestions(state),
+    theme: getTheme(state)
   }
 }
 

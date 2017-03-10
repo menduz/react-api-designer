@@ -3,20 +3,19 @@
 import React from 'react'
 import {connect} from 'react-redux'
 
-import type {State, FileType} from './NewFileModel'
+import type {FileType} from './NewFileModel'
 import NewFileModal from './NewFileModal'
-import {getAll} from './NewFileSelectors'
+import {getFileName, getFileType, getFragmentType, getShowModal, getPath} from './NewFileSelectors'
 import {changeFileType, changeName, closeNewFileDialog, changeFragmentType, add} from './NewFileActions'
 import {Path} from '../../../repository'
 
 const mapState = (rootState) => {
-  const state: State = getAll(rootState)
   return {
-    fileName: state.fileName,
-    fileType: state.fileType,
-    fragmentType: state.fragmentType,
-    showModal: state.showModal,
-    path: state.path
+    fileName: getFileName(rootState),
+    fileType: getFileType(rootState),
+    fragmentType: getFragmentType(rootState),
+    showModal: getShowModal(rootState),
+    path: getPath(rootState)
   }
 }
 

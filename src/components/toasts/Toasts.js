@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 
 import Toast from '@mulesoft/anypoint-components/lib/Toast'
 import {removeToast} from './actions'
+import {getToasts} from './selectors'
 
 import './Toasts.css'
 
@@ -29,9 +30,8 @@ class Toasts extends Component {
 }
 
 const mapStateToProps = state => {
-  const {toasts} = state
   return {
-    toasts: toasts.toasts
+    toasts: getToasts(state)
   }
 }
 

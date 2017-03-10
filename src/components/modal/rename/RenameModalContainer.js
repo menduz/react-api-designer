@@ -2,18 +2,15 @@
 
 import {connect} from 'react-redux'
 
-import type {State} from './RenameModel'
-
 import RenameModal from './RenameModal'
-import {getAll} from './RenameSelectors'
+import {getShowModal, getNewName, getPath} from './RenameSelectors'
 import {changeName, closeRenameDialog, renameWith} from './RenameActions'
 
 const mapState = (rootState) => {
-  const state: State = getAll(rootState)
   return {
-    newName: state.newName,
-    path: state.path,
-    showModal: state.showModal
+    newName: getNewName(rootState),
+    path: getPath(rootState),
+    showModal: getShowModal(rootState)
   }
 }
 

@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import cx from 'classnames'
 import {goToError} from './actions'
+import {getErrors} from "./../editor/selectors"
 import './Errors.css'
 
 class Errors extends Component {
@@ -83,9 +84,8 @@ class Errors extends Component {
 }
 
 const mapStateToProps = state => {
-  const {editor} = state
   return {
-    errors: editor.errors
+    errors: getErrors(state)
   }
 }
 

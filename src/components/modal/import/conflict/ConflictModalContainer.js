@@ -4,18 +4,15 @@ import {connect} from 'react-redux'
 
 import ConflictModal from './ConflictModal'
 
-import type {State} from '../ImportModel'
-
-import {getAll} from '../ImportSelectors'
+import {getFileToImport, getShowConflictModal, getFileNameToImport, getFileType} from '../ImportSelectors'
 import {saveFile, closeConflictDialog} from '../ImportActions'
 
 const mapState = (rootState) => {
-  const state: State = getAll(rootState)
   return {
-    showConflictModal: state.showConflictModal,
-    fileToImport: state.fileToImport,
-    fileNameToImport: state.fileNameToImport,
-    fileType: state.fileType,
+    showConflictModal: getShowConflictModal(rootState),
+    fileToImport: getFileToImport(rootState),
+    fileNameToImport: getFileNameToImport(rootState),
+    fileType: getFileType(rootState),
   }
 }
 

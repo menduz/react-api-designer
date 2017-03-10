@@ -10,6 +10,8 @@ export const getAll = (rootState: any): State => rootState[NAME]
 
 export const getFileTree = (rootState: any): ?RepositoryModel => getAll(rootState).fileTree
 
+export const getProgress = (rootState: any): ?RepositoryModel => getAll(rootState).progress
+
 export const getFileContent = (rootState: any) => (path: Path): ?string => {
   const state = getAll(rootState)
   return state.contents.get(path.toString())
