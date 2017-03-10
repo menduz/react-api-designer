@@ -4,7 +4,7 @@ import ReactSVG from 'react-svg'
 import contestIcon from '@mulesoft/anypoint-icons/lib/assets/contextmenu.svg'
 
 import {hasProjectSelected} from '../../../bootstrap/selectors'
-import {getTheme, isExchangeMode, getPublishToExchange} from '../../header/selectors'
+import {getTheme, isExchangeMode, getPublishToExchange, isConsumeMode} from '../../header/selectors'
 import {actions as configActions} from '../../header/index'
 import supportMenuOptions from '../support/assets/supportOptionsData.json'
 
@@ -12,7 +12,7 @@ import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
 
 class ProjectOptions extends Component {
   render() {
-    const {isExchangeMode, publishToExchange, hasProjectSelected} = this.props
+    const {isExchangeMode, publishToExchange, hasProjectSelected, isConsumeMode} = this.props
 
     const contextMenuOptions = supportMenuOptions.slice(1)
     // const contextMenuOptions = [
@@ -33,6 +33,11 @@ class ProjectOptions extends Component {
         label: `${publishToExchange ? 'Disable' : 'Enable'} Publish to Exchange`,
         onClick: this.props.togglePublishExchange.bind(this, !publishToExchange)
       })
+
+      contextMenuOptions.push({
+        label: `${isConsumeMode ? 'Disable' : 'Enable'} Consume Raml Fragments`,
+        onClick: this.props.toggleConsumeMode.bind(this, !isConsumeMode)
+      })
     }
 
     return (
@@ -45,9 +50,11 @@ class ProjectOptions extends Component {
 
 const mapStateToProps = state => {
   return {
+
     theme: getTheme(state),
     isExchangeMode: isExchangeMode(state),
     publishToExchange: getPublishToExchange(state),
+    isConsumeMode: isConsumeMode(state),
     hasProjectSelected: hasProjectSelected(state)
   }
 }
@@ -56,7 +63,8 @@ const mapDispatchToProps = dispatch => {
   return {
     changeTheme: (theme: string) => dispatch(configActions.changeTheme(theme)),
     toggleExchangeMode: (changeMode: boolean) => dispatch(configActions.changeExchangeMode(changeMode)),
-    togglePublishExchange: (changeMode: boolean) => dispatch(configActions.changePublishExchange(changeMode))
+    togglePublishExchange: (changeMode: boolean) => dispatch(configActions.changePublishExchange(changeMode)),
+    toggleConsumeMode: (changeMode: boolean) => dispatch(configActions.changeConsumeMode(changeMode))
   }
 }
 

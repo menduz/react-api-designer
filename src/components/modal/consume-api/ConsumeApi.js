@@ -13,7 +13,7 @@ import Toast from '@mulesoft/anypoint-components/lib/Toast'
 import consumeIndex from './index'
 import {List} from 'immutable'
 import {Fragment} from './Fragment'
-import {getFragments, getQuery, isMock, isSubmitting, isSearching, getError} from './selectors'
+import {getFragments, getQuery, isSubmitting, isSearching, getError} from './selectors'
 import './ConsumeApi.css'
 import FragmentComponent from './FragmentComponent'
 
@@ -41,7 +41,7 @@ class ConsumeApi extends Component {
   }
 
   render() {
-    const {onCancel, fragments, query, submit, isSearching, isSubmitting, error, closeError, onMock, isMock} = this.props
+    const {onCancel, fragments, query, submit, isSearching, isSubmitting, error, closeError} = this.props
     const numSelectedFragments = fragments.count(fragment => fragment.selected)
 
     return (
@@ -76,11 +76,6 @@ class ConsumeApi extends Component {
           </div>
         </ModalBody>
         <ModalFooter className="search-footer">
-          <div className="modal-mocked-zone">
-            <Button kind="tertiary" noFill onClick={onMock.bind(this, !isMock)} testId="Mock-Consume-Button">
-              {`${isMock ? 'Unmock': 'Mock'} Fragments`}
-            </Button>
-          </div>
           <div className="modal-button-zone">
             <Button kind="tertiary" noFill onClick={onCancel} testId="Cancel-Consume-Button">Cancel</Button>
             <Button kind="primary"
@@ -107,7 +102,6 @@ const mapStateToProps = state => {
     isSearching: isSearching(state),
     error: getError(state),
     isSubmitting: isSubmitting(state),
-    isMock: isMock(state)
   }
 }
 
@@ -118,8 +112,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(consumeIndex.actions.handleFragmentSelection(index, fragment, selected)),
     updateQuery: (query: string) => dispatch(consumeIndex.actions.updateQuery(query)),
     submit: (fragments: List<Fragment>) => dispatch(consumeIndex.actions.submit(fragments)),
-    closeError: () => dispatch(consumeIndex.actions.showError('')),
-    onMock: (isMock: boolean) => dispatch(consumeIndex.actions.onMock(isMock))
+    closeError: () => dispatch(consumeIndex.actions.showError(''))
   }
 }
 

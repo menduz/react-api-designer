@@ -47,11 +47,6 @@ export default (state = initialState, action: any) => {
         ...state,
         error: action.payload
       }
-    case actions.ON_MOCK:
-      return {
-        ...state,
-        isMock: action.payload
-      }
     default:
       return state
   }

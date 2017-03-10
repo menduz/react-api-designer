@@ -3,12 +3,16 @@ import RemoteApi from './RemoteApi'
 export default class ConsumeRemoteApi extends RemoteApi {
 
   queryFragments(query: string): Promise {
-    return this._post([],
+    return this._post(['exchange','graphql'],
       ConsumeRemoteApi.generateBody(query, "{organizationId, name, description, rating, numberOfRates, version, groupId, assetId}"), true)
   }
 
+  addDependencies(dependencies: []): Promise {
+    return this._put(['projects',this.projectId, 'exchange','dependencies'], dependencies, true)
+  }
+
   get baseUrl() {
-    return super.baseUrl + '/exchange/graphql'
+    return super.baseUrl
   }
 
   _headers() {
