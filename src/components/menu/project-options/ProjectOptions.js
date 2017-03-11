@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import ReactSVG from 'react-svg'
+import contestIcon from '@mulesoft/anypoint-icons/lib/assets/contextmenu.svg'
 
 import {hasProjectSelected} from '../../../bootstrap/selectors'
 import {getTheme, isExchangeMode, getPublishToExchange} from '../../header/selectors'
@@ -7,19 +9,19 @@ import {actions as configActions} from '../../header/index'
 import supportMenuOptions from '../support/assets/supportOptionsData.json'
 
 import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
-import Icon from '@mulesoft/anypoint-icons/lib/Icon'
 
 class ProjectOptions extends Component {
   render() {
-    const {isExchangeMode, theme, publishToExchange, hasProjectSelected} = this.props
+    const {isExchangeMode, publishToExchange, hasProjectSelected} = this.props
 
-    const contextMenuOptions = [
-      {
-        label: `${theme === 'vs' ? 'Dark' : 'Light'} Editor`,
-        onClick: this.props.changeTheme.bind(this, theme === 'vs' ? 'vs-dark' : 'vs')
-      },
-      ...supportMenuOptions.slice(1)
-    ]
+    const contextMenuOptions = supportMenuOptions.slice(1)
+    // const contextMenuOptions = [
+    //   // {
+    //   //   label: `${theme === 'vs' ? 'Dark' : 'Light'} Editor`,
+    //   //   onClick: this.props.changeTheme.bind(this, theme === 'vs' ? 'vs-dark' : 'vs')
+    //   // },
+    //   ...supportMenuOptions.slice(1)
+    // ]
 
     if (hasProjectSelected) {
       contextMenuOptions.push({
@@ -35,7 +37,7 @@ class ProjectOptions extends Component {
 
     return (
       <ContextMenu className="header-menu" options={contextMenuOptions} testId="Header-Menu">
-        <Icon name="contextmenu" size={19} fill={"white"}/>
+        <ReactSVG path={contestIcon} style={{ width: 19, fill: 'white' }}/>
       </ContextMenu>
     )
   }

@@ -1,65 +1,78 @@
-const electron = require('electron')
-// Module to control application life.
-const app = electron.app
-// Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow
-
+const {app, dialog, BrowserWindow, Menu} = require('electron')
 const path = require('path')
-const url = require('url')
+const {createMenu} = require('./menu')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow
+const projectsWindows = new Map()
 
-function createWindow () {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({width: 1024, height: 900, icon:  path.join(__dirname, './build/logo.png')})
+function createProjectWindow(projectDir) {
+  const oldProjectWindow = projectsWindows.get(projectDir)
+  if (oldProjectWindow) {
+    oldProjectWindow.show()
+  } else {
+    // Create the browser window.
+    const projectWindow = new BrowserWindow({
+      width: 1280,
+      height: 800,
+      title: `API designer - ${projectDir}`,
+      backgroundColor: '#ffffff',
+      icon: path.join(__dirname, './build/logo.png')
+    })
 
-  // and load the index.html of the app.
-  mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'),
-    protocol: 'file:',
-    slashes: true
-  }))
+    // and load the index.html of the app.
+    projectWindow.loadURL(`file://${__dirname}/index.html?projectDir=${encodeURIComponent(projectDir)}`);
 
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+    // Open the DevTools.
+    // projectWindow.webContents.openDevTools()
 
-  // Emitted when the window is closed.
-  mainWindow.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = null
+    // Emitted when the window is closed.
+    projectWindow.on('closed', function () {
+      // Dereference the window object, usually you would store windows
+      // in an array if your app supports multi windows, this is the time
+      // when you should delete the corresponding element.
+      projectsWindows.delete(projectDir)
+    })
+
+    projectsWindows.set(projectDir, projectWindow)
+
+    // when opening files, add to recent
+    // app.addRecentDocument(projectDir)
+  }
+}
+
+function openNewProject() {
+  const projectDir = dialog.showOpenDialog({
+    title: 'Open project',
+    buttonLabel: 'Open project',
+    properties: ['openDirectory', 'createDirectory']
   })
+
+  if (projectDir) {
+    createProjectWindow(projectDir[0])
+  } else if (projectsWindows.size === 0) {
+    app.quit()
+  }
+}
+
+function appReady() {
+  const menuTemplate = createMenu(openNewProject)
+  const menu = Menu.buildFromTemplate(menuTemplate)
+  Menu.setApplicationMenu(menu)
+  openNewProject()
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', appReady)
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+  setTimeout(function () {
+    openNewProject()
+  })
 })
-
-app.on('activate', function () {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (mainWindow === null) {
-    createWindow()
-  }
-})
-
-
-
-// when opening files, add to recent
-// app.addRecentDocument('/Users/USERNAME/Desktop/work.type')
 
 // Dragging files out of the window
 // const ipcMain = electron.ipcMain;

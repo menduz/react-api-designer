@@ -1,6 +1,8 @@
 //@flow
 
 import React from 'react'
+import ReactSVG from 'react-svg'
+import infoIcon from '@mulesoft/anypoint-icons/lib/assets/info-small.svg'
 
 import Button from '@mulesoft/anypoint-components/lib/Button'
 import Modal from '@mulesoft/anypoint-components/lib/Modal'
@@ -11,7 +13,6 @@ import Select from '@mulesoft/anypoint-components/lib/Select'
 import TextField from '@mulesoft/anypoint-components/lib/TextField'
 import FileUploader from '@mulesoft/anypoint-components/lib/FileUploader'
 import Popover from '@mulesoft/anypoint-components/lib/Popover'
-import Icon from '@mulesoft/anypoint-icons/lib/Icon'
 
 import './Import.css'
 
@@ -103,7 +104,9 @@ class ImportModal extends React.Component {
                      triggerOn={['hover']}
                      anchorPosition="br"
                      testId="Import-Popover">
-              <Icon name="info-small" size={19} fill={"rgb(124, 125, 126)"}/>
+              <div>
+                <ReactSVG path={infoIcon} style={{ width: 19, fill: 'rgb(124, 125, 126)' }}/>
+              </div>
             </Popover>
           </div>
           {this.getType().url ?

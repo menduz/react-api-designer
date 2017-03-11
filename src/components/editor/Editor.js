@@ -179,8 +179,6 @@ class DesignerEditor extends React.Component {
       <div className="Editor">
         {this.language.id ? '' : (<EmptyResult className="Empty" testId="Empty-Editor" message="Select a file"/>)}
         <MonacoEditor options={options}
-                      requireConfig={window.designerUrls}
-                      context={window.electronAmdContext}
                       value={this.value}
                       language={this.language.parent || this.language.id}
                       onChange={this.onChange.bind(this)}

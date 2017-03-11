@@ -2,9 +2,11 @@
 
 import React from 'react'
 import {connect} from 'react-redux'
+import ReactSVG from 'react-svg'
 
 import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
-import Icon from '@mulesoft/anypoint-icons/lib/Icon'
+import contestIcon from '@mulesoft/anypoint-icons/lib/assets/contextmenu.svg'
+import plusIcon from '@mulesoft/anypoint-icons/lib/assets/plus.svg'
 
 import NewFolderModalContainer from '../../modal/new-folder/NewFolderModalContainer'
 import NewFileModalContainer from '../../modal/new-file/NewFileModalContainer'
@@ -49,7 +51,7 @@ class Menu extends React.Component {
 
         <div className="menu-content">
           <ContextMenu className="context-menu" options={contextMenuOptions} testId="Context-Menu">
-            <Icon className="context-menu-icon" name="contextmenu"/>
+            <ReactSVG className="context-menu-icon" path={contestIcon} style={{ width: 20 }}/>
           </ContextMenu>
 
           <ImportModalContainer/>
@@ -58,7 +60,7 @@ class Menu extends React.Component {
           <ExportModalContainer/>
 
           <ContextMenu className="add-menu" options={addMenuOptions} testId="Add-Menu">
-            <Icon className="plus-icon" name="plus"/>
+            <ReactSVG className="plus-icon" path={plusIcon} style={{ width: 20 }}/>
           </ContextMenu>
 
           <NewFileModalContainer/>

@@ -10,7 +10,8 @@
   z-index: 1;
 }
 
-.Left-header > span {
+.Left-header > div {
+  display: inline-block;
   margin-left: 16px;
   position: relative;
   top: 12px;

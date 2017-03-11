@@ -77,7 +77,7 @@ export default class Repository {
   }
 
   saveAll(currentFile: ?Path): Promise<Repository> {
-    return this.saveFiles(this._getDirtyFiles(), currentFile)
+    return this.saveFiles(this.getDirtyFiles(), currentFile)
   }
 
   rename(path: string, newName: string): Promise<Element> {
@@ -178,13 +178,17 @@ export default class Repository {
     return ZipHelper.buildZip(this.root)
   }
 
-  _getDirtyFiles(dir: ?Directory): File[] {
+  hasDirtyFiles(): boolean {
+    return this.getDirtyFiles().length !== 0
+  }
+
+  getDirtyFiles(dir: ?Directory): File[] {
     const directory = dir ? dir : this._root
     let files = []
 
     directory.children.forEach((child: Element) => {
       if (child.isDirectory()) {
-        files = files.concat(this._getDirtyFiles(child.asDirectory()))
+        files = files.concat(this.getDirtyFiles(child.asDirectory()))
       } else {
         const file = child.asFile()
         if (file.dirty) files.push(file)

@@ -9,6 +9,7 @@ import {Provider} from "react-redux";
 import thunk from "redux-thunk";
 import reduxLogger from "redux-logger";
 import * as component from "./component";
+import {getLocationQueryVariable} from './bootstrap/util'
 import {Header} from './components/header'
 
 // mock some initial config
@@ -33,10 +34,15 @@ const store = createStore(
   applyMiddleware(...middleware)
 )
 
-// dispatch init with no project id for a sandbox standalone version
-const projectId = ''
-// const projectId = '0e4a85aa-3ac2-46a7-97f4-c53637243e87'
-store.dispatch(component.actions.init(projectId))
+const projectId = getLocationQueryVariable('projectId');
+const projectDir = getLocationQueryVariable('projectDir');
+if (projectId) {
+  store.dispatch(component.actions.init(projectId))
+} else if (projectDir) {
+  store.dispatch(component.actions.initElectron(projectDir))
+} else {
+  store.dispatch(component.actions.initLocalStorage())
+}
 
 ReactDOM.render(
   <Provider store={store}>

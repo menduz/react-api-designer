@@ -1,6 +1,6 @@
 {
   "name": "react-api-designer",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "description": "A web editor for creating and sharing RAML API specifications",
   "private": true,
   "repository": {
@@ -8,6 +8,7 @@
     "url": "git+https://github.com/mulesoft/react-api-designer.git"
   },
   "main": "./dist/main.js",
+  "homepage": "./build",
   "scripts": {
     "start": "npm run concat && npm-run-all -p watch-worker watch-css watch-src",
     "build": "npm run concat && webpack --config ./webpack/standalone/config.worker.js && npm run build-css && react-scripts build",
@@ -69,6 +70,7 @@
     "react-monaco-editor": "^0.7.3",
     "react-redux": "^4.0.0",
     "react-split-pane": "^0.1.58",
+    "react-svg": "^2.1.19",
     "react-toggle-button": "^2.1.0",
     "redux": "^3.0.4",
     "redux-logger": "^2.8.2",

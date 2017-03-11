@@ -1,11 +1,13 @@
 //@flow
 
 import React, {Component} from 'react'
+import ReactSVG from 'react-svg'
+import plusIcon from '@mulesoft/anypoint-icons/lib/assets/plus.svg'
+import contextIcon from '@mulesoft/anypoint-icons/lib/assets/contextmenu.svg'
 import TreeUI from '@mulesoft/anypoint-components/lib/Tree'
 import RenameModalContainer from "../modal/rename/RenameModalContainer"
 import {Path} from '../../repository'
 import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
-import Icon from '@mulesoft/anypoint-icons/lib/Icon'
 import './FileSystemTree.css'
 
 
@@ -75,7 +77,7 @@ class FileSystemTree extends Component {
            onDrop={this.onDropInFile.bind(this, node.path)}>
         <label>{node.label}</label>
         <ContextMenu className="tree-menu file-menu" options={options} testId="File-Tree-Context-Menu">
-          <Icon name="contextmenu"/>
+          <ReactSVG path={contextIcon} style={{ width: 18}}/>
         </ContextMenu>
       </div>
     )
@@ -101,10 +103,10 @@ class FileSystemTree extends Component {
            onDrop={this.onDropInFolder.bind(this, node.path)}>
         <label>{node.label}</label>
         <ContextMenu className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
-          <Icon name="contextmenu"/>
+          <ReactSVG path={contextIcon} style={{ width: 18}}/>
         </ContextMenu>
         <ContextMenu className="tree-menu new-menu" options={addOptions} testId="File-Tree-New-Menu">
-          <Icon name="plus"/>
+          <ReactSVG path={plusIcon} style={{ width: 18}}/>
         </ContextMenu>
       </div>
     )

@@ -1,7 +1,8 @@
 import type {Dispatch, GetState, ExtraArgs} from '../types'
 import Repository from "../repository/Repository";
-import FileSystem from '../repository/file-system/FileSystem'
 import FileTreeFactory from "../repository/immutable/RepositoryModelFactory";
+import FileSystem from "../repository/file-system/FileSystem";
+import ElectronFileSystem from "../repository/file-system/ElectronFileSystem";
 import VcsFileSystem from "../repository/file-system/VcsFileSystem";
 import LocalStorageFileSystem from "../repository/file-system/LocalStorageFileSystem";
 import VcsRemoteApi from "../remote-api/VcsRemoteApi";
@@ -21,37 +22,46 @@ export const clean = () =>
     dispatch({type: CLEAN})
   }
 
+const initWithFileSytem = (fs: FileSystem, dispatch: Dispatch, {repositoryContainer, designerWorker}: ExtraArgs, projectId: string = ''): any => {
 
-export const init = (projectId: string = '') =>
-  (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerRemoteApiSelectors, designerWorker}: ExtraArgs): any => {
+  // clean old state
+  dispatch(clean())
+  // mark as initializing with proper project id
+  dispatch({type: INITIALIZING, payload: projectId})
 
-    // clean old state
-    dispatch(clean())
-    // mark as initializing with proper project id
-    dispatch({type: INITIALIZING, payload: projectId})
+  Repository.fromFileSystem(fs)
+    .then((repository) => {
+      repositoryContainer.isLoaded = true
+      repositoryContainer.repository = repository
+      return repository
+    })
+    .then((repository) => {
+      dispatch(repositoryActions.initFileSystem(FileTreeFactory.repository(repository)))
+      dispatch({type: INITIALIZED})
+      // trigger the lazy load of the worker as soon as the designer opens
+      designerWorker.load()
+    }).catch(error => {
+      console.log(error)
+      dispatch(addErrorToasts(error.message || error))
+  })
+}
+
+export const init = (projectId: string) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerWorker, designerRemoteApiSelectors}: ExtraArgs): any => {
+    const repository = new VcsFileSystem(new VcsRemoteApi(designerRemoteApiSelectors(getState)))
+    initWithFileSytem(repository, dispatch, {repositoryContainer, designerWorker}, projectId)
+  }
 
 
-    // Create file system
-    const fileSystem: FileSystem =
-      projectId ?
-        new VcsFileSystem(new VcsRemoteApi(designerRemoteApiSelectors(getState))) :
-        new LocalStorageFileSystem()
+export const initLocalStorage = () =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerWorker}: ExtraArgs): any => {
+    const repository = new LocalStorageFileSystem()
+    initWithFileSytem(repository, dispatch, {repositoryContainer, designerWorker})
+  }
 
 
-    // Load Repository
-    Repository.fromFileSystem(fileSystem)
-      .then((repository) => {
-        repositoryContainer.isLoaded = true
-        repositoryContainer.repository = repository
-        return repository
-      })
-      .then((repository) => {
-        dispatch(repositoryActions.initFileSystem(FileTreeFactory.repository(repository)))
-        dispatch({type: INITIALIZED})
-      }).catch(error => {
-        dispatch(addErrorToasts(error.message || error))
-      })
-
-    // trigger the lazy load of the worker as soon as the designer opens
-    designerWorker.load()
+export const initElectron = (basePath: string) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerWorker}: ExtraArgs): any => {
+    const repository = new ElectronFileSystem(basePath)
+    initWithFileSytem(repository, dispatch, {repositoryContainer, designerWorker})
   }

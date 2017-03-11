@@ -12,7 +12,8 @@ class Preview extends Component {
 
   constructor(props) {
     super(props)
-    this.consoleWrapper = ConsoleLoader.load(window.designerUrls.console)
+    const consoleUrl = window.require.getConfig().paths['console']
+    this.consoleWrapper = ConsoleLoader.load(consoleUrl)
   }
 
   static _theme = {
