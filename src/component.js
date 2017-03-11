@@ -7,6 +7,7 @@ import * as editor from "./components/editor";
 import * as repository from "./repository-redux";
 import mockReducer from "./components/mock/reducers";
 import Worker from "./worker";
+import {warnBeforeLeave} from "./bootstrap/util";
 import newFolder from "./components/modal/new-folder";
 import newFile from "./components/modal/new-file";
 import importModal from "./components/modal/import";
@@ -47,13 +48,13 @@ const repositoryContainer: RepositoryContainer = {
   isLoaded: false
 }
 
-const initThunkArg = (authSelector: AuthSelectors) : ExtraArgs => {
+const initThunkArg = (authSelector: AuthSelectors): ExtraArgs => {
   if (!window.require) throw new Error('require missing. Forgot to include loader.js?')
 
   const workerUrl = window.require.getConfig().paths['worker']
   const designerWorker = new Worker(workerUrl, new FileProvider(repositoryContainer))
 
-  const designerRemoteApiSelectors : RemoteApiSelectors = (getState: GetState) => ({
+  const designerRemoteApiSelectors: RemoteApiSelectors = (getState: GetState) => ({
     baseUrl: () => window.require.getConfig().paths['remoteApi'],
     authorization: () => authSelector.authorization(getState()),
     ownerId: () => authSelector.ownerId(getState()),
@@ -69,14 +70,7 @@ const initThunkArg = (authSelector: AuthSelectors) : ExtraArgs => {
   }
 }
 
-window.addEventListener("beforeunload", e => {
-  if (repositoryContainer.isLoaded && repositoryContainer.repository.hasDirtyFiles()) {
-    // eslint-disable-next-line
-    const confirmationMessage = "\o/"
-    e.returnValue = confirmationMessage     // Gecko, Trident, Chrome 34+
-    return confirmationMessage              // Gecko, WebKit, Chrome <34
-  }
-})
+warnBeforeLeave(repositoryContainer)
 
 const actions = bootstrap.actions
 export {

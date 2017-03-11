@@ -20,6 +20,22 @@ function createProjectWindow(projectDir) {
       icon: path.join(__dirname, './build/logo.png')
     })
 
+    // warn before closing unsaved
+    // projectWindow.on('close', function(e){
+    //   console.log(projectWindow.location.hash)
+    //   if (projectWindow.location.hash === 'unsaved') {
+    //     const choice = dialog.dialog.showMessageBox(this, {
+    //       type: 'question',
+    //       buttons: ['Stay', 'Leave'],
+    //       title: 'Confirm',
+    //       message: 'You have unsaved changed.'
+    //     });
+    //     if (choice == 1) {
+    //       e.preventDefault();
+    //     }
+    //   }
+    // });
+
     // and load the index.html of the app.
     projectWindow.loadURL(`file://${__dirname}/index.html?projectDir=${encodeURIComponent(projectDir)}`);
 
