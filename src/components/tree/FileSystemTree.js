@@ -88,7 +88,8 @@ class FileSystemTree extends Component {
            onDragStart={this.onDragStart.bind(this, node.path)}
            onDrop={this.onDropInFile.bind(this, node.path)}>
         <label onDragEnter={this.onDragEnter.bind(this)}
-               onDragLeave={this.onDragLeave.bind(this)}>
+               onDragLeave={this.onDragLeave.bind(this)}
+               title={node.label}>
           {node.label}
         </label>
         <div className="node-options">
@@ -121,7 +122,8 @@ class FileSystemTree extends Component {
            onDragOver={event => event.preventDefault()}
            onDrop={this.onDropInFolder.bind(this, node.path)}>
         <label onDragEnter={this.onDragEnter.bind(this)}
-               onDragLeave={this.onDragLeave.bind(this)}>
+               onDragLeave={this.onDragLeave.bind(this)}
+               title={node.label}>
           {node.label}
         </label>
         <div className="node-options">
