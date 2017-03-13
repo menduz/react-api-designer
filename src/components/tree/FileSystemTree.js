@@ -43,6 +43,7 @@ class FileSystemTree extends Component {
 
   onDropInFile(path: Path, event) {
     this.onDropInFolder(path.parent(), event)
+    this.onDragLeave(event)
   }
 
   onDropInFolder(path: Path, event) {
@@ -52,6 +53,8 @@ class FileSystemTree extends Component {
     const from = event.dataTransfer.getData('text/plain');
     if (from && Path.fromString(from).parent().toString() !== path.toString())
       this.props.moveFile(Path.fromString(from), path)
+
+    this.onDragLeave(event)
   }
 
   onRootDrop(event) {
@@ -60,6 +63,14 @@ class FileSystemTree extends Component {
 
   onDragStart(path: Path, event) {
     event.dataTransfer.setData('text/plain', path.toString())
+  }
+
+  onDragEnter(event) {
+    event.target.classList.add('dropping')
+  }
+
+  onDragLeave(event) {
+    event.target.classList.remove('dropping')
   }
 
   renderLeaf({node, isSelected}) {
@@ -73,9 +84,14 @@ class FileSystemTree extends Component {
       <div className="tree-node tree-leaf"
            data-path={node.path.toString()}
            draggable="true"
+           onDragEnter={this.onDragEnter.bind(this)}
+           onDragLeave={this.onDragLeave.bind(this)}
            onDragStart={this.onDragStart.bind(this, node.path)}
            onDrop={this.onDropInFile.bind(this, node.path)}>
-        <label>{node.label}</label>
+        <label onDragEnter={this.onDragEnter.bind(this)}
+               onDragLeave={this.onDragLeave.bind(this)}>
+          {node.label}
+        </label>
         <ContextMenu className="tree-menu file-menu" options={options} testId="File-Tree-Context-Menu">
           <ReactSVG path={contextIcon} style={{ width: 18}}/>
         </ContextMenu>
@@ -98,10 +114,15 @@ class FileSystemTree extends Component {
       <div className="tree-node tree-folder"
            data-path={node.path.toString()}
            draggable="true"
+           onDragEnter={this.onDragEnter.bind(this)}
+           onDragLeave={this.onDragLeave.bind(this)}
            onDragStart={this.onDragStart.bind(this, node.path)}
            onDragOver={event => event.preventDefault()}
            onDrop={this.onDropInFolder.bind(this, node.path)}>
-        <label>{node.label}</label>
+        <label onDragEnter={this.onDragEnter.bind(this)}
+               onDragLeave={this.onDragLeave.bind(this)}>
+          {node.label}
+        </label>
         <ContextMenu className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
           <ReactSVG path={contextIcon} style={{ width: 18}}/>
         </ContextMenu>

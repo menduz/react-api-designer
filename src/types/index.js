@@ -43,4 +43,4 @@ export type ExtraArgs = {
 
 // eslint-disable-next-line
 type Action = {type: any} | (d: Dispatch, gS: GetState, eA: ExtraArgs) => void
-export type Dispatch = (action: Action) => void
+export type Dispatch = (action: Action) => any

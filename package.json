@@ -73,6 +73,7 @@
     "react-svg": "^2.1.19",
     "react-toggle-button": "^2.1.0",
     "redux": "^3.0.4",
+    "redux-catch": "^1.3.1",
     "redux-logger": "^2.8.2",
     "redux-thunk": "^2.1.0"
   }

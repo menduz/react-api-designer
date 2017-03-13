@@ -12,6 +12,7 @@ import {getCurrentFilePath} from '../components/editor/selectors'
 import {clean} from '../components/editor/actions'
 import {addSuccessToasts} from '../components/toasts/actions'
 import {addErrorToasts} from '../components/toasts/actions'
+import {File} from '../repository'
 
 import type {Dispatch, GetState, ExtraArgs} from '../types'
 
@@ -87,7 +88,6 @@ export const fileContentUpdated = (file: FileModel, content: string) => ({
   payload: {file, content}
 })
 
-
 const defaultContent = (fileType?: string) => {
   switch (fileType) {
     case 'RAML10':
@@ -128,11 +128,10 @@ export const directoryAdded = (directory: DirectoryModel) => ({
 })
 
 export const error = (type: string, errorMessage: string) =>
-  (dispatch: Dispatch): Promise<any> => {
-    dispatch({ type, payload: errorMessage})
+  (dispatch: Dispatch) => {
+    dispatch({type, payload: errorMessage})
     dispatch(addErrorToasts(errorMessage))
   }
-
 
 export const addDirectory = (parentPath: Path, name: string) =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
@@ -178,58 +177,6 @@ const mkdirs = (filename: string, repository: Repository) =>
     })
   }
 
-export const addBulkFiles = (files: []) =>
-  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
-    if (!repositoryContainer.isLoaded)
-      return dispatch(error(FILE_ADD_FAILED, REPOSITORY_NOT_LOADED))
-    const repository: Repository = repositoryContainer.repository
-
-    return Promise.all(files.map(f => mkdirs(f.filename, repository)(dispatch, getState, {repositoryContainer}))).then(() => {
-      files.forEach(f => {
-        mkdirs(f.filename, repository)(dispatch, getState, {repositoryContainer}).then(c => {
-          if (!repository.getByPathString('/' + f.filename)) {
-            const file = repository.addFile(c.parentPath, c.name, f.content)
-            return dispatch(fileAdded(Factory.fileModel(file)))
-          } else {
-            const file = repository.setContent(Path.fromString('/' + f.filename), f.content)
-            return dispatch(fileContentUpdated(Factory.fileModel(file), f.content))
-          }
-        })
-      })
-    })
-  }
-
-export const addFile = (parentPath: Path, name: string, fileType?: string) =>
-  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): any => {
-    if (!repositoryContainer.isLoaded)
-      return dispatch(error(FILE_ADD_FAILED, REPOSITORY_NOT_LOADED))
-    if (!isValidDirectory(parentPath))
-      return dispatch(error(FILE_ADD_FAILED, `${parentPath.toString()} is not valid directory`))
-
-    const repository: Repository = repositoryContainer.repository
-    const file = repository.addFile(parentPath, name, defaultContent(fileType))
-    return dispatch(fileAdded(Factory.fileModel(file)))
-  }
-
-
-export const saveFile = (path: Path) =>
-  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
-    if (!repositoryContainer.isLoaded)
-      return Promise.reject(dispatch(error(FILE_SAVE_FAILED, REPOSITORY_NOT_LOADED)))
-    if (!isValidFile(path))
-      return Promise.reject(dispatch(error(FILE_SAVE_FAILED, `${path.toString()} is not valid file`)))
-
-    const repository: Repository = repositoryContainer.repository
-    dispatch({type: FILE_SAVE_STARTED})
-    return repository.saveFile(path)
-      .then(
-        (file) => dispatch(fileSaved(Factory.fileModel(file)))
-      )
-      .catch(
-        (err) => dispatch(error(FILE_SAVE_FAILED, err || 'Error on save'))
-      )
-  }
-
 export const updateFileContent = (path: Path, content: string) =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): any => {
     if (!repositoryContainer.isLoaded)
@@ -242,6 +189,71 @@ export const updateFileContent = (path: Path, content: string) =>
     return dispatch(fileContentUpdated(Factory.fileModel(file), content))
   }
 
+const successSaving = (dispatch: Dispatch, msg: string, {repository, file, content}) => {
+  dispatch(initFileSystem(Factory.repository(repository)))
+  if (file) dispatch(updateFileContent(file.path, content))
+  dispatch(addSuccessToasts(msg))
+}
+
+export const addBulkFiles = (files: []) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
+    if (!repositoryContainer.isLoaded)
+      return Promise.reject(dispatch(error(FILE_ADD_FAILED, REPOSITORY_NOT_LOADED)))
+
+    const repository: Repository = repositoryContainer.repository
+    const importedFiles: [?File] = []
+
+    return Promise.all(files.map(f => dispatch(mkdirs(f.filename, repository)))).then(() => {
+      Promise.all(files.map(f => {
+        return dispatch(mkdirs(f.filename, repository)).then(c => {
+          if (!repository.getByPathString('/' + f.filename)) {
+            const file: File = repository.addFile(c.parentPath, c.name, f.content)
+            importedFiles.push(file)
+            return dispatch(fileAdded(Factory.fileModel(file)))
+          } else {
+            const file: File = repository.setContent(Path.fromString('/' + f.filename), f.content)
+            importedFiles.push(file)
+            return dispatch(fileContentUpdated(Factory.fileModel(file), f.content))
+          }
+        })
+      })).then(() => {
+        repository.saveFiles(importedFiles, null)
+          .then((result) => successSaving(dispatch, 'All imported files saved', result))
+          .catch(() => dispatch(error(FILE_SAVE_FAILED, 'Error saving importing files')))
+      })
+    })
+  }
+
+export const addFile = (parentPath: Path, name: string, fileType?: string) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): ?File => {
+    if (!repositoryContainer.isLoaded)
+      return dispatch(error(FILE_ADD_FAILED, REPOSITORY_NOT_LOADED))
+    if (!isValidDirectory(parentPath))
+      return dispatch(error(FILE_ADD_FAILED, `${parentPath.toString()} is not valid directory`))
+
+    const repository: Repository = repositoryContainer.repository
+    const file: File = repository.addFile(parentPath, name, defaultContent(fileType))
+    dispatch(fileAdded(Factory.fileModel(file)))
+    return file
+  }
+
+export const saveFile = (path: Path) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
+    if (!repositoryContainer.isLoaded)
+      return Promise.reject(dispatch(error(FILE_SAVE_FAILED, REPOSITORY_NOT_LOADED)))
+    if (!isValidFile(path))
+      return Promise.reject(dispatch(error(FILE_SAVE_FAILED, `${path.toString()} is not valid file`)))
+
+    const repository: Repository = repositoryContainer.repository
+    dispatch({type: FILE_SAVE_STARTED})
+    return repository.saveFile(path)
+      .then((file) => {
+        dispatch(fileSaved(Factory.fileModel(file)))
+        dispatch(addSuccessToasts(`${file.name} saved`))
+      })
+      .catch(() => dispatch(error(FILE_SAVE_FAILED, 'Error on saving')))
+  }
+
 export const saveAll = () =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
     if (!repositoryContainer.isLoaded)
@@ -252,16 +264,8 @@ export const saveAll = () =>
 
     const currentFile = getCurrentFilePath(getState())
     return repository.saveAll(currentFile)
-      .then(
-        ({repository, file, content}) => {
-          dispatch(initFileSystem(Factory.repository(repository)))
-          dispatch(addSuccessToasts('All files saved'))
-          if (file)
-            dispatch(updateFileContent(file.path, content))
-        })
-      .catch(
-        (err) => dispatch(error(FILE_SAVE_FAILED, err || 'Error on save all'))
-      )
+      .then(() => successSaving(dispatch, 'All files saved'))
+      .catch(() => dispatch(error(FILE_SAVE_FAILED, 'Error on save all')))
   }
 
 export const rename = (path: string, newName: string) =>

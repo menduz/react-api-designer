@@ -4,11 +4,13 @@ import request from "browser-request"
 import {nextName} from "../../../repository/helper/utils"
 import {addFile} from "../../tree/actions"
 import {updateCurrentFile} from "../../editor/actions"
-import type {Dispatch} from "../../../types/types"
 import {getAll} from "./ImportSelectors"
 import ZipHelper from "../../../repository/helper/ZipHelper"
 import Repository from "../../../repository/Repository"
 import {addBulkFiles} from "../../../repository-redux/actions"
+import {actions as repositoryActions} from "../../../repository-redux"
+import {File} from '../../../repository'
+import type {Dispatch, ExtraArgs, GetState} from '../../../types'
 
 export const HIDE = 'import/HIDE_DIALOG'
 export const SHOW = 'import/SHOW_DIALOG'
@@ -17,6 +19,7 @@ export const CHANGE_URL = 'import/CHANGE_URL'
 export const FILE_UPLOAD = 'import/FILE_UPLOAD'
 export const IMPORT_STARTED = 'import/IMPORT_STARTED'
 export const IMPORT_DONE = 'import/IMPORT_DONE'
+export const CHANGE_ERROR = 'import/CHANGE_ERROR'
 
 export const HIDE_CONFLICT_MODAL = 'import/HIDE_CONFLICT_MODAL'
 export const SHOW_CONFLICT_MODAL = 'import/SHOW_CONFLICT_MODAL'
@@ -62,7 +65,6 @@ export const uploadTempFile = (fileName: string, type: string, content: any) => 
   payload: {fileName, type, content}
 })
 
-
 export const closeImportDialog = () => ({
   type: HIDE
 })
@@ -87,6 +89,11 @@ export const uploadFile = (event: any) => ({
   payload: {event}
 })
 
+export const changeError = (error: any) => ({
+  type: CHANGE_ERROR,
+  payload: {error: error.message || error}
+})
+
 const nameFromUrl = (url) => {
   return url.substring(url.lastIndexOf('/') + 1, url.length)
 }
@@ -101,53 +108,37 @@ const toRamlName = (name, repositoryContainer) => {
   }
 }
 
-export const importFileFromUrl = (url: string, fileType: string) =>
-  (dispatch: Dispatch, getState, {designerWorker, repositoryContainer}: ExtraArgs) => {
+const addAndSaveFile = (fileName: string, fileType, content, dispatch: Dispatch) => {
+  dispatch(addFile(fileName, fileType))
+    .then((file: File) => {
+      dispatch(updateCurrentFile(content))
+      dispatch(repositoryActions.saveFile(file.path))
+      dispatch({type: IMPORT_DONE})
+    })
+    .catch((error) => {
+      dispatch(changeError(error))
+    })
+}
 
-    const convertFromUrl = (url, fileType, baseName) => {
-      designerWorker.convertUrlToRaml(url).then(c => {
-        const fileName = baseName(nameFromUrl(url), repositoryContainer)
-        dispatch(addFile(fileName, fileType))
-        setTimeout(() => {
-          dispatch(updateCurrentFile(c))
-          dispatch({type: IMPORT_DONE})
-        }, 1000)
-      }).catch(err => {
-        //@@TODO Inform Error!
-        console.error(err)
-        dispatch({type: IMPORT_DONE})
-      })
-    }
+export const importFileFromUrl = (url: string, fileType: string) =>
+  (dispatch: Dispatch, getState: GetState, {designerWorker, repositoryContainer}: ExtraArgs) => {
 
     dispatch({type: IMPORT_STARTED})
     if (fileType === 'SWAGGER') {
-      convertFromUrl(url, fileType, toRamlName)
+      designerWorker.convertUrlToRaml(url).then(c => {
+        const fileName = toRamlName(nameFromUrl(url), repositoryContainer)
+        addAndSaveFile(fileName, fileType, c, dispatch)
+      }).catch(err => {
+        dispatch(changeError(err))
+      })
     }
     else {
-      const req = {
-        method: 'GET',
-        url: url
-      }
-      request(req, (err, response) => {
-        if (err) {
-          //@@TODO Inform Error!
-          console.error(err)
-          dispatch({type: IMPORT_DONE})
-        }
+      request({ method: 'GET', url: url}, (err, response) => {
+        if (err)
+          dispatch(changeError(err))
         else {
-          // if (isApiDefinition(response.response)) {
-          //   function baseName(name, repositoryContainer) {
-          //     return nextName(name.endsWith('.raml')?name:name + '.raml', repositoryContainer)
-          //   }
-          //   convertFromUrl(url, fileType, baseName)
-          // } else {
           const fileName = nextName(nameFromUrl(url), repositoryContainer)
-          dispatch(addFile(fileName, fileType))
-          setTimeout(() => {
-            dispatch(updateCurrentFile(response.response))
-            dispatch({type: IMPORT_DONE})
-          }, 1000)
-          // }
+          addAndSaveFile(fileName, fileType, response.response, dispatch)
         }
       })
     }
@@ -157,47 +148,40 @@ const isZip = (file) => {
   return (/\.zip$/i).test(file.name)
 }
 
-export const saveZipFiles = () => (dispatch: Dispatch, getState, {repositoryContainer}: ExtraArgs) => {
+export const saveZipFiles = () => (dispatch: Dispatch, getState: GetState) => {
   const state = getAll(getState())
   const zipFiles = state.zipFiles
-  const files = (zipFiles.filter(f => {
-    return f.override
-  }))
+  const files = zipFiles.filter(f => f.override)
   ZipHelper.filesContents(state.fileToImport, files).then(contents => {
-    addBulkFiles(contents)(dispatch, getState, {repositoryContainer})
-    //dispatch({type: IMPORT_DONE})
+    dispatch(addBulkFiles(contents))
+      .then(() => {
+        dispatch({type: IMPORT_DONE})
+      })
   })
 }
 
-export const saveFile = () => (dispatch: Dispatch, getState) => {
+export const saveFile = () => (dispatch: Dispatch, getState: GetState) => {
   const state = getAll(getState())
-  dispatch(addFile(state.fileNameToImport, state.fileType))
-  setTimeout(() => {
-    dispatch(updateCurrentFile(state.fileToImport))
-    dispatch({type: IMPORT_DONE})
-  }, 1000)
+  addAndSaveFile(state.fileNameToImport, state.fileType, state.fileToImport, dispatch)
+}
+
+const convertSwaggerToRaml = (files, designerWorker, dispatch: Dispatch) => {
+  designerWorker.convertSwaggerToRaml(files).then(result => {
+    const fileName = toRamlName(result.filename)
+    const filtered = files.filter(c => c.filename !== result.filename)
+
+    filtered.push({filename: fileName, content: result.content, override: true})
+    dispatch(addBulkFiles(filtered)).then(() => {
+      dispatch({type: IMPORT_DONE})
+    })
+  }).catch(err => {
+    dispatch(changeError(err))
+  })
 }
 
 export const importFile = (file: any, fileType: string) =>
-  (dispatch: Dispatch, getState, {designerWorker, repositoryContainer}: ExtraArgs) => {
+  (dispatch: Dispatch, getState: GetState, {designerWorker, repositoryContainer}: ExtraArgs) => {
     dispatch({type: IMPORT_STARTED})
-
-    const convertSwaggerToRaml = (files) => {
-      designerWorker.convertSwaggerToRaml(files).then(result => {
-
-        const fileName = toRamlName(result.filename)
-        const filtered = files.filter(c => c.filename !== result.filename)
-
-        filtered.push({filename:fileName, content: result.content, override:true})
-        addBulkFiles(filtered)(dispatch, getState, {repositoryContainer}).then(() => {
-          dispatch({type: IMPORT_DONE})
-        })
-      }).catch(err => {
-        //@@TODO Manage Error
-        console.error(err)
-        dispatch({type: IMPORT_DONE})
-      })
-    }
 
     const reader = new FileReader()
     const zip = isZip(file)
@@ -209,43 +193,36 @@ export const importFile = (file: any, fileType: string) =>
         if (fileType === SWAGGER) {
           dispatch({type: IMPORT_STARTED})
           ZipHelper.filesContents(upload.target.result).then(files => {
-            convertSwaggerToRaml(files)
+            convertSwaggerToRaml(files, designerWorker, dispatch)
           }).catch(err => {
-            //@@TODO Manage Error
-            console.error(err)
-            dispatch({type: IMPORT_DONE})
+            dispatch(changeError(err))
           })
         } else {
           ZipHelper.listZipFiles(repository, upload.target.result).then(files => {
             dispatch(addZipFiles(files))
-            const conflicts = files.filter(f => {
-              return f.conflict
-            })
+            const conflicts = files.filter(f => f.conflict)
 
-            if (conflicts.length > 0) {
+            if (conflicts.length > 0)
               dispatch(showZipConflictDialog())
-            } else {
-              saveZipFiles()(dispatch, getState, {repositoryContainer})
-            }
+            else
+              dispatch(saveZipFiles())
           })
         }
       } else {
         if (fileType === SWAGGER) {
           const files = [{filename: file.name, content: upload.target.result}]
-          convertSwaggerToRaml(files)
+          convertSwaggerToRaml(files, designerWorker, dispatch)
         } else {
-          if (repository.getByPathString(file.name)) {
+          if (repository.getByPathString(file.name))
             dispatch(showConflictDialog())
-          } else {
-            saveFile()(dispatch, getState)
-          }
+          else
+            dispatch(saveFile())
         }
       }
     }
 
-    if (zip) {
+    if (zip)
       reader.readAsArrayBuffer(file)
-    } else {
+    else
       reader.readAsText(file)
-    }
   }

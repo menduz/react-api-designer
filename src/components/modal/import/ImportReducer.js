@@ -3,11 +3,12 @@
 import type {State} from './ImportModel'
 import * as actions from './ImportActions'
 
-const initialState : State = {
+const initialState: State = {
   showModal: false,
   selectValue: 'RAML-file',
   isImporting: false,
-  zipFiles:[]
+  zipFiles: [],
+  error: ''
 }
 
 export default (state: State = initialState, action: any): State => {
@@ -18,10 +19,17 @@ export default (state: State = initialState, action: any): State => {
         showModal: true,
         fileToImport: action.payload.file ? action.payload.file : state.fileToImport
       }
+    case actions.CHANGE_ERROR:
+      return {
+        ...state,
+        error: action.payload.error,
+        isImporting: false
+      }
     case actions.CHANGE_TYPE:
       return {
         ...state,
-        selectValue: action.payload.type.value
+        selectValue: action.payload.type.value,
+        error: ''
       }
     case actions.CHANGE_URL:
       return {
@@ -36,8 +44,8 @@ export default (state: State = initialState, action: any): State => {
     case actions.UPLOAD_TEMP_FILE:
       return {
         ...state,
-        fileNameToImport:action.payload.fileName,
-        fileType:action.payload.type,
+        fileNameToImport: action.payload.fileName,
+        fileType: action.payload.type,
         fileToImport: action.payload.content
       }
     case actions.SHOW_ZIP_CONFLICT_MODAL:
@@ -57,8 +65,9 @@ export default (state: State = initialState, action: any): State => {
       const override = action.payload.override
       const fileName = action.payload.filename
 
-      const zipFiles = state.zipFiles.map(t =>
-      {return (t.filename === fileName)?Object.assign({}, t, {override: override}):t})
+      const zipFiles = state.zipFiles.map(t => {
+        return (t.filename === fileName) ? Object.assign({}, t, {override: override}) : t
+      })
 
       return {
         ...state,
@@ -74,13 +83,20 @@ export default (state: State = initialState, action: any): State => {
     case actions.IMPORT_STARTED:
       return {
         ...state,
-        isImporting: true
+        isImporting: true,
+        error: ''
+      }
+    case actions.HIDE_CONFLICT_MODAL:
+      return {
+        ...state,
+        showConflictModal: false,
+        isImporting: false
       }
     case actions.HIDE:
-    case actions.HIDE_CONFLICT_MODAL:
     case actions.HIDE_ZIP_CONFLICT_MODAL:
     case actions.IMPORT_DONE:
-    default:
       return initialState
+    default:
+      return state
   }
 }

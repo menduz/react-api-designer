@@ -1,0 +1,28 @@
+[
+  {
+    "value": "RAML-file",
+    "label": "RAML file",
+    "type": "RAML10",
+    "info": "Support single or zip files."
+  },
+  {
+    "value": "RAML-url",
+    "label": "RAML url",
+    "type": "RAML10",
+    "info": "Note: currently it does not import includes.",
+    "url": true
+  },
+  {
+    "value": "OAS-file",
+    "label": "OAS file",
+    "type": "SWAGGER",
+    "info": "Support single or zip files. Note: currently supports OAS (Swagger) v2.0."
+  },
+  {
+    "value": "OAS-url",
+    "label": "OAS url",
+    "type": "SWAGGER",
+    "info": "Note: currently supports OAS (Swagger) v2.0.",
+    "url": true
+  }
+]
