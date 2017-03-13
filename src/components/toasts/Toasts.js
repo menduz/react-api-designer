@@ -11,7 +11,7 @@ class Toasts extends Component {
   render() {
     const {toasts, onClose} = this.props
 
-    var allToasts = toasts.map((toast, index) =>
+    const allToasts = toasts.map((toast, index) =>
       <Toast className="Toast"
              key={index+toast.date}
              title={toast.msg}
@@ -19,7 +19,7 @@ class Toasts extends Component {
              onClose={onClose.bind(this, toast.msg)}
              testId="Toast"
              closable />
-    );
+    )
 
     return (
       <div>

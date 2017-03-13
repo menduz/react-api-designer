@@ -10,7 +10,6 @@ import {Path} from '../../repository'
 import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
 import './FileSystemTree.css'
 
-
 class FileSystemTree extends Component {
 
   handleOnSelect(selection) {
@@ -92,9 +91,11 @@ class FileSystemTree extends Component {
                onDragLeave={this.onDragLeave.bind(this)}>
           {node.label}
         </label>
-        <ContextMenu className="tree-menu file-menu" options={options} testId="File-Tree-Context-Menu">
-          <ReactSVG path={contextIcon} style={{ width: 18}}/>
-        </ContextMenu>
+        <div className="node-options">
+          <ContextMenu className="tree-menu file-menu" options={options} testId="File-Tree-Context-Menu">
+            <ReactSVG path={contextIcon} style={{width: 18}}/>
+          </ContextMenu>
+        </div>
       </div>
     )
   }
@@ -123,12 +124,14 @@ class FileSystemTree extends Component {
                onDragLeave={this.onDragLeave.bind(this)}>
           {node.label}
         </label>
-        <ContextMenu className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
-          <ReactSVG path={contextIcon} style={{ width: 18}}/>
-        </ContextMenu>
-        <ContextMenu className="tree-menu new-menu" options={addOptions} testId="File-Tree-New-Menu">
-          <ReactSVG path={plusIcon} style={{ width: 18}}/>
-        </ContextMenu>
+        <div className="node-options">
+          <ContextMenu className="tree-menu new-menu" options={addOptions} testId="File-Tree-New-Menu">
+            <ReactSVG path={plusIcon} style={{ width: 18}}/>
+          </ContextMenu>
+          <ContextMenu className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
+            <ReactSVG path={contextIcon} style={{ width: 18}}/>
+          </ContextMenu>
+        </div>
       </div>
     )
   }

@@ -29,7 +29,7 @@ const errorHandler = (error, getState, lastAction, dispatch) => {
 // create middleware
 const thunkExtraArg = component.initThunkArg(authSelectors)
 const thunkMiddleware = thunk.withExtraArgument(thunkExtraArg)
-const middleware = [thunkMiddleware, reduxCatch(errorHandler)]
+const middleware = [reduxCatch(errorHandler), thunkMiddleware]
 if (location.search.indexOf('redux-logger=true') > -1) {
   middleware.push(reduxLogger())
 }
