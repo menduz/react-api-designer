@@ -71,23 +71,19 @@ function openNewProject() {
   }
 }
 
-function appReady() {
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.on('ready', function appReady() {
   const menuTemplate = createMenu(openNewProject)
   const menu = Menu.buildFromTemplate(menuTemplate)
   Menu.setApplicationMenu(menu)
   openNewProject()
-}
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', appReady)
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
-  setTimeout(function () {
-    openNewProject()
-  })
+  app.quit()
 })
 
 // Dragging files out of the window

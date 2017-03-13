@@ -17,14 +17,9 @@ class Info extends Component {
     return validLanguage && validLanguageType
   }
 
-  static showConsole(language) {
-    const t = language.type
-    return Info.showMock(language) || t === 'Library'
-  }
-
   static title(language) {
     if (language.id === 'raml') {
-      return 'RAML ' + language.type === 'Library' ? 'Library' : 'Documentation'
+      return 'RAML ' + (language.type === 'Library' ? 'Library' : 'Documentation')
     }
 
     return `${language.label || ''} Preview`
@@ -35,7 +30,6 @@ class Info extends Component {
     const numWarnings = errors.filter(error => error.isWarning).length
     const numError = errors.filter(error => !error.isWarning).length
     const showMock = Info.showMock(language)
-    const showConsole = Info.showConsole(language)
 
     return (
       <div className="InfoPanel" data-test-id="Info-Panel">
@@ -46,9 +40,9 @@ class Info extends Component {
         {numError > 0 ? <Errors/> : numWarnings > 0 ?
             <div className="warning-preview">
               <Errors/>
-              <Preview show={showConsole}/>
+              <Preview/>
             </div> :
-          <Preview show={showConsole}/>
+          <Preview/>
         }
       </div>
     )

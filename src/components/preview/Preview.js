@@ -2,6 +2,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {ConsoleLoader} from '../raml-console/angular-console'
+import Info from '../info/Info'
 import JSONTree from 'react-json-tree'
 import ReactMarkdown from 'react-markdown'
 import {getCurrentFileContent} from "../../repository-redux/selectors"
@@ -25,19 +26,22 @@ class Preview extends Component {
     base0D: '#a31515',
   }
 
+  static showConsole(language) {
+    return Info.showMock(language) || language.type === 'Library'
+  }
+
   static _empty() {
     return <div className="No-preview" data-test-id="No-Preview">No preview</div>
   }
 
   _render() {
-    const {parsedObject, language, text, show} = this.props
-    if (!show) return Preview._empty()
-
+    const {parsedObject, language, text} = this.props
+    
     const ConsoleWrapper = this.consoleWrapper
     switch (language.id) {
       case 'raml':
       case 'oas':
-        return !parsedObject ? Preview._empty() :
+        return !parsedObject || !Preview.showConsole(language) ? Preview._empty() :
           <ConsoleWrapper raml={parsedObject}/>
       case 'json':
         return !parsedObject ? Preview._empty() :
