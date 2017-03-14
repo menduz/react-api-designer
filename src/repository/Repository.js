@@ -65,19 +65,20 @@ export default class Repository {
           .map(t => ({path: t.first.path.toString(), content: t.second}))
 
         return this._fileSystem.save(fileDataList)
-      }).then(entry => {
+      }).then((entry): Promise<SaveResult> => {
         files.forEach(f => f.clear())
         const repository = this._updateDirectory(ElementFactory.directory(this._fileSystem, entry))
-
         const newFile = currentFile ? this.getFileByPath(currentFile) : null
-        if (!newFile) return {repository}
-        return newFile.getContent()
+
+        if (!newFile) return Promise.resolve({repository, file: undefined, content: undefined})
+        else return newFile.getContent()
           .then(c => ({repository, file: newFile, content: c}))
       })
   }
 
   saveAll(currentFile: ?Path): Promise<Repository> {
     return this.saveFiles(this.getDirtyFiles(), currentFile)
+      .then(saveResult => saveResult.repository)
   }
 
   rename(path: string, newName: string): Promise<Element> {
@@ -98,7 +99,7 @@ export default class Repository {
     if (!file) return Promise.reject()
 
     return file.remove(this._fileSystem)
-      .then(() => file.parent.removeChild(file) )
+      .then(() => (file.parent && file.parent.removeChild(file)) || file)
   }
 
   deleteDirectory(path: Path): Promise<Directory> {
@@ -106,10 +107,7 @@ export default class Repository {
     if (!directory) return Promise.reject()
 
     return directory.remove(this._fileSystem)
-      .then(d => {
-        d.parent && d.parent.removeChild(d)
-        return d
-      })
+      .then(d => (d.parent && d.parent.removeChild(d)|| d))
   }
 
   addFile(path: Path, name: string, content: string): File {
@@ -142,17 +140,18 @@ export default class Repository {
     const newParent = this.getByPath(to.parent())
     const element   = this.getByPath(from)
 
-    if (!newParent || !newParent.isDirectory())
+    if (!newParent)
+      throw new Error(`New directory is not a defined`)
+    else if(!newParent.isDirectory())
       throw new Error(`${newParent.path.toString()} is not a valid directory`)
     else if (!element)
       throw new Error(`${from.toString()} is not a valid directory`)
 
     if (!this._isMovableInFileSystem(element))
-      return Promise.resolve(element.moveTo(newParent))
+      return Promise.resolve(element.moveTo(newParent.asDirectory()))
 
-    return this._fileSystem.rename(from.toString(), to.toString())
-      .then(() => element.moveTo(newParent))
-
+    return this._fileSystem.rename(from.toString(), to.toString(), element.isDirectory())
+      .then(() => element.moveTo(newParent.asDirectory()))
   }
 
   _isMovableInFileSystem(element: Element): boolean {
@@ -205,4 +204,4 @@ export default class Repository {
   }
 }
 
-export type SaveResult = {repository: Repository, file: File, content: string}
+export type SaveResult = {repository: Repository, file: ?File, content: ?string}

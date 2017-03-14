@@ -21,6 +21,7 @@
     "watch-worker": "webpack -d --watch --config ./webpack/standalone/config.worker.js",
     "watch-src": "react-scripts start",
     "test": "react-scripts test --env=jsdom",
+    "test-coverage": "react-scripts test --env=jsdom --coverage --collectCoverageFrom=src/repository/**/*.js",
     "eject": "react-scripts eject",
     "flow": "flow"
   },
