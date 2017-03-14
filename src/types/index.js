@@ -5,10 +5,8 @@ import Worker from '../worker'
 
 export type GetState = () => {[key: string]: any}
 
-export type RepositoryContainer = {
-  repository: ?Repository,
-  isLoaded: boolean
-}
+export type RepositoryContainer =
+  { isLoaded: false } | { repository: Repository, isLoaded: true }
 
 export type DesignerUrls = {
   remoteApi: string,
@@ -28,7 +26,6 @@ export type AuthSelectors = {
 export type RemoteApiSelectors = {
   projectId: () => string,
   baseUrl: () => string,
-
   authorization: () => string,
   ownerId: () => string,
   organizationId: () => string,
@@ -42,5 +39,5 @@ export type ExtraArgs = {
 }
 
 // eslint-disable-next-line
-type Action = {type: any} | (d: Dispatch, gS: GetState, eA: ExtraArgs) => void
+type Action = {type: any} | (d: Dispatch, gS: GetState, eA: ExtraArgs) => any
 export type Dispatch = (action: Action) => any

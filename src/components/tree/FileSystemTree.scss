@@ -5,11 +5,6 @@
 }
 
 .Tree {
-  height: inherit;
-
-  .TreeUi {
-    height: inherit;
-  }
 
   label:not(:empty) {
     flex: 1 1 auto;

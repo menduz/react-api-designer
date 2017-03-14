@@ -16,9 +16,9 @@ import {Header} from './components/header'
 
 // mock some initial config
 const authSelectors = {
-  authorization: () => `Bearer bd516ec3-75fb-484b-969f-5802f50e5e01`,
-  ownerId: () => 'd365610a-8e56-42da-a3fc-73b548371cc6',
-  organizationId: () => 'b13cbf39-787d-4d1f-9c72-22275ecc0d59',
+  authorization: () => 'Bearer 8f74e8e8-ab37-4016-843e-f8facb1ab81c',
+  ownerId: () => 'edc150a4-8365-4b1a-adfa-0dc1dc63227b',
+  organizationId: () => 'e2c426f7-6844-4a29-8435-f74ce0ef5333',
   organizationDomain: () => 'mulesoft-inc'
 }
 

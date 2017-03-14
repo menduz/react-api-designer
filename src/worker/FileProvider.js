@@ -1,14 +1,19 @@
-import {RepositoryContainer} from '../types'
+// @flow
+
+import type {RepositoryContainer} from '../types'
+import Repository from "../repository/Repository";
 
 export default class FileProvider {
   repositoryContainer: RepositoryContainer
 
-  constructor(repositoryContainer) {
+  constructor(repositoryContainer: RepositoryContainer) {
     this.repositoryContainer = repositoryContainer
   }
 
-  getFile(path): Promise<string> {
-    const repository = this.repositoryContainer.repository;
+  getFile(path: string): Promise<string> {
+    if(!this.repositoryContainer.isLoaded) return Promise.reject()
+
+    const repository: Repository = this.repositoryContainer.repository
     const byPathString = repository && repository.getByPathString(path)
     if (byPathString && !byPathString.isDirectory()) {
       const file = byPathString.asFile()

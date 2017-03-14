@@ -1,17 +1,19 @@
+// @flow
+
 import * as actions from './ConsumeApiActions'
 import {List} from 'immutable'
+import {ConsumeState} from "./ConsumeModel";
 
-const initialState = {
+const initialState: ConsumeState = {
   fragments: List(),
   isOpen: false,
   query: '',
   isSearching: false,
   isSubmitting: false,
-  error: '',
-  isMock: false
+  error: ''
 }
 
-export default (state = initialState, action: any) => {
+export default (state: ConsumeState = initialState, action: any) => {
   switch (action.type) {
     case actions.CLEAR:
       return initialState
@@ -23,7 +25,8 @@ export default (state = initialState, action: any) => {
     case actions.FRAGMENTS_CHANGED:
       return {
         ...state,
-        fragments: action.payload
+        fragments: action.payload,
+        isSearching: false
       }
     case actions.UPDATE_QUERY:
       return {
@@ -33,19 +36,21 @@ export default (state = initialState, action: any) => {
     case actions.IS_SEARCHING:
       return {
         ...state,
-        isSearching: action.payload,
+        isSearching: true,
         error: ''
       }
     case actions.IS_SUBMITTING:
       return {
         ...state,
-        isSubmitting: action.payload,
+        isSubmitting: true,
         error: ''
       }
     case actions.ERROR:
       return {
         ...state,
-        error: action.payload
+        error: action.payload,
+        isSearching: false,
+        isSubmitting: false,
       }
     default:
       return state

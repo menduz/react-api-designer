@@ -10,6 +10,9 @@ import ZipHelper from './helper/ZipHelper'
 import {zipArrays} from './helper/utils'
 import type {Tuple} from './helper/utils'
 
+// eslint-disable-next-line
+export type SaveResult = {repository: Repository, file: ?File, content: ?string}
+
 export default class Repository {
   _fileSystem: FileSystem
   _root: Directory
@@ -76,9 +79,8 @@ export default class Repository {
       })
   }
 
-  saveAll(currentFile: ?Path): Promise<Repository> {
+  saveAll(currentFile: ?Path): Promise<SaveResult> {
     return this.saveFiles(this.getDirtyFiles(), currentFile)
-      .then(saveResult => saveResult.repository)
   }
 
   rename(path: string, newName: string): Promise<Element> {
@@ -107,7 +109,7 @@ export default class Repository {
     if (!directory) return Promise.reject()
 
     return directory.remove(this._fileSystem)
-      .then(d => (d.parent && d.parent.removeChild(d)|| d))
+      .then(d => ((d.parent && d.parent.removeChild(d)) || d))
   }
 
   addFile(path: Path, name: string, content: string): File {
@@ -203,5 +205,3 @@ export default class Repository {
     return this
   }
 }
-
-export type SaveResult = {repository: Repository, file: ?File, content: ?string}

@@ -5,6 +5,7 @@ import {FileModel, DirectoryModel, RepositoryModel, ElementModel} from '../repos
 import Factory from '../repository/immutable/RepositoryModelFactory'
 
 import Repository from '../repository/Repository'
+import type {SaveResult} from '../repository/Repository'
 
 import {Path} from '../repository'
 import {isValidDirectory, isValidFile, getFileTree} from './selectors'
@@ -154,7 +155,7 @@ export const addDirectory = (parentPath: Path, name: string) =>
   }
 
 const mkdirs = (filename: string, repository: Repository) =>
-  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
+  (dispatch: Dispatch): Promise<any> => {
     const names = filename.split('/')
     let parentPath = '/'
     let dirname = ''
@@ -167,7 +168,7 @@ const mkdirs = (filename: string, repository: Repository) =>
         const c = parentPath
         const d = dirname
         sequence = sequence.then(() => {
-          return addDirectory(Path.fromString(c), d)(dispatch, getState, {repositoryContainer})
+          return dispatch(addDirectory(Path.fromString(c), d))
         })
       }
       parentPath = path
@@ -189,9 +190,9 @@ export const updateFileContent = (path: Path, content: string) =>
     return dispatch(fileContentUpdated(Factory.fileModel(file), content))
   }
 
-const successSaving = (dispatch: Dispatch, msg: string, {repository, file, content}) => {
+const successSaving = (dispatch: Dispatch, msg: string, {repository, file, content}: SaveResult) => {
   dispatch(initFileSystem(Factory.repository(repository)))
-  if (file) dispatch(updateFileContent(file.path, content))
+  if (file && content) dispatch(updateFileContent(file.path, content))
   dispatch(addSuccessToasts(msg))
 }
 
@@ -201,7 +202,7 @@ export const addBulkFiles = (files: []) =>
       return Promise.reject(dispatch(error(FILE_ADD_FAILED, REPOSITORY_NOT_LOADED)))
 
     const repository: Repository = repositoryContainer.repository
-    const importedFiles: [?File] = []
+    const importedFiles: File[] = []
 
     return Promise.all(files.map(f => dispatch(mkdirs(f.filename, repository)))).then(() => {
       Promise.all(files.map(f => {
@@ -244,7 +245,7 @@ export const saveFile = (path: Path) =>
     if (!isValidFile(path))
       return Promise.reject(dispatch(error(FILE_SAVE_FAILED, `${path.toString()} is not valid file`)))
 
-    const repository: Repository = repositoryContainer.repository
+    const repository = repositoryContainer.repository
     dispatch({type: FILE_SAVE_STARTED})
     return repository.saveFile(path)
       .then((file) => {
@@ -264,8 +265,11 @@ export const saveAll = () =>
 
     const currentFile = getCurrentFilePath(getState())
     return repository.saveAll(currentFile)
-      .then(() => successSaving(dispatch, 'All files saved'))
-      .catch(() => dispatch(error(FILE_SAVE_FAILED, 'Error on save all')))
+      .then((result) => successSaving(dispatch, 'All files saved', result))
+      .catch((e) => {
+        console.log(e)
+        dispatch(error(FILE_SAVE_FAILED, 'Error on save all'))
+      })
   }
 
 export const rename = (path: string, newName: string) =>
@@ -366,7 +370,7 @@ export const moveElement = (source: Path, destinationDir: Path) =>
     return repository.move(source, destinationPath)
       .then(
         (element) => {
-          dispatch({ type: FILE_MOVED, payload: {source, destination: element.path}})
+          dispatch({type: FILE_MOVED, payload: {source, destination: element.path}})
           dispatch(addSuccessToasts(`${element.isDirectory() ? 'Directory' : 'File'} '${element.name}' moved`))
         }
       )

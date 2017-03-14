@@ -44,7 +44,6 @@ const reducers = {
 }
 
 const repositoryContainer: RepositoryContainer = {
-  repository: undefined,
   isLoaded: false
 }
 
@@ -54,7 +53,7 @@ const initThunkArg = (authSelector: AuthSelectors): ExtraArgs => {
   const workerUrl = window.require.getConfig().paths['worker']
   const designerWorker = new Worker(workerUrl, new FileProvider(repositoryContainer))
 
-  const designerRemoteApiSelectors: RemoteApiSelectors = (getState: GetState) => ({
+  const designerRemoteApiSelectors = (getState: GetState): RemoteApiSelectors => ({
     baseUrl: () => window.require.getConfig().paths['remoteApi'],
     authorization: () => authSelector.authorization(getState()),
     ownerId: () => authSelector.ownerId(getState()),
@@ -76,7 +75,6 @@ const actions = bootstrap.actions
 export {
   App,
   HeaderOptions,
-
   actions,
   reducers,
   initThunkArg,
