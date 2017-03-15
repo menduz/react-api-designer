@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {hasProjectSelected} from '../../../bootstrap/selectors'
 import {isConsumeMode} from '../../header/selectors'
 import {isOpen} from '../../modal/consume-api/selectors'
-import consumeIndex from '../../modal/consume-api'
+import * as consumeIndex from '../../modal/consume-api'
 import consumeColorIcon from './assets/ConsumeExchangeColorIcon.svg'
 import './DependencyMenu.css'
 

@@ -1,10 +1,11 @@
-//@flow
+// @flow
 
 import {NAME} from './ConsumeApiConstants'
 import {Fragment} from "./Fragment"
 import {List} from 'immutable'
+import type {ConsumeState} from "./ConsumeModel";
 
-export const getAll = (rootState: any): any => rootState[NAME]
+export const getAll = (rootState: any): ConsumeState => rootState[NAME]
 
 export const getFragments = (rootState: any): List<Fragment> => getAll(rootState).fragments
 

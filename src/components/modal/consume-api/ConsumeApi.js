@@ -10,7 +10,7 @@ import ModalFooter from '@mulesoft/anypoint-components/lib/ModalFooter'
 import Search from '@mulesoft/anypoint-components/lib/Search'
 import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
 import Toast from '@mulesoft/anypoint-components/lib/Toast'
-import consumeIndex from './index'
+import * as actions from './ConsumeApiActions'
 import {List} from 'immutable'
 import {Fragment} from './Fragment'
 import {getFragments, getQuery, isSubmitting, isSearching, getError} from './selectors'
@@ -107,12 +107,12 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    searchFragment: (query: string) => dispatch(consumeIndex.actions.searchFragments(query)),
+    searchFragment: (query: string) => dispatch(actions.searchFragments(query)),
     handleFragmentSelection: (index: number, fragment: Fragment, selected: boolean) =>
-      dispatch(consumeIndex.actions.handleFragmentSelection(index, fragment, selected)),
-    updateQuery: (query: string) => dispatch(consumeIndex.actions.updateQuery(query)),
-    submit: (fragments: List<Fragment>) => dispatch(consumeIndex.actions.submit(fragments)),
-    closeError: () => dispatch(consumeIndex.actions.showError(''))
+      dispatch(actions.handleFragmentSelection(index, fragment, selected)),
+    updateQuery: (query: string) => dispatch(actions.updateQuery(query)),
+    submit: (fragments: List<Fragment>) => dispatch(actions.submit(fragments)),
+    closeError: () => dispatch(actions.showError(''))
   }
 }
 

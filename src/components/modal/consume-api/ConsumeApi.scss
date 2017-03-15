@@ -37,7 +37,8 @@
     display: flex;
     flex-direction: column;
     max-width: 400px;
-    min-width: 400px;
+    flex-basis: 400px;
+    flex-shrink: 0;
   }
 
   .fragment-left > *, .fragment-mid > *, .fragment-right > * {
@@ -100,7 +101,7 @@
 
   .search-footer {
     display: inline-flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     min-height: 75px;
   }
 }
