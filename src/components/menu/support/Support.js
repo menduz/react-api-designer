@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import Icon from '../../icon/Icon'
+import Icon from '../../svgicon/SvgIcon'
 
 class Support extends Component {
   render() {

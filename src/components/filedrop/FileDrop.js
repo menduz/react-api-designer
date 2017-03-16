@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import cx from 'classnames'
 import {openImportDialog} from '../../components/modal/import/ImportActions'
-import Icon from '../icon/Icon'
+import Icon from '../svgicon/SvgIcon'
 import './FileDrop.css'
 
 class FileDrop extends React.Component {

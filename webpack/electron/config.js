@@ -41,12 +41,5 @@ module.exports = {
     fs: 'empty',
     net: 'empty',
     tls: 'empty'
-  },
-  plugins: [
-    new webpack.DefinePlugin({
-      GLOBALS: {
-        ICON_SPRITE_PATH: JSON.stringify('./build/')
-      },
-    }),
-  ],
+  }
 };

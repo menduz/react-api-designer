@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
-import Icon from '../../icon/Icon'
+import Icon from '../../svgicon/SvgIcon'
 
 import {hasProjectSelected} from '../../../bootstrap/selectors'
 import {getTheme, isExchangeMode, getPublishToExchange, isConsumeMode} from '../../header/selectors'

@@ -1,7 +1,7 @@
 //@flow
 
 import React, {Component} from 'react'
-import Icon from '../icon/Icon'
+import Icon from '../svgicon/SvgIcon'
 import TreeUI from '@mulesoft/anypoint-components/lib/Tree'
 import RenameModalContainer from "../modal/rename/RenameModalContainer"
 import {Path} from '../../repository'

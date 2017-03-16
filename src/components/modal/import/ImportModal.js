@@ -13,7 +13,7 @@ import FileUploader from '@mulesoft/anypoint-components/lib/FileUploader'
 import Popover from '@mulesoft/anypoint-components/lib/Popover'
 import Toast from '@mulesoft/anypoint-components/lib/Toast'
 
-import Icon from '../../icon/Icon'
+import Icon from '../../svgicon/SvgIcon'
 import importTypes from './importTypes.json'
 import './Import.css'
 

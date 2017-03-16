@@ -1,7 +1,7 @@
 //@flow
 
 import React from 'react'
-import Icon from '../../icon/Icon'
+import Icon from '../../svgicon/SvgIcon'
 
 import Modal from '@mulesoft/anypoint-components/lib/Modal'
 import Popover from '@mulesoft/anypoint-components/lib/Popover'
