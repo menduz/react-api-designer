@@ -9,6 +9,7 @@ import VcsRemoteApi from "../remote-api/VcsRemoteApi";
 import {actions as editorActions} from "../components/editor";
 import {actions as treeActions} from "../components/tree";
 import {actions as repositoryActions} from "../repository-redux";
+import {actions as dependencyActions} from "../components/dependencies-tree";
 import {addErrorToasts} from '../components/toasts/actions'
 import {INITIALIZED, CLEAN, INITIALIZING} from './constants'
 
@@ -18,6 +19,7 @@ export const clean = () =>
     repositoryContainer.repository = undefined
     dispatch(editorActions.clean())
     dispatch(treeActions.clean())
+    dispatch(dependencyActions.clean())
     dispatch(repositoryActions.loadingFileSystem())
     dispatch({type: CLEAN})
   }

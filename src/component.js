@@ -23,6 +23,8 @@ import ProjectRemoteApi from "./remote-api/ProjectRemoteApi"
 import App from "./components/app/App"
 import HeaderOptions from "./components/header/HeaderOptions"
 import * as toasts from "./components/toasts"
+import * as dependenciesTree from "./components/dependencies-tree";
+
 
 const reducers = {
   designer: combineReducers({
@@ -30,6 +32,7 @@ const reducers = {
     [repository.NAME]: repository.reducer,
     [editor.NAME]: editor.reducer,
     [fileSystemTree.NAME]: fileSystemTree.reducer,
+    [dependenciesTree.NAME]: dependenciesTree.reducer,
     [publishApi.constants.NAME]: publishApi.reducer,
     [consumeApi.NAME]: consumeApi.reducer,
     [toasts.NAME]: toasts.reducer,

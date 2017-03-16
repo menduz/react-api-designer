@@ -16,7 +16,7 @@ import {Header} from './components/header'
 
 // mock some initial config
 const authSelectors = {
-  authorization: () => 'Bearer 8f74e8e8-ab37-4016-843e-f8facb1ab81c',
+  authorization: () => 'Bearer 0e3d490e-b00f-408c-9941-2f669159bc67',
   ownerId: () => 'edc150a4-8365-4b1a-adfa-0dc1dc63227b',
   organizationId: () => 'e2c426f7-6844-4a29-8435-f74ce0ef5333',
   organizationDomain: () => 'mulesoft-inc'

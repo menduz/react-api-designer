@@ -31,7 +31,7 @@ const fromElement = (element: ElementModel): Node => {
     : fromFile(element.asFileModel())
 }
 
-const fromDirectory = (directory: DirectoryModel, filterExchangeModules:Boolean): Node => {
+const fromDirectory = (directory: DirectoryModel): Node => {
   const children = directory.children.sort((a, b) => {
     if (a.isDirectory() && !b.isDirectory()) return -1;
     if (b.isDirectory() && !a.isDirectory()) return 1;
@@ -44,10 +44,10 @@ const fromDirectory = (directory: DirectoryModel, filterExchangeModules:Boolean)
     path: directory.path,
     name: directory.name,
     label: directory.name,
-    children: children.filter(c => !filterExchangeModules || !(c.name === 'exchange_modules' || c.name ==='exchange.json'))
+    children: children.filter(c => c.path.first() === 'exchange_modules')
   }
 }
 
 export const fromFileTree = (fileTree: RepositoryModel) : Node[] => {
-  return fromDirectory(fileTree.root, true).children
+  return fromDirectory(fileTree.root).children
 }

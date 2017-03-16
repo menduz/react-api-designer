@@ -31,6 +31,7 @@ const reducer = (state: State = initialState, action: {type: string, payload: an
         ...state,
         progress: false,
         fileTree: action.payload,
+        dependenciesTree: action.payload,
         contents: Map()
       }
     case DIRECTORY_DELETED:

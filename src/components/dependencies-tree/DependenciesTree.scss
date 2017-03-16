@@ -1,0 +1,60 @@
+.Tree-loading {
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 200;
+}
+
+.Tree {
+
+  label:not(:empty) {
+    flex: 1 1 auto;
+  }
+
+  .node-options {
+    display: inline-flex;
+    padding-right: 20px;
+
+    > * {
+      padding-right: 5px;
+    }
+
+    > :last-child {
+      padding-right: 0;
+    }
+
+    > :first-child {
+      padding-left: 5px;
+    }
+  }
+
+  label {
+    width: 100%;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tree-node {
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    display: inline-flex;
+    justify-content: space-between;
+  }
+
+  .dropping, .dropping label {
+    font-weight: bold;
+  }
+
+  .file-menu, .Tree .folder-menu, .new-menu {
+    cursor: pointer;
+  }
+
+  .tree-menu svg {
+    display: block;
+    height: 14px !important;
+    width: 14px !important;
+    fill: #a0a0a0;
+  }
+}
