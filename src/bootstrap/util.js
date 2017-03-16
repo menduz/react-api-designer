@@ -5,8 +5,6 @@ export const getLocationQueryVariable = (paramName: string, defaultValue: string
     .map(v => v.split('='))
     .find(pair => decodeURIComponent(pair[0]) === paramName)
 
-  console.log(result)
-
   return result ? decodeURIComponent(result[1]) : defaultValue
 }
 
