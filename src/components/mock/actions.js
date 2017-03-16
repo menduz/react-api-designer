@@ -42,7 +42,7 @@ const addMockBaseUri = (ramlContent, baseUri) => (dispatch) => {
   let addNewline = true
 
   let newContent = ramlContent.split('\n').map(line => {
-    if (line.trim().startsWith('baseUri')) {
+    if (line.trim().startsWith('baseUri:')) {
       addNewline = false
       return baseMockUri(baseUri, line)
     } else return line
