@@ -1,62 +1,64 @@
 .InfoPanel {
   font-family: DIN Pro, sans-serif;
   white-space: normal;
-  height: 100%;
   position: relative;
-}
 
-.InfoPanel pre {
-  overflow: auto;
-}
+  pre {
+    overflow: auto;
+  }
 
-span.title-name {
-  height: 25px;
-  white-space: nowrap;
-  padding-left: 20px;
-  margin-right: 10px;
-}
+  span.title-name {
+    height: 25px;
+    white-space: nowrap;
+    padding-left: 20px;
+    margin-right: 10px;
+  }
 
-.InfoPanel .InfoTitle {
-  font-size: 18px;
-  height: 50px;
-  color: #58595a;
-  background-color: #e8e9ea;
-  display: inline-flex;
-  width: 100%;
-  align-content: center;
-  justify-content: space-between;
-  align-items: center;
-}
+  .InfoTitle {
+    font-size: 18px;
+    height: 50px;
+    color: #58595a;
+    background-color: #e8e9ea;
+    display: flex;
+    width: 100%;
+    align-content: center;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
 
-.InfoPanel .InfoPanelTabs {
-  border-bottom: 2px rgba(39, 47, 51, .1) solid;
-  margin-left: -20px;
-}
+  .InfoPanelTabs {
+    border-bottom: 2px rgba(39, 47, 51, .1) solid;
+    margin-left: -20px;
 
-.InfoPanel .InfoPanelTabs ul {
-  margin: 0 0 5px;
-}
+    ul {
+      margin: 0 0 5px;
+    }
 
-.InfoPanel .InfoPanelTabs li {
-  width: 80px;
-  margin: 0 17px;
-  padding: 6px 10px 2px;
-}
+    li {
+      width: 80px;
+      margin: 0 17px;
+      padding: 6px 10px 2px;
+    }
 
-.InfoPanel .InfoPanelTabs li:after {
-  display: none;
-}
+    li:after {
+      display: none;
+    }
+  }
 
-.InfoPanel .InfoPanelTabContent {
-  overflow-y: auto;
-  overflow-x: hidden;
-  position: absolute;
-  top: 35px;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
+  .InfoPanelTabContent {
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: absolute;
+    top: 35px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
 
-.InfoPanel .InfoPanelTabContent.Issues-Tab .Errors {
-  padding-top: 10px;
+  .InfoPanelTabContent.Issues-Tab .Errors {
+    padding-top: 10px;
+  }
 }
