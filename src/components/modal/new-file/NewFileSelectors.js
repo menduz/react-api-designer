@@ -2,7 +2,7 @@
 
 import type {State} from './NewFileModel'
 
-export const getAll = (state: any): State => state.dialogs.newFile
+export const getAll = (rootState: any): State => rootState.designer.dialogs.newFile
 
 export const getFileName = (state: any): State => getAll(state).fileName
 

@@ -2,7 +2,7 @@
 
 import type State from './RenameModel'
 
-export const getAll = (state: any): State => state.dialogs.rename
+export const getAll = (rootState: any): State => rootState.designer.dialogs.rename
 
 export const getShowModal = (state: any): State => getAll(state).showModal
 

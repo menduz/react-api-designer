@@ -3,7 +3,7 @@
 import {NAME} from './index'
 import type {State} from './model'
 
-export const getAll = (rootState: any): State => rootState[NAME]
+export const getAll = (rootState: any): State => rootState.designer[NAME]
 
 export const getProjectId = (rootState: any): string => getAll(rootState).projectId
 

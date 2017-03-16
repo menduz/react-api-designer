@@ -6,8 +6,9 @@
   "main": "./main.js",
   "scripts": {
     "start": "electron ./main.js",
-    "build": "cd .. && npm run build && cd electron && npm run copy-build",
-    "copy-build": "cp -r ../build ./",
+    "build": "cd .. && npm run electron && cd electron",
+    "build-worker": "cd .. && npm run electron-worker && cd electron",
+    "build-main": "cd .. && npm run electron-main && cd electron",
     "packager": "electron-packager . --icon ./logo.png.icns --out ./dist --overwrite",
     "package": "npm run build && npm run packager"
   },

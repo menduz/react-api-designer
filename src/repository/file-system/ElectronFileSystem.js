@@ -2,11 +2,12 @@
 
 import FileSystem from './FileSystem'
 import type {Path, Entry, FileData} from './FileSystem'
-import {fileEntry, folderEntry, ENTRY_SEPARATOR} from './FileSystem'
+import {fileEntry, folderEntry} from './FileSystem'
 
 
 class ElectronFileSystem extends FileSystem {
   baseDir: string
+  fs: any
 
   constructor(baseDir: Path) {
     super()
@@ -23,7 +24,7 @@ class ElectronFileSystem extends FileSystem {
     return this.fs.readdirSync(dir).filter(f => !f.startsWith('.')).map(f => {
       const p = dir + f
       return this.isDirectory(p)
-        ? folderEntry(f, p, this.toEntries(p + ENTRY_SEPARATOR))
+        ? folderEntry(f, p, this.toEntries(p + FileSystem.Separator))
         : fileEntry(f, p)
     })
   }
@@ -41,7 +42,7 @@ class ElectronFileSystem extends FileSystem {
         this.fs.writeFileSync(this.path(path), content)
       })
 
-      resolve(this.directory(ENTRY_SEPARATOR))
+      resolve(this.directory(FileSystem.Separator))
     })
   }
 

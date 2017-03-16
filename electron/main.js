@@ -40,7 +40,7 @@ function createProjectWindow(projectDir) {
     projectWindow.loadURL(`file://${__dirname}/index.html?projectDir=${encodeURIComponent(projectDir)}`);
 
     // Open the DevTools.
-    // projectWindow.webContents.openDevTools()
+    projectWindow.webContents.openDevTools()
 
     // Emitted when the window is closed.
     projectWindow.on('closed', function () {

@@ -1,29 +1,43 @@
+//@flow
+
 class Storage {
 
-  static getValue(key: string, defaultValue: any): any {
+  getValue(key: string, defaultValue: string): string {
     throw new Error('Not implemented method')
   }
 
-  static setValue(key: string, value: any): void {
-    throw new Error('Not implemented method')
-  }
-
-  static getStorage(): any {
+  setValue(key: string, value: string): string {
     throw new Error('Not implemented method')
   }
 }
 
-export default class LocalStorage extends Storage {
+class LocalStorage extends Storage {
 
-  static getValue(key: string, defaultValue: any): any {
-    return localStorage.getItem(`designer:preference:${key}`) || defaultValue
+  getValue(key: string, defaultValue: string): string {
+    return window.localStorage.getItem(`designer:preference:${key}`) || defaultValue
   }
 
-  static setValue(key: string, value: any): void {
-    localStorage.setItem(`designer:preference:${key}`, value)
-  }
-
-  static getStorage(): any {
-    return localStorage
+  setValue(key: string, value: string): void {
+    window.localStorage.setItem(`designer:preference:${key}`, value)
   }
 }
+
+class MemoryStorage extends Storage {
+
+  values: Map<string, string>
+
+  constructor() {
+    super()
+    this.values = new Map()
+  }
+
+  getValue(key: string, defaultValue: string): string {
+    return this.values.get(`designer:preference:${key}`) || defaultValue
+  }
+
+  setValue(key: string, value: string): void {
+    this.values.set(`designer:preference:${key}`, value)
+  }
+}
+
+export default window.localStorage ? new LocalStorage() : new MemoryStorage()

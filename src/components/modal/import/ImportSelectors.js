@@ -2,7 +2,7 @@
 
 import type {State} from './ImportModel'
 
-export const getAll = (state: any): State => state.dialogs.import
+export const getAll = (rootState: any): State => rootState.designer.dialogs.import
 
 export const getSelectValue = (state: any): State => getAll(state).selectValue
 

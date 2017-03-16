@@ -12,25 +12,25 @@ import {actions as repositoryActions} from "../../../repository-redux"
 import {File} from '../../../repository'
 import type {Dispatch, ExtraArgs, GetState} from '../../../types'
 
-export const HIDE = 'import/HIDE_DIALOG'
-export const SHOW = 'import/SHOW_DIALOG'
-export const CHANGE_TYPE = 'import/CHANGE_TYPE'
-export const CHANGE_URL = 'import/CHANGE_URL'
-export const FILE_UPLOAD = 'import/FILE_UPLOAD'
-export const IMPORT_STARTED = 'import/IMPORT_STARTED'
-export const IMPORT_DONE = 'import/IMPORT_DONE'
-export const CHANGE_ERROR = 'import/CHANGE_ERROR'
+export const HIDE = 'DESIGNER/IMPORT/HIDE_DIALOG'
+export const SHOW = 'DESIGNER/IMPORT/SHOW_DIALOG'
+export const CHANGE_TYPE = 'DESIGNER/IMPORT/CHANGE_TYPE'
+export const CHANGE_URL = 'DESIGNER/IMPORT/CHANGE_URL'
+export const FILE_UPLOAD = 'DESIGNER/IMPORT/FILE_UPLOAD'
+export const IMPORT_STARTED = 'DESIGNER/IMPORT/IMPORT_STARTED'
+export const IMPORT_DONE = 'DESIGNER/IMPORT/IMPORT_DONE'
+export const CHANGE_ERROR = 'DESIGNER/IMPORT/CHANGE_ERROR'
 
-export const HIDE_CONFLICT_MODAL = 'import/HIDE_CONFLICT_MODAL'
-export const SHOW_CONFLICT_MODAL = 'import/SHOW_CONFLICT_MODAL'
-export const UPLOAD_TEMP_FILE = 'import/UPLOAD_TEMP_FILE'
+export const HIDE_CONFLICT_MODAL = 'DESIGNER/IMPORT/HIDE_CONFLICT_MODAL'
+export const SHOW_CONFLICT_MODAL = 'DESIGNER/IMPORT/SHOW_CONFLICT_MODAL'
+export const UPLOAD_TEMP_FILE = 'DESIGNER/IMPORT/UPLOAD_TEMP_FILE'
 
-export const HIDE_ZIP_CONFLICT_MODAL = 'import/HIDE_ZIP_CONFLICT_MODAL'
-export const SHOW_ZIP_CONFLICT_MODAL = 'import/SHOW_ZIP_CONFLICT_MODAL'
+export const HIDE_ZIP_CONFLICT_MODAL = 'DESIGNER/IMPORT/HIDE_ZIP_CONFLICT_MODAL'
+export const SHOW_ZIP_CONFLICT_MODAL = 'DESIGNER/IMPORT/SHOW_ZIP_CONFLICT_MODAL'
 
-export const ADD_ZIP_FILES = 'import/ADD_ZIP_FILES'
+export const ADD_ZIP_FILES = 'DESIGNER/IMPORT/ADD_ZIP_FILES'
 
-export const ZIP_FILE_OVERRIDE_ACTION = 'import/ZIP_FILE_OVERRIDE_ACTION'
+export const ZIP_FILE_OVERRIDE_ACTION = 'DESIGNER/IMPORT/ZIP_FILE_OVERRIDE_ACTION'
 
 const SWAGGER = 'SWAGGER'
 

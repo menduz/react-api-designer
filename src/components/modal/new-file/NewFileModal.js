@@ -1,8 +1,7 @@
 //@flow
 
 import React from 'react'
-import ReactSVG from 'react-svg'
-import infoIcon from '@mulesoft/anypoint-icons/lib/assets/info-small.svg'
+import Icon from '../../icon/Icon'
 
 import Modal from '@mulesoft/anypoint-components/lib/Modal'
 import Popover from '@mulesoft/anypoint-components/lib/Popover'
@@ -76,7 +75,7 @@ class NewFileModal extends React.Component {
                      anchorPosition="br"
                      testId="New-File-Popover">
               <div>
-                <ReactSVG path={infoIcon} style={{ width: 19, fill: 'rgb(124, 125, 126)' }}/>
+                <Icon name="info-small" size={19} fill="rgb(124, 125, 126)"/>
               </div>
             </Popover>
           </div>)

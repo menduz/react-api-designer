@@ -6,13 +6,13 @@ import ConsumeRemoteApi from '../../../remote-api/ConsumeRemoteApi'
 import type {Dispatch, GetState, ExtraArgs} from '../../../types'
 import {getFragments} from "./selectors";
 
-export const FRAGMENTS_CHANGED = 'CONSUME_API/FRAGMENTS_CHANGED'
-export const OPEN_MODAL = 'CONSUME_API/OPEN_MODAL'
-export const CLEAR = 'CONSUME_API/CLEAR'
-export const UPDATE_QUERY = 'CONSUME_API/UPDATE_QUERY'
-export const IS_SEARCHING = 'CONSUME_API/IS_SEARCHING'
-export const IS_SUBMITTING = 'CONSUME_API/IS_SUBMITTING'
-export const ERROR = 'CONSUME_API/ERROR'
+export const FRAGMENTS_CHANGED = 'DESIGNER/CONSUME_API/FRAGMENTS_CHANGED'
+export const OPEN_MODAL = 'DESIGNER/CONSUME_API/OPEN_MODAL'
+export const CLEAR = 'DESIGNER/CONSUME_API/CLEAR'
+export const UPDATE_QUERY = 'DESIGNER/CONSUME_API/UPDATE_QUERY'
+export const IS_SEARCHING = 'DESIGNER/CONSUME_API/IS_SEARCHING'
+export const IS_SUBMITTING = 'DESIGNER/CONSUME_API/IS_SUBMITTING'
+export const ERROR = 'DESIGNER/CONSUME_API/ERROR'
 
 export const fragmentsChanged = (fragments: List<Fragment>) => ({
   type: FRAGMENTS_CHANGED,

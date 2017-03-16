@@ -1,11 +1,12 @@
 const webpack = require('webpack')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const path = require('path');
 const projectRootPath = path.resolve(__dirname, '../../')
 
 module.exports = {
   entry: path.resolve(projectRootPath, './src-worker/index.js'),
   output: {
-    path: path.resolve(projectRootPath, './dist'),
+    path: path.resolve(projectRootPath, './electron/build'),
     filename: 'worker.js',
   },
   module: {
@@ -40,16 +41,20 @@ module.exports = {
   },
   devtool: "source-map",
   plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      debug: true,
-      minimize: true,
-      sourceMap: false,
-      output: {
-        comments: false
-      },
-      compressor: {
-        warnings: false
+    new CopyWebpackPlugin([
+      {
+        from: 'node_modules/@mulesoft/anypoint-styles',
+        to: 'anypoint-styles',
+      }, {
+        from: 'node_modules/@mulesoft/anypoint-icons/lib/sprite-4.1.0.svg',
+        to: 'sprite-4.1.0.svg',
+      }, {
+        from: 'node_modules/monaco-editor/min/vs',
+        to: 'vs',
+      // }, {
+        //   from: 'src/components/raml-console/polymer-console/console-imports.html',
+        //   to: 'api-console-imports/polymer-console/console-imports.html'
       }
-    })
+    ])
   ]
 }

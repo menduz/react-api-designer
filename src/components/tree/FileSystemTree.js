@@ -1,9 +1,7 @@
 //@flow
 
 import React, {Component} from 'react'
-import ReactSVG from 'react-svg'
-import plusIcon from '@mulesoft/anypoint-icons/lib/assets/plus.svg'
-import contextIcon from '@mulesoft/anypoint-icons/lib/assets/contextmenu.svg'
+import Icon from '../icon/Icon'
 import TreeUI from '@mulesoft/anypoint-components/lib/Tree'
 import RenameModalContainer from "../modal/rename/RenameModalContainer"
 import {Path} from '../../repository'
@@ -94,7 +92,7 @@ class FileSystemTree extends Component {
         </label>
         <div className="node-options">
           <ContextMenu className="tree-menu file-menu" options={options} testId="File-Tree-Context-Menu">
-            <ReactSVG path={contextIcon} style={{width: 18}}/>
+            <Icon name="contextmenu" size={18}/>
           </ContextMenu>
         </div>
       </div>
@@ -128,10 +126,10 @@ class FileSystemTree extends Component {
         </label>
         <div className="node-options">
           <ContextMenu className="tree-menu new-menu" options={addOptions} testId="File-Tree-New-Menu">
-            <ReactSVG path={plusIcon} style={{ width: 18}}/>
+            <Icon name="plus" size={18}/>
           </ContextMenu>
           <ContextMenu className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
-            <ReactSVG path={contextIcon} style={{ width: 18}}/>
+            <Icon name="contextmenu" size={18}/>
           </ContextMenu>
         </div>
       </div>

@@ -25,22 +25,24 @@ import HeaderOptions from "./components/header/HeaderOptions"
 import * as toasts from "./components/toasts"
 
 const reducers = {
-  [bootstrap.NAME]: bootstrap.reducer,
-  [repository.NAME]: repository.reducer,
-  [editor.NAME]: editor.reducer,
-  [fileSystemTree.NAME]: fileSystemTree.reducer,
-  [publishApi.constants.NAME]: publishApi.reducer,
-  [consumeApi.NAME]: consumeApi.reducer,
-  [toasts.NAME]: toasts.reducer,
-  dialogs: combineReducers({
-    newFolder: newFolder.reducer,
-    newFile: newFile.reducer,
-    import: importModal.reducer,
-    export: exportModal.reducer,
-    rename: rename.reducer
-  }),
-  mock: mockReducer,
-  configuration: header.reducer
+  designer: combineReducers({
+    [bootstrap.NAME]: bootstrap.reducer,
+    [repository.NAME]: repository.reducer,
+    [editor.NAME]: editor.reducer,
+    [fileSystemTree.NAME]: fileSystemTree.reducer,
+    [publishApi.constants.NAME]: publishApi.reducer,
+    [consumeApi.NAME]: consumeApi.reducer,
+    [toasts.NAME]: toasts.reducer,
+    dialogs: combineReducers({
+      newFolder: newFolder.reducer,
+      newFile: newFile.reducer,
+      import: importModal.reducer,
+      export: exportModal.reducer,
+      rename: rename.reducer
+    }),
+    mock: mockReducer,
+    configuration: header.reducer
+  })
 }
 
 const repositoryContainer: RepositoryContainer = {

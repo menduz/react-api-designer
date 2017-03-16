@@ -23,7 +23,7 @@ const authSelectors = {
 }
 
 const errorHandler = (error, getState, lastAction, dispatch) => {
-  dispatch(addErrorToasts(error.message || error))
+  dispatch(addErrorToasts(error))
 }
 
 // create middleware

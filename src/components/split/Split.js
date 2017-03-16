@@ -67,12 +67,12 @@ export default class Split extends Component {
 
   _drawer(child) {
     const {size, hover, locked} = this.state
-    const {position} = this.props
+    const {position, id} = this.props
     const isOpen = locked || hover
 
     return (
       <Drawer className="Drawer" position={position} width={size} isOpen={isOpen} isLocked={locked}
-              onHover={this._onHover.bind(this)} onUnhover={this._onUnhover.bind(this)}
+              onHover={this._onHover.bind(this)} onUnhover={this._onUnhover.bind(this)} testId={'Drawer-'+id}
               onToggle={this._onToggle.bind(this)} onToggleLock={this._onToggleLock.bind(this)}>
         {child}
       </Drawer>
@@ -81,13 +81,13 @@ export default class Split extends Component {
 
   render() {
     const {size, dragging, hover, locked} = this.state
-    const {position, minSize, className, children} = this.props
+    const {position, minSize, className, children, id} = this.props
     const isOpen = locked || hover
     const classNames = cx('Split', className, {'is-dragging': dragging})
     const leftPrimary = position === 'left'
 
     return (
-      <SplitPane className={classNames} data-test-id="Split-Pane"
+      <SplitPane className={classNames} data-test-id={'Split-Pane-'+id}
                  split="vertical" primary={leftPrimary ? "first" : "second"}
                  minSize={minSize} size={isOpen ? size : Split.MIN_SIZE} onChange={this._onDrag.bind(this)}
                  onDragStarted={this._onDragStart.bind(this)} onDragFinished={this._onDragEnd.bind(this)}>

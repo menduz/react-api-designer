@@ -1,9 +1,8 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import cx from 'classnames'
-import ReactSVG from 'react-svg'
-import downloadIcon from '@mulesoft/anypoint-icons/lib/assets/download-center-small.svg'
 import {openImportDialog} from '../../components/modal/import/ImportActions'
+import Icon from '../icon/Icon'
 import './FileDrop.css'
 
 class FileDrop extends React.Component {
@@ -54,7 +53,7 @@ class FileDrop extends React.Component {
            data-test-id="File-Drop">
         <div className="FileDragOver" ref={ref => this.dragOverElem = ref}>
           <div>
-            <ReactSVG path={downloadIcon} style={{ fill: 'white' }}/>
+            <Icon name="download-center-small" fill="white"/>
             <div className="text">Drop file to import</div>
           </div>
         </div>

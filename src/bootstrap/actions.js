@@ -41,8 +41,7 @@ const initWithFileSytem = (fs: FileSystem, dispatch: Dispatch, {repositoryContai
       // trigger the lazy load of the worker as soon as the designer opens
       designerWorker.load()
     }).catch(error => {
-      console.log(error)
-      dispatch(addErrorToasts(error.message || error))
+      dispatch(addErrorToasts(error))
   })
 }
 
@@ -63,5 +62,10 @@ export const initLocalStorage = () =>
 export const initElectron = (basePath: string) =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerWorker}: ExtraArgs): any => {
     const repository = new ElectronFileSystem(basePath)
+    initWithFileSytem(repository, dispatch, {repositoryContainer, designerWorker})
+  }
+
+  export const initCustom = (repository) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerWorker}: ExtraArgs): any => {
     initWithFileSytem(repository, dispatch, {repositoryContainer, designerWorker})
   }

@@ -2,7 +2,7 @@
 
 import type {State} from './NewFolderModel'
 
-export const getAll = (state: any): State => state.dialogs.newFolder
+export const getAll = (rootState: any): State => rootState.designer.dialogs.newFolder
 
 export const getShowModal = (state: any): State => getAll(state).showModal
 

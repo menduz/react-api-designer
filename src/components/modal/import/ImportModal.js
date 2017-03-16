@@ -1,8 +1,6 @@
 //@flow
 
 import React from 'react'
-import ReactSVG from 'react-svg'
-import infoIcon from '@mulesoft/anypoint-icons/lib/assets/info-small.svg'
 
 import Button from '@mulesoft/anypoint-components/lib/Button'
 import Modal from '@mulesoft/anypoint-components/lib/Modal'
@@ -15,6 +13,7 @@ import FileUploader from '@mulesoft/anypoint-components/lib/FileUploader'
 import Popover from '@mulesoft/anypoint-components/lib/Popover'
 import Toast from '@mulesoft/anypoint-components/lib/Toast'
 
+import Icon from '../../icon/Icon'
 import importTypes from './importTypes.json'
 import './Import.css'
 
@@ -105,7 +104,7 @@ class ImportModal extends React.Component {
                      anchorPosition="br"
                      testId="Import-Popover">
               <div>
-                <ReactSVG path={infoIcon} style={{ width: 19, fill: 'rgb(124, 125, 126)' }}/>
+                <Icon name="info-small" size={19} fill="rgb(124, 125, 126)" />
               </div>
             </Popover>
           </div>

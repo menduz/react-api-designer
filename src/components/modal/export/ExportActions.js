@@ -9,13 +9,13 @@ import findRamlRoot from '../../../repository/helper/ramlDefinition'
 
 const fileDownload = require('react-file-download')
 
-export const HIDE = 'export/HIDE'
-export const SHOW = 'export/SHOW'
-export const CHANGE_TYPE = 'export/CHANGE_TYPE'
-export const CHANGE_NAME = 'export/CHANGE_NAME'
-export const EXPORT_FAILED = 'export/EXPORT_FAILED'
-export const EXPORT_DONE = 'export/EXPORT_DONE'
-export const EXPORT_STARTED = 'export/EXPORT_STARTED'
+export const HIDE = 'DESIGNER/EXPORT/HIDE'
+export const SHOW = 'DESIGNER/EXPORT/SHOW'
+export const CHANGE_TYPE = 'DESIGNER/EXPORT/CHANGE_TYPE'
+export const CHANGE_NAME = 'DESIGNER/EXPORT/CHANGE_NAME'
+export const EXPORT_FAILED = 'DESIGNER/EXPORT/EXPORT_FAILED'
+export const EXPORT_DONE = 'DESIGNER/EXPORT/EXPORT_DONE'
+export const EXPORT_STARTED = 'DESIGNER/EXPORT/EXPORT_STARTED'
 
 const REPOSITORY_NOT_LOADED = 'Repository not loaded!'
 

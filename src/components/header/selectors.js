@@ -1,6 +1,6 @@
 //@flow
 
-export const getAll = (rootState) => rootState['configuration']
+export const getAll = (rootState) => rootState.designer['configuration']
 
 export const getTheme = (rootState) => getAll(rootState).theme
 

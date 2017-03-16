@@ -1,14 +1,13 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import ReactSVG from 'react-svg'
-import contestIcon from '@mulesoft/anypoint-icons/lib/assets/contextmenu.svg'
+import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
+import Icon from '../../icon/Icon'
 
 import {hasProjectSelected} from '../../../bootstrap/selectors'
 import {getTheme, isExchangeMode, getPublishToExchange, isConsumeMode} from '../../header/selectors'
 import {actions as configActions} from '../../header/index'
 import supportMenuOptions from '../support/assets/supportOptionsData.json'
 
-import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
 
 class ProjectOptions extends Component {
   render() {
@@ -42,7 +41,7 @@ class ProjectOptions extends Component {
 
     return (
       <ContextMenu className="header-menu" options={contextMenuOptions} testId="Header-Menu">
-        <ReactSVG path={contestIcon} style={{ width: 19, fill: 'white' }}/>
+        <Icon name="contextmenu" size={19} fill="white" />
       </ContextMenu>
     )
   }

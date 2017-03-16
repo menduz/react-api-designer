@@ -1,3 +1,5 @@
 //@flow
 
-export const getAll = (state: any) => state.mock
+export const getAll = (rootState: any) => rootState.designer.mock
+
+export const findFile = (rootState: any, file) => getAll(rootState).find(c => c.file === file)
