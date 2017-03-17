@@ -113,14 +113,24 @@ class DesignerEditor extends React.Component {
   }
 
   _showSuggestions(suggestions) {
-    this.onSuggestCallback(suggestions.map(suggestion => {
-      return {
-        ...suggestion,
-        kind: suggestion.insertText.lastIndexOf(':') > -1 ?
-          this.monaco.languages.CompletionItemKind.Property :
-          this.monaco.languages.CompletionItemKind.Value // choose Kind based on category?
-      }
-    }))
+    if (suggestions.length === 0) {
+      // ugly hack to stop showing wordBasedSuggestions.
+      // waiting for monaco fix: https://github.com/Microsoft/monaco-editor/issues/363
+      this.onSuggestCallback([{
+        label: 'No suggestions.',
+        kind: this.monaco.languages.CompletionItemKind.Text,
+        insertText: ''
+      }])
+    } else {
+      this.onSuggestCallback(suggestions.map(suggestion => {
+        return {
+          ...suggestion,
+          kind: suggestion.insertText.lastIndexOf(':') > -1 ?
+            this.monaco.languages.CompletionItemKind.Property :
+            this.monaco.languages.CompletionItemKind.Value // choose Kind based on category?
+        }
+      }))
+    }
     this.onSuggestCallback = null
   }
 
