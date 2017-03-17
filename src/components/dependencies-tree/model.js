@@ -61,7 +61,7 @@ export const fromFileTree = (fileTree: RepositoryModel) : Node[] => {
         const name = groupId.name + ":" + assetId.name + ":" + version.name
         const p = groupId.name + "_" + assetId.name + "_" + version.name
         return {path: Path.fromString('/' + p), name: p, label: name,
-          root:true,
+          gav:{ groupId: groupId.name , assetId: assetId.name ,version: version.name},
           children: [
             { path: Path.fromString('/' + p + '/' + groupId.name),
               name:groupId.name,

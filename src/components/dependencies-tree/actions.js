@@ -4,6 +4,7 @@
 
 import {Repository} from '../../repository'
 import type {Dispatch, GetState, ExtraArgs} from '../../types'
+import ConsumeRemoteApi from '../../remote-api/ConsumeRemoteApi'
 
 import * as editor from "../editor"
 import {File} from "../../repository"
@@ -76,3 +77,21 @@ export const folderSelected = (path: Path): void =>
       })
     }
   }
+
+
+export const removeDependency = (gav: any): void => {
+  return (dispatch: Dispatch, getState: GetState, {designerRemoteApiSelectors}: ExtraArgs) => {
+    //dispatch(isSubmitting()) // in progress
+
+    const dependencies = [gav]
+    const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
+    consumeRemoteApi.removeDependencies(dependencies).then(() => {
+      //dispatch(clear()) // close dialog
+      //@@TODO Call job until done, then reload repository
+    }).catch(err => {
+      console.log('Error when removing dependency', err)
+      //dispatch(showError('Error when trying to submit')) // show error in dialog
+    })
+  }
+
+}

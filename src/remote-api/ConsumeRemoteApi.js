@@ -11,6 +11,10 @@ export default class ConsumeRemoteApi extends RemoteApi {
     return this._put(['projects',this.projectId, 'exchange','dependencies'], dependencies, true)
   }
 
+  removeDependencies(dependencies: []): Promise {
+    return this._delete(['projects',this.projectId, 'exchange','dependencies'], dependencies, true)
+  }
+
   get baseUrl() {
     return super.baseUrl
   }

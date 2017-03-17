@@ -40,7 +40,7 @@ class DependenciesTree extends Component {
 
   renderFolder({node, isSelected, isExpanded}) {
     const options = [
-      {label: 'Delete', onClick: this.handleDelete.bind(this, node.path)}
+      {label: 'Remove Dependency', onClick: this.handleDelete.bind(this, node.gav)}
     ]
 
     return (
@@ -50,7 +50,7 @@ class DependenciesTree extends Component {
         <label title={node.label}>
           {node.label}
         </label>
-        {node.root ?
+        {node.gav ?
           <div className="node-options">
             <ContextMenu className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
               <ReactSVG path={contextIcon} style={{ width: 18}}/>
