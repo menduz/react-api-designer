@@ -15,7 +15,6 @@ type ContainerProps = {
 
 const mapState = (rootState) => {
   const state: State = getAll(rootState)
-  const {configuration} = rootState
   return {
     groupId: state.form['groupId'],
     assetId: state.form['assetId'],
@@ -30,7 +29,7 @@ const mapState = (rootState) => {
     error: state.error,
     isLoading: state.isLoading,
     publishToBothApis: state.publishToBothApis,
-    publishToExchange: configuration.publishToExchange
+    publishToExchange: state.publishToExchange
   }
 }
 
