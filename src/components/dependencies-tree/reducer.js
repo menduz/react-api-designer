@@ -14,12 +14,12 @@ const reducer = (state: State = initialState, action: {type: string, payload: an
     case EXPAND_FOLDER:
       return {
         ...state,
-        expandedFolders: state.expandedFolders.add(action.payload)
+        expandedFolders: state.expandedFolders.add(action.payload.toString())
       }
     case NOT_EXPAND_FOLDER:
       return {
         ...state,
-        expandedFolders: state.expandedFolders.delete(action.payload)
+        expandedFolders: state.expandedFolders.delete(action.payload.toString())
       }
     case NODE_SELECTED:
     case PATH_SELECTED:

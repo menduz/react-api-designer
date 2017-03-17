@@ -43,7 +43,6 @@ class DependenciesTree extends Component {
       {label: 'Delete', onClick: this.handleDelete.bind(this, node.path)}
     ]
 
-
     return (
       <div className="tree-node tree-folder"
            data-path={node.path.toString()}
@@ -51,18 +50,18 @@ class DependenciesTree extends Component {
         <label title={node.label}>
           {node.label}
         </label>
-        <div className="node-options">
-          <ContextMenu className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
-            <ReactSVG path={contextIcon} style={{ width: 18}}/>
-          </ContextMenu>
-        </div>
+        {node.root ?
+          <div className="node-options">
+            <ContextMenu className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
+              <ReactSVG path={contextIcon} style={{ width: 18}}/>
+            </ContextMenu>
+          </div> : null}
       </div>
     )
   }
 
   render() {
     const {nodes, selected, expanded} = this.props
-
     return nodes ?
       (<div className="Tree">
           <TreeUI className="TreeUi"

@@ -16,38 +16,64 @@ export type Node = {
   children?: Node[]
 }
 
-const fromFile = (file: FileModel): Node => {
+const fromFile = (file: FileModel, name: string): Node => {
   return {
-    path: file.path,
+    path: Path.fromString(file.path.toString().replace('/exchange_modules','/' + name)),
     name: file.name,
     label: `${file.dirty ? '* ' : ''}${file.name}`
   }
 }
 
-const fromElement = (element: ElementModel): Node => {
+const fromElement = (element: ElementModel, name: string): Node => {
   return element.isDirectory()
     // eslint-disable-next-line
-    ? fromDirectory(element.asDirectoryModel(), false)
-    : fromFile(element.asFileModel())
+    ? fromDirectory(element.asDirectoryModel(), name)
+    : fromFile(element.asFileModel(), name)
 }
 
-const fromDirectory = (directory: DirectoryModel): Node => {
+const fromDirectory = (directory: DirectoryModel, name: string): Node => {
   const children = directory.children.sort((a, b) => {
     if (a.isDirectory() && !b.isDirectory()) return -1;
     if (b.isDirectory() && !a.isDirectory()) return 1;
     if(a.name < b.name) return -1;
     if(a.name > b.name) return 1;
     return 0;
-  }).map(fromElement).toArray();
+  }).map(c => fromElement(c, name)).toArray();
 
+  const p = Path.fromString(directory.path.toString().replace('/exchange_modules','/' + name))
   return {
-    path: directory.path,
+    path: p,
     name: directory.name,
     label: directory.name,
-    children: children.filter(c => c.path.first() === 'exchange_modules')
+    children
   }
 }
 
 export const fromFileTree = (fileTree: RepositoryModel) : Node[] => {
-  return fromDirectory(fileTree.root).children
+  const exchangeModules = fileTree.getByPathString('exchange_modules')
+  if (exchangeModules) {
+    if (exchangeModules.isDirectory()) {
+      const d = exchangeModules.asDirectoryModel()
+      return d.children.map( groupId => {
+        //const groupId = d.children.get(0);
+        const assetId = groupId.children.get(0);
+        const version = assetId.children.get(0);
+        const name = groupId.name + ":" + assetId.name + ":" + version.name
+        const p = groupId.name + "_" + assetId.name + "_" + version.name
+        return {path: Path.fromString('/' + p), name: p, label: name,
+          root:true,
+          children: [
+            { path: Path.fromString('/' + p + '/' + groupId.name),
+              name:groupId.name,
+              label: groupId.name,
+              children: groupId.children.map(c => fromElement(c, p)).toArray()
+            }]
+        }
+      }).toArray()
+    } else {
+      return []
+    }
+  } else {
+    return []
+  }
 }
