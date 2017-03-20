@@ -8,6 +8,7 @@ import PublishApiModal from './PublishApiModal'
 
 import type {State} from "./PublishApiModel"
 import {changeValue, publish, clear, removeTag, addTag, togglePublishBothApis} from "./PublishApiActions"
+import {getPublishToExchange} from "../../header/selectors";
 
 type ContainerProps = {
   onClose: () => void
@@ -29,7 +30,7 @@ const mapState = (rootState) => {
     error: state.error,
     isLoading: state.isLoading,
     publishToBothApis: state.publishToBothApis,
-    publishToExchange: state.publishToExchange
+    publishToExchange: getPublishToExchange(rootState)
   }
 }
 
