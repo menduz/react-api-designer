@@ -41,6 +41,7 @@ const fromDirectory = (directory: DirectoryModel, name: string): Node => {
   }).map(c => fromElement(c, name)).toArray();
 
   const p = Path.fromString(directory.path.toString().replace('/exchange_modules','/' + name))
+  console.log("fromDirectory " + p.toString())
   return {
     path: p,
     name: directory.name,
@@ -55,7 +56,7 @@ export const fromFileTree = (fileTree: RepositoryModel) : Node[] => {
     if (exchangeModules.isDirectory()) {
       const d = exchangeModules.asDirectoryModel()
       return d.children.map( groupId => {
-        //const groupId = d.children.get(0);
+        //@@TODO LECKO This has an issue when you have 2 or more dependencies of same group/asset
         const assetId = groupId.children.get(0);
         const version = assetId.children.get(0);
         const name = groupId.name + ":" + assetId.name + ":" + version.name

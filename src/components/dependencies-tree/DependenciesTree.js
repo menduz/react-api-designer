@@ -1,8 +1,7 @@
 //@flow
 
 import React, {Component} from 'react'
-import ReactSVG from 'react-svg'
-import contextIcon from '@mulesoft/anypoint-icons/lib/assets/contextmenu.svg'
+import Icon from '../svgicon/SvgIcon'
 import TreeUI from '@mulesoft/anypoint-components/lib/Tree'
 import RenameModalContainer from "../modal/rename/RenameModalContainer"
 import {Path} from '../../repository'
@@ -53,7 +52,7 @@ class DependenciesTree extends Component {
         {node.gav ?
           <div className="node-options">
             <ContextMenu className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
-              <ReactSVG path={contextIcon} style={{ width: 18}}/>
+              <Icon name="contextmenu" size={18}/>
             </ContextMenu>
           </div> : null}
       </div>

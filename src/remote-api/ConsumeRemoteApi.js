@@ -15,6 +15,10 @@ export default class ConsumeRemoteApi extends RemoteApi {
     return this._delete(['projects',this.projectId, 'exchange','dependencies'], dependencies, true)
   }
 
+  jobStatus(): Promise {
+    return this._get(['projects',this.projectId, 'exchange','dependencies', 'job'], {}, true)
+  }
+
   get baseUrl() {
     return super.baseUrl
   }

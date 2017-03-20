@@ -5,6 +5,7 @@ import {Fragment} from './Fragment'
 import ConsumeRemoteApi from '../../../remote-api/ConsumeRemoteApi'
 import type {Dispatch, GetState, ExtraArgs} from '../../../types'
 import {getFragments} from "./selectors";
+import {addExchangeDependency} from '../../../repository-redux/actions'
 
 export const FRAGMENTS_CHANGED = 'DESIGNER/CONSUME_API/FRAGMENTS_CHANGED'
 export const OPEN_MODAL = 'DESIGNER/CONSUME_API/OPEN_MODAL'
@@ -46,7 +47,7 @@ export const showError = (errorMsg: string) => ({
 })
 
 export const submit = (fragments: List<Fragment>) => {
-  return (dispatch: Dispatch, getState: GetState, {designerRemoteApiSelectors}: ExtraArgs) => {
+  return (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerRemoteApiSelectors}: ExtraArgs) => {
     dispatch(isSubmitting()) // in progress
 
     const selected = fragments.filter(fragment => fragment.selected)
@@ -54,8 +55,8 @@ export const submit = (fragments: List<Fragment>) => {
         return {groupId: c.groupId, assetId: c.assetId, version: c.version}
       }
     )
-    const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
-    consumeRemoteApi.addDependencies(dependencies).then(() => {
+
+    addExchangeDependency(dependencies)(dispatch, getState, {repositoryContainer, designerRemoteApiSelectors}).then(() => {
       dispatch(clear()) // close dialog
     }).catch(err => {
       console.log('Error when added dependencies', selected, err)

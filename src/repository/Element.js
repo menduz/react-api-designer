@@ -395,7 +395,7 @@ class Directory extends Element {
   }
 
   _hasFileDescendants() {
-    if (this._fileChildren().length !== 0) return false
+    if (this._fileChildren().length !== 0) return true
     return this._directoryChildren()
       .reduce((result, value: Directory) => result || value._hasFileDescendants(), false)
   }

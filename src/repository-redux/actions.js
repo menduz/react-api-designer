@@ -14,6 +14,7 @@ import {clean} from '../components/editor/actions'
 import {addSuccessToasts} from '../components/toasts/actions'
 import {addErrorToasts} from '../components/toasts/actions'
 import {File} from '../repository'
+import ConsumeRemoteApi from '../remote-api/ConsumeRemoteApi'
 
 import type {Dispatch, GetState, ExtraArgs} from '../types'
 
@@ -49,6 +50,11 @@ export const FILE_CONTENT_UPDATE_FAILED = `DESIGNER/${PREFIX}/FILE_CONTENT_UPDAT
 export const FILE_MOVE_STARTED = `DESIGNER/${PREFIX}/FILE_MOVE_STARTED`
 export const FILE_MOVED = `DESIGNER/${PREFIX}/FILE_MOVE`
 export const FILE_MOVE_FAILED = `DESIGNER/${PREFIX}/FILE_MOVE_FAILED`
+
+export const UPDATE_DEPENDENCIES_STARTED = `DESIGNER/${PREFIX}/UPDATE_DEPENDENCIES_STARTED`
+export const UPDATE_DEPENDENCIES_FAILED = `DESIGNER/${PREFIX}/UPDATE_DEPENDENCIES_FAILED`
+export const UPDATE_DEPENDENCIES_DONE = `DESIGNER/${PREFIX}/UPDATE_DEPENDENCIES_DONE`
+
 
 export const loadingFileSystem = () => ({
   type: LOADING_FILE_SYSTEM
@@ -378,3 +384,73 @@ export const moveElement = (source: Path, destinationDir: Path) =>
         (err) => dispatch(error(FILE_MOVE_FAILED, err || 'Move failed'))
       )
   }
+
+
+export const removeExchangeDependency = (gav: any) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerRemoteApiSelectors}: ExtraArgs): void => {
+    if (!repositoryContainer.isLoaded)
+      return Promise.reject(dispatch(error(UPDATE_DEPENDENCIES_FAILED, REPOSITORY_NOT_LOADED)))
+
+    const repository: Repository = (repositoryContainer.repository: Repository)
+
+    dispatch({type: UPDATE_DEPENDENCIES_STARTED})
+
+    const dependencies = [gav]
+    const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
+    consumeRemoteApi.removeDependencies(dependencies).then(() => {
+      exchangeJob(consumeRemoteApi).then(() => {
+        repository.sync().then(() => {
+          var fileTree = Factory.repository(repository);
+          dispatch(initFileSystem(fileTree))
+          dispatch({type: UPDATE_DEPENDENCIES_DONE})
+        })
+      }).catch(err => {
+        dispatch(error(UPDATE_DEPENDENCIES_FAILED, 'Error removing dependency'))
+      })
+    }).catch(err => {
+      dispatch(error(UPDATE_DEPENDENCIES_FAILED, 'Error removing dependency'))
+    })
+  }
+
+
+  export const addExchangeDependency = (dependencies: any) =>
+    (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerRemoteApiSelectors}: ExtraArgs): Promise<any> => {
+      if (!repositoryContainer.isLoaded)
+        return Promise.reject(dispatch(error(UPDATE_DEPENDENCIES_FAILED, REPOSITORY_NOT_LOADED)))
+
+      const repository: Repository = (repositoryContainer.repository: Repository)
+      const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
+      return consumeRemoteApi.addDependencies(dependencies).then(() => {
+        return exchangeJob(consumeRemoteApi).then(() => {
+          return repository.sync().then(() => {
+            var fileTree = Factory.repository(repository);
+            dispatch(initFileSystem(fileTree))
+            dispatch({type: UPDATE_DEPENDENCIES_DONE})
+          })
+        })
+      })
+  }
+
+
+  const exchangeJob = (consumeRemoteApi: ConsumeRemoteApi): Promise<any> => {
+    return new Promise((resolve, reject) =>{
+      let intervalId = undefined
+      intervalId = setInterval(() => {
+        consumeRemoteApi.jobStatus().then(r => {
+          if (r.status === 'done') {
+            if (intervalId) {
+              clearInterval(intervalId)
+              resolve()
+            }
+          }
+        }).catch(err => {
+          console.error(err)
+          if (intervalId) {
+            clearInterval(intervalId)
+          }
+          reject()
+        })
+      }, 150)
+    })
+  }
+

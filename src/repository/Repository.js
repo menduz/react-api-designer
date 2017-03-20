@@ -79,6 +79,12 @@ export default class Repository {
       })
   }
 
+  sync():Promise<any> {
+    return this._fileSystem.directory(Path.fromString('')).then(entry => {
+      this._updateDirectory(ElementFactory.directory(this._fileSystem, entry))
+    })
+  }
+
   saveAll(currentFile: ?Path): Promise<SaveResult> {
     return this.saveFiles(this.getDirtyFiles(), currentFile)
   }
@@ -201,7 +207,7 @@ export default class Repository {
   _updateDirectory(newRoot: Directory): Repository {
     const oldRoot = this._root
     newRoot.mergeWith(oldRoot)
-
+    this._root = newRoot
     return this
   }
 }
