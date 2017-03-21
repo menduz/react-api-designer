@@ -124,7 +124,7 @@ class FileSystemTree extends Component {
                title={node.label}>
           {node.label}
         </label>
-        <div className="node-options">
+        <div className="node-options" onClick={(e) => e.stopPropagation()}>
           <ContextMenu triggerOn={['click']} className="tree-menu new-menu" options={addOptions} testId="File-Tree-New-Menu">
             <Icon name="plus" size={18}/>
           </ContextMenu>
