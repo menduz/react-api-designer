@@ -19,3 +19,8 @@ export const getSuggestions = (rootState: any) => getAll(rootState).suggestions
 export const getPosition = (rootState: any) => getAll(rootState).position
 
 export const isParsing = (rootState: any) => getAll(rootState).isParsing
+
+export const isReadOnly = (rootState): Path => {
+  const path = getCurrentFilePath(rootState)
+  return path && path.elements().contains('exchange_modules')
+}

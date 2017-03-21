@@ -91,7 +91,7 @@ class FileSystemTree extends Component {
           {node.label}
         </label>
         <div className="node-options">
-          <ContextMenu className="tree-menu file-menu" options={options} testId="File-Tree-Context-Menu">
+          <ContextMenu triggerOn={['click']} className="tree-menu file-menu" options={options} testId="File-Tree-Context-Menu">
             <Icon name="contextmenu" size={18}/>
           </ContextMenu>
         </div>
@@ -125,10 +125,10 @@ class FileSystemTree extends Component {
           {node.label}
         </label>
         <div className="node-options">
-          <ContextMenu className="tree-menu new-menu" options={addOptions} testId="File-Tree-New-Menu">
+          <ContextMenu triggerOn={['click']} className="tree-menu new-menu" options={addOptions} testId="File-Tree-New-Menu">
             <Icon name="plus" size={18}/>
           </ContextMenu>
-          <ContextMenu className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
+          <ContextMenu triggerOn={['click']} className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
             <Icon name="contextmenu" size={18}/>
           </ContextMenu>
         </div>

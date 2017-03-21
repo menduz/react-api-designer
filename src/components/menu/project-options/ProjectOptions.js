@@ -40,7 +40,7 @@ class ProjectOptions extends Component {
     }
 
     return (
-      <ContextMenu className="header-menu" options={contextMenuOptions} testId="Header-Menu">
+      <ContextMenu triggerOn={['click']} className="header-menu" options={contextMenuOptions} testId="Header-Menu">
         <Icon name="contextmenu" size={19} fill="white" />
       </ContextMenu>
     )

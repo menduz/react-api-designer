@@ -51,7 +51,7 @@ class DependenciesTree extends Component {
         </label>
         {node.gav ?
           <div className="node-options">
-            <ContextMenu className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
+            <ContextMenu triggerOn={['click']} className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
               <Icon name="contextmenu" size={18}/>
             </ContextMenu>
           </div> : null}

@@ -4,7 +4,7 @@ import MonacoEditor from 'react-monaco-editor'
 import EmptyResult from '@mulesoft/anypoint-components/lib/EmptyResult'
 import registerRamlLanguage from './languages/Raml'
 import {suggest, updateCurrentFile, saveCurrentFile} from './actions'
-import {getLanguage, getErrors, getSuggestions, getPosition} from "./selectors"
+import {getLanguage, getErrors, getSuggestions, getPosition, isReadOnly} from "./selectors"
 import {getTheme} from "./../header/selectors"
 import {getCurrentFileContent} from "../../repository-redux/selectors"
 import './Editor.css'
@@ -18,6 +18,7 @@ class DesignerEditor extends React.Component {
     this.disposables = []
 
     this.theme = this.props.theme
+    this.readOnly = this.props.readOnly
     this.language = this.props.language
     this.value = this.props.value
     this.position = this.props.position
@@ -29,7 +30,7 @@ class DesignerEditor extends React.Component {
     })
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps) {
 
     if (this.monaco && this.language) {
       if (nextProps.position !== this.position)
@@ -37,6 +38,9 @@ class DesignerEditor extends React.Component {
 
       if (nextProps.theme !== this.theme)
         this._changeTheme(nextProps.theme)
+
+      if (nextProps.readOnly !== this.readOnly)
+        this._changeReadOnly(nextProps.readOnly)
 
       if (!this.language.native && nextProps.errors !== this.errors && (nextProps.errors.length !== 0 || this.errors.length !== 0))
         this._showErrors(nextProps.errors)
@@ -60,9 +64,14 @@ class DesignerEditor extends React.Component {
     return update
   }
 
+  _changeReadOnly(readOnly) {
+    this.readOnly = readOnly
+    this.editor.updateOptions({readOnly})
+  }
+
   _changeTheme(theme) {
     this.theme = theme
-    this.editor.updateOptions({theme, wordBasedSuggestions: false})
+    this.editor.updateOptions({theme})
   }
 
   _changeLanguage(language) {
@@ -87,7 +96,7 @@ class DesignerEditor extends React.Component {
     this.editor = editor
     this.monaco = monaco
     editor.focus()
-    editor.getModel().updateOptions({tabSize: 2})
+    editor.getModel().updateOptions({tabSize: 2, wordBasedSuggestions: false})
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => {
       this.props.onSave(this.value)
     });
@@ -175,10 +184,10 @@ class DesignerEditor extends React.Component {
 
   render() {
     const options = {
-      theme: this.props.theme,
+      theme: this.theme,
+      readOnly: this.readOnly,
       selectOnLineNumbers: true,
       roundedSelection: false,
-      readOnly: false,
       cursorStyle: 'line',
       automaticLayout: false,
       folding: true,
@@ -207,20 +216,21 @@ DesignerEditor.propTypes = {
   errors: React.PropTypes.arrayOf(React.PropTypes.object),
   suggestions: React.PropTypes.arrayOf(React.PropTypes.object),
   theme: React.PropTypes.string,
+  readOnly: React.PropTypes.bool,
   onChange: React.PropTypes.func,
   onSuggest: React.PropTypes.func,
   onSave: React.PropTypes.func
 }
 
 const mapStateToProps = state => {
-  const value = getCurrentFileContent(state)()
   return {
-    value,
+    value: getCurrentFileContent(state)(),
     language: getLanguage(state),
     position: getPosition(state),
     errors: getErrors(state),
     suggestions: getSuggestions(state),
-    theme: getTheme(state)
+    theme: getTheme(state),
+    readOnly: isReadOnly(state)
   }
 }
 

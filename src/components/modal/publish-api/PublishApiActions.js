@@ -79,7 +79,7 @@ export const openModal = () => {
 }
 
 const formatErrorMessage = (error: any, source: string) => {
-  return `An error has occurred while publishing to ${source}: ${error && error.body ? error.body.message + '. Status: ' + error.status : ''}`
+  return `An error has occurred while publishing to ${source}: ${error && error.body ? error.body.message : ''}`
 }
 
 export const publish = (name: string, version: string, tags: Array<string>, mainFile: string,

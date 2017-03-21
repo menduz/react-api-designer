@@ -32,10 +32,10 @@ class Console extends Component {
     const containerElement = this.angularContainer
     const scope = window.angular.element(containerElement).scope()
     if (scope.raml !== nextProps.raml) {
-      console.time("updatingConsole")
+      console.time("ramlConsole")
       scope.$apply(() => {
         scope.raml = nextProps.raml
-        console.timeEnd("updatingConsole")
+        setTimeout(() => console.timeEnd("ramlConsole"))
       })
     }
   }
