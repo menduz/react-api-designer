@@ -1,3 +1,5 @@
+@import "../../app/App.scss";
+
 .import-modal {
 
   .input-file {
@@ -40,7 +42,7 @@
 .Popover-in-modal {
   background-color: #272f33;
   color: #fff;
-  font-family: DIN Pro, sans-serif;
+  font-family: $large-font;
   font-size: 13px;
   padding: 7px 10px;
   max-width: 310px;

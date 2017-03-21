@@ -1,3 +1,7 @@
+// app css constants
+$small-font: Open Sans, sans-serif; //used for font size less than 14
+$large-font: DIN Pro, sans-serif; //used for font size grater than 14
+
 /* hide editor scrollbar and tab list active selector while dragging */
 .Split.is-dragging .Editor .decorationsOverviewRuler, .Split.is-dragging [data-anypoint-component="TabList"] > div {
   display: none !important;

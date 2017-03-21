@@ -1,22 +1,42 @@
+// @flow
+
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import cx from 'classnames'
 import {goToError} from './actions'
 import {getErrors} from "./../editor/selectors"
+import {getCurrentFilePath} from '../editor/selectors'
+import type {Dispatch} from '../../types'
+import type {Issue} from './types'
 import './Errors.css'
+import Path from "../../repository/Path";
+
+type Props = {
+  errors: Issue[],
+  onErrorClick: (error: Issue) => any,
+  currentPath: Path
+}
+
+type State = {
+  filterErrors: boolean,
+  filterWarnings: boolean
+}
 
 class Errors extends Component {
+
+  state: State
+  props: Props
 
   constructor(props) {
     super(props)
 
     this.state = {
       filterErrors: false,
-      filterWarnings: false,
+      filterWarnings: false
     }
   }
 
-  _renderFilters(issues) {
+  _renderFilters(issues: Issue[]) {
     const warnings = issues.filter(error => error.isWarning).length
     const errors = issues.length - warnings
 
@@ -38,23 +58,25 @@ class Errors extends Component {
     )
   }
 
-  _filterIssues(filter) {
+  _filterIssues(filter: string) {
     const isError = filter === 'error'
     this.setState(isError ? {filterErrors: !this.state.filterErrors} : {filterWarnings: !this.state.filterWarnings})
   }
 
-  _filterRootErrors(error) {
+  _filterRootErrors(error: Issue) {
     const {filterErrors, filterWarnings} = this.state
     return (!error.isWarning && !filterErrors) || (error.isWarning && !filterWarnings)
   }
 
-  _renderErrors(errors, trace = false) {
+  _renderErrors(errors: Issue[], trace: boolean = false) {
+    const currentPath = this.props.currentPath
     return errors.map((error, index) => {
+      const traceFileName = error.path !== currentPath.last() ? error.path : ''
       return (
         <li key={`error${index}`} className={error.isWarning ? 'warning' : 'error'}>
           {trace ? <span> ↳ </span> : null}
           <a onClick={this.props.onErrorClick.bind(this, error)} data-test-id={`Error-${index}`}>
-            {error.message} <strong>({error.startLineNumber}, {error.startColumn})</strong>
+            {error.message} at <strong>{`${traceFileName} (${error.startLineNumber}, ${error.startColumn})`}</strong>
           </a>
           {!(error.trace && error.trace.length > 0) ? null :
             <ol className="Trace-errors">
@@ -66,7 +88,7 @@ class Errors extends Component {
   }
 
   render() {
-    const {errors} = this.props
+    const errors: Issue[] = this.props.errors
     if (!errors || errors.length === 0)
       return <div className="Errors No-errors" data-test-id="No-Errors">No errors</div>
 
@@ -83,15 +105,16 @@ class Errors extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state: any) => {
   return {
-    errors: getErrors(state)
+    errors: getErrors(state),
+    currentPath: getCurrentFilePath(state)
   }
 }
 
-const mapDispatch = dispatch => {
+const mapDispatch = (dispatch: Dispatch) => {
   return {
-    onErrorClick: error => dispatch(goToError(error))
+    onErrorClick: (error: Issue) => dispatch(goToError(error))
   }
 }
 

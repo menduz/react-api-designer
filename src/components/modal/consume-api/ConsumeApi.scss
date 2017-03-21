@@ -1,5 +1,7 @@
+@import "../../app/App.scss";
+
 .consume-api-modal {
-  font-family: "DIN Pro", sans-serif;
+  font-family: $large-font;
   width: 800px;
 
   .consume-api-body {

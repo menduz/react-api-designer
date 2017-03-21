@@ -1,5 +1,7 @@
+@import "../app/App.scss";
+
 .InfoPanel {
-  font-family: DIN Pro, sans-serif;
+  font-family: $large-font;
   white-space: normal;
   position: relative;
 
