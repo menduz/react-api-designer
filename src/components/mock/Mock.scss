@@ -3,15 +3,15 @@
   flex-wrap: wrap;
   justify-content: center;
   margin-right: 10px;
-}
 
-.Mock > small {
-  color: #3c4b65;
-  padding-right: 5px;
-  font-size: 11px;
-  align-self: center;
-}
+  > small {
+    color: #3c4b65;
+    padding-right: 5px;
+    font-size: 11px;
+    align-self: center;
+  }
 
-.Mock > div {
-  display: inline-block;
+  > div {
+    display: inline-block;
+  }
 }

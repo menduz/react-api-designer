@@ -1,31 +1,34 @@
-.Preview .No-preview {
-  text-align: center;
-  color: #cacbcc;
-  padding-top: 10px;
-}
-
 .Preview {
+
   margin-left: 20px;
-}
 
-.Preview .md-preview pre {
-  padding: 5px 8px;
-  border: 1px solid #c6cada;
-  background: rgba(255, 255, 255, 0.75);
-  border-radius: 3px;
-  font-family: Source Code Pro, monospace;
-  font-size: 14px;
-}
+  .No-preview {
+    text-align: center;
+    color: #cacbcc;
+    padding-top: 10px;
+  }
 
-/* Makes the arrow from the tree looks blackish */
-.Preview .json-preview li > div > div {
-  color: #c8c9ca !important;
-}
+  .md-preview pre {
+    padding: 5px 8px;
+    border: 1px solid #c6cada;
+    background: rgba(255, 255, 255, 0.75);
+    border-radius: 3px;
+    font-family: Source Code Pro, monospace;
+    font-size: 14px;
+  }
 
-.Preview .json-preview > ul {
-  background: transparent !important;
-}
+  .json-preview {
+    /* Makes the arrow from the tree looks blackish */
+    li > div > div {
+      color: #c8c9ca !important;
+    }
 
-.Preview .json-preview li > div ~ span {
-  color: #bbbbbb !important;
+    > ul {
+      background: transparent !important;
+    }
+
+    li > div ~ span {
+      color: #bbbbbb !important;
+    }
+  }
 }

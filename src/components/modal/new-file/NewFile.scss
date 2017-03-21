@@ -1,17 +1,20 @@
 @import "../../app/App.scss";
 
-.new-file .new-file-name, .new-file .selected-fragment {
-  padding-top: 10px;
-}
+.new-file {
 
-.new-file .fragment-type {
-  position: relative;
-}
+  .new-file-name, .selected-fragment {
+    padding-top: 10px;
+  }
 
-.new-file .fragment-type .info-small-icon {
-  position: absolute;
-  right: -24px;
-  top: 23px;
+  .fragment-type {
+    position: relative;
+  }
+
+  .fragment-type .info-small-icon {
+    position: absolute;
+    right: -24px;
+    top: 23px;
+  }
 }
 
 .Popover-in-modal {
@@ -21,11 +24,10 @@
   font-size: 13px;
   padding: 7px 10px;
   max-width: 310px;
-}
 
-.Popover-in-modal a {
-  color: #fff;
-  padding-left: 5px;
+  a {
+    padding-left: 5px;
+  }
 }
 
 div[data-reactroot] > .rc-trigger-popup {

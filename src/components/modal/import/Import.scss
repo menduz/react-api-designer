@@ -46,11 +46,10 @@
   font-size: 13px;
   padding: 7px 10px;
   max-width: 310px;
-}
 
-.Popover-in-modal a {
-  color: #fff;
-  padding-left: 5px;
+  a {
+    padding-left: 5px;
+  }
 }
 
 div[data-reactroot] > .rc-trigger-popup {

@@ -1,32 +1,35 @@
-.FileDrop > .FileDragOver.active {
-  background: rgba(0,0,0,.76);
-  z-index: 1;
-}
+.FileDrop {
 
-.FileDrop > .FileDragOver {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  z-index: -1;
+  > .FileDragOver.active {
+    background: rgba(0, 0, 0, .76);
+    z-index: 1;
+  }
 
-  color: white;
-  font-size: 25px;
-  transition: background .4s;
+  > .FileDragOver {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+    color: white;
+    font-size: 25px;
+    transition: background .4s;
 
-.FileDrop > .FileDragOver .text {
-  padding-top: 10px;
-  padding-bottom: 100px;
-}
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-.FileDrop > .FileDragOver svg{
-  display: block;
-  height: 200px !important;
-  width: 200px !important;
+  > .FileDragOver .text {
+    padding-top: 10px;
+    padding-bottom: 100px;
+  }
+
+  > .FileDragOver svg {
+    display: block;
+    height: 200px !important;
+    width: 200px !important;
+  }
 }

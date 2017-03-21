@@ -1,36 +1,36 @@
 .Editor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+
+  .Empty {
     position: absolute;
-    left: 0;
-    right: 0;
+    padding-top: 15%;
     top: 0;
     bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    background: white;
+  }
 
-    .Empty {
-        position: absolute;
-        padding-top: 15%;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 1;
-        background: white;
-    }
+  .monaco-editor .suggest-widget > .tree {
+    width: inherit;
+    height: inherit;
+    position: relative;
+    background-color: inherit;
+  }
 
-    .monaco-editor .suggest-widget > .tree {
-        width: inherit;
-        height: inherit;
-        position: relative;
-        background-color: inherit;
-    }
+  .monaco-list-rows {
+    margin-right: 0;
+  }
 
-    .monaco-list-rows {
-        margin-right: 0;
+  [aria-label="No suggestions., suggestion"] {
+    background: transparent !important;
+    .icon.text {
+      visibility: hidden;
     }
-
-    [aria-label="No suggestions., suggestion"] {
-      background: transparent !important;
-      .icon.text {
-        visibility: hidden;
-      }
-    }
+  }
 }

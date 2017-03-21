@@ -1,13 +1,16 @@
-.zip-conflict-modal div[data-anypoint-component="ModalBody"] {
-  overflow: auto;
-}
+.zip-conflict-modal {
 
-.zip-conflict-modal .zip-modal-header {
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-}
+  div[data-anypoint-component="ModalBody"] {
+    overflow: auto;
+  }
 
-.zip-conflict-modal .zip-modal-header > small {
-  margin-top: 5px;
+  .zip-modal-header {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+
+    > small {
+      margin-top: 5px;
+    }
+  }
 }
