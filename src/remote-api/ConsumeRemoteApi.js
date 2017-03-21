@@ -3,8 +3,11 @@ import RemoteApi from './RemoteApi'
 export default class ConsumeRemoteApi extends RemoteApi {
 
   queryFragments(query: string): Promise {
+
+    const list = this.authorization.split(' ')
+
     return this._post(['exchange','graphql'],
-      ConsumeRemoteApi.generateBody(query, "{organizationId, name, description, rating, numberOfRates, version, groupId, assetId}"), true)
+      ConsumeRemoteApi.generateBody(query, "{organizationId, name, description, rating, numberOfRates, version, groupId, assetId}", list[list.length - 1]), true)
   }
 
   addDependencies(dependencies: []): Promise {
