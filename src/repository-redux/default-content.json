@@ -1,0 +1,14 @@
+{
+  "RAML10": "#%RAML 1.0\ntitle: ",
+  "RAML08": "#%RAML 0.8\ntitle: ",
+  "TRAIT": "#%RAML 1.0 Trait",
+  "RESOURCE-TYPE": "#%RAML 1.0 ResourceType",
+  "LIBRARY": "#%RAML 1.0 Library\nusage:",
+  "OVERLAY": "#%RAML 1.0 Overlay\nextends:",
+  "EXTENSION": "#%RAML 1.0 Extension\nextends:",
+  "DATA-TYPE": "#%RAML 1.0 DataType",
+  "DOCUMENTATION-ITEM": "#%RAML 1.0 DocumentationItem\ntitle:\ncontent:",
+  "NAMED-EXAMPLE": "#%RAML 1.0 NamedExample\nvalue:",
+  "ANNOTATION-TYPE-DECLARATION": "#%RAML 1.0 AnnotationTypeDeclaration",
+  "SECURITY-SCHEME": "#%RAML 1.0 SecurityScheme\ntype:"
+}
