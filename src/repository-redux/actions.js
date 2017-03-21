@@ -393,13 +393,31 @@ export const removeExchangeDependency = (gav: any) =>
       const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
       return consumeRemoteApi.addDependencies(dependencies).then(() => {
         return exchangeJob(consumeRemoteApi).then(() => {
-          return repository.sync().then(() => {
+          return syncWorkAround(repository).then(() => {
             var fileTree = Factory.repository(repository);
             dispatch(initFileSystem(fileTree))
             dispatch({type: UPDATE_DEPENDENCIES_DONE})
           })
         })
       })
+  }
+
+  //@@TODO LECKO This is a workaround, because get from job
+  // can return that it is finished when it doesn't.
+  const syncWorkAround = (repository): Promise<Any> => {
+    return new Promise((resolve, reject) =>{
+      let intervalId = setInterval(() => {
+        repository.sync().then(() => {
+          if (!repository.getByPathString('.exchange_modules_tmp')) {
+            clearInterval(intervalId)
+            resolve()
+          }
+        }).catch(() => {
+          clearInterval(intervalId)
+          resolve()
+        })
+      }, 2000)
+    })
   }
 
 
