@@ -77,13 +77,12 @@ export const fromFileTree = (fileTree: RepositoryModel) : Node[] => {
 const buildRootNode = (groupId, assetId, version, children): Node => {
   const name = groupId.name + ":" + assetId.name + ":" + version.name
   const p = groupId.name + "_" + assetId.name + "_" + version.name
-  var rootPath = `/exchange_modules/${groupId.name}/${assetId.name}/${version.name}`;
   return {
     path: Path.fromString('/' + p),
-    filePath: Path.fromString(rootPath ),
+    filePath: version.path,
     name: p,
     label: name,
     gav:{ groupId: groupId.name , assetId: assetId.name ,version: version.name},
-    children: children.map(c => fromElement(c, rootPath, p)).toArray()
+    children: children.map(c => fromElement(c, version.path, p)).toArray()
   }
 }

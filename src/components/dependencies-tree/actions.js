@@ -17,7 +17,6 @@ export const NODE_SELECTED = `DESIGNER/${PREFIX}/NODE_SELECTED`
 export const PATH_SELECTED = `DESIGNER/${PREFIX}/PATH_SELECTED`
 export const EXPAND_FOLDER = `DESIGNER/${PREFIX}/EXPAND_FOLDER`
 export const NOT_EXPAND_FOLDER = `DESIGNER/${PREFIX}/NOT_EXPAND_FOLDER`
-const EXCHANGE_MODULES = 'exchange_modules'
 
 export const clean = (path: Path) => ({
   type: CLEAN
