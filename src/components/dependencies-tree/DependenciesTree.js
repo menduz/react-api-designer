@@ -3,7 +3,6 @@
 import React, {Component} from 'react'
 import Icon from '../svgicon/SvgIcon'
 import TreeUI from '@mulesoft/anypoint-components/lib/Tree'
-import RenameModalContainer from "../modal/rename/RenameModalContainer"
 import {Path} from '../../repository'
 import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
 import './DependenciesTree.css'
@@ -73,7 +72,6 @@ class DependenciesTree extends Component {
                   onSelect={this.handleOnSelect.bind(this)}
                   onToggle={this.handleOnToggle.bind(this)}
                   testId="Tree"/>
-          <RenameModalContainer/>
         </div>
       ) : (
       <div className="Tree-loading" data-test-id="Tree-Loading">
