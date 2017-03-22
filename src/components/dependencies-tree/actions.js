@@ -23,12 +23,7 @@ export const clean = (path: Path) => ({
   type: CLEAN
 })
 
-const buildExchangePath = ((path: Path) => {
-  const first = path.first()
-  return Path.fromString(path.toString().replace('/' + first, '/' + EXCHANGE_MODULES))
-})
-
-export const pathSelected = (path: Path) =>
+export const pathSelected = (path: Path, filePath: Path) =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
 
     dispatch({
@@ -39,26 +34,25 @@ export const pathSelected = (path: Path) =>
     if (!repositoryContainer.isLoaded) return Promise.resolve()
 
     const repository: Repository = repositoryContainer.repository
-    var exchangePath = buildExchangePath(path);
-    const element = repository.getByPath(exchangePath)
+    const element = repository.getByPath(filePath)
 
     if (!element || element.isDirectory()) return Promise.resolve()
 
     const currentPath = editor.selectors.getCurrentFilePath(getState())
-    if (currentPath === exchangePath.toString()) return Promise.resolve()
+    if (currentPath === filePath.toString()) return Promise.resolve()
 
     const file: File = element.asFile()
     return file.getContent()
       .then((content) => {
-        dispatch(editor.actions.updateFile(content, exchangePath))
+        dispatch(editor.actions.updateFile(content, filePath))
       })
   }
 
-export const folderSelected = (path: Path): void =>
+export const folderSelected = (path: Path, filePath: Path): void =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs) => {
 
     const repository: Repository = repositoryContainer.repository
-      const directory = repository.getByPath(buildExchangePath(path))
+      const directory = repository.getByPath(filePath)
 
     if (!directory || !directory.isDirectory())
       return

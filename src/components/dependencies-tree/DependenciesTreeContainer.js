@@ -36,8 +36,8 @@ const mapStateToProps = (rootState): Props => {
 
 const mapDispatch = dispatch => {
   return {
-    onSelect: (path: Path) => dispatch(pathSelected(path)),
-    onToggle: (path: Path) => dispatch(folderSelected(path)),
+    onSelect: (path: Path, filePath: Path) => dispatch(pathSelected(path,filePath)),
+    onToggle: (path: Path, filePath: Path) => dispatch(folderSelected(path,filePath)),
     remove: (gav: any) => dispatch(removeDependency(gav)),
   }
 }

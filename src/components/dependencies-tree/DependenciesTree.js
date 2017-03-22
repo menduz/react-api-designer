@@ -11,11 +11,11 @@ import './DependenciesTree.css'
 class DependenciesTree extends Component {
 
   handleOnSelect(selection) {
-    this.props.onSelect(selection.node.path)
+    this.props.onSelect(selection.node.path, selection.node.filePath)
   }
 
   handleOnToggle(selection) {
-    this.props.onToggle(selection.node.path)
+    this.props.onToggle(selection.node.path, selection.node.filePath)
   }
 
 
