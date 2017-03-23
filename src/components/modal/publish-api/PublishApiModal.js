@@ -13,6 +13,7 @@ import Pill from '@mulesoft/anypoint-components/lib/Pill'
 import Pills from '@mulesoft/anypoint-components/lib/Pills'
 import Checkbox from '@mulesoft/anypoint-components/lib/Checkbox'
 import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
+import Select from '@mulesoft/anypoint-components/lib/Select'
 
 import './PublishApi.css'
 
@@ -23,13 +24,13 @@ class PublishApiModal extends React.Component {
     const {publishToBothApis, publishToExchange} = this.props
 
     if (publishToBothApis) {
-      this.props.onSubmit(this.props.name, this.props.version, this.props.tags, this.props.main,
+      this.props.onSubmit(this.props.name, this.props.nextVersion, this.props.tags, this.props.main,
         this.props.assetId, this.props.groupId, true, true)
     } else if (publishToExchange && !publishToBothApis) {
-      this.props.onSubmit(this.props.name, this.props.version, this.props.tags, this.props.main,
+      this.props.onSubmit(this.props.name, this.props.nextVersion, this.props.tags, this.props.main,
         this.props.assetId, this.props.groupId, false, true)
     } else {
-      this.props.onSubmit(this.props.name, this.props.version, this.props.tags, this.props.main,
+      this.props.onSubmit(this.props.name, this.props.nextVersion, this.props.tags, this.props.main,
         this.props.assetId, this.props.groupId, true, false)
     }
   }
@@ -39,9 +40,9 @@ class PublishApiModal extends React.Component {
       this.props.onNameChange(event.value)
   }
 
-  handleVersionChange(event: any) {
-    if (this.props.onVersionChange)
-      this.props.onVersionChange(event.value)
+  handleNextVersionChange(event: any) {
+    if (this.props.onNextVersionChange)
+      this.props.onNextVersionChange(event.value)
   }
 
   handleTagChange(event: any) {
@@ -57,6 +58,10 @@ class PublishApiModal extends React.Component {
   }
 
   handleMainFileChange(event: any) {
+    this.props.onMainFileChange(event.value)
+  }
+
+  handleSelectFileChange(event: any) {
     this.props.onMainFileChange(event.value)
   }
 
@@ -119,12 +124,12 @@ class PublishApiModal extends React.Component {
   }
 
   render() {
-    const {name, version, tag, tags, onCancel, publishToExchange} = this.props
+    const {name, tag, tags, onCancel, publishToExchange, nextVersion} = this.props
 
     const isFetching = this.isVariableComplete(this.props.isFetching, true)
     const isFetched = this.isVariableComplete(this.props.isFetched)
     const canSubmit = this.canSubmit()
-    const content = isFetched ? this.link() : this.form(name, version, tag, tags, isFetching)
+    const content = isFetched ? this.link() : this.form(name, nextVersion, tag, tags, isFetching)
     const errors = this.handleErrors()
     const partialAnswers = this.handlePartialAnswers(isFetching, isFetched)
 
@@ -171,7 +176,7 @@ class PublishApiModal extends React.Component {
   }
 
   addExchangeFormFields(isFetching: ?Boolean): [any] {
-    const {groupId, assetId, main} = this.props
+    const {groupId, assetId, main, files} = this.props
     return [
       <div className="form-row" key="Form-Asset-Group-Ids">
         <div className="form-col">
@@ -195,17 +200,17 @@ class PublishApiModal extends React.Component {
       </div>,
       <div className="form-row" key="Form-MainFile">
         <Label className="required">Main File</Label>
-        <TextField value={main}
-                   placeholder="mainFile.raml"
-                   disabled={isFetching}
-                   onChange={this.handleMainFileChange.bind(this)}
-                   required
-                   testId="Publish-Input-MainFile"/>
+        <Select name="import-type"
+                options={files}
+                value={main}
+                onChange={this.handleSelectFileChange.bind(this)}
+                clearable={false}
+                testId="Publish-Select-MainFile"/>
       </div>
     ]
   }
 
-  form(name: string, version: string, tag: ?string, tags: Array<string>, isFetching: ?Boolean) {
+  form(name: string, nextVersion: string, tag: ?string, tags: Array<string>, isFetching: ?Boolean) {
     const {isLoading, publishToExchange, publishToBothApis} = this.props
     return (
       isLoading ? <div className="search-spinner"><Spinner size="l"/></div> :
@@ -223,12 +228,12 @@ class PublishApiModal extends React.Component {
             </div>
             <div className="form-col">
               <Label className="required">Version</Label>
-              <TextField value={version}
+              <TextField value={nextVersion}
                          placeholder="Version..."
                          disabled={isFetching}
-                         onChange={this.handleVersionChange.bind(this)}
+                         onChange={this.handleNextVersionChange.bind(this)}
                          required
-                         testId="Publish-Input-Version"/>
+                         testId="Publish-Input-NextVersion"/>
             </div>
           </div>
           {!publishToExchange || publishToBothApis ?
@@ -295,8 +300,8 @@ class PublishApiModal extends React.Component {
   }
 
   canSubmit() {
-    const {name, version, publishToExchange, groupId, assetId, main} = this.props
-    const apiPlatformFields = PublishApiModal.isNotEmpty(name) && PublishApiModal.isNotEmpty(version)
+    const {name, nextVersion, publishToExchange, groupId, assetId, main} = this.props
+    const apiPlatformFields = PublishApiModal.isNotEmpty(name) && PublishApiModal.isNotEmpty(nextVersion)
     const apiExchangeFields = PublishApiModal.isNotEmpty(groupId) && PublishApiModal.isNotEmpty(assetId)
       && PublishApiModal.isNotEmpty(main)
     return publishToExchange ? (apiPlatformFields && apiExchangeFields) : apiPlatformFields
@@ -310,6 +315,8 @@ class PublishApiModal extends React.Component {
 type Props = {
   name: string,
   version: string,
+  nextVersion: string,
+  files: [],
   tag?: string,
   tags: Array<string>,
   groupId: string,
@@ -338,7 +345,7 @@ type Props = {
   onCancel: () => void,
   onSubmit: () => void,
   onNameChange?: (name: string) => void,
-  onVersionChange?: (version: string) => void,
+  onNextVersionChange?: (nextVersion: string) => void,
   onTagChange: (tag: string) => void,
   onTagRemove: (tag: string) => void,
   onSubmitTag: (tag: ?string) => void,

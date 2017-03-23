@@ -63,10 +63,11 @@ type Dispatch = (a: any) => void
 export const openModal = () => {
   return (dispatch: Dispatch, getState: GetState, {designerRemoteApiSelectors}: ExtraArgs) => {
     const remoteApi = new PublishRemoteApi(designerRemoteApiSelectors(getState))
-    remoteApi.getLastVersion()
-      .then((lastVersion) => {
-        Object.keys(lastVersion).forEach((key) => {
-          dispatch(changeValue(key, lastVersion[key]))
+    //@@TODO Get Domain Group
+    remoteApi.exchange()
+      .then((exchangeProps) => {
+        Object.keys(exchangeProps).forEach((key) => {
+          dispatch(changeValue(key, exchangeProps[key]))
         })
         dispatch(finishLoading())
       })
@@ -92,7 +93,8 @@ export const publish = (name: string, version: string, tags: Array<string>, main
 
     if (exchange) {
       //publishing to exchange
-      remoteApi.publishToExchange(name, version, tags, mainFile, assetId, groupId)
+      //@@TODO Check type: raml_fragments
+      remoteApi.publishToExchange(name, version, tags, mainFile, assetId, groupId, 'raml_fragments')
         .then((response: PublishApiResponse) => {
           dispatch(successfullyFetched(response, constants.EXCHANGE))
         })
