@@ -11,8 +11,8 @@ import {actions as treeActions} from "../components/tree";
 import {actions as repositoryActions} from "../repository-redux";
 import {actions as dependencyActions} from "../components/dependencies-tree";
 import {addErrorToasts} from '../components/toasts/actions'
-import type {ProjectType, ProjectTypeName} from '../bootstrap/model'
-import {API_PROJECT_NAME, API_PROJECT, toProjectType} from '../bootstrap/model'
+import type {ProjectType} from '../bootstrap/model'
+import {API_PROJECT} from '../bootstrap/model'
 import {INITIALIZED, CLEAN, INITIALIZING} from './constants'
 
 export const clean = () =>
@@ -50,10 +50,10 @@ const initWithFileSytem = (fs: FileSystem, dispatch: Dispatch, {repositoryContai
   })
 }
 
-export const init = (projectId: string, projectTypeName: ProjectTypeName = API_PROJECT_NAME) =>
+export const init = (projectId: string, projectType: ProjectType) =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerWorker, designerRemoteApiSelectors}: ExtraArgs): any => {
     const repository = new VcsFileSystem(new VcsRemoteApi(designerRemoteApiSelectors(getState)))
-    initWithFileSytem(repository, dispatch, {repositoryContainer, designerWorker}, projectId, toProjectType(projectTypeName))
+    initWithFileSytem(repository, dispatch, {repositoryContainer, designerWorker}, projectId, projectType)
   }
 
 
