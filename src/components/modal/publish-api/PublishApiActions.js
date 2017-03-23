@@ -13,6 +13,7 @@ export const FINISH_LOADING = 'DESIGNER/PUBLISHAPI/FINISH_LOADING'
 import type {GetState, ExtraArgs} from '../../../types'
 import PublishRemoteApi from "../../../remote-api/PublishRemoteApi"
 import type {PublishApiResponse} from "../../../remote-api/PublishRemoteApi"
+import {getProjectType} from '../../../bootstrap/selectors'
 import * as constants from './PublishApiConstants'
 
 export const clear = () => ({
@@ -62,9 +63,9 @@ type Dispatch = (a: any) => void
 
 export const openModal = () => {
   return (dispatch: Dispatch, getState: GetState, {designerRemoteApiSelectors}: ExtraArgs) => {
-    const remoteApi = new PublishRemoteApi(designerRemoteApiSelectors(getState))
-    //@@TODO Get Domain Group
-    remoteApi.exchange()
+    const authSelectors = designerRemoteApiSelectors(getState);
+    const remoteApi = new PublishRemoteApi(authSelectors)
+    remoteApi.exchange(authSelectors.organizationDomain())
       .then((exchangeProps) => {
         Object.keys(exchangeProps).forEach((key) => {
           dispatch(changeValue(key, exchangeProps[key]))
@@ -93,11 +94,10 @@ export const publish = (name: string, version: string, tags: Array<string>, main
 
     if (exchange) {
       //publishing to exchange
-      //@@TODO Check type: raml_fragments
-      remoteApi.publishToExchange(name, version, tags, mainFile, assetId, groupId, 'raml_fragments')
+      const projectType = getProjectType(getState()) // raml or raml_fragment
+      remoteApi.publishToExchange(name, version, tags, mainFile, assetId, groupId, projectType)
         .then((response: PublishApiResponse) => {
-          //TODO @jlongo verify response, and build url when spec is defined
-          const url = `/exchange/${dataProvider.organizationDomain()}/#/group/${response.groupId}/asset/${response.assetId}/version/${response.versionId}`
+          const url = `/exchange/${response.groupId}/${response.assetId}/${response.versionId}`
           dispatch(successfullyFetched({...response, url}, constants.EXCHANGE))
         })
         .catch((error) => {

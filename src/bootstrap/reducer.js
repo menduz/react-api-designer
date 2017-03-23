@@ -1,11 +1,12 @@
 // @flow
 
-import State from './model'
+import State, {API_PROJECT} from './model'
 import {INITIALIZED, CLEAN, INITIALIZING} from './constants'
 
 const initialState: State = {
   initializing: true,
-  projectId: ''
+  projectId: '',
+  projectIdType: API_PROJECT,
 }
 
 const reducer = (state: State = initialState, action: {type: string, payload: any}): State => {
@@ -14,7 +15,8 @@ const reducer = (state: State = initialState, action: {type: string, payload: an
       return {
         ...state,
         initializing: true,
-        projectId: action.payload
+        projectId: action.payload.projectId,
+        projectType: action.payload.projectType
       }
     case INITIALIZED:
       return {

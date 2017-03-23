@@ -1,4 +1,5 @@
 import RemoteApi from './RemoteApi'
+import {FRAGMENT_PROJECT} from '../bootstrap/model'
 
 export default class ConsumeRemoteApi extends RemoteApi {
 
@@ -45,7 +46,7 @@ export default class ConsumeRemoteApi extends RemoteApi {
   static generateBody(query: string = '', params: string = '', accessToken: string = '',
                       offset: number = 0, limit: number = 20) {
     return {
-      'query': `{assets(query: {searchTerm: "${query}", offset: ${offset}, limit: ${limit}}) {${params}}}`,
+      'query': `{assets(query: {searchTerm: "${query}", type: "${FRAGMENT_PROJECT}", offset: ${offset}, limit: ${limit}}) {${params}}}`,
       'variables': `{"accessToken":"${accessToken}"}`,
       'operationName': null
     }

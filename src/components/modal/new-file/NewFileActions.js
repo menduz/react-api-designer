@@ -4,7 +4,9 @@ import {addFile} from "../../tree/actions";
 import type {FileType} from './NewFileModel'
 import type {Dispatch, GetState, ExtraArgs} from '../../../types'
 import {nextName} from '../../../repository/helper/utils'
+import {getProjectType} from '../../../bootstrap/selectors'
 import {Path} from '../../../repository'
+import {fileTypes} from './NewFileModel'
 
 export const CHANGE_FRAGMENT = 'DESIGNER/NEWFILE/CHANGE_FRAGMENT'
 export const CHANGE_TYPE = 'DESIGNER/NEWFILE/CHANGE_TYPE'
@@ -12,13 +14,14 @@ export const CHANGE_NAME = 'DESIGNER/NEWFILE/CHANGE_NAME'
 export const SHOW = 'DESIGNER/NEWFILE/SHOW_DIALOG'
 export const HIDE = 'DESIGNER/NEWFILE/HIDE_DIALOG'
 
+const typeDefaultName = (type) => (type.subTypes ? type.subTypes[0] : type).defaultName;
 
 export const changeFileType = (type: FileType) => (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs) => {
   dispatch({
     type: CHANGE_TYPE,
     payload: {
       type: type,
-      fileName: nextName(type.defaultName, repositoryContainer)
+      fileName: nextName(typeDefaultName(type), repositoryContainer)
     }
   })
 }
@@ -28,7 +31,7 @@ export const changeFragmentType = (type: FileType) => (dispatch: Dispatch, getSt
     type: CHANGE_FRAGMENT,
     payload: {
       type: type,
-      fileName: nextName(type.defaultName, repositoryContainer)
+      fileName: nextName(typeDefaultName(type), repositoryContainer)
     }
   })
 }
@@ -39,11 +42,14 @@ export const changeName = (name: string) => ({
 })
 
 export const openNewFileDialog = (path: ?Path) =>(dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs) => {
+  const fileTypeOptions = fileTypes(getProjectType(getState()));
+  const defaultName = nextName(typeDefaultName(fileTypeOptions[0]), repositoryContainer, path);
   dispatch({
     type: SHOW,
     payload: {
-      nextName: nextName('api.raml', repositoryContainer, path),
-      path
+      defaultName,
+      path,
+      fileTypeOptions
     }
   })
 }

@@ -1,9 +1,18 @@
 import RemoteApi from './RemoteApi'
+import {API_PROJECT_NAME, FRAGMENT_PROJECT_NAME} from '../bootstrap/model'
 
 class ProjectRemoteApi extends RemoteApi {
 
   createProject(project: ProjectDefinition): Promise<CreateProjectResponse> {
     return this._post(['projects'], project)
+  }
+
+  createSpecProject(project: ProjectDefinition): Promise<CreateProjectResponse> {
+    return this._post(['projects'], {...project, type: API_PROJECT_NAME})
+  }
+
+  createFragmentProject(project: ProjectDefinition): Promise<CreateProjectResponse> {
+    return this._post(['projects'], {...project, type: FRAGMENT_PROJECT_NAME})
   }
 
   openProject(projectId: string): Promise {
