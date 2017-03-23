@@ -16,8 +16,8 @@ class PublishRemoteApi extends RemoteApi {
     return this._post(['publish', 'exchange'], {name, version, tags, main, assetId, groupId, type})
   }
 
-  publishToPlatform(name: string, version: string, tags: Array<string>): Promise<PublishApiResponse> {
-    return this._post(['publish', 'platform'], {name, version, tags})
+  publishToPlatform(name: string, version: string, tags: Array<string>, main: string): Promise<PublishApiResponse> {
+    return this._post(['publish', 'platform'], {name, version, tags, main})
   }
 
   get baseUrl() {

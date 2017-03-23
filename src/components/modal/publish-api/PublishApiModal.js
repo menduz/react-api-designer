@@ -211,7 +211,7 @@ class PublishApiModal extends React.Component {
   }
 
   form(name: string, nextVersion: string, tag: ?string, tags: Array<string>, isFetching: ?Boolean) {
-    const {isLoading, publishToExchange, publishToBothApis} = this.props
+    const {isLoading, publishToExchange} = this.props
     return (
       isLoading ? <div className="search-spinner"><Spinner size="l"/></div> :
         <div>
@@ -236,32 +236,30 @@ class PublishApiModal extends React.Component {
                          testId="Publish-Input-NextVersion"/>
             </div>
           </div>
-          {!publishToExchange || publishToBothApis ?
-            <div className="form-row">
-              <Label>Tags</Label>
-              <Pills testId="Publish-Tags-Pills">
-                {tags ? tags.map(tag => (
-                    <Pill key={tag} onRemove={() => this.props.onTagRemove(tag)}>{tag}</Pill>
-                  )) : null}
-              </Pills>
-              <div className="tags">
-                <TextField className="tag-name"
-                           value={tag}
-                           placeholder="Tag..."
-                           disabled={isFetching}
-                           onChange={this.handleTagChange.bind(this)}
-                           testId="Publish-Tag-Input-Name"/>
-                <Button className="save-tag-button"
-                        kind="primary"
-                        disabled={!tag}
-                        onClick={this.handleSaveTag.bind(this)}
-                        noFill
-                        testId="Publish-Save-Tag">
-                  Add
-                </Button>
-              </div>
-            </div> : null
-          }
+          <div className="form-row">
+            <Label>Tags</Label>
+            <Pills testId="Publish-Tags-Pills">
+              {tags ? tags.map(tag => (
+                  <Pill key={tag} onRemove={() => this.props.onTagRemove(tag)}>{tag}</Pill>
+                )) : null}
+            </Pills>
+            <div className="tags">
+              <TextField className="tag-name"
+                         value={tag}
+                         placeholder="Tag..."
+                         disabled={isFetching}
+                         onChange={this.handleTagChange.bind(this)}
+                         testId="Publish-Tag-Input-Name"/>
+              <Button className="save-tag-button"
+                      kind="primary"
+                      disabled={!tag}
+                      onClick={this.handleSaveTag.bind(this)}
+                      noFill
+                      testId="Publish-Save-Tag">
+                Add
+              </Button>
+            </div>
+          </div>
         </div>
     )
   }

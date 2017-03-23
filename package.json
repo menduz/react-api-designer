@@ -8,6 +8,7 @@
     "url": "git+https://github.com/mulesoft/react-api-designer.git"
   },
   "main": "./dist/main.js",
+  "proxy": "https://devx.anypoint.mulesoft.com",
   "scripts": {
     "start": "node ./webpack/console/standalone.js && npm-run-all -p watch-worker watch-css watch-src",
     "watch-worker": "webpack -d --watch --config ./webpack/standalone/config.worker.js",

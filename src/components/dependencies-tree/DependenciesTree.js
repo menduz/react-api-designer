@@ -4,6 +4,7 @@ import React, {Component} from 'react'
 import Icon from '../svgicon/SvgIcon'
 import TreeUI from '@mulesoft/anypoint-components/lib/Tree'
 import {Path} from '../../repository'
+import {copyTextToClipboard} from '../../bootstrap/util'
 import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
 import './DependenciesTree.css'
 
@@ -18,12 +19,19 @@ class DependenciesTree extends Component {
   }
 
 
-  handleDelete(path: Path) {
-    this.props.remove(path)
+  handleDelete(gav) {
+    this.props.remove(gav)
   }
 
+  handleCopyToClipboard(path: Path) {
+    copyTextToClipboard(path.toString().substring(1));
+  }
 
   renderLeaf({node, isSelected}) {
+
+    const options = [
+      {label: 'Copy path to clipboard', onClick: this.handleCopyToClipboard.bind(this, node.filePath)}
+    ]
 
     return (
       <div className="tree-node tree-leaf"
@@ -32,6 +40,11 @@ class DependenciesTree extends Component {
         <label title={node.label}>
           {node.label}
         </label>
+        <div className="node-options" onClick={(e) => e.stopPropagation()}>
+          <ContextMenu triggerOn={['click']} className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
+            <Icon name="contextmenu" size={18}/>
+          </ContextMenu>
+        </div>
       </div>
     )
   }
@@ -49,7 +62,7 @@ class DependenciesTree extends Component {
           {node.label}
         </label>
         {node.gav ?
-          <div className="node-options">
+          <div className="node-options" onClick={(e) => e.stopPropagation()}>
             <ContextMenu triggerOn={['click']} className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
               <Icon name="contextmenu" size={18}/>
             </ContextMenu>

@@ -94,7 +94,7 @@ class ConsumeApi extends Component {
                     onClick={submit.bind(this, fragments)}
                     testId="Submit-Consume-Button">
               {isSubmitting ?
-                'Submitting...'
+                'Adding...'
                 : `Add ${numSelectedFragments !== 0 ? numSelectedFragments : ''} Dependenc${numSelectedFragments > 1 ? 'ies' : 'y'}`
               }
             </Button>
