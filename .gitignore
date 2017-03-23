@@ -12,6 +12,7 @@ coverage
 
 # production
 #dist
+electron/dist
 build
 out
 public/static
