@@ -408,9 +408,11 @@ export const removeExchangeDependency = (gav: any) =>
 // can return that it is finished when it doesn't.
 const syncWorkAround = (repository): Promise<Any> => {
   return new Promise((resolve, reject) =>{
+    let intervalCount = 0
     let intervalId = setInterval(() => {
       repository.sync().then(() => {
-        if (!repository.getByPathString('.exchange_modules_tmp')) {
+        intervalCount = intervalCount + 1
+        if (!repository.getByPathString('.exchange_modules_tmp') || intervalCount > 4) {
           clearInterval(intervalId)
           resolve()
         }
