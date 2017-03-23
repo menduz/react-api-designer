@@ -51,6 +51,19 @@ const fromDirectory = (directory: DirectoryModel, rootPath: string, name: string
   }
 }
 
+const buildRootNode = (groupId, assetId, version, children): Node => {
+  const name = groupId.name + ":" + assetId.name + ":" + version.name
+  const p = groupId.name + "_" + assetId.name + "_" + version.name
+  return {
+    path: Path.fromString('/' + p),
+    filePath: version.path,
+    name: p,
+    label: name,
+    gav:{ groupId: groupId.name , assetId: assetId.name ,version: version.name},
+    children: children.map(c => fromElement(c, version.path, p)).toArray()
+  }
+}
+
 export const fromFileTree = (fileTree: RepositoryModel) : Node[] => {
   const exchangeModules = fileTree.getByPathString('exchange_modules')
   let result = []
@@ -71,18 +84,5 @@ export const fromFileTree = (fileTree: RepositoryModel) : Node[] => {
     }
   } else {
     return []
-  }
-}
-
-const buildRootNode = (groupId, assetId, version, children): Node => {
-  const name = groupId.name + ":" + assetId.name + ":" + version.name
-  const p = groupId.name + "_" + assetId.name + "_" + version.name
-  return {
-    path: Path.fromString('/' + p),
-    filePath: version.path,
-    name: p,
-    label: name,
-    gav:{ groupId: groupId.name , assetId: assetId.name ,version: version.name},
-    children: children.map(c => fromElement(c, version.path, p)).toArray()
   }
 }

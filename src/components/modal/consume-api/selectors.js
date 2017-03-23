@@ -18,3 +18,7 @@ export const isOpen = (rootState: any): boolean => getAll(rootState).isOpen
 export const isSearching = (rootState: any): boolean => getAll(rootState).isSearching
 
 export const isSubmitting = (rootState: any): boolean => getAll(rootState).isSubmitting
+
+export const isAddingMore = (rootState: any): boolean => getAll(rootState).isAddingMore
+
+export const isNoMoreFragments = (rootState: any): boolean => getAll(rootState).noMoreFragments

@@ -356,6 +356,27 @@ export const moveElement = (source: Path, destinationDir: Path) =>
       )
   }
 
+const exchangeJob = (consumeRemoteApi: ConsumeRemoteApi): Promise<any> => {
+  return new Promise((resolve, reject) =>{
+    let intervalId = undefined
+    intervalId = setInterval(() => {
+      consumeRemoteApi.jobStatus().then(r => {
+        if (r.status === 'done') {
+          if (intervalId) {
+            clearInterval(intervalId)
+            resolve()
+          }
+        }
+      }).catch(err => {
+        console.error(err)
+        if (intervalId) {
+          clearInterval(intervalId)
+        }
+        reject()
+      })
+    }, 150)
+  })
+}
 
 export const removeExchangeDependency = (gav: any) =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerRemoteApiSelectors}: ExtraArgs): void => {
@@ -383,63 +404,38 @@ export const removeExchangeDependency = (gav: any) =>
     })
   }
 
-
-  export const addExchangeDependency = (dependencies: any) =>
-    (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerRemoteApiSelectors}: ExtraArgs): Promise<any> => {
-      if (!repositoryContainer.isLoaded)
-        return Promise.reject(dispatch(error(UPDATE_DEPENDENCIES_FAILED, REPOSITORY_NOT_LOADED)))
-
-      const repository: Repository = (repositoryContainer.repository: Repository)
-      const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
-      return consumeRemoteApi.addDependencies(dependencies).then(() => {
-        return exchangeJob(consumeRemoteApi).then(() => {
-          return syncWorkAround(repository).then(() => {
-            var fileTree = Factory.repository(repository);
-            dispatch(initFileSystem(fileTree))
-            dispatch({type: UPDATE_DEPENDENCIES_DONE})
-          })
-        })
-      })
-  }
-
-  //@@TODO LECKO This is a workaround, because get from job
-  // can return that it is finished when it doesn't.
-  const syncWorkAround = (repository): Promise<Any> => {
-    return new Promise((resolve, reject) =>{
-      let intervalId = setInterval(() => {
-        repository.sync().then(() => {
-          if (!repository.getByPathString('.exchange_modules_tmp')) {
-            clearInterval(intervalId)
-            resolve()
-          }
-        }).catch(() => {
+//@@TODO LECKO This is a workaround, because get from job
+// can return that it is finished when it doesn't.
+const syncWorkAround = (repository): Promise<Any> => {
+  return new Promise((resolve, reject) =>{
+    let intervalId = setInterval(() => {
+      repository.sync().then(() => {
+        if (!repository.getByPathString('.exchange_modules_tmp')) {
           clearInterval(intervalId)
           resolve()
+        }
+      }).catch(() => {
+        clearInterval(intervalId)
+        resolve()
+      })
+    }, 2000)
+  })
+}
+
+export const addExchangeDependency = (dependencies: any) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerRemoteApiSelectors}: ExtraArgs): Promise<any> => {
+    if (!repositoryContainer.isLoaded)
+      return Promise.reject(dispatch(error(UPDATE_DEPENDENCIES_FAILED, REPOSITORY_NOT_LOADED)))
+
+    const repository: Repository = (repositoryContainer.repository: Repository)
+    const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
+    return consumeRemoteApi.addDependencies(dependencies).then(() => {
+      return exchangeJob(consumeRemoteApi).then(() => {
+        return syncWorkAround(repository).then(() => {
+          var fileTree = Factory.repository(repository);
+          dispatch(initFileSystem(fileTree))
+          dispatch({type: UPDATE_DEPENDENCIES_DONE})
         })
-      }, 2000)
+      })
     })
-  }
-
-
-  const exchangeJob = (consumeRemoteApi: ConsumeRemoteApi): Promise<any> => {
-    return new Promise((resolve, reject) =>{
-      let intervalId = undefined
-      intervalId = setInterval(() => {
-        consumeRemoteApi.jobStatus().then(r => {
-          if (r.status === 'done') {
-            if (intervalId) {
-              clearInterval(intervalId)
-              resolve()
-            }
-          }
-        }).catch(err => {
-          console.error(err)
-          if (intervalId) {
-            clearInterval(intervalId)
-          }
-          reject()
-        })
-      }, 150)
-    })
-  }
-
+}

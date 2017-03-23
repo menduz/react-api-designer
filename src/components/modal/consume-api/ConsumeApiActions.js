@@ -4,19 +4,31 @@ import {List} from 'immutable'
 import {Fragment} from './Fragment'
 import ConsumeRemoteApi from '../../../remote-api/ConsumeRemoteApi'
 import type {Dispatch, GetState, ExtraArgs} from '../../../types'
-import {getFragments} from "./selectors";
+import {getFragments, getQuery} from "./selectors";
 import {addExchangeDependency} from '../../../repository-redux/actions'
 
 export const FRAGMENTS_CHANGED = 'DESIGNER/CONSUME_API/FRAGMENTS_CHANGED'
+export const ADD_FRAGMENTS = 'DESIGNER/CONSUME_API/ADD_FRAGMENTS'
 export const OPEN_MODAL = 'DESIGNER/CONSUME_API/OPEN_MODAL'
 export const CLEAR = 'DESIGNER/CONSUME_API/CLEAR'
 export const UPDATE_QUERY = 'DESIGNER/CONSUME_API/UPDATE_QUERY'
 export const IS_SEARCHING = 'DESIGNER/CONSUME_API/IS_SEARCHING'
 export const IS_SUBMITTING = 'DESIGNER/CONSUME_API/IS_SUBMITTING'
 export const ERROR = 'DESIGNER/CONSUME_API/ERROR'
+export const IS_ADDING_MORE = 'DESIGNER/CONSUME_API/IS_ADDING_MORE'
+export const NO_MORE_FRAGMENTS = 'DESIGNER/CONSUME_API/NO_MORE_FRAGMENTS'
 
 export const fragmentsChanged = (fragments: List<Fragment>) => ({
   type: FRAGMENTS_CHANGED,
+  payload: fragments
+})
+
+export const noMoreFragments = () => ({
+  type: NO_MORE_FRAGMENTS
+})
+
+export const addFragments = (fragments: List<Fragment>) => ({
+  type: ADD_FRAGMENTS,
   payload: fragments
 })
 
@@ -46,8 +58,12 @@ export const showError = (errorMsg: string) => ({
   payload: errorMsg
 })
 
+export const isAddingMore = () => ({
+  type: IS_ADDING_MORE
+})
+
 export const submit = (fragments: List<Fragment>) => {
-  return (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerRemoteApiSelectors}: ExtraArgs) => {
+  return (dispatch: Dispatch) => {
     dispatch(isSubmitting()) // in progress
 
     const selected = fragments.filter(fragment => fragment.selected)
@@ -56,7 +72,7 @@ export const submit = (fragments: List<Fragment>) => {
       }
     )
 
-    addExchangeDependency(dependencies)(dispatch, getState, {repositoryContainer, designerRemoteApiSelectors}).then(() => {
+    dispatch(addExchangeDependency(dependencies)).then(() => {
       dispatch(clear()) // close dialog
     }).catch(err => {
       console.log('Error when added dependencies', selected, err)
@@ -78,6 +94,32 @@ export const searchFragments = (query: string) => {
     const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
     consumeRemoteApi.queryFragments(query).then((fragments) => {
       dispatch(fragmentsChanged(new List(fragments)))
+    }).catch((error) => {
+      console.log(error)
+      dispatch(showError(error.message || error.toString()))
+    })
+  }
+}
+
+export const openAndPopulate = () => {
+  return (dispatch: Dispatch) => {
+    dispatch(openModal())
+    dispatch(searchFragments(''))
+  }
+}
+
+export const searchMoreFragments = () => {
+  return (dispatch: Dispatch, getState: GetState, {designerRemoteApiSelectors}: ExtraArgs) => {
+    const query = getQuery(getState())
+    const fragments = getFragments(getState())
+    const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
+
+    dispatch(isAddingMore())
+    consumeRemoteApi.queryFragments(query, fragments.count()).then((fragments) => {
+      if (fragments.length !== 0)
+        dispatch(addFragments(new List(fragments)))
+      else
+        dispatch(noMoreFragments())
     }).catch((error) => {
       console.log(error)
       dispatch(showError(error.message || error.toString()))

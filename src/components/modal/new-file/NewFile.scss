@@ -1,4 +1,4 @@
-@import "../../app/App.scss";
+@import "../../variables.scss";
 
 .new-file {
 
@@ -15,21 +15,4 @@
     right: -24px;
     top: 23px;
   }
-}
-
-.Popover-in-modal {
-  background-color: #272f33;
-  color: #fff;
-  font-family: $small-font;
-  font-size: 13px;
-  padding: 7px 10px;
-  max-width: 310px;
-
-  a {
-    padding-left: 5px;
-  }
-}
-
-div[data-reactroot] > .rc-trigger-popup {
-  z-index: 2000
 }

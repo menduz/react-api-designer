@@ -7,5 +7,7 @@ export type ConsumeState = {
   query: string,
   isSearching: boolean,
   isSubmitting: boolean,
+  isAddingMore: boolean,
+  noMoreFragments: boolean,
   error: string
 }

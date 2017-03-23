@@ -13,9 +13,10 @@ import Toast from '@mulesoft/anypoint-components/lib/Toast'
 import * as actions from './ConsumeApiActions'
 import {List} from 'immutable'
 import {Fragment} from './Fragment'
-import {getFragments, getQuery, isSubmitting, isSearching, getError} from './selectors'
+import {getFragments, getQuery, isSubmitting, isSearching, getError, isAddingMore, isNoMoreFragments} from './selectors'
 import './ConsumeApi.css'
 import FragmentComponent from './FragmentComponent'
+import InfiniteScroll from 'react-infinite-scroller'
 
 class ConsumeApi extends Component {
 
@@ -41,7 +42,10 @@ class ConsumeApi extends Component {
   }
 
   render() {
-    const {onCancel, fragments, query, submit, isSearching, isSubmitting, error, closeError} = this.props
+    const {
+      onCancel, fragments, query, submit, isSearching,
+      isSubmitting, error, closeError, isAddingMore, noMoreFragments
+    } = this.props
     const numSelectedFragments = fragments.count(fragment => fragment.selected)
 
     return (
@@ -57,23 +61,29 @@ class ConsumeApi extends Component {
             <Toast title={error} kind="error" onClose={closeError} testId="Consume-Error"/>
           </div> : null}
         <ModalBody className="consume-api-body">
-          <div className="search-panel">
-            <Search onSearch={this.handleSearchFragment.bind(this, query)}
-                    onChange={this.onSearchChange.bind(this)}
-                    className="consume-api-searcher"
-                    query={query}
-                    placeholder="Search for fragments"
-                    id="consume-search"
-                    testId="Consume-Search"/>
-          </div>
-          <div className="consume-api-content" data-test-id="Consume-Content">
-            {isSearching ?
-              <div className="search-spinner"><Spinner size="l"/></div> :
-              fragments.size > 0 ?
-                this.renderFragments(fragments) :
-                null
-            }
-          </div>
+          <InfiniteScroll loadMore={this.props.addMoreFragments}
+                          hasMore={!isSearching && !noMoreFragments}
+                          useWindow={false}
+                          initialLoad={false}>
+            <div className="search-panel">
+              <Search onSearch={this.handleSearchFragment.bind(this, query)}
+                      onChange={this.onSearchChange.bind(this)} //TODO change this to an action in searchMore!
+                      className="consume-api-searcher"
+                      query={query}
+                      placeholder="Search for fragments"
+                      id="consume-search"
+                      testId="Consume-Search"/>
+            </div>
+            <div className="consume-api-content" data-test-id="Consume-Content">
+              {isSearching ?
+                <div className="search-spinner"><Spinner size="l"/></div> :
+                fragments.size > 0 ?
+                  this.renderFragments(fragments) :
+                  null
+              }
+              {isAddingMore ? <div className="small-spinner"><Spinner size="m"/></div> : null}
+            </div>
+        </InfiniteScroll>
         </ModalBody>
         <ModalFooter className="search-footer">
           <div className="modal-button-zone">
@@ -102,6 +112,8 @@ const mapStateToProps = state => {
     isSearching: isSearching(state),
     error: getError(state),
     isSubmitting: isSubmitting(state),
+    isAddingMore: isAddingMore(state),
+    noMoreFragments: isNoMoreFragments(state)
   }
 }
 
@@ -112,7 +124,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(actions.handleFragmentSelection(index, fragment, selected)),
     updateQuery: (query: string) => dispatch(actions.updateQuery(query)),
     submit: (fragments: List<Fragment>) => dispatch(actions.submit(fragments)),
-    closeError: () => dispatch(actions.showError(''))
+    closeError: () => dispatch(actions.showError('')),
+    addMoreFragments: () => dispatch(actions.searchMoreFragments())
   }
 }
 

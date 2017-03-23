@@ -68,6 +68,7 @@
     "react-async-script-loader": "^0.2.2",
     "react-dom": "^15.4.2",
     "react-file-download": "^0.3.2",
+    "react-infinite-scroller": "^1.0.7",
     "react-json-tree": "^0.10.3",
     "react-markdown": "^2.4.5",
     "react-monaco-editor": "^0.7.3",

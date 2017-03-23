@@ -36,7 +36,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    openConsumeModal: () => dispatch(consumeIndex.actions.openModal()),
+    openConsumeModal: () => dispatch(consumeIndex.actions.openAndPopulate()),
     clearConsumeModal: () => dispatch(consumeIndex.actions.clear())
   }
 }

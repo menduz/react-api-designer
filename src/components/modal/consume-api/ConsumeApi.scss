@@ -1,4 +1,4 @@
-@import "../../app/App.scss";
+@import "../../variables.scss";
 
 .consume-api-modal {
   font-family: $large-font;
@@ -105,5 +105,12 @@
     display: inline-flex;
     justify-content: flex-end;
     min-height: 75px;
+  }
+
+  .small-spinner {
+    display: flex;
+    min-height: 80px;
+    justify-content: center;
+    align-items: center;
   }
 }
