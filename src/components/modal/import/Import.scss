@@ -1,39 +1,40 @@
+@import "../../variables.scss";
+
 .import-modal {
+
+  .input-file {
+    margin-top: 15px;
+  }
+
   min-width: 400px !important;
-}
 
-.import-modal .input-file {
-  margin-top: 15px;
-}
+  .import-url, .import-file {
+    margin-top: 15px;
+  }
 
-.import-modal .import-url, .import-modal .import-file {
-  margin-top: 15px;
-}
+  .input-type {
+    position: relative;
+  }
 
-.import-modal .input-type {
-  position: relative;
-}
+  .input-type .info-small-icon {
+    position: absolute;
+    right: -24px;
+    top: 13px;
+  }
 
-.import-modal .input-type .info-small-icon {
-  position: absolute;
-  right: -24px;
-  top: 13px;
-}
+  .error-zone {
+    margin-top: 10px;
+    margin-left: 30px;
+    margin-right: 30px;
+  }
 
-.Popover-in-modal {
-  background-color: #272f33;
-  color: #fff;
-  font-family: DIN Pro, sans-serif;
-  font-size: 13px;
-  padding: 7px 10px;
-  max-width: 310px;
-}
-
-.Popover-in-modal a {
-  color: #fff;
-  padding-left: 5px;
-}
-
-div[data-reactroot] > .rc-trigger-popup {
-  z-index: 2000
+  .import-error {
+    > span {
+      top: 18px;
+    }
+    
+    > button > div {
+      padding-right: 25px;
+    }
+  }
 }

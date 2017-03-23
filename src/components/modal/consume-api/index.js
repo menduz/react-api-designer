@@ -1,14 +1,12 @@
-import ConsumeApi from './ConsumeApi'
-import * as ConsumeApiActions from './ConsumeApiActions'
-import ConsumeApiReducer from './ConsumeApiReducer'
-import * as ConsumeApiConstants from './ConsumeApiConstants'
-import {Fragment} from './Fragment'
+export {NAME} from './ConsumeApiConstants'
 
-export default {
-  name: ConsumeApiConstants.NAME,
-  url: ConsumeApiConstants.URL,
-  reducer: ConsumeApiReducer,
-  actions: ConsumeApiActions,
-  ConsumeApi,
-  Fragment
-}
+import * as ConsumeApiActions from './ConsumeApiActions'
+export {ConsumeApiActions as actions}
+
+import ConsumeApiReducer from './ConsumeApiReducer'
+export {ConsumeApiReducer as reducer}
+
+import ConsumeApi from './ConsumeApi'
+export {ConsumeApi}
+
+export {Fragment} from './Fragment'

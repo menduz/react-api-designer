@@ -1,14 +1,14 @@
 // @flow
-export const CLEAR = 'publishApi/CLEAR'
-export const OPEN = 'publishApi/OPEN'
-export const CHANGE_VALUE = 'publishApi/CHANGE_VALUE'
-export const START_FETCHING = 'publishApi/START_LOADING'
-export const SUCCESSFULLY_FETCH = 'publishApi/SUCCESSFULLY_FETCH'
-export const PUBLISH_ERROR = 'publishApi/PUBLISH_ERROR'
-export const REMOVE_TAG = 'publishApi/REMOVE_TAG'
-export const ADD_TAG = 'publishApi/ADD_TAG'
-export const PUBLISH_BOTH_APIS = 'publishApi/PUBLISH_BOTH_APIS'
-export const FINISH_LOADING = 'publishApi/FINISH_LOADING'
+export const CLEAR = 'DESIGNER/PUBLISHAPI/CLEAR'
+export const OPEN = 'DESIGNER/PUBLISHAPI/OPEN'
+export const CHANGE_VALUE = 'DESIGNER/PUBLISHAPI/CHANGE_VALUE'
+export const START_FETCHING = 'DESIGNER/PUBLISHAPI/START_LOADING'
+export const SUCCESSFULLY_FETCH = 'DESIGNER/PUBLISHAPI/SUCCESSFULLY_FETCH'
+export const PUBLISH_ERROR = 'DESIGNER/PUBLISHAPI/PUBLISH_ERROR'
+export const REMOVE_TAG = 'DESIGNER/PUBLISHAPI/REMOVE_TAG'
+export const ADD_TAG = 'DESIGNER/PUBLISHAPI/ADD_TAG'
+export const PUBLISH_BOTH_APIS = 'DESIGNER/PUBLISHAPI/PUBLISH_BOTH_APIS'
+export const FINISH_LOADING = 'DESIGNER/PUBLISHAPI/FINISH_LOADING'
 
 import type {GetState, ExtraArgs} from '../../../types'
 import PublishRemoteApi from "../../../remote-api/PublishRemoteApi"
@@ -63,10 +63,11 @@ type Dispatch = (a: any) => void
 export const openModal = () => {
   return (dispatch: Dispatch, getState: GetState, {designerRemoteApiSelectors}: ExtraArgs) => {
     const remoteApi = new PublishRemoteApi(designerRemoteApiSelectors(getState))
-    remoteApi.getLastVersion()
-      .then((lastVersion) => {
-        Object.keys(lastVersion).forEach((key) => {
-          dispatch(changeValue(key, lastVersion[key]))
+    //@@TODO Get Domain Group
+    remoteApi.exchange()
+      .then((exchangeProps) => {
+        Object.keys(exchangeProps).forEach((key) => {
+          dispatch(changeValue(key, exchangeProps[key]))
         })
         dispatch(finishLoading())
       })
@@ -79,7 +80,7 @@ export const openModal = () => {
 }
 
 const formatErrorMessage = (error: any, source: string) => {
-  return `An error has occurred while publishing to ${source}: ${error && error.body ? error.body.message + '. Status: ' + error.status : ''}`
+  return `An error has occurred while publishing to ${source}: ${error && error.body ? error.body.message : ''}`
 }
 
 export const publish = (name: string, version: string, tags: Array<string>, mainFile: string,
@@ -92,7 +93,8 @@ export const publish = (name: string, version: string, tags: Array<string>, main
 
     if (exchange) {
       //publishing to exchange
-      remoteApi.publishToExchange(name, version, tags, mainFile, assetId, groupId)
+      //@@TODO Check type: raml_fragments
+      remoteApi.publishToExchange(name, version, tags, mainFile, assetId, groupId, 'raml_fragments')
         .then((response: PublishApiResponse) => {
           dispatch(successfullyFetched(response, constants.EXCHANGE))
         })
@@ -104,9 +106,9 @@ export const publish = (name: string, version: string, tags: Array<string>, main
 
     if (platform) {
       //publishing to platform
-      remoteApi.publishToPlatform(name, version, tags)
+      remoteApi.publishToPlatform(name, version, tags, mainFile)
         .then((response: PublishApiResponse) => {
-          const url = `/apiplatform/${dataProvider.organizationDomain()}/admin/#/organizations/${dataProvider.organizationId()}/dashboard/apis/${response.apiId}/versions/${response.versionId}/contracts`
+          const url = `/apiplatform/${dataProvider.organizationDomain()}/admin/#/organizations/${dataProvider.organizationId()}/dashboard/apis/${response.apiId}/versions/${response.versionId}`
           dispatch(successfullyFetched({...response, url}, constants.PLATFORM))
         })
         .catch((error) => {

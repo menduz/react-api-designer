@@ -1,10 +1,8 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import cx from 'classnames'
-
 import {openImportDialog} from '../../components/modal/import/ImportActions'
-import Icon from '@mulesoft/anypoint-icons/lib/Icon'
-
+import Icon from '../svgicon/SvgIcon'
 import './FileDrop.css'
 
 class FileDrop extends React.Component {
@@ -15,18 +13,18 @@ class FileDrop extends React.Component {
   }
 
   onDragLeave() {
-    window.clearTimeout(this.dragTimer);
+    window.clearTimeout(this.dragTimer)
     this.dragTimer = window.setTimeout(() => {
-      this.dragOverElem.classList.remove('active');
-    }, 100);
+      this.dragOverElem.classList.remove('active')
+    }, 100)
   }
 
   onDragOver(event) {
-    const dt = event.dataTransfer;
+    const dt = event.dataTransfer
     if (dt && dt.types && Array.prototype.indexOf.call(dt.types, "Files") !== -1) {
       dt.dropEffect = 'copy'
-      window.clearTimeout(this.dragTimer);
-      this.dragOverElem.classList.add('active');
+      window.clearTimeout(this.dragTimer)
+      this.dragOverElem.classList.add('active')
       event.preventDefault()
     }
   }
@@ -35,12 +33,12 @@ class FileDrop extends React.Component {
     event.stopPropagation()
     event.preventDefault()
 
-    const dt = event.dataTransfer;
+    const dt = event.dataTransfer
     if (dt) {
-      const files = dt.files;
+      const files = dt.files
       if (files && files.length > 0) {
         this.props.openImportDialog(files[0])
-        this.dragOverElem.classList.remove('active');
+        this.dragOverElem.classList.remove('active')
       }
     }
   }
@@ -55,7 +53,7 @@ class FileDrop extends React.Component {
            data-test-id="File-Drop">
         <div className="FileDragOver" ref={ref => this.dragOverElem = ref}>
           <div>
-            <Icon name="download-center-small" fill={"white"}/>
+            <Icon name="download-center-small" fill="white"/>
             <div className="text">Drop file to import</div>
           </div>
         </div>

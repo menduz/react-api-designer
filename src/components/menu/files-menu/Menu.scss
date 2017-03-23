@@ -1,11 +1,15 @@
+@import "../../variables.scss";
+
 .App-content .menu {
   padding-right: 17px;
   padding-left: 10px;
-  display: inline-flex;
+  display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  font-family: "DIN Pro", sans-serif;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 
   margin-bottom: 2px;
   color: #58595a;
@@ -13,6 +17,7 @@
   background-color: #e8e9ea;
 
   .menu-name {
+    font-family: $large-font;
     font-size: 18px;
   }
 

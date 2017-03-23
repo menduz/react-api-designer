@@ -1,13 +1,12 @@
 //@flow
 
 import React, {Component} from 'react'
+import Icon from '../svgicon/SvgIcon'
 import TreeUI from '@mulesoft/anypoint-components/lib/Tree'
 import RenameModalContainer from "../modal/rename/RenameModalContainer"
 import {Path} from '../../repository'
 import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
-import Icon from '@mulesoft/anypoint-icons/lib/Icon'
 import './FileSystemTree.css'
-
 
 class FileSystemTree extends Component {
 
@@ -41,6 +40,7 @@ class FileSystemTree extends Component {
 
   onDropInFile(path: Path, event) {
     this.onDropInFolder(path.parent(), event)
+    this.onDragLeave(event)
   }
 
   onDropInFolder(path: Path, event) {
@@ -50,6 +50,8 @@ class FileSystemTree extends Component {
     const from = event.dataTransfer.getData('text/plain');
     if (from && Path.fromString(from).parent().toString() !== path.toString())
       this.props.moveFile(Path.fromString(from), path)
+
+    this.onDragLeave(event)
   }
 
   onRootDrop(event) {
@@ -58,6 +60,14 @@ class FileSystemTree extends Component {
 
   onDragStart(path: Path, event) {
     event.dataTransfer.setData('text/plain', path.toString())
+  }
+
+  onDragEnter(event) {
+    event.target.classList.add('dropping')
+  }
+
+  onDragLeave(event) {
+    event.target.classList.remove('dropping')
   }
 
   renderLeaf({node, isSelected}) {
@@ -71,12 +81,20 @@ class FileSystemTree extends Component {
       <div className="tree-node tree-leaf"
            data-path={node.path.toString()}
            draggable="true"
+           onDragEnter={this.onDragEnter.bind(this)}
+           onDragLeave={this.onDragLeave.bind(this)}
            onDragStart={this.onDragStart.bind(this, node.path)}
            onDrop={this.onDropInFile.bind(this, node.path)}>
-        <label>{node.label}</label>
-        <ContextMenu className="tree-menu file-menu" options={options} testId="File-Tree-Context-Menu">
-          <Icon name="contextmenu"/>
-        </ContextMenu>
+        <label onDragEnter={this.onDragEnter.bind(this)}
+               onDragLeave={this.onDragLeave.bind(this)}
+               title={node.label}>
+          {node.label}
+        </label>
+        <div className="node-options">
+          <ContextMenu triggerOn={['click']} className="tree-menu file-menu" options={options} testId="File-Tree-Context-Menu">
+            <Icon name="contextmenu" size={18}/>
+          </ContextMenu>
+        </div>
       </div>
     )
   }
@@ -96,16 +114,24 @@ class FileSystemTree extends Component {
       <div className="tree-node tree-folder"
            data-path={node.path.toString()}
            draggable="true"
+           onDragEnter={this.onDragEnter.bind(this)}
+           onDragLeave={this.onDragLeave.bind(this)}
            onDragStart={this.onDragStart.bind(this, node.path)}
            onDragOver={event => event.preventDefault()}
            onDrop={this.onDropInFolder.bind(this, node.path)}>
-        <label>{node.label}</label>
-        <ContextMenu className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
-          <Icon name="contextmenu"/>
-        </ContextMenu>
-        <ContextMenu className="tree-menu new-menu" options={addOptions} testId="File-Tree-New-Menu">
-          <Icon name="plus"/>
-        </ContextMenu>
+        <label onDragEnter={this.onDragEnter.bind(this)}
+               onDragLeave={this.onDragLeave.bind(this)}
+               title={node.label}>
+          {node.label}
+        </label>
+        <div className="node-options" onClick={(e) => e.stopPropagation()}>
+          <ContextMenu triggerOn={['click']} className="tree-menu new-menu" options={addOptions} testId="File-Tree-New-Menu">
+            <Icon name="plus" size={18}/>
+          </ContextMenu>
+          <ContextMenu triggerOn={['click']} className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
+            <Icon name="contextmenu" size={18}/>
+          </ContextMenu>
+        </div>
       </div>
     )
   }

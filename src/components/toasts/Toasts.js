@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 
 import Toast from '@mulesoft/anypoint-components/lib/Toast'
 import {removeToast} from './actions'
+import {getToasts} from './selectors'
 
 import './Toasts.css'
 
@@ -10,7 +11,7 @@ class Toasts extends Component {
   render() {
     const {toasts, onClose} = this.props
 
-    var allToasts = toasts.map((toast, index) =>
+    const allToasts = toasts.map((toast, index) =>
       <Toast className="Toast"
              key={index+toast.date}
              title={toast.msg}
@@ -18,7 +19,7 @@ class Toasts extends Component {
              onClose={onClose.bind(this, toast.msg)}
              testId="Toast"
              closable />
-    );
+    )
 
     return (
       <div>
@@ -29,9 +30,8 @@ class Toasts extends Component {
 }
 
 const mapStateToProps = state => {
-  const {toasts} = state
   return {
-    toasts: toasts.toasts
+    toasts: getToasts(state)
   }
 }
 

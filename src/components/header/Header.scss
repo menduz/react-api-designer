@@ -1,7 +1,8 @@
+@import "../variables.scss";
+
 .App-header {
   background-color: #272f33;
   color: white;
-  font-family: DIN Pro, sans-serif;
   position: absolute;
   left: 0;
   right: 0;
@@ -10,26 +11,29 @@
   z-index: 1;
 }
 
-.Left-header > span {
-  margin-left: 16px;
-  position: relative;
-  top: 12px;
-}
-
-.Left-header > h2 {
-  display: inline-block;
-  margin: 0 0 0 16px;
-  font-size: 20pt;
-  position: relative;
-  top: 1px;
-  font-weight: normal;
-}
-
 .Left-header {
+
   display: inline-block;
   height: 100%;
   background: url('assets/BackgroundAngle.svg') no-repeat;
   color: #f9f9f9;
+
+  > div {
+    display: inline-block;
+    margin-left: 16px;
+    position: relative;
+    top: 12px;
+  }
+
+  > h2 {
+    display: inline-block;
+    margin: 0 0 0 16px;
+    font-size: 20pt;
+    position: relative;
+    top: 1px;
+    font-weight: normal;
+    font-family: $large-font;
+  }
 }
 
 .HeaderOptions {
@@ -37,14 +41,14 @@
   flex-grow: 1;
   align-self: center;
   justify-content: flex-end;
-}
 
-.HeaderOptions .Spinner {
-  display: inline-flex;
-  flex-grow: 1;
-  align-self: center;
-  justify-content: flex-end;
-  margin-right: 10px;
+  .Spinner {
+    display: inline-flex;
+    flex-grow: 1;
+    align-self: center;
+    justify-content: flex-end;
+    margin-right: 10px;
+  }
 }
 
 .Right-header {
@@ -54,24 +58,24 @@
   align-items: center;
   align-content: center;
   justify-content: flex-end;
-}
 
-.Right-header > * {
-  cursor: pointer;
-  margin-right: 10px;
-  text-align: center;
-  width: 20px;
-}
+  > * {
+    cursor: pointer;
+    margin-right: 10px;
+    text-align: center;
+    width: 20px;
+  }
 
-.Right-header > :first-child {
-  margin-left: 20px;
-}
+  > :first-child {
+    margin-left: 20px;
+  }
 
-.Right-header > :last-child {
-  margin-right: 20px;
-  margin-top: 2px;
-}
+  > :last-child {
+    margin-right: 20px;
+    margin-top: 2px;
+  }
 
-.Right-header .export-menu {
-  margin-top: 1px;
+  .export-menu {
+    margin-top: 1px;
+  }
 }

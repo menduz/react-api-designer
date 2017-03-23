@@ -1,64 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="designer-standalone">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>API Designer</title>
   <link rel="shortcut icon" href="./build/logo.png">
-  <link id="main.css" rel="stylesheet">
-
-  <script>
-    // Monaco uses a custom amd loader that over-rides node's require.
-    // Keep a reference to node's require so we can restore it after executing the amd loader file.
-    window.nodeRequire = global.require;
-  </script>
-  <script type="text/javascript" src="./build/static/js/vs/loader.js"></script>
+  <link rel="stylesheet" href="./build/anypoint-styles/anypoint-styles.css">
+  <script id="main.js" type="text/javascript"></script>
 </head>
 <body>
 <div id="root"></div>
 
-<link rel="import" href="./build/static/js/api-console/polymer/polymer.html">
-<link rel="import" href="./build/static/js/api-console/api-console-raml/api-console-raml.html">
-
-<script type="text/javascript" id="main.js"></script>
+<script>
+  // Monaco uses a custom amd loader that over-rides node's require.
+  // Keep a reference to node's require so we can use it latter.
+  window.nodeRequire = global.require;
+  window.require = global.require;
+</script>
+<script type="text/javascript" src="./build/vs/loader.js"></script>
 <script>
   (function electronInit() {
-    // Save Monaco's amd require and restore Node's require
-    const amdRequire = global.require;
-    window.electronAmdContext = {
-      require: amdRequire,
-      get monaco() {
-        return window.monaco
-      }
-    };
-    global.require = nodeRequire;
-
-    // workaround monaco-css not understanding the environment
-    self.module = undefined;
-    // workaround monaco-typescript not understanding the environment
-    self.process.browser = true;
-
+  // workaround monaco-css not understanding the environment
+  self.module = undefined;
+  // workaround monaco-typescript not understanding the environment
+  self.process.browser = true;
 
     // configure paths correctly to build directory correctly
-    const path = require('path');
+    const path = window.nodeRequire('path');
     const uriFromPath = (_path) => {
-      let pathName = path.resolve(path.join(__dirname, './build/', _path)).replace(/\\/g, '/');
+      let pathName = path.resolve(path.join(__dirname, _path)).replace(/\\/g, '/');
       if (pathName.length > 0 && pathName.charAt(0) !== '/') {
         pathName = '/' + pathName;
       }
       return encodeURI('file://' + pathName);
     }
 
-    // require node modules before loader.js comes in
-    amdRequire.config({baseUrl: uriFromPath('/static/js')});
-
-    // set public url variable
-    window.PUBLIC_URL = uriFromPath('/.');
+    window.require.config({
+      paths: {
+        vs: uriFromPath('./build/vs'),
+        worker: uriFromPath('./build/worker.js'),
+        console: uriFromPath('./build/api-console.js')
+      }
+    });
 
     // load last versioned build css and js
-    const assetManifest = require('./build/asset-manifest.json');
-    document.getElementById('main.css').href = uriFromPath(assetManifest['main.css'])
-    document.getElementById('main.js').src = uriFromPath(assetManifest['main.js'])
+    document.getElementById('main.js').src = uriFromPath('./build/main.js')
   })()
 </script>
 

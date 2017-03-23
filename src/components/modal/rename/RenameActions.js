@@ -2,9 +2,9 @@
 
 import {rename} from '../../../repository-redux/actions'
 
-export const CHANGE_NAME = 'renameElement/CHANGE_NAME'
-export const SHOW = 'renameElement/SHOW_DIALOG'
-export const HIDE = 'renameElement/HIDE_DIALOG'
+export const CHANGE_NAME = 'DESGINER/RENAME/CHANGE_NAME'
+export const SHOW = 'DESGINER/RENAME/SHOW_DIALOG'
+export const HIDE = 'DESGINER/RENAME/HIDE_DIALOG'
 
 export const changeName = (name: string) => ({
   type: CHANGE_NAME,

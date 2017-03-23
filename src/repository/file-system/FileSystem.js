@@ -98,7 +98,6 @@ export default class FileSystem {
     throw new Error('Not implemented method')
   }
 
-
   /**
    * Creates a folder. Creates all the required previous folder levels if needed.
    *
@@ -108,14 +107,12 @@ export default class FileSystem {
     throw new Error('Not implemented method')
   }
 
-
   /**
    * Returns a promise that contains the content of the file found at fullpath. Fails if the fullpath does not exist or is a folder.
    */
   load(path: Path): Promise<string> {
     throw new Error('Not implemented method')
   }
-
 
   /**
    * Removes a fullpath and all the nested children of the hierarchy.
@@ -136,6 +133,14 @@ export default class FileSystem {
     throw new Error('Not implemented method')
   }
 
+  get persistsEmptyFolders(): boolean {
+    throw new Error('Not implemented method')
+  }
+
+  // Constants
+  static Separator = '/'
+  static FileEntryType = 'file'
+  static FolderEntryType = 'folder'
 }
 
 export type Path = string
@@ -148,17 +153,12 @@ export type Entry = {
   children: ?Entry[],
 }
 
-
-export const EntryFolder = 'folder'
-export const EntryFile = 'file'
-export const ENTRY_SEPARATOR = '/'
-
 export const folderEntry = (name: string, path: Path, children: Entry[]): Entry => {
-  return { name, path, children, type: EntryFolder}
+  return {name, path, children, type: FileSystem.FolderEntryType, meta: undefined}
 }
 
 export const fileEntry = (name: string, path: Path): Entry => {
-  return { name, path, type: EntryFile}
+  return {name, path, type: FileSystem.FileEntryType, meta: undefined, children: undefined}
 }
 
 export type FileData = {

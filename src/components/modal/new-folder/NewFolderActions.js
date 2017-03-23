@@ -2,10 +2,10 @@
 
 import {Path} from '../../../repository'
 
-export const CHANGE_NAME = 'newFolder/CHANGE_NAME';
-export const CLEAR = 'newFolder/CLEAR';
-export const SHOW = 'newFolder/SHOW_DIALOG';
-export const HIDE = 'newFolder/HIDE_DIALOG';
+export const CHANGE_NAME = 'DESIGNER/NEWFOLDER/CHANGE_NAME';
+export const CLEAR = 'DESIGNER/NEWFOLDER/CLEAR';
+export const SHOW = 'DESIGNER/NEWFOLDER/SHOW_DIALOG';
+export const HIDE = 'DESIGNER/NEWFOLDER/HIDE_DIALOG';
 
 export const changeName = (name: string) => ({
   type: CHANGE_NAME,

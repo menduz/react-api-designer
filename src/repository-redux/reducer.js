@@ -12,7 +12,8 @@ import {
   FILE_RENAME_STARTED, DIRECTORY_ADD_STARTED, FILE_MOVE_STARTED,
   DIRECTORY_ADD_FAILED, FILE_ADD_FAILED, FILE_SAVE_FAILED,
   FILE_RENAME_FAILED, DIRECTORY_DELETE_FAILED, FILE_DELETE_FAILED,
-  FILE_CONTENT_UPDATE_FAILED, FILE_MOVE_FAILED, LOADING_FILE_SYSTEM
+  FILE_CONTENT_UPDATE_FAILED, FILE_MOVE_FAILED, LOADING_FILE_SYSTEM,
+  UPDATE_DEPENDENCIES_STARTED, UPDATE_DEPENDENCIES_FAILED, UPDATE_DEPENDENCIES_DONE
 } from './actions'
 
 const initialState: State = {
@@ -79,12 +80,21 @@ const reducer = (state: State = initialState, action: {type: string, payload: an
     case FILE_DELETE_FAILED:
     case FILE_CONTENT_UPDATE_FAILED:
     case FILE_MOVE_FAILED:
+    case UPDATE_DEPENDENCIES_FAILED:
       console.error('Repository error:', action.payload)
       return {
         ...state,
         progress: false,
         error: action.payload
       }
+    case UPDATE_DEPENDENCIES_DONE:
+      return {
+        ...state,
+        progress: false,
+        error: ''
+      }
+
+    case UPDATE_DEPENDENCIES_STARTED:
     case FILE_SAVE_STARTED:
     case FILE_DELETE_STARTED:
     case DIRECTORY_DELETE_STARTED:

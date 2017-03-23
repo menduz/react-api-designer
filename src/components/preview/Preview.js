@@ -2,16 +2,19 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {ConsoleLoader} from '../raml-console/angular-console'
+import Info from '../info/Info'
 import JSONTree from 'react-json-tree'
 import ReactMarkdown from 'react-markdown'
 import {getCurrentFileContent} from "../../repository-redux/selectors"
+import {getLanguage, getParsedObject} from "../editor/selectors"
 import './Preview.css'
 
 class Preview extends Component {
 
   constructor(props) {
     super(props)
-    this.consoleWrapper = ConsoleLoader.load(window.designerUrls.console)
+    const consoleUrl = window.require.getConfig().paths['console']
+    this.consoleWrapper = ConsoleLoader.load(consoleUrl)
   }
 
   static _theme = {
@@ -23,9 +26,8 @@ class Preview extends Component {
     base0D: '#a31515',
   }
 
-  static _consolePreview(language, parsedObject) {
-    const t = language.type
-    return parsedObject && t && (t === '1.0' || t === '0.8' || t === 'Library' || t === 'Overlay' || t === 'Extension')
+  static showConsole(language) {
+    return Info.showMock(language) || language.type === 'Library'
   }
 
   static _empty() {
@@ -34,12 +36,12 @@ class Preview extends Component {
 
   _render() {
     const {parsedObject, language, text} = this.props
+    
     const ConsoleWrapper = this.consoleWrapper
-
     switch (language.id) {
       case 'raml':
       case 'oas':
-        return !Preview._consolePreview(language, parsedObject) ? Preview._empty() :
+        return !parsedObject || !Preview.showConsole(language) ? Preview._empty() :
           <ConsoleWrapper raml={parsedObject}/>
       case 'json':
         return !parsedObject ? Preview._empty() :
@@ -57,13 +59,12 @@ class Preview extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  const {editor} = state
+const mapStateToProps = (state) => {
   const text = getCurrentFileContent(state)()
   return {
     text,
-    parsedObject: editor.parsedObject,
-    language: editor.language
+    parsedObject: getParsedObject(state),
+    language: getLanguage(state)
   }
 }
 

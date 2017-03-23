@@ -11,9 +11,22 @@ npm install
 
 ## Developing
 
-- Run `npm start` to start the app.
+### Standalone
+
+- Run `npm start` to start the app
 - Watches all .js and .scss files
-- Includes code linting.
+- Includes code linting
+
+### Component
+
+- run `npm component-main` for just packing the src dir and `npm component-worker` for the src-worker dir
+
+### Electron
+
+- Go to electron `cd electron`
+- run `npm build` each time you change the designer
+- run `npm start` to run the Electron app in dev against that build
+
 
 ## Building
 
@@ -26,4 +39,9 @@ npm install
 
 - Run `npm component`
 - Output will be left in the dist directory
-- `npm component-main` for just packing the src dir and `npm component-worker` for the src-worker dir
+
+### Electron
+
+- Go to electron `cd electron`
+- Run `npm package`
+- Output app will be left in the dist directory

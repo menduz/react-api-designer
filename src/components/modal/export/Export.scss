@@ -1,15 +1,18 @@
-.export-modal .export-name {
+.export-modal {
+
+  .export-name {
     margin-top: 15px;
-}
+  }
 
-.export-modal .selected-export-type{
+  .selected-export-type {
     display: inline-block;
-}
+  }
 
-.export-modal .export-error {
+  .export-error {
     float: left;
     font-size: small;
     color: #d1344e;
     margin-top: 15px;
     vertical-align: middle;
+  }
 }

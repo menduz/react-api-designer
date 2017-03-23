@@ -1,31 +1,18 @@
-.new-file .new-file-name, .new-file .selected-fragment {
-  padding-top: 10px;
-}
+@import "../../variables.scss";
 
-.new-file .fragment-type {
-  position: relative;
-}
+.new-file {
 
-.new-file .fragment-type .info-small-icon {
-  position: absolute;
-  right: -24px;
-  top: 23px;
-}
+  .new-file-name, .selected-fragment {
+    padding-top: 10px;
+  }
 
-.Popover-in-modal {
-  background-color: #272f33;
-  color: #fff;
-  font-family: DIN Pro, sans-serif;
-  font-size: 13px;
-  padding: 7px 10px;
-  max-width: 310px;
-}
+  .fragment-type {
+    position: relative;
+  }
 
-.Popover-in-modal a {
-  color: #fff;
-  padding-left: 5px;
-}
-
-div[data-reactroot] > .rc-trigger-popup {
-  z-index: 2000
+  .fragment-type .info-small-icon {
+    position: absolute;
+    right: -24px;
+    top: 23px;
+  }
 }

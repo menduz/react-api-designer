@@ -1,5 +1,4 @@
 const webpack = require('webpack')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
 const path = require('path');
 const projectRootPath = path.resolve(__dirname, '../../')
 

@@ -1,7 +1,7 @@
 //@flow
 
 import {connect} from 'react-redux'
-import {getAll} from './selectors'
+import {getAll, getExpandedFolders, getCurrentPath} from './selectors'
 import {fromFileTree} from './model'
 import {pathSelected, folderSelected, move} from './actions'
 import {saveFileWithPath, removeFileWithPath} from "../editor/actions"
@@ -34,8 +34,8 @@ const mapStateToProps = (rootState): Props => {
 
   const fileTree = getFileTree(rootState)
   const nodes: ?Node[] = fileTree ? fromFileTree(fileTree) : undefined
-  const expanded = state.expandedFolders.toArray().map(p => p.toString())
-  const selected = state.currentPath ? [state.currentPath.toString()] : []
+  const expanded = getExpandedFolders(rootState).toArray().map(p => p.toString())
+  const selected = getCurrentPath(rootState) ? [getCurrentPath(rootState).toString()] : []
   return {
     nodes,
     selected,

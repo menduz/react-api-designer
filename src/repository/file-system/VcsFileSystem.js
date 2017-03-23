@@ -5,12 +5,12 @@ import {EntryMetadata, ContentData} from "../../remote-api/VcsElements";
 
 import FileSystem from './FileSystem'
 import type {Path, Entry, FileData} from './FileSystem'
-import {fileEntry, folderEntry, ENTRY_SEPARATOR} from './FileSystem'
+import {fileEntry, folderEntry} from './FileSystem'
 
 class EntryFactory {
   static fromBasicMetadata(elements: EntryMetadata[]) {
     const children = EntryFactory.entriesInPath(elements, '', 0)
-    return folderEntry('', ENTRY_SEPARATOR, children)
+    return folderEntry('', FileSystem.Separator, children)
   }
 
   static entriesInPath(items: EntryMetadata[], path: string, level: number): Entry[] {
@@ -36,7 +36,7 @@ class EntryFactory {
 
   static folderEntry(metadata: EntryMetadata, deeperItems: EntryMetadata[]): Entry {
     const name = metadata.name();
-    const path = ENTRY_SEPARATOR + metadata.path;
+    const path = FileSystem.Separator + metadata.path;
     const children = EntryFactory.entriesInPath(deeperItems, metadata.path, metadata.pathLength());
 
     return folderEntry(name, path, children)
@@ -44,7 +44,7 @@ class EntryFactory {
 
   static fileEntry(metadata: EntryMetadata): Entry {
     const name = metadata.name();
-    const path = ENTRY_SEPARATOR + metadata.path;
+    const path = FileSystem.Separator + metadata.path;
 
     return fileEntry(name, path)
   }
@@ -93,6 +93,8 @@ class VcsFileSystem extends FileSystem {
     if (isDirectory) return Promise.resolve()
     return this._vcsApi.moveFile(source, destination)
   }
+
+  get persistsEmptyFolders(): boolean { return false }
 }
 
 export default VcsFileSystem

@@ -5,14 +5,14 @@ import {Path} from '../../repository'
 import {RepositoryModel, FileModel, DirectoryModel, ElementModel} from '../../repository/immutable/RepositoryModel';
 
 export type State = {
-  currentPath: ?Path,
+  currentPath?: Path,
   expandedFolders: Set<Path>
 }
 
 export type Node = {
   path: Path,
   name: string,
-  isDirty: boolean,
+  isDirty?: boolean,
   children?: Node[]
 }
 
@@ -31,14 +31,18 @@ const fromElement = (element: ElementModel): Node => {
     : fromFile(element.asFileModel())
 }
 
-const fromDirectory = (directory: DirectoryModel): Node => {
-  const children = directory.children.sort((a, b) => {
-    if (a.isDirectory() && !b.isDirectory()) return -1;
-    if (b.isDirectory() && !a.isDirectory()) return 1;
-    if(a.name < b.name) return -1;
-    if(a.name > b.name) return 1;
-    return 0;
-  }).map(fromElement).toArray();
+const fromDirectory = (directory: DirectoryModel, filterFn?: (c: ElementModel)=>boolean): Node => {
+  const children = directory.children
+    .sort((a, b) => {
+      if (a.isDirectory() && !b.isDirectory()) return -1;
+      if (b.isDirectory() && !a.isDirectory()) return 1;
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
+      return 0;
+    })
+    .filter(c => filterFn ? filterFn(c) : true)
+    .map(fromElement)
+    .toArray();
 
   return {
     path: directory.path,
@@ -48,6 +52,6 @@ const fromDirectory = (directory: DirectoryModel): Node => {
   }
 }
 
-export const fromFileTree = (fileTree: RepositoryModel) : Node[] => {
-  return fromDirectory(fileTree.root).children
+export const fromFileTree = (fileTree: RepositoryModel): Node[] => {
+  return fromDirectory(fileTree.root, c => !(c.name === 'exchange_modules' || c.name === 'exchange.json')).children
 }

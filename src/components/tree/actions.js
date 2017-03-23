@@ -21,8 +21,8 @@ export const clean = (path: Path) => ({
   type: CLEAN
 })
 
-export const pathSelected = (path: Path) : Promise =>
-  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs) => {
+export const pathSelected = (path: Path) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
     dispatch({
       type: NODE_SELECTED,
       payload: path
@@ -68,10 +68,13 @@ export const folderSelected = (path: Path): void =>
   }
 
 export const addFile = (name: string, fileType: ?string, path: ?Path) =>
-  (dispatch: Dispatch, getState: GetState) => {
+  (dispatch: Dispatch, getState: GetState): Promise<File> => {
     const directoryPath = path ? path : getCurrentDirectory(getState()).path
-    dispatch(repository.actions.addFile(directoryPath, name, fileType))
-    dispatch(pathSelected(directoryPath.append(name)))
+    const file: File = dispatch(repository.actions.addFile(directoryPath, name, fileType))
+    return dispatch(pathSelected(directoryPath.append(name)))
+      .then(ignored => {
+        return Promise.resolve(file)
+      })
   }
 
 export const addDirectory = (name: string, path: ?Path) =>

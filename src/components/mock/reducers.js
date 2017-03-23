@@ -1,14 +1,16 @@
 import {START_MOCK, STOP_MOCK, MOCK_STARTED, BEGIN_STOP_MOCK} from './actions'
 
-const mock = (state = {
+const initialState = {
+  baseUri: "",
+  id: "",
   isStarting: false,
-  isUp:false,
-  id:"",
-  manageKey:"",
-  baseUri:"",
-  manageUri:"",
-  isStopping:false
-}, action) => {
+  isUp: false,
+  isStopping: false,
+  manageKey: "",
+  manageUri: ""
+}
+
+const mock = (state = initialState, action) => {
 
   if (state.file !== undefined && state.file !== action.file) {
     return state
@@ -24,9 +26,9 @@ const mock = (state = {
     case MOCK_STARTED:
       return {
         ...state,
-        isUp:true,
+        isUp: true,
         id: action.id,
-        manageKey :action.manageKey,
+        manageKey: action.manageKey,
         baseUri: action.baseUri,
         manageUri: action.manageUri,
         isStarting: false
@@ -36,9 +38,9 @@ const mock = (state = {
         ...state,
         isStarting: false,
         isStopping: false,
-        isUp:false,
+        isUp: false,
         id: "",
-        manageKey :"",
+        manageKey: "",
         baseUri: "",
         manageUri: ""
       }
@@ -52,7 +54,7 @@ const mock = (state = {
   }
 }
 
-export default  (state = [], action) => {
+export default (state = [], action) => {
 
   switch (action.type) {
     case START_MOCK:
@@ -64,22 +66,16 @@ export default  (state = [], action) => {
           mock(undefined, action)
         ]
       } else {
-        return state.map(t =>
-          mock(t, action)
-        )
+        return state.map(t => mock(t, action))
       }
     case MOCK_STARTED:
     case STOP_MOCK:
     case BEGIN_STOP_MOCK:
-      return state.map(t =>
-        mock(t, action)
-      )
+      return state.map(t => mock(t, action))
 
     default:
       return state
-
   }
-
 }
 
 

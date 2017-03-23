@@ -4,19 +4,17 @@ import {connect} from 'react-redux'
 
 import ImportModal from './ImportModal'
 
-import type {State} from './ImportModel'
-
-import {getAll} from './ImportSelectors'
-import {closeImportDialog, changeType, changeUrl, uploadFile, importFileFromUrl, importFile} from './ImportActions'
+import {getShowModal, getSelectValue, isImporting, getFileToImport, getUrl, getError} from './ImportSelectors'
+import {closeImportDialog, changeType, changeUrl, uploadFile, importFileFromUrl, importFile, changeError} from './ImportActions'
 
 const mapState = (rootState) => {
-  const state: State = getAll(rootState)
   return {
-    selectValue: state.selectValue,
-    showModal: state.showModal,
-    fileToImport: state.fileToImport,
-    url: state.url,
-    isImporting: state.isImporting
+    selectValue: getSelectValue(rootState),
+    showModal: getShowModal(rootState),
+    fileToImport: getFileToImport(rootState),
+    url: getUrl(rootState),
+    isImporting: isImporting(rootState),
+    error: getError(rootState)
   }
 }
 
@@ -27,7 +25,8 @@ const mapDispatch = (dispatch) => {
     onCancel: () => dispatch(closeImportDialog()),
     onImportTypeChange: (type: string) => dispatch(changeType(type)),
     onUrlChange: (url: string) => dispatch(changeUrl(url)),
-    onFileUpload: (event: any) => dispatch(uploadFile(event))
+    onFileUpload: (event: any) => dispatch(uploadFile(event)),
+    onCloseError: () => dispatch(changeError(''))
   }
 }
 

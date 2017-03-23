@@ -1,12 +1,12 @@
 //@flow
 
 import React from 'react'
+import Icon from '../../svgicon/SvgIcon'
 
 import Modal from '@mulesoft/anypoint-components/lib/Modal'
 import Popover from '@mulesoft/anypoint-components/lib/Popover'
 import Select from '@mulesoft/anypoint-components/lib/Select'
 import TextField from '@mulesoft/anypoint-components/lib/TextField'
-import Icon from '@mulesoft/anypoint-icons/lib/Icon'
 import type {FileType} from './NewFileModel'
 import {fileTypes} from './NewFileModel'
 import {Path} from '../../../repository'
@@ -74,7 +74,9 @@ class NewFileModal extends React.Component {
                      triggerOn={['hover']}
                      anchorPosition="br"
                      testId="New-File-Popover">
-              <Icon name="info-small" size={19} fill={"rgb(124, 125, 126)"}/>
+              <div>
+                <Icon name="info-small" size={19} fill="rgb(124, 125, 126)"/>
+              </div>
             </Popover>
           </div>)
           : null

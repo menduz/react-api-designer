@@ -8,6 +8,7 @@ import PublishApiModal from './PublishApiModal'
 
 import type {State} from "./PublishApiModel"
 import {changeValue, publish, clear, removeTag, addTag, togglePublishBothApis} from "./PublishApiActions"
+import {getPublishToExchange} from "../../header/selectors";
 
 type ContainerProps = {
   onClose: () => void
@@ -15,13 +16,14 @@ type ContainerProps = {
 
 const mapState = (rootState) => {
   const state: State = getAll(rootState)
-  const {configuration} = rootState
   return {
     groupId: state.form['groupId'],
     assetId: state.form['assetId'],
     main: state.form['main'],
     name: state.form['name'],
     version: state.form['version'],
+    nextVersion: state.form['nextVersion'],
+    files: state.form['files'],
     tag: state.form['tag'],
     tags: [...state.form['tags']],
     isFetching: state.isFetching,
@@ -30,7 +32,7 @@ const mapState = (rootState) => {
     error: state.error,
     isLoading: state.isLoading,
     publishToBothApis: state.publishToBothApis,
-    publishToExchange: configuration.publishToExchange
+    publishToExchange: getPublishToExchange(rootState)
   }
 }
 
@@ -41,7 +43,7 @@ const mapDispatch = (dispatch, props: ContainerProps) => {
     onTagRemove: (tag: string) => dispatch(removeTag(tag)),
     onSubmitTag: (tag: string) => dispatch(addTag(tag)),
     onNameChange: (name: string) => dispatch(changeValue('name', name)),
-    onVersionChange: (version: string) => dispatch(changeValue('version', version)),
+    onNextVersionChange: (version: string) => dispatch(changeValue('nextVersion', version)),
     onAssetIdChange: (assetId: string) => dispatch(changeValue('assetId', assetId)),
     onGroupIdChange: (groupId: string) => dispatch(changeValue('groupId', groupId)),
     onMainFileChange: (main: string) => dispatch(changeValue('main', main)),

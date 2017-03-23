@@ -4,8 +4,8 @@ import Storage from '../../storage'
 const initialState = {
   theme: Storage.getValue('theme', 'vs'),
   isExchangeMode: Storage.getValue('isExchangeMode', 'true') === 'true',
-  isConsumeMode: Storage.getValue('isConsumeMode', 'false') === 'true',
-  publishToExchange: Storage.getValue('publishToExchange', 'false') === 'true'
+  isConsumeMode: Storage.getValue('isConsumeMode', 'true') === 'true',
+  publishToExchange: Storage.getValue('publishToExchange', 'true') === 'true'
 }
 
 export default(state = initialState, action) => {

@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
-
+import {connect} from 'react-redux'
+import cx from 'classnames'
+import {getLanguage} from "../../editor/selectors"
 import '../../../../.tmp/styles/api-console-light-theme.css'
 import './Console.css'
 import './console-overrides.css'
@@ -30,18 +32,19 @@ class Console extends Component {
     const containerElement = this.angularContainer
     const scope = window.angular.element(containerElement).scope()
     if (scope.raml !== nextProps.raml) {
-      console.time("updatingConsole")
+      console.time("ramlConsole")
       scope.$apply(() => {
         scope.raml = nextProps.raml
-        console.timeEnd("updatingConsole")
+        setTimeout(() => console.timeEnd("ramlConsole"))
       })
     }
   }
 
   render() {
+    const {language} = this.props
     return (
-      <div className="angular-container api-designer-console"
-           data-test-id="Raml-Console"
+      <div data-test-id="Raml-Console"
+           className={cx('angular-container', 'api-designer-console', {'hide-resources': language.type === 'Library'})}
            ref={angularContainer => this.angularContainer = angularContainer}>
         <raml-console raml="raml"
                       options="{singleView: true, disableThemeSwitcher: true, disableRamlClientGenerator: true, disableTitle: true}"/>
@@ -50,4 +53,11 @@ class Console extends Component {
   }
 }
 
-export default Console
+const mapStateToProps = (state, ownProps) => {
+  return {
+    raml: ownProps.raml,
+    language: getLanguage(state)
+  }
+}
+
+export default connect(mapStateToProps)(Console)

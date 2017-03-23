@@ -6,11 +6,11 @@ import type {Dispatch, GetState, ExtraArgs} from '../../../types'
 import {nextName} from '../../../repository/helper/utils'
 import {Path} from '../../../repository'
 
-export const CHANGE_FRAGMENT = 'newFile/CHANGE_FRAGMENT'
-export const CHANGE_TYPE = 'newFile/CHANGE_TYPE'
-export const CHANGE_NAME = 'newFile/CHANGE_NAME'
-export const SHOW = 'newFile/SHOW_DIALOG'
-export const HIDE = 'newFile/HIDE_DIALOG'
+export const CHANGE_FRAGMENT = 'DESIGNER/NEWFILE/CHANGE_FRAGMENT'
+export const CHANGE_TYPE = 'DESIGNER/NEWFILE/CHANGE_TYPE'
+export const CHANGE_NAME = 'DESIGNER/NEWFILE/CHANGE_NAME'
+export const SHOW = 'DESIGNER/NEWFILE/SHOW_DIALOG'
+export const HIDE = 'DESIGNER/NEWFILE/HIDE_DIALOG'
 
 
 export const changeFileType = (type: FileType) => (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs) => {

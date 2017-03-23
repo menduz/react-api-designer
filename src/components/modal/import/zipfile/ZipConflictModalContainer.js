@@ -4,21 +4,18 @@ import {connect} from 'react-redux'
 
 import ZipConflictModal from './ZipConflictModal'
 
-import type {State} from '../ImportModel'
-
-import {getAll} from '../ImportSelectors'
+import {getShowZipConflictModal, getAllFilesAction, getFileToImport, getFileNameToImport, getFileType, getZipFiles, getZipFileAction} from '../ImportSelectors'
 import {saveZipFiles, closeZipConflictDialog, allFilesActionChange, zipFileActionChange, zipFileOverrideAction} from '../ImportActions'
 
 const mapState = (rootState) => {
-  const state: State = getAll(rootState)
   return {
-    showZipConflictModal: state.showZipConflictModal,
-    allFilesAction: state.allFilesAction,
-    fileToImport: state.fileToImport,
-    fileNameToImport: state.fileNameToImport,
-    fileType: state.fileType,
-    zipFiles: state.zipFiles,
-    zipFileAction: state.zipFileAction
+    showZipConflictModal: getShowZipConflictModal(rootState),
+    allFilesAction: getAllFilesAction(rootState),
+    fileToImport: getFileToImport(rootState),
+    fileNameToImport: getFileNameToImport(rootState),
+    fileType: getFileType(rootState),
+    zipFiles: getZipFiles(rootState),
+    zipFileAction: getZipFileAction(rootState)
   }
 }
 

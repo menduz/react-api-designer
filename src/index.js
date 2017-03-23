@@ -1,28 +1,35 @@
 //@flow
 
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "./components/app/App";
-import "./index.css";
-import {createStore, applyMiddleware, combineReducers} from "redux";
-import {Provider} from "react-redux";
-import thunk from "redux-thunk";
-import reduxLogger from "redux-logger";
-import * as component from "./component";
+import React from "react"
+import ReactDOM from "react-dom"
+import App from "./components/app/App"
+import "./index.css"
+import {createStore, applyMiddleware, combineReducers} from "redux"
+import {addErrorToasts} from './components/toasts/actions'
+import {Provider} from "react-redux"
+import thunk from "redux-thunk"
+import reduxLogger from "redux-logger"
+import reduxCatch from 'redux-catch'
+import * as component from "./component"
+import {getLocationQueryVariable} from './bootstrap/util'
 import {Header} from './components/header'
 
 // mock some initial config
 const authSelectors = {
-  authorization: () => `Bearer bd516ec3-75fb-484b-969f-5802f50e5e01`,
-  ownerId: () => 'd365610a-8e56-42da-a3fc-73b548371cc6',
-  organizationId: () => 'b13cbf39-787d-4d1f-9c72-22275ecc0d59',
+  authorization: () => `Bearer ${getLocationQueryVariable('token')}`,
+  ownerId: () => 'edc150a4-8365-4b1a-adfa-0dc1dc63227b',
+  organizationId: () => 'e2c426f7-6844-4a29-8435-f74ce0ef5333',
   organizationDomain: () => 'mulesoft-inc'
 }
 
+const errorHandler = (error, getState, lastAction, dispatch) => {
+  dispatch(addErrorToasts(error))
+}
+
 // create middleware
-const thunkExtraArg = component.initThunkArg(authSelectors);
+const thunkExtraArg = component.initThunkArg(authSelectors)
 const thunkMiddleware = thunk.withExtraArgument(thunkExtraArg)
-const middleware = [thunkMiddleware]
+const middleware = [reduxCatch(errorHandler), thunkMiddleware]
 if (location.search.indexOf('redux-logger=true') > -1) {
   middleware.push(reduxLogger())
 }
@@ -33,10 +40,15 @@ const store = createStore(
   applyMiddleware(...middleware)
 )
 
-// dispatch init with no project id for a sandbox standalone version
-const projectId = ''
-// const projectId = '0e4a85aa-3ac2-46a7-97f4-c53637243e87'
-store.dispatch(component.actions.init(projectId))
+const projectId = getLocationQueryVariable('projectId')
+const projectDir = getLocationQueryVariable('projectDir')
+if (projectId) {
+  store.dispatch(component.actions.init(projectId))
+} else if (projectDir) {
+  store.dispatch(component.actions.initElectron(projectDir))
+} else {
+  store.dispatch(component.actions.initLocalStorage())
+}
 
 ReactDOM.render(
   <Provider store={store}>

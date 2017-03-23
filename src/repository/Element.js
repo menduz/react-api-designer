@@ -25,6 +25,15 @@ class Element {
     return this._parent.path.append(this._name)
   }
 
+  moveTo(directory: Directory): Element {
+    if (this._parent) this._parent.removeChild(this)
+
+    directory.addChild(this)
+    this._parent = directory
+
+    return this
+  }
+
   asFile(): File { throw new Error('Not implemented method') }
 
   asDirectory(): Directory { throw new Error('Not implemented method') }
@@ -52,6 +61,8 @@ class State {
   setContent(content: string): State { throw new Error('Not implemented method') }
 
   dirty(): [boolean, State] { throw new Error('Not implemented method') }
+
+  persisted(): [boolean, State] { throw new Error('Not implemented method') }
 
   save(path: Path): [Promise<any>, State] { throw new Error('Not implemented method') }
 
@@ -92,6 +103,8 @@ class DirtyState extends State {
 
   dirty(): [boolean, State] { return [true, this] }
 
+  persisted(): [boolean, State] { return [true, this] }
+
   save(path: Path): [Promise<any>, State] {
     const promise = this._fileSystem.save([{path: path.toString(), content: this._content}])
     // eslint-disable-next-line
@@ -117,6 +130,8 @@ class LoadedState extends State {
 
   dirty(): [boolean, State] { return [false, this] }
 
+  persisted(): [boolean, State] { return [true, this] }
+
   save(path: Path): [Promise<any>, State] { return [Promise.resolve(), this] }
 
   clone(file: File): State { return new LoadedState(this._fileSystem, file, this._content) }
@@ -140,6 +155,8 @@ class LoadingState extends State {
 
   dirty(): [boolean, State] { return [false, this] }
 
+  persisted(): [boolean, State] { return [true, this] }
+
   save(path: Path): [Promise<any>, State] { return [Promise.resolve(), this] }
 
   clone(file: File): State { return new LoadingState(this._fileSystem, file, this._content) }
@@ -156,6 +173,8 @@ class EmptyState extends State {
 
   dirty(): [boolean, State] { return [false, this] }
 
+  persisted(): [boolean, State] { return [true, this] }
+
   save(path: Path): [Promise<any>, State] { return [Promise.resolve(), this] }
 
   clone(file: File): State { return new EmptyState(this._fileSystem, file) }
@@ -169,11 +188,41 @@ class RemovedState extends State {
 
   dirty(): [boolean, State] { throw new Error('This file has been removed') }
 
+  persisted(): [boolean, State] { throw new Error('This file has been removed') }
+
   save(path: Path): [Promise<any>, State] { throw new Error('This file has been removed') }
 
   remove(path: Path): [Promise<any>, State] { throw new Error('This file has been removed') }
 
   clone(file: File): State { return new RemovedState(this._fileSystem, file) }
+}
+
+class NotPersistedState extends State {
+  _content: string
+
+  constructor(fileSystem: FileSystem, file: File, content: string) {
+    super(fileSystem, file)
+    this._content = content
+  }
+
+  getContent(): [Promise<string>, State] { return [Promise.resolve(this._content), this] }
+
+  setContent(content: string): State {
+    this._content = content
+    return this
+  }
+
+  dirty(): [boolean, State] { return [true, this] }
+
+  persisted(): [boolean, State] { return [false, this] }
+
+  save(path: Path): [Promise<any>, State] {
+    const promise = this._fileSystem.save([{path: path.toString(), content: this._content}])
+    // eslint-disable-next-line
+    return [promise, new LoadedState(this._fileSystem, this._file, this._content)]
+  }
+
+  clone(file: File): State { return new NotPersistedState(this._fileSystem, file, this._content) }
 }
 
 class File extends Element {
@@ -188,12 +237,12 @@ class File extends Element {
 
   asDirectory(): Directory { throw new Error('Trying to cast Directory to File') }
 
-  static empty(name: string, fileSystem: FileSystem, parent?: Directory): File {
+  static persistedFile(name: string, fileSystem: FileSystem, parent?: Directory): File {
     return new File(name, (f) => new EmptyState(fileSystem, f), parent)
   }
 
-  static dirty(fileSystem: FileSystem, name: string, content: string, parent?: Directory): File {
-    return new File(name, (f) => new DirtyState(fileSystem, f, content), parent)
+  static newFile(fileSystem: FileSystem, name: string, content: string, parent?: Directory): File {
+    return new File(name, (f) => new NotPersistedState(fileSystem, f, content), parent)
   }
 
   isDirectory() { return false }
@@ -210,6 +259,12 @@ class File extends Element {
     const [dirty, newState] = this._state.dirty()
     this._state = newState
     return dirty
+  }
+
+  get persisted(): boolean {
+    const [persisted, newState] = this._state.persisted()
+    this._state = newState
+    return persisted
   }
 
   get extension(): string { return this._name.substring(this._name.lastIndexOf('.') + 1) }
@@ -235,8 +290,6 @@ class File extends Element {
   clear(): void { this._state = this._state.clear() }
 }
 
-
-
 class Directory extends Element {
   _children: Map<string, Element>
 
@@ -252,6 +305,10 @@ class Directory extends Element {
   asFile(): File { throw new Error('Trying to cast Directory to File') }
 
   asDirectory(): Directory { return this }
+
+  isEmpty(): boolean {
+    return this._children.size === 0
+  }
 
   get children(): Element[] {
     return Array.from(this._children.values())
@@ -338,7 +395,7 @@ class Directory extends Element {
   }
 
   _hasFileDescendants() {
-    if (this._fileChildren().length !== 0) return false
+    if (this._fileChildren().length !== 0) return true
     return this._directoryChildren()
       .reduce((result, value: Directory) => result || value._hasFileDescendants(), false)
   }

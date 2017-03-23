@@ -27,6 +27,16 @@ export default class Path {
     return absolute ? new AbsoluteEmptyPath() : new RelativeEmptyPath()
   }
 
+  static mergePath(basePath: Path, relativePath: Path): Path {
+    if (relativePath.isAbsolute()) return relativePath
+
+    return relativePath.elements().reduce(
+      (result: Path, value: string) =>
+        value === '..' ? result.parent() : result.append(value),
+      basePath
+    )
+  }
+
   static path = (elements: List<string>, absolute: boolean = true): Path => {
     const filteredElements = elements.filter((s) => s && s.length > 0).toList()
 
@@ -38,11 +48,12 @@ export default class Path {
   static fromString = (value: string): Path => {
     const absolute = value.indexOf(Path.FileSystemSeparator) === 0
 
-    return Path.path(List(value.split(Path.FileSystemSeparator), absolute))
+    return Path.path(List(value.split(Path.FileSystemSeparator)), absolute)
   }
 }
 
 class EmptyPath extends Path {
+
   isEmpty(): boolean { return true }
 
   parent(): Path { return this }
@@ -57,18 +68,21 @@ class EmptyPath extends Path {
 }
 
 class AbsoluteEmptyPath extends EmptyPath {
+
   isAbsolute(): boolean { return true }
 
   toString(): string { return Path.FileSystemSeparator }
 }
 
 class RelativeEmptyPath extends EmptyPath {
+
   isAbsolute(): boolean { return false }
 
   toString(): string { return '' }
 }
 
 class PathImpl extends Path {
+
   _elements: List<string>
 
   constructor(elements: List<string>) {
@@ -90,12 +104,14 @@ class PathImpl extends Path {
 }
 
 class AbsolutePathImpl extends PathImpl {
+
   isAbsolute(): boolean { return true }
 
   toString(): string { return Path.FileSystemSeparator + this._elements.join(Path.FileSystemSeparator) }
 }
 
 class RelativePathImpl extends PathImpl {
+
   isAbsolute(): boolean { return false }
 
   toString(): string { return this._elements.join(Path.FileSystemSeparator) }

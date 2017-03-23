@@ -5,6 +5,7 @@ import {FileModel, DirectoryModel, RepositoryModel, ElementModel} from '../repos
 import Factory from '../repository/immutable/RepositoryModelFactory'
 
 import Repository from '../repository/Repository'
+import type {SaveResult} from '../repository/Repository'
 
 import {Path} from '../repository'
 import {isValidDirectory, isValidFile, getFileTree} from './selectors'
@@ -12,7 +13,10 @@ import {getCurrentFilePath} from '../components/editor/selectors'
 import {clean} from '../components/editor/actions'
 import {addSuccessToasts} from '../components/toasts/actions'
 import {addErrorToasts} from '../components/toasts/actions'
+import {File} from '../repository'
+import ConsumeRemoteApi from '../remote-api/ConsumeRemoteApi'
 
+import defaultContentJson from './default-content.json'
 import type {Dispatch, GetState, ExtraArgs} from '../types'
 
 export const LOADING_FILE_SYSTEM = `DESIGNER/${PREFIX}/LOADING_FILE_SYSTEM`
@@ -47,6 +51,11 @@ export const FILE_CONTENT_UPDATE_FAILED = `DESIGNER/${PREFIX}/FILE_CONTENT_UPDAT
 export const FILE_MOVE_STARTED = `DESIGNER/${PREFIX}/FILE_MOVE_STARTED`
 export const FILE_MOVED = `DESIGNER/${PREFIX}/FILE_MOVE`
 export const FILE_MOVE_FAILED = `DESIGNER/${PREFIX}/FILE_MOVE_FAILED`
+
+export const UPDATE_DEPENDENCIES_STARTED = `DESIGNER/${PREFIX}/UPDATE_DEPENDENCIES_STARTED`
+export const UPDATE_DEPENDENCIES_FAILED = `DESIGNER/${PREFIX}/UPDATE_DEPENDENCIES_FAILED`
+export const UPDATE_DEPENDENCIES_DONE = `DESIGNER/${PREFIX}/UPDATE_DEPENDENCIES_DONE`
+
 
 export const loadingFileSystem = () => ({
   type: LOADING_FILE_SYSTEM
@@ -87,38 +96,6 @@ export const fileContentUpdated = (file: FileModel, content: string) => ({
   payload: {file, content}
 })
 
-
-const defaultContent = (fileType?: string) => {
-  switch (fileType) {
-    case 'RAML10':
-      return '#%RAML 1.0\ntitle: myApi'
-    case 'RAML08':
-      return '#%RAML 0.8\ntitle: myApi'
-    case 'TRAIT':
-      return '#%RAML 1.0 Trait'
-    case 'RESOURCE-TYPE':
-      return '#%RAML 1.0 ResourceType'
-    case 'LIBRARY':
-      return '#%RAML 1.0 Library\nusage:'
-    case 'OVERLAY':
-      return '#%RAML 1.0 Overlay\nextends:'
-    case 'EXTENSION':
-      return '#%RAML 1.0 Extension\nextends:'
-    case 'DATA-TYPE':
-      return '#%RAML 1.0 DataType'
-    case 'DOCUMENTATION-ITEM':
-      return '#%RAML 1.0 DocumentationItem\ntitle:\ncontent:'
-    case 'NAMED-EXAMPLE':
-      return '#%RAML 1.0 NamedExample\nvalue:'
-    case 'ANNOTATION-TYPE-DECLARATION':
-      return '#%RAML 1.0 AnnotationTypeDeclaration'
-    case 'SECURITY-SCHEME':
-      return '#%RAML 1.0 SecurityScheme\ntype:'
-    default:
-      return ''
-  }
-}
-
 const REPOSITORY_NOT_LOADED = 'Repository not loaded!'
 
 
@@ -128,11 +105,10 @@ export const directoryAdded = (directory: DirectoryModel) => ({
 })
 
 export const error = (type: string, errorMessage: string) =>
-  (dispatch: Dispatch): Promise<any> => {
-    dispatch({ type, payload: errorMessage})
+  (dispatch: Dispatch) => {
+    dispatch({type, payload: errorMessage})
     dispatch(addErrorToasts(errorMessage))
   }
-
 
 export const addDirectory = (parentPath: Path, name: string) =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
@@ -155,7 +131,7 @@ export const addDirectory = (parentPath: Path, name: string) =>
   }
 
 const mkdirs = (filename: string, repository: Repository) =>
-  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
+  (dispatch: Dispatch): Promise<any> => {
     const names = filename.split('/')
     let parentPath = '/'
     let dirname = ''
@@ -168,7 +144,7 @@ const mkdirs = (filename: string, repository: Repository) =>
         const c = parentPath
         const d = dirname
         sequence = sequence.then(() => {
-          return addDirectory(Path.fromString(c), d)(dispatch, getState, {repositoryContainer})
+          return dispatch(addDirectory(Path.fromString(c), d))
         })
       }
       parentPath = path
@@ -176,58 +152,6 @@ const mkdirs = (filename: string, repository: Repository) =>
     return sequence.then(() => {
       return Promise.resolve({parentPath: Path.fromString(parentPath), name: names[names.length - 1]})
     })
-  }
-
-export const addBulkFiles = (files: []) =>
-  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
-    if (!repositoryContainer.isLoaded)
-      return dispatch(error(FILE_ADD_FAILED, REPOSITORY_NOT_LOADED))
-    const repository: Repository = repositoryContainer.repository
-
-    return Promise.all(files.map(f => mkdirs(f.filename, repository)(dispatch, getState, {repositoryContainer}))).then(() => {
-      files.forEach(f => {
-        mkdirs(f.filename, repository)(dispatch, getState, {repositoryContainer}).then(c => {
-          if (!repository.getByPathString('/' + f.filename)) {
-            const file = repository.addFile(c.parentPath, c.name, f.content)
-            return dispatch(fileAdded(Factory.fileModel(file)))
-          } else {
-            const file = repository.setContent(Path.fromString('/' + f.filename), f.content)
-            return dispatch(fileContentUpdated(Factory.fileModel(file), f.content))
-          }
-        })
-      })
-    })
-  }
-
-export const addFile = (parentPath: Path, name: string, fileType?: string) =>
-  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): any => {
-    if (!repositoryContainer.isLoaded)
-      return dispatch(error(FILE_ADD_FAILED, REPOSITORY_NOT_LOADED))
-    if (!isValidDirectory(parentPath))
-      return dispatch(error(FILE_ADD_FAILED, `${parentPath.toString()} is not valid directory`))
-
-    const repository: Repository = repositoryContainer.repository
-    const file = repository.addFile(parentPath, name, defaultContent(fileType))
-    return dispatch(fileAdded(Factory.fileModel(file)))
-  }
-
-
-export const saveFile = (path: Path) =>
-  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
-    if (!repositoryContainer.isLoaded)
-      return Promise.reject(dispatch(error(FILE_SAVE_FAILED, REPOSITORY_NOT_LOADED)))
-    if (!isValidFile(path))
-      return Promise.reject(dispatch(error(FILE_SAVE_FAILED, `${path.toString()} is not valid file`)))
-
-    const repository: Repository = repositoryContainer.repository
-    dispatch({type: FILE_SAVE_STARTED})
-    return repository.saveFile(path)
-      .then(
-        (file) => dispatch(fileSaved(Factory.fileModel(file)))
-      )
-      .catch(
-        (err) => dispatch(error(FILE_SAVE_FAILED, err || 'Error on save'))
-      )
   }
 
 export const updateFileContent = (path: Path, content: string) =>
@@ -242,6 +166,72 @@ export const updateFileContent = (path: Path, content: string) =>
     return dispatch(fileContentUpdated(Factory.fileModel(file), content))
   }
 
+const successSaving = (dispatch: Dispatch, msg: string, {repository, file, content}: SaveResult) => {
+  dispatch(initFileSystem(Factory.repository(repository)))
+  if (file && content) dispatch(updateFileContent(file.path, content))
+  dispatch(addSuccessToasts(msg))
+}
+
+export const addBulkFiles = (files: []) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
+    if (!repositoryContainer.isLoaded)
+      return Promise.reject(dispatch(error(FILE_ADD_FAILED, REPOSITORY_NOT_LOADED)))
+
+    const repository: Repository = repositoryContainer.repository
+    const importedFiles: File[] = []
+
+    return Promise.all(files.map(f => dispatch(mkdirs(f.filename, repository)))).then(() => {
+      Promise.all(files.map(f => {
+        return dispatch(mkdirs(f.filename, repository)).then(c => {
+          if (!repository.getByPathString('/' + f.filename)) {
+            const file: File = repository.addFile(c.parentPath, c.name, f.content)
+            importedFiles.push(file)
+            return dispatch(fileAdded(Factory.fileModel(file)))
+          } else {
+            const file: File = repository.setContent(Path.fromString('/' + f.filename), f.content)
+            importedFiles.push(file)
+            return dispatch(fileContentUpdated(Factory.fileModel(file), f.content))
+          }
+        })
+      })).then(() => {
+        repository.saveFiles(importedFiles, null)
+          .then((result) => successSaving(dispatch, 'All imported files saved', result))
+          .catch(() => dispatch(error(FILE_SAVE_FAILED, 'Error saving importing files')))
+      })
+    })
+  }
+
+export const addFile = (parentPath: Path, name: string, fileType?: string) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): ?File => {
+    if (!repositoryContainer.isLoaded)
+      return dispatch(error(FILE_ADD_FAILED, REPOSITORY_NOT_LOADED))
+    if (!isValidDirectory(parentPath))
+      return dispatch(error(FILE_ADD_FAILED, `${parentPath.toString()} is not valid directory`))
+
+    const defaultContent = fileType? defaultContentJson[fileType] || '' : ''
+    const repository: Repository = repositoryContainer.repository
+    const file: File = repository.addFile(parentPath, name, defaultContent)
+    dispatch(fileAdded(Factory.fileModel(file)))
+    return file
+  }
+
+export const saveFile = (path: Path) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
+    if (!repositoryContainer.isLoaded)
+      return Promise.reject(dispatch(error(FILE_SAVE_FAILED, REPOSITORY_NOT_LOADED)))
+    if (!isValidFile(path))
+      return Promise.reject(dispatch(error(FILE_SAVE_FAILED, `${path.toString()} is not valid file`)))
+
+    const repository = repositoryContainer.repository
+    dispatch({type: FILE_SAVE_STARTED})
+    return repository.saveFile(path)
+      .then((file) => {
+        dispatch(fileSaved(Factory.fileModel(file)))
+        dispatch(addSuccessToasts(`${file.name} saved`))
+      })
+      .catch(() => dispatch(error(FILE_SAVE_FAILED, 'Error on saving')))
+  }
+
 export const saveAll = () =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
     if (!repositoryContainer.isLoaded)
@@ -252,16 +242,11 @@ export const saveAll = () =>
 
     const currentFile = getCurrentFilePath(getState())
     return repository.saveAll(currentFile)
-      .then(
-        ({repository, file, content}) => {
-          dispatch(initFileSystem(Factory.repository(repository)))
-          dispatch(addSuccessToasts('All files saved'))
-          if (file)
-            dispatch(updateFileContent(file.path, content))
-        })
-      .catch(
-        (err) => dispatch(error(FILE_SAVE_FAILED, err || 'Error on save all'))
-      )
+      .then((result) => successSaving(dispatch, 'All files saved', result))
+      .catch((e) => {
+        console.log(e)
+        dispatch(error(FILE_SAVE_FAILED, 'Error on save all'))
+      })
   }
 
 export const rename = (path: string, newName: string) =>
@@ -362,13 +347,95 @@ export const moveElement = (source: Path, destinationDir: Path) =>
     return repository.move(source, destinationPath)
       .then(
         (element) => {
-          dispatch({
-            type: FILE_MOVED,
-            payload: {source, destination: element.path}
-          })
+          dispatch({type: FILE_MOVED, payload: {source, destination: element.path}})
+          dispatch(addSuccessToasts(`${element.isDirectory() ? 'Directory' : 'File'} '${element.name}' moved`))
         }
       )
       .catch(
         (err) => dispatch(error(FILE_MOVE_FAILED, err || 'Move failed'))
       )
   }
+
+const exchangeJob = (consumeRemoteApi: ConsumeRemoteApi): Promise<any> => {
+  return new Promise((resolve, reject) =>{
+    let intervalId = undefined
+    intervalId = setInterval(() => {
+      consumeRemoteApi.jobStatus().then(r => {
+        if (r.status === 'done') {
+          if (intervalId) {
+            clearInterval(intervalId)
+            resolve()
+          }
+        }
+      }).catch(err => {
+        console.error(err)
+        if (intervalId) {
+          clearInterval(intervalId)
+        }
+        reject()
+      })
+    }, 150)
+  })
+}
+
+export const removeExchangeDependency = (gav: any) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerRemoteApiSelectors}: ExtraArgs): void => {
+    if (!repositoryContainer.isLoaded)
+      return Promise.reject(dispatch(error(UPDATE_DEPENDENCIES_FAILED, REPOSITORY_NOT_LOADED)))
+
+    const repository: Repository = (repositoryContainer.repository: Repository)
+
+    dispatch({type: UPDATE_DEPENDENCIES_STARTED})
+
+    const dependencies = [gav]
+    const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
+    consumeRemoteApi.removeDependencies(dependencies).then(() => {
+      exchangeJob(consumeRemoteApi).then(() => {
+        repository.sync().then(() => {
+          var fileTree = Factory.repository(repository);
+          dispatch(initFileSystem(fileTree))
+          dispatch({type: UPDATE_DEPENDENCIES_DONE})
+        })
+      }).catch(err => {
+        dispatch(error(UPDATE_DEPENDENCIES_FAILED, 'Error removing dependency'))
+      })
+    }).catch(err => {
+      dispatch(error(UPDATE_DEPENDENCIES_FAILED, 'Error removing dependency'))
+    })
+  }
+
+//@@TODO LECKO This is a workaround, because get from job
+// can return that it is finished when it doesn't.
+const syncWorkAround = (repository): Promise<Any> => {
+  return new Promise((resolve, reject) =>{
+    let intervalId = setInterval(() => {
+      repository.sync().then(() => {
+        if (!repository.getByPathString('.exchange_modules_tmp')) {
+          clearInterval(intervalId)
+          resolve()
+        }
+      }).catch(() => {
+        clearInterval(intervalId)
+        resolve()
+      })
+    }, 2000)
+  })
+}
+
+export const addExchangeDependency = (dependencies: any) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerRemoteApiSelectors}: ExtraArgs): Promise<any> => {
+    if (!repositoryContainer.isLoaded)
+      return Promise.reject(dispatch(error(UPDATE_DEPENDENCIES_FAILED, REPOSITORY_NOT_LOADED)))
+
+    const repository: Repository = (repositoryContainer.repository: Repository)
+    const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
+    return consumeRemoteApi.addDependencies(dependencies).then(() => {
+      return exchangeJob(consumeRemoteApi).then(() => {
+        return syncWorkAround(repository).then(() => {
+          var fileTree = Factory.repository(repository);
+          dispatch(initFileSystem(fileTree))
+          dispatch({type: UPDATE_DEPENDENCIES_DONE})
+        })
+      })
+    })
+}

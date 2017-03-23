@@ -6,9 +6,11 @@ import {RepositoryModel} from '../repository/immutable'
 import {getCurrentFilePath} from '../components/editor/selectors'
 import type {State} from './model'
 
-export const getAll = (rootState: any): State => rootState[NAME]
+export const getAll = (rootState: any): State => rootState.designer[NAME]
 
 export const getFileTree = (rootState: any): ?RepositoryModel => getAll(rootState).fileTree
+
+export const getProgress = (rootState: any): ?RepositoryModel => getAll(rootState).progress
 
 export const getFileContent = (rootState: any) => (path: Path): ?string => {
   const state = getAll(rootState)

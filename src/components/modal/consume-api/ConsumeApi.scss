@@ -1,113 +1,116 @@
-/*TODO add a css wrapper in order save clashes*/
+@import "../../variables.scss";
 
 .consume-api-modal {
-  font-family: "DIN Pro", sans-serif;
+  font-family: $large-font;
   width: 800px;
-}
 
-.consume-api-modal .consume-api-body {
-  padding-top: 0;
-  margin-top: 10px;
-}
+  .consume-api-body {
+    padding-top: 0;
+    margin-top: 10px;
+  }
 
-.consume-api-modal .search-panel {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  z-index: 11;
-}
+  .search-panel {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 11;
+  }
 
-.consume-api-modal .consume-api-content {
-  overflow-y: auto;
-  overflow-x: hidden;
-}
+  .consume-api-content {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
 
-.consume-api-modal .fragment {
-  display: inline-flex;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  width: 100%;
-  justify-content: space-between;
-}
+  .fragment {
+    display: inline-flex;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    justify-content: space-between;
+  }
 
-.consume-api-modal .fragment.odd {
-  background-color: #f4f5f6;
-  border-color: #b7bbbf;
-}
+  .fragment.odd {
+    background-color: #f4f5f6;
+    border-color: #b7bbbf;
+  }
 
-.consume-api-modal .fragment-left {
-  padding-left: 10px;
-  display: flex;
-  flex-direction: column;
-  width: 400px;
-}
+  .fragment-left {
+    padding-left: 10px;
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    flex-basis: 400px;
+    flex-shrink: 0;
+  }
 
-.consume-api-modal .fragment-left > *,
-.consume-api-modal .fragment-mid > *,
-.consume-api-modal .fragment-right > * {
-  padding-bottom: 5px;
-}
+  .fragment-left > *, .fragment-mid > *, .fragment-right > * {
+    padding-bottom: 5px;
+  }
 
-.consume-api-modal .fragment-left > :first-child,
-.consume-api-modal .fragment-mid > :first-child,
-.consume-api-modal .fragment-right > :first-child {
-  padding-top: 20px;
-}
+  .fragment-left > :first-child, .fragment-mid > :first-child, .fragment-right > :first-child {
+    padding-top: 20px;
+  }
 
-.consume-api-modal .fragment-left > :last-child,
-.consume-api-modal .fragment-mid > :last-child,
-.consume-api-modal .fragment-right > :last-child {
-  padding-bottom: 20px;
-}
+  .fragment-left > :last-child, .fragment-mid > :last-child, .fragment-right > :last-child {
+    padding-bottom: 20px;
+  }
 
-.consume-api-modal .fragment-mid {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  padding-left: 10px;
-  padding-right: 10px;
-  font-size: 15px;
-}
+  .fragment-mid {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 15px;
+  }
 
-.consume-api-modal .fragment-right {
-  padding-right: 10px;
-}
+  .fragment-right {
+    padding-right: 10px;
+  }
 
-.consume-api-modal .fragment-title {
-  font-weight: bolder;
-  font-size: 18px;
-}
+  .fragment-title {
+    font-weight: bolder;
+    font-size: 18px;
+  }
 
-.consume-api-modal .fragment-description,
-.consume-api-modal .amount-of-rating {
-  font-size: 14px;
-}
+  .fragment-description, .amount-of-rating {
+    font-size: 14px;
+  }
 
-.consume-api-modal .fragment-rating div {
-  font-size: 1em !important;
-}
+  .fragment-rating div {
+    font-size: 1em !important;
+  }
 
-.consume-api-modal .rating {
-  display: inline-flex;
-}
+  .rating {
+    display: inline-flex;
+  }
 
-.consume-api-modal .amount-of-rating {
-  padding: 4px;
-}
+  .amount-of-rating {
+    padding: 4px;
+  }
 
-.consume-api-modal .search-spinner {
-  min-height: 140px;
-  margin-top: 60px;
-  margin-left: 45%;
-}
+  .search-spinner {
+    min-height: 140px;
+    margin-top: 60px;
+    margin-left: 45%;
+  }
 
-.consume-api-modal .error-zone {
-  margin-top: 10px;
-  margin-left: 40px;
-  margin-right: 40px;
-}
+  .error-zone {
+    margin-top: 10px;
+    margin-left: 30px;
+    margin-right: 35px;
+  }
 
-.consume-api-modal .search-footer {
-  display: inline-flex;
-  justify-content: space-between;
+  .search-footer {
+    display: inline-flex;
+    justify-content: flex-end;
+    min-height: 75px;
+  }
+
+  .small-spinner {
+    display: flex;
+    min-height: 80px;
+    justify-content: center;
+    align-items: center;
+  }
 }

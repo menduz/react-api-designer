@@ -1,75 +1,78 @@
-.Errors a {
-  cursor: pointer;
-}
+@import "../variables.scss";
 
 .Errors {
   margin-left: 20px;
-}
+  font-family: $small-font;
 
-.Errors .Counter {
-  font-family: sans-serif;
-}
+  .Counter {
+    font-family: sans-serif;
+  }
 
-.Errors.No-errors, .Errors .Filter {
-  text-align: center;
-  color: #cacbcc;
-}
+  &.No-errors, .Filter {
+    text-align: center;
+    color: #cacbcc;
+  }
 
-.Errors .Filter a {
-  text-decoration: none;
-  padding: 10px;
-  color: #000;
-  font-size: 10pt;
-  margin-left: 5px;
-  margin-right: 5px;
-}
+  ol {
+    list-style: none;
+    padding: 0;
+  }
 
-.Errors ol {
-  list-style: none;
-  padding: 0;
-}
+  li {
+    padding-top: 2px;
+  }
 
-.Errors li {
-  padding-top: 2px;
-}
+  span {
+    vertical-align: top;
+  }
 
-.Errors span {
-  vertical-align: top;
-}
+  a {
+    cursor: pointer;
+    white-space: normal;
+    display: inline-block;
+  }
 
-.Errors a {
-  white-space: normal;
-  display: inline-block;
-}
+  ol.Root-errors {
+    margin: 15px 2px;
+  }
 
-.Errors ol.Root-errors {
-  margin: 15px 2px;
-}
+  ol.Trace-errors ol {
+    margin-left: 15px;
+  }
 
-.Errors ol.Trace-errors ol {
-  margin-left: 15px;
-}
+  ol.Root-errors > li {
+    border-left: 2px #ff5959 solid;
+    padding-left: 7px;
+    margin: 7px 0;
+    font-size: 12px;
+  }
 
-.Errors ol.Root-errors > li {
-  border-left: 2px #ff5959 solid;
-  padding-left: 7px;
-  margin: 7px 0;
-  font-size: 12px;
-}
+  ol.Root-errors > li.warning {
+    border-color: #fff454;
+  }
 
-.Errors ol.Root-errors > li.warning {
-  border-color: #fff454;
-}
+  .Filter {
 
-.Filter a.toggled {
-  color: #a6a7a7;
-  border-bottom: 3px #a6a7a7 solid;
-}
+    a {
+      text-decoration: none;
+      padding: 10px;
+      color: #000;
+      font-size: 13px;
+      margin-left: 5px;
+      margin-right: 5px;
+    }
 
-.Filter .Filter-errors {
-  border-bottom: 3px #ff5a59 solid;
-}
+    a.toggled {
+      color: #a6a7a7;
+      border-bottom: 3px #a6a7a7 solid;
+    }
 
-.Filter .Filter-warnings {
-  border-bottom: 3px #eabf6a solid;
+    .Filter-errors {
+      border-bottom: 3px #ff5a59 solid;
+    }
+
+    .Filter-warnings {
+      border-bottom: 3px #eabf6a solid;
+    }
+  }
 }

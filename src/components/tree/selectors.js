@@ -5,7 +5,11 @@ import type {State} from './model';
 import {ElementModel, DirectoryModel} from "../../repository/immutable/RepositoryModel";
 import {getFileTree} from "../../repository-redux/selectors";
 
-export const getAll = (state: any): State => state[NAME]
+export const getAll = (rootState: any): State => rootState.designer[NAME]
+
+export const getExpandedFolders = (state: any): State => getAll(state).expandedFolders
+
+export const getCurrentPath = (state: any): State => getAll(state).currentPath
 
 export const getCurrentElement = (rootState: any): ?ElementModel => {
   const state = getAll(rootState)

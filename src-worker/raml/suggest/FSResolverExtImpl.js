@@ -92,6 +92,11 @@ class FSResolverExtImpl {
    * @param relativePath - relative path to resolve.
    */
   resolve(contextPath: string, relativePath: string): string {
+    if (typeof contextPath !== 'string' || typeof relativePath !== 'string') {
+      console.warn('RamlSuggestions calling FSResolver with unexpected contextPath', contextPath, relativePath)
+      return ''
+    }
+
     if (relativePath.startsWith('/')) return relativePath
 
     const pathBeginning = contextPath.endsWith('/') ? contextPath : contextPath + '/'

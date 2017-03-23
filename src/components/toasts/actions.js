@@ -31,7 +31,8 @@ export const addSuccessToasts = (msg: string) =>
     }, 5000)
   }
 
-export const addErrorToasts = (msg: string) =>
+export const addErrorToasts = (error: any) =>
   (dispatch) => {
-    dispatch(addToast(msg, "error"))
+    console.error(error)
+    dispatch(addToast(error.message || error, "error"))
   }

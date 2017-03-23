@@ -1,12 +1,11 @@
 .Editor {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-}
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 
-.Editor .Empty {
+  .Empty {
     position: absolute;
     padding-top: 15%;
     top: 0;
@@ -15,15 +14,23 @@
     right: 0;
     z-index: 1;
     background: white;
-}
+  }
 
-.monaco-editor .suggest-widget > .tree {
+  .monaco-editor .suggest-widget > .tree {
     width: inherit;
     height: inherit;
     position: relative;
     background-color: inherit;
-}
+  }
 
-.monaco-list-rows {
+  .monaco-list-rows {
     margin-right: 0;
+  }
+
+  [aria-label="No suggestions., suggestion"] {
+    background: transparent !important;
+    .icon.text {
+      visibility: hidden;
+    }
+  }
 }

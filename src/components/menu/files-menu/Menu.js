@@ -4,7 +4,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 
 import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
-import Icon from '@mulesoft/anypoint-icons/lib/Icon'
+import Icon from '../../svgicon/SvgIcon'
 
 import NewFolderModalContainer from '../../modal/new-folder/NewFolderModalContainer'
 import NewFileModalContainer from '../../modal/new-file/NewFileModalContainer'
@@ -48,8 +48,8 @@ class Menu extends React.Component {
         <span className="menu-name">Files</span>
 
         <div className="menu-content">
-          <ContextMenu className="context-menu" options={contextMenuOptions} testId="Context-Menu">
-            <Icon className="context-menu-icon" name="contextmenu"/>
+          <ContextMenu triggerOn={['click']} className="context-menu" options={contextMenuOptions} testId="Context-Menu">
+            <Icon name="contextmenu" size={20} className="context-menu-icon"/>
           </ContextMenu>
 
           <ImportModalContainer/>
@@ -57,8 +57,8 @@ class Menu extends React.Component {
           <ZipConflictModalContainer/>
           <ExportModalContainer/>
 
-          <ContextMenu className="add-menu" options={addMenuOptions} testId="Add-Menu">
-            <Icon className="plus-icon" name="plus"/>
+          <ContextMenu triggerOn={['click']} className="add-menu" options={addMenuOptions} testId="Add-Menu">
+            <Icon name="plus" size={20} className="plus-icon"/>
           </ContextMenu>
 
           <NewFileModalContainer/>

@@ -10,6 +10,9 @@ import ZipHelper from './helper/ZipHelper'
 import {zipArrays} from './helper/utils'
 import type {Tuple} from './helper/utils'
 
+// eslint-disable-next-line
+export type SaveResult = {repository: Repository, file: ?File, content: ?string}
+
 export default class Repository {
   _fileSystem: FileSystem
   _root: Directory
@@ -65,19 +68,25 @@ export default class Repository {
           .map(t => ({path: t.first.path.toString(), content: t.second}))
 
         return this._fileSystem.save(fileDataList)
-      }).then(entry => {
+      }).then((entry): Promise<SaveResult> => {
         files.forEach(f => f.clear())
         const repository = this._updateDirectory(ElementFactory.directory(this._fileSystem, entry))
-
         const newFile = currentFile ? this.getFileByPath(currentFile) : null
-        if (!newFile) return {repository}
-        return newFile.getContent()
+
+        if (!newFile) return Promise.resolve({repository, file: undefined, content: undefined})
+        else return newFile.getContent()
           .then(c => ({repository, file: newFile, content: c}))
       })
   }
 
-  saveAll(currentFile: ?Path): Promise<Repository> {
-    return this.saveFiles(this._getDirtyFiles(), currentFile)
+  sync():Promise<any> {
+    return this._fileSystem.directory(Path.fromString('')).then(entry => {
+      this._updateDirectory(ElementFactory.directory(this._fileSystem, entry))
+    })
+  }
+
+  saveAll(currentFile: ?Path): Promise<SaveResult> {
+    return this.saveFiles(this.getDirtyFiles(), currentFile)
   }
 
   rename(path: string, newName: string): Promise<Element> {
@@ -98,7 +107,7 @@ export default class Repository {
     if (!file) return Promise.reject()
 
     return file.remove(this._fileSystem)
-      .then(() => file.parent.removeChild(file) )
+      .then(() => (file.parent && file.parent.removeChild(file)) || file)
   }
 
   deleteDirectory(path: Path): Promise<Directory> {
@@ -106,6 +115,7 @@ export default class Repository {
     if (!directory) return Promise.reject()
 
     return directory.remove(this._fileSystem)
+      .then(d => ((d.parent && d.parent.removeChild(d)) || d))
   }
 
   addFile(path: Path, name: string, content: string): File {
@@ -113,7 +123,7 @@ export default class Repository {
     if (!element || !element.isDirectory())
       throw new Error(`${path.toString()} is not a valid directory`)
 
-    const file = File.dirty(this._fileSystem, name, content, element.asDirectory())
+    const file = File.newFile(this._fileSystem, name, content, element.asDirectory())
     element.asDirectory().addChild(file)
 
     return file
@@ -138,21 +148,28 @@ export default class Repository {
     const newParent = this.getByPath(to.parent())
     const element   = this.getByPath(from)
 
-    if (!newParent || !newParent.isDirectory())
+    if (!newParent)
+      throw new Error(`New directory is not a defined`)
+    else if(!newParent.isDirectory())
       throw new Error(`${newParent.path.toString()} is not a valid directory`)
     else if (!element)
       throw new Error(`${from.toString()} is not a valid directory`)
 
-    const promise = this._fileSystem.rename(from.toString(), to.toString())
+    if (!this._isMovableInFileSystem(element))
+      return Promise.resolve(element.moveTo(newParent.asDirectory()))
 
-    return promise
-      .then(() => {
-        element.parent.removeChild(element)
-        element.parent = newParent.asDirectory()
-        newParent.asDirectory().addChild(element)
-        return element
-      })
-      .catch(() => element)
+    return this._fileSystem.rename(from.toString(), to.toString(), element.isDirectory())
+      .then(() => element.moveTo(newParent.asDirectory()))
+  }
+
+  _isMovableInFileSystem(element: Element): boolean {
+    if (element.isDirectory()) {
+      const directory = element.asDirectory()
+      return this._fileSystem.persistsEmptyFolders || !directory.isEmpty()
+    } else {
+      const file = element.asFile()
+      return file.persisted
+    }
   }
 
   setContent(path: Path, content: string): File {
@@ -168,13 +185,17 @@ export default class Repository {
     return ZipHelper.buildZip(this.root)
   }
 
-  _getDirtyFiles(dir: ?Directory): File[] {
+  hasDirtyFiles(): boolean {
+    return this.getDirtyFiles().length !== 0
+  }
+
+  getDirtyFiles(dir: ?Directory): File[] {
     const directory = dir ? dir : this._root
     let files = []
 
     directory.children.forEach((child: Element) => {
       if (child.isDirectory()) {
-        files = files.concat(this._getDirtyFiles(child.asDirectory()))
+        files = files.concat(this.getDirtyFiles(child.asDirectory()))
       } else {
         const file = child.asFile()
         if (file.dirty) files.push(file)
@@ -186,9 +207,7 @@ export default class Repository {
   _updateDirectory(newRoot: Directory): Repository {
     const oldRoot = this._root
     newRoot.mergeWith(oldRoot)
-
+    this._root = newRoot
     return this
   }
 }
-
-export type SaveResult = {repository: Repository, file: File, content: string}

@@ -1,79 +1,82 @@
+@import "../../variables.scss";
+
 .publish-api-modal {
-  font-family: DIN Pro, sans-serif;
-}
+  font-family: $large-font;
 
-.publish-api-modal label.required:after {
-  content: ' (required)';
-  color: gray;
-}
+  label.required:after {
+    content: ' (required)';
+    color: gray;
+  }
 
-.publish-api-modal .error {
-  color: #d9534f;
-  padding-top: 5px;
-}
+  .error {
+    color: #d9534f;
+    padding-top: 5px;
+  }
 
-.publish-api-modal .answer {
-  color: green;
-  padding-top: 5px;
-}
+  .answer {
+    color: green;
+    padding-top: 5px;
+  }
 
-.publish-api-modal .form-row > div {
-  margin-top: 2px;
-  margin-bottom: 10px;
-}
+  .form-row > div {
+    margin-top: 2px;
+    margin-bottom: 10px;
+  }
 
-.publish-api-modal .form-col {
-  display: inline-block;
-  width: 50%;
-}
-.publish-api-modal .form-col:first-child {
-  padding-right: 10px;
-}
-.publish-api-modal .form-col:last-child {
-  padding-left: 10px;
-}
+  .form-col {
+    display: inline-block;
+    width: 50%;
+  }
 
-.publish-api-modal div > .form-row:last-child > div {
-  padding-bottom: 0;
-}
+  .form-col:first-child {
+    padding-right: 10px;
+  }
 
-.publish-api-modal .tags {
-  display: flex;
-}
+  .form-col:last-child {
+    padding-left: 10px;
+  }
 
-.publish-api-modal .tags > .tag-name {
-  width: 80%;
-}
+  div > .form-row:last-child > div {
+    padding-bottom: 0;
+  }
 
-.publish-api-modal .tags > .save-tag-button {
-  margin-left: 20px;
-}
+  .tags {
+    display: flex;
+  }
 
-.publish-api-modal .search-spinner {
-  min-height: 140px;
-  margin-top: 60px;
-  margin-left: 40%;
-}
+  .tags > .tag-name {
+    width: 80%;
+  }
 
-.publish-api-modal h3 {
-  margin-top: 15px;
-  margin-bottom: 10px;
-}
+  .tags > .save-tag-button {
+    margin-left: 20px;
+  }
 
-.publish-api-modal .error-container > div:first-child > h3,
-.publish-api-modal .partial-answers > div:first-child > h3 {
-  margin: 0;
-}
+  .search-spinner {
+    min-height: 140px;
+    margin-top: 60px;
+    margin-left: 40%;
+  }
 
-.publish-api-modal .error-container,
-.publish-api-modal .partial-answers {
-  margin-bottom: 15px;
-}
+  h3 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+  }
 
-.publish-api-modal .publish-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  .error-container > div:first-child > h3,
+  .partial-answers > div:first-child > h3 {
+    margin: 0;
+  }
+
+  .error-container, .partial-answers {
+    margin-bottom: 15px;
+  }
+
+  .publish-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
 
 div[data-anypoint-component="Modal"].publish-api-modal {

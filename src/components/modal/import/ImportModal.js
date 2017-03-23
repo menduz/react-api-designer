@@ -11,8 +11,10 @@ import Select from '@mulesoft/anypoint-components/lib/Select'
 import TextField from '@mulesoft/anypoint-components/lib/TextField'
 import FileUploader from '@mulesoft/anypoint-components/lib/FileUploader'
 import Popover from '@mulesoft/anypoint-components/lib/Popover'
-import Icon from '@mulesoft/anypoint-icons/lib/Icon'
+import Toast from '@mulesoft/anypoint-components/lib/Toast'
 
+import Icon from '../../svgicon/SvgIcon'
+import importTypes from './importTypes.json'
 import './Import.css'
 
 type Props = {
@@ -24,9 +26,11 @@ type Props = {
   onImportTypeChange: () => void,
   onUrlChange: () => void,
   onFileUpload: () => void,
+  onCloseError: () => void,
   fileToImport: any,
   showModal: Boolean,
-  isImporting: Boolean
+  isImporting: Boolean,
+  error: string
 }
 
 class ImportModal extends React.Component {
@@ -34,7 +38,7 @@ class ImportModal extends React.Component {
 
   getType() {
     const selectValue = this.props.selectValue
-    return ImportModal.IMPORT_TYPES.find(v => v.value === selectValue)
+    return importTypes.find(v => v.value === selectValue)
   }
 
   handleSubmit() {
@@ -67,20 +71,13 @@ class ImportModal extends React.Component {
 
   render() {
     const {
-      onCancel,
-      onImportTypeChange,
-      onFileUpload,
-      showModal,
-      selectValue,
-      url,
-      isImporting,
-      fileToImport
+      onCancel, onImportTypeChange, onFileUpload, onCloseError,
+      showModal, selectValue, url, isImporting, fileToImport, error
     } = this.props
 
     return showModal ? (
       <Modal className="import-modal"
              onCancel={onCancel}
-             onSubmit={this.handleSubmit.bind(this)}
              onEsc={onCancel}
              onEnter={this.handleSubmit.bind(this)}
              onClickOverlay={onCancel}
@@ -89,11 +86,14 @@ class ImportModal extends React.Component {
         <ModalHeader>
           <h1>Import</h1>
         </ModalHeader>
-
+        {error.length > 0 ?
+          <div className="error-zone">
+            <Toast className="import-error" title={error} kind="error" onClose={onCloseError} testId="Import-Error"/>
+          </div> : null}
         <ModalBody>
           <div className="input-type">
             <Select name="import-type"
-                    options={ImportModal.IMPORT_TYPES}
+                    options={importTypes}
                     value={selectValue}
                     onChange={onImportTypeChange}
                     clearable={false}
@@ -103,7 +103,9 @@ class ImportModal extends React.Component {
                      triggerOn={['hover']}
                      anchorPosition="br"
                      testId="Import-Popover">
-              <Icon name="info-small" size={19} fill={"rgb(124, 125, 126)"}/>
+              <div>
+                <Icon name="info-small" size={19} fill="rgb(124, 125, 126)" />
+              </div>
             </Popover>
           </div>
           {this.getType().url ?
@@ -129,35 +131,6 @@ class ImportModal extends React.Component {
       </Modal>
     ) : null
   }
-
-  static IMPORT_TYPES = [
-    {
-      value: 'RAML-file',
-      label: 'RAML file',
-      type: 'RAML10',
-      info: 'Support single or zip files.'
-    },
-    {
-      value: 'RAML-url',
-      label: 'RAML url',
-      type: 'RAML10',
-      info: 'Note: currently it does not import includes.',
-      url: true
-    },
-    {
-      value: 'OAS-file',
-      label: 'OAS file',
-      type: 'SWAGGER',
-      info: 'Support single or zip files. Note: currently supports OAS (Swagger) v2.0.'
-    },
-    {
-      value: 'OAS-url',
-      label: 'OAS url',
-      type: 'SWAGGER',
-      info: 'Note: currently supports OAS (Swagger) v2.0.',
-      url: true
-    }
-  ]
 }
 
 export default ImportModal

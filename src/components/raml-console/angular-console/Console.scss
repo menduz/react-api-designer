@@ -3,16 +3,24 @@
   display: inline-flex;
   width: 100%;
   justify-content: space-between;
-}
 
-.Console-toolbar .Mock {
-  text-align: right;
+  .Mock {
+    text-align: right;
+  }
 }
 
 .Spinner-console {
   padding-top: 3px;
+
+  &.hide > div {
+    display: none;
+  }
 }
 
-.Spinner-console.hide > div {
-  display: none;
+.api-designer-console {
+  &.hide-resources {
+    #raml-console-resources-container {
+      display: none;
+    }
+  }
 }

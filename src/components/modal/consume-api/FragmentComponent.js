@@ -20,9 +20,9 @@ export default class FragmentComponent extends Component {
           </div>
         </div>
         <div className="fragment-mid">
-          <span>{`Version: ${fragment.version || '-'}`}</span>
           <span>{`GroupId: ${fragment.groupId || '-'}`}</span>
           <span>{`AssetId: ${fragment.assetId || '-'}`}</span>
+          <span>{`Version: ${fragment.version || '-'}`}</span>
         </div>
         <div className="fragment-right">
           <Checkbox onChange={handleFragmentSelection}/>
