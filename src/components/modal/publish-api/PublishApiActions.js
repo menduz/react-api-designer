@@ -96,7 +96,9 @@ export const publish = (name: string, version: string, tags: Array<string>, main
       //@@TODO Check type: raml_fragments
       remoteApi.publishToExchange(name, version, tags, mainFile, assetId, groupId, 'raml_fragments')
         .then((response: PublishApiResponse) => {
-          dispatch(successfullyFetched(response, constants.EXCHANGE))
+          //TODO @jlongo verify response, and build url when spec is defined
+          const url = `/exchange/${dataProvider.organizationDomain()}/#/group/${response.groupId}/asset/${response.assetId}/version/${response.versionId}`
+          dispatch(successfullyFetched({...response, url}, constants.EXCHANGE))
         })
         .catch((error) => {
           console.error(error)

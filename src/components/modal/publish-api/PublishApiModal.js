@@ -57,10 +57,6 @@ class PublishApiModal extends React.Component {
     this.props.onGroupIdChange(event.value)
   }
 
-  handleMainFileChange(event: any) {
-    this.props.onMainFileChange(event.value)
-  }
-
   handleSelectFileChange(event: any) {
     this.props.onMainFileChange(event.value)
   }
@@ -73,7 +69,7 @@ class PublishApiModal extends React.Component {
     this.props.onPublishToBothApis(!this.props.publishToBothApis)
   }
 
-  isVariableComplete(variable, isFetching = false): Boolean {
+  isVariableComplete(variable: any, isFetching: boolean = false): boolean {
     const {publishToBothApis, publishToExchange} = this.props
 
     if (publishToBothApis)
@@ -124,12 +120,12 @@ class PublishApiModal extends React.Component {
   }
 
   render() {
-    const {name, tag, tags, onCancel, publishToExchange, nextVersion} = this.props
+    const {name, tag, tags, onCancel, publishToExchange, version, nextVersion} = this.props
 
     const isFetching = this.isVariableComplete(this.props.isFetching, true)
     const isFetched = this.isVariableComplete(this.props.isFetched)
     const canSubmit = this.canSubmit()
-    const content = isFetched ? this.link() : this.form(name, nextVersion, tag, tags, isFetching)
+    const content = isFetched ? this.link() : this.form(name, version, nextVersion, tag, tags, isFetching)
     const errors = this.handleErrors()
     const partialAnswers = this.handlePartialAnswers(isFetching, isFetched)
 
@@ -175,7 +171,7 @@ class PublishApiModal extends React.Component {
     )
   }
 
-  addExchangeFormFields(isFetching: ?Boolean): [any] {
+  addExchangeFormFields(isFetching: ?boolean): [any] {
     const {groupId, assetId, main, files} = this.props
     return [
       <div className="form-row" key="Form-Asset-Group-Ids">
@@ -199,19 +195,21 @@ class PublishApiModal extends React.Component {
         </div>
       </div>,
       <div className="form-row" key="Form-MainFile">
-        <Label className="required">Main File</Label>
-        <Select name="import-type"
-                options={files}
-                value={main}
-                onChange={this.handleSelectFileChange.bind(this)}
-                clearable={false}
-                testId="Publish-Select-MainFile"/>
+        <div className="large-col">
+          <Label className="required">Main File</Label>
+          <Select name="import-type"
+                  options={files}
+                  value={main}
+                  onChange={this.handleSelectFileChange.bind(this)}
+                  clearable={false}
+                  testId="Publish-Select-MainFile"/>
+        </div>
       </div>
     ]
   }
 
-  form(name: string, nextVersion: string, tag: ?string, tags: Array<string>, isFetching: ?Boolean) {
-    const {isLoading, publishToExchange} = this.props
+  form(name: string, currentVersion: string, nextVersion: string, tag: ?string, tags: Array<string>, isFetching: ?boolean) {
+    const {isLoading, publishToExchange, publishToBothApis} = this.props
     return (
       isLoading ? <div className="search-spinner"><Spinner size="l"/></div> :
         <div>
@@ -234,44 +232,36 @@ class PublishApiModal extends React.Component {
                          onChange={this.handleNextVersionChange.bind(this)}
                          required
                          testId="Publish-Input-NextVersion"/>
+              {currentVersion ? <small>Current version: {currentVersion}</small> : null}
             </div>
           </div>
           <div className="form-row">
-            <Label>Tags</Label>
-            <Pills testId="Publish-Tags-Pills">
-              {tags ? tags.map(tag => (
-                  <Pill key={tag} onRemove={() => this.props.onTagRemove(tag)}>{tag}</Pill>
-                )) : null}
-            </Pills>
-            <div className="tags">
-              <TextField className="tag-name"
-                         value={tag}
-                         placeholder="Tag..."
-                         disabled={isFetching}
-                         onChange={this.handleTagChange.bind(this)}
-                         testId="Publish-Tag-Input-Name"/>
-              <Button className="save-tag-button"
-                      kind="primary"
-                      disabled={!tag}
-                      onClick={this.handleSaveTag.bind(this)}
-                      noFill
-                      testId="Publish-Save-Tag">
-                Add
-              </Button>
+            <div className="large-col">
+              <Label>Tags</Label>
+              <Pills className="pills" testId="Publish-Tags-Pills">
+                {tags ? tags.map(tag => (
+                    <Pill key={tag} onRemove={() => this.props.onTagRemove(tag)}>{tag}</Pill>
+                  )) : null}
+              </Pills>
+              <div className="tags">
+                <TextField className="tag-name"
+                           value={tag}
+                           placeholder="Tag..."
+                           disabled={isFetching}
+                           onChange={this.handleTagChange.bind(this)}
+                           testId="Publish-Tag-Input-Name"/>
+                <Button className="save-tag-button"
+                        kind="primary"
+                        disabled={!tag}
+                        onClick={this.handleSaveTag.bind(this)}
+                        noFill
+                        testId="Publish-Save-Tag">
+                  Add
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-    )
-  }
-
-  static generateExchangeResponse(response: any) {
-    return (
-      <div key='answer-exchange'>
-        <h3>Successfully published to Exchange</h3>
-        <div className="answer">AssetId: {response.assetId}</div>
-        <div className="answer">GroupId: {response.groupId}</div>
-        <div className="answer">Version: {response.version}</div>
-      </div>
     )
   }
 
@@ -281,6 +271,18 @@ class PublishApiModal extends React.Component {
         <h3>Successfully published to API Manager</h3>
         <div className="answer">
           Published {response.apiName} version {response.versionName}.
+          Click <a href={response.url} target="_blank">here</a> to view it.
+        </div>
+      </div>
+    )
+  }
+
+  static generateExchangeResponse(response: any) {
+    return (
+      <div key='answer-exchange'>
+        <h3>Successfully published to Exchange</h3>
+        <div className="answer">
+          Published version {response.version}.
           Click <a href={response.url} target="_blank">here</a> to view it.
         </div>
       </div>
