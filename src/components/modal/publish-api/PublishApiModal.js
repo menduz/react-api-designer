@@ -209,7 +209,7 @@ class PublishApiModal extends React.Component {
   }
 
   form(name: string, currentVersion: string, nextVersion: string, tag: ?string, tags: Array<string>, isFetching: ?boolean) {
-    const {isLoading, publishToExchange, publishToBothApis} = this.props
+    const {isLoading, publishToExchange} = this.props
     return (
       isLoading ? <div className="search-spinner"><Spinner size="l"/></div> :
         <div>
