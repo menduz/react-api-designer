@@ -79,7 +79,7 @@ class ConsumeApi extends Component {
                 <div className="search-spinner"><Spinner size="l"/></div> :
                 fragments.size > 0 ?
                   this.renderFragments(fragments) :
-                  null
+                  <div className="no-results">No results found</div>
               }
               {isAddingMore ? <div className="small-spinner"><Spinner size="m"/></div> : null}
             </div>

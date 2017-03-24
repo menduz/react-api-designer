@@ -32,7 +32,7 @@ class DesignerEditor extends React.Component {
 
   shouldComponentUpdate(nextProps) {
 
-    if (this.monaco && this.language) {
+    if (this.monaco && this.monaco.editor && this.editor && this.language) {
       if (nextProps.position !== this.position)
         this._revealPosition(nextProps.position)
 
