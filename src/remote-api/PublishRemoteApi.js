@@ -1,5 +1,6 @@
 import {SEPARATOR} from './RemoteApi'
 import RemoteApi from './RemoteApi'
+import type {ProjectType} from '../bootstrap/model'
 
 class PublishRemoteApi extends RemoteApi {
 
@@ -12,7 +13,7 @@ class PublishRemoteApi extends RemoteApi {
   }
 
   publishToExchange(name: string, version: string, tags: Array<string>,
-                    main: string, assetId: string, groupId: string, type: string): Promise<PublishApiResponse> {
+                    main: string, assetId: string, groupId: string, type: ProjectType): Promise<PublishApiResponse> {
     return this._post(['publish', 'exchange'], {name, version, tags, main, assetId, groupId, type})
   }
 

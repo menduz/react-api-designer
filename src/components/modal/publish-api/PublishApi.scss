@@ -23,6 +23,14 @@
     margin-bottom: 10px;
   }
 
+  .form-row {
+    display: flex;
+  }
+
+  .large-col {
+    width: 100%;
+  }
+
   .form-col {
     display: inline-block;
     width: 50%;
@@ -42,10 +50,16 @@
 
   .tags {
     display: flex;
+    justify-content: space-between;
   }
 
   .tags > .tag-name {
-    width: 80%;
+    width: 100%;
+  }
+
+  .pills {
+    margin-top: 5px;
+    margin-bottom: 5px;
   }
 
   .tags > .save-tag-button {

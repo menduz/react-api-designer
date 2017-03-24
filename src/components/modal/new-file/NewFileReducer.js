@@ -1,13 +1,13 @@
 //@flow
 
 import type {State} from './NewFileModel'
-import {fileTypes} from './NewFileModel'
 import * as actions from './NewFileActions'
 
 const initialState : State = {
   fileName: '',
-  fileType: fileTypes[0],
-  fragmentType: fileTypes[0].subTypes[0],
+  fileTypeOptions: [],
+  fileType: null,
+  fragmentType: null,
   showModal: false
 }
 
@@ -22,7 +22,7 @@ export default (state: State = initialState, action: any): State => {
       return {
         ...state,
         fileType: action.payload.type,
-        fragmentType: initialState.fragmentType,
+        fragmentType: state.fileTypeOptions[0].subTypes[0],
         fileName: action.payload.fileName
       }
     case actions.CHANGE_FRAGMENT:
@@ -32,11 +32,15 @@ export default (state: State = initialState, action: any): State => {
         fileName: action.payload.fileName
       }
     case actions.SHOW:
+      const fileTypes = action.payload.fileTypeOptions;
       return {
         ...state,
         showModal: true,
-        fileName: action.payload.nextName,
-        path: action.payload.path
+        fileName: action.payload.defaultName,
+        path: action.payload.path,
+        fileTypeOptions: fileTypes,
+        fileType: fileTypes[0],
+        fragmentType: fileTypes[0].subTypes[0],
       }
     case actions.HIDE:
       return initialState

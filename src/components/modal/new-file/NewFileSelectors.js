@@ -6,6 +6,8 @@ export const getAll = (rootState: any): State => rootState.designer.dialogs.newF
 
 export const getFileName = (state: any): State => getAll(state).fileName
 
+export const getFileTypeOptions = (state: any): State => getAll(state).fileTypeOptions
+
 export const getFileType = (state: any): State => getAll(state).fileType
 
 export const getFragmentType = (state: any): State => getAll(state).fragmentType

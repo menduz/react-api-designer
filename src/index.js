@@ -43,7 +43,7 @@ const store = createStore(
 const projectId = getLocationQueryVariable('projectId')
 const projectDir = getLocationQueryVariable('projectDir')
 if (projectId) {
-  store.dispatch(component.actions.init(projectId))
+  store.dispatch(component.actions.init(projectId, getLocationQueryVariable('projectType')))
 } else if (projectDir) {
   store.dispatch(component.actions.initElectron(projectDir))
 } else {

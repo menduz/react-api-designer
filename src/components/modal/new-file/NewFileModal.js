@@ -8,13 +8,13 @@ import Popover from '@mulesoft/anypoint-components/lib/Popover'
 import Select from '@mulesoft/anypoint-components/lib/Select'
 import TextField from '@mulesoft/anypoint-components/lib/TextField'
 import type {FileType} from './NewFileModel'
-import {fileTypes} from './NewFileModel'
 import {Path} from '../../../repository'
 import './NewFile.css'
 
 type Props = {
   fileName: string,
   fileType: object,
+  fileTypeOptions: object[],
   fragmentType: string,
   onSubmit: () => void,
   onCancel: () => void,
@@ -42,7 +42,7 @@ class NewFileModal extends React.Component {
   }
 
   render() {
-    const {fileName, fileType, fragmentType, onCancel, onFileTypeChange, onFragmentTypeChange, showModal} = this.props
+    const {fileName, fileTypeOptions, fileType, fragmentType, onCancel, onFileTypeChange, onFragmentTypeChange, showModal} = this.props
 
     return showModal ? (
       <Modal className="new-file"
@@ -54,7 +54,7 @@ class NewFileModal extends React.Component {
              testId="New-File-Modal">
 
         <Select className="selected-file-type"
-                options={fileTypes}
+                options={fileTypeOptions}
                 value={fileType}
                 onChange={onFileTypeChange}
                 clearable={false}

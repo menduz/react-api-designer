@@ -1,6 +1,11 @@
 // @flow
 
+export const API_PROJECT = 'raml'
+export const FRAGMENT_PROJECT = 'raml_fragment'
+export type ProjectType = | API_PROJECT | FRAGMENT_PROJECT
+
 export type State = {
   initializing: boolean,
-  projectId: string
+  projectId: string,
+  projectType: ProjectType
 }

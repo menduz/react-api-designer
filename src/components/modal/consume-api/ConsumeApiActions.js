@@ -75,8 +75,8 @@ export const submit = (fragments: List<Fragment>) => {
     dispatch(addExchangeDependency(dependencies)).then(() => {
       dispatch(clear()) // close dialog
     }).catch(err => {
-      console.log('Error when added dependencies', selected, err)
-      dispatch(showError('Error when trying to submit')) // show error in dialog
+      console.log('Error when adding dependencies', selected, err)
+      dispatch(showError(`${err.message || err || 'Error when adding dependency'}`)) // show error in dialog
     })
   }
 }
