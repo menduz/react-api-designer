@@ -35,16 +35,25 @@ const initWithFileSytem = (fs: FileSystem, dispatch: Dispatch, {repositoryContai
   dispatch({type: INITIALIZING, payload: {projectId, projectType}})
 
   Repository.fromFileSystem(fs)
-    .then((repository) => {
+    .then((repository: Repository) => {
+      // leave repository ready for all actions
       repositoryContainer.isLoaded = true
       repositoryContainer.repository = repository
       return repository
     })
-    .then((repository) => {
+    .then((repository: Repository) => {
+      // init filesystem and mark as ready
       dispatch(repositoryActions.initFileSystem(FileTreeFactory.repository(repository)))
-      dispatch({type: INITIALIZED})
+
+      // open the first file by default if there is one
+      const files = repository.root.fileChildren()
+      if (files && files.length > 0) dispatch(treeActions.pathSelected(files[0].path))
+
       // trigger the lazy load of the worker as soon as the designer opens
       designerWorker.load()
+
+      // mark as initialized
+      dispatch({type: INITIALIZED})
     }).catch(error => {
       dispatch(addErrorToasts(error))
   })

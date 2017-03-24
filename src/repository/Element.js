@@ -358,13 +358,13 @@ class Directory extends Element {
     return newDirectory
   }
 
-  _fileChildren(): File[] {
+  fileChildren(): File[] {
     return this.children
       .filter(c => !c.isDirectory())
       .map(c => c.asFile())
   }
 
-  _directoryChildren(): Directory[] {
+  directoryChildren(): Directory[] {
     return this.children
       .filter(c => c.isDirectory())
       .map(c => c.asDirectory())
@@ -377,7 +377,7 @@ class Directory extends Element {
     dirtyFiles.concat(directoryWithNoFile)
       .forEach((e: Element) => this.replaceChild(e))
 
-    this._directoryChildren()
+    this.directoryChildren()
       .forEach(d => {
         const otherChild = other._child(d.name)
         if (otherChild && otherChild.isDirectory()) d.mergeWith(otherChild.asDirectory())
@@ -385,18 +385,18 @@ class Directory extends Element {
   }
 
   _getDirtyChildren(): File[] {
-    return this._fileChildren()
+    return this.fileChildren()
       .filter(f => f.dirty)
   }
 
   _getChildrenWithNoFiles(): Directory[] {
-    return this._directoryChildren()
+    return this.directoryChildren()
       .filter(d => !d._hasFileDescendants())
   }
 
   _hasFileDescendants() {
-    if (this._fileChildren().length !== 0) return true
-    return this._directoryChildren()
+    if (this.fileChildren().length !== 0) return true
+    return this.directoryChildren()
       .reduce((result, value: Directory) => result || value._hasFileDescendants(), false)
   }
 

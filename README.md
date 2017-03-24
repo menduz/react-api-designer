@@ -1,6 +1,6 @@
 # Api Designer
 
-## Setup:
+## Setup
 ```bash
 # (Pre-requisite) need to be logged in into the Mulesoft npm repository (using github credentials with out two factor authetication)
 npm login --registry=https://npm.mulesoft.com --scope=@mulesoft
@@ -27,6 +27,9 @@ npm install
 - run `npm build` each time you change the designer
 - run `npm start` to run the Electron app in dev against that build
 
+### Test
+
+- `npm test` to run tests
 
 ## Building
 

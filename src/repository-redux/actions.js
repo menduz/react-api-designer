@@ -392,7 +392,7 @@ export const removeExchangeDependency = (gav: any) =>
     consumeRemoteApi.removeDependencies(dependencies).then(() => {
       exchangeJob(consumeRemoteApi).then(() => {
         repository.sync().then(() => {
-          var fileTree = Factory.repository(repository);
+          const fileTree = Factory.repository(repository)
           dispatch(initFileSystem(fileTree))
           dispatch({type: UPDATE_DEPENDENCIES_DONE})
         })
@@ -411,7 +411,7 @@ const syncWorkAround = (repository): Promise<Any> => {
     let intervalCount = 0
     let intervalId = setInterval(() => {
       repository.sync().then(() => {
-        intervalCount = intervalCount + 1
+        intervalCount++
         if (!repository.getByPathString('.exchange_modules_tmp') || intervalCount > 4) {
           clearInterval(intervalId)
           resolve()
@@ -434,7 +434,7 @@ export const addExchangeDependency = (dependencies: any) =>
     return consumeRemoteApi.addDependencies(dependencies).then(() => {
       return exchangeJob(consumeRemoteApi).then(() => {
         return syncWorkAround(repository).then(() => {
-          var fileTree = Factory.repository(repository);
+          const fileTree = Factory.repository(repository)
           dispatch(initFileSystem(fileTree))
           dispatch({type: UPDATE_DEPENDENCIES_DONE})
         })
