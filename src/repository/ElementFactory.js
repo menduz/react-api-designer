@@ -19,8 +19,8 @@ class ElementFactory {
   static directory(fileSystem: FileSystem, entry: Entry, parent?: Directory): Directory {
     if (entry.type !== FileSystem.FolderEntryType) throw new Error('This isn\'t a folder entry')
 
-    const EntryChildren = entry.children || []
-    const children = EntryChildren.map((entry) => ElementFactory.element(fileSystem, entry))
+    const entryChildren = entry.children || []
+    const children = entryChildren.map((entry) => ElementFactory.element(fileSystem, entry))
     const directory = new Directory(entry.name, children, parent)
     children.forEach((child: Element) => {
       child.parent = directory

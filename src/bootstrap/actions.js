@@ -46,7 +46,7 @@ const initWithFileSytem = (fs: FileSystem, dispatch: Dispatch, {repositoryContai
       dispatch(repositoryActions.initFileSystem(FileTreeFactory.repository(repository)))
 
       // open the first file by default if there is one
-      const files = repository.root.fileChildren()
+      const files = repository.root.fileChildren().filter(f=> f.name !== 'exchange.json')
       if (files && files.length > 0) dispatch(treeActions.pathSelected(files[0].path))
 
       // trigger the lazy load of the worker as soon as the designer opens

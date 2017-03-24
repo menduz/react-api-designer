@@ -81,7 +81,7 @@ export const openModal = () => {
 }
 
 const formatErrorMessage = (error: any, source: string) => {
-  return `An error has occurred while publishing to ${source}: ${error && error.body ? error.body.message : ''}`
+  return error && error.body && error.body.message ? error.body.message : `Connection error while publishing to ${source}`
 }
 
 export const publish = (name: string, version: string, tags: Array<string>, mainFile: string,
@@ -96,8 +96,8 @@ export const publish = (name: string, version: string, tags: Array<string>, main
       //publishing to exchange
       const projectType = getProjectType(getState()) // raml or raml_fragment
       remoteApi.publishToExchange(name, version, tags, mainFile, assetId, groupId, projectType)
-        .then((response: PublishApiResponse) => {
-          const url = `/exchange/${response.groupId}/${response.assetId}/${response.versionId}`
+        .then((response) => {
+          const url = `/exchange/${response.groupId}/${response.assetId}/${response.version}`
           dispatch(successfullyFetched({...response, url}, constants.EXCHANGE))
         })
         .catch((error) => {
