@@ -22,5 +22,5 @@ export const isParsing = (rootState: any) => getAll(rootState).isParsing
 
 export const isReadOnly = (rootState): Path => {
   const path = getCurrentFilePath(rootState)
-  return path && path.elements().contains('exchange_modules')
+  return path && path.elements().first() === 'exchange_modules'
 }

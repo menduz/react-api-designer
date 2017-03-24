@@ -28,8 +28,8 @@
 
   .fragment {
     display: inline-flex;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    padding-top: 15px;
+    padding-bottom: 10px;
     width: 100%;
     justify-content: space-between;
   }
@@ -50,14 +50,6 @@
 
   .fragment-left > *, .fragment-mid > *, .fragment-right > * {
     padding-bottom: 5px;
-  }
-
-  .fragment-left > :first-child, .fragment-mid > :first-child, .fragment-right > :first-child {
-    padding-top: 20px;
-  }
-
-  .fragment-left > :last-child, .fragment-mid > :last-child, .fragment-right > :last-child {
-    padding-bottom: 20px;
   }
 
   .fragment-mid {

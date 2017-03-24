@@ -371,13 +371,14 @@ class Directory extends Element {
   }
 
   mergeWith(other: Directory) {
-    const dirtyFiles = other._getDirtyChildren()
-    const directoryWithNoFile = other._getChildrenWithNoFiles()
+    const dirtyFiles = other._getDirtyChildren().filter(Directory._filterExchangeModules)
+    const directoryWithNoFile = other._getChildrenWithNoFiles().filter(Directory._filterExchangeModules)
 
     dirtyFiles.concat(directoryWithNoFile)
       .forEach((e: Element) => this.replaceChild(e))
 
     this.directoryChildren()
+      .filter(Directory._filterExchangeModules)
       .forEach(d => {
         const otherChild = other._child(d.name)
         if (otherChild && otherChild.isDirectory()) d.mergeWith(otherChild.asDirectory())
@@ -409,6 +410,10 @@ class Directory extends Element {
     if (child) this.removeChild(child)
 
     this.addChild(element.clone(this))
+  }
+
+  static _filterExchangeModules(d) {
+    return d.name !== 'exchange_modules'
   }
 }
 

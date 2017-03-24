@@ -404,22 +404,24 @@ export const removeExchangeDependency = (gav: any) =>
     })
   }
 
-//@@TODO LECKO This is a workaround, because get from job
-// can return that it is finished when it doesn't.
+//@@TODO LECKO This is a workaround, because get from job can return that it is finished when it isn't...
 const syncWorkAround = (repository): Promise<Any> => {
   return new Promise((resolve, reject) =>{
-    let intervalCount = 0
-    let intervalId = setInterval(() => {
-      repository.sync().then(() => {
-        intervalCount++
-        if (!repository.getByPathString('.exchange_modules_tmp') || intervalCount > 4) {
+    setTimeout(() => {
+      let intervalCount = 0
+      let intervalId = setInterval(() => {
+        repository.sync().then(() => {
+          intervalCount++
+          if (!repository.getByPathString('.exchange_modules_tmp') || intervalCount > 4) {
+            clearInterval(intervalId)
+            resolve()
+          }
+        }).catch((e) => {
+          console.error('Error syncing new dependency', e)
           clearInterval(intervalId)
           resolve()
-        }
-      }).catch(() => {
-        clearInterval(intervalId)
-        resolve()
-      })
+        })
+      }, 2000)
     }, 2000)
   })
 }

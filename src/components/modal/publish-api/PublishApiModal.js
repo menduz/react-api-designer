@@ -153,7 +153,7 @@ class PublishApiModal extends React.Component {
         <ModalFooter className="publish-footer">
           <div className="left-side">
             {(publishToExchange && !isFetched) &&
-            <Checkbox onChange={this.handlePublishBothServices.bind(this)} label="Also publish to API Manager"/>}
+            <Checkbox onChange={this.handlePublishBothServices.bind(this)} label="Also publish to API Manager" disabled={isFetching}/>}
           </div>
           <div className="right-side">
             <Button kind="tertiary" noFill onClick={onCancel} testId="Publish-Cancel-Button">
@@ -182,6 +182,7 @@ class PublishApiModal extends React.Component {
                   value={main}
                   onChange={this.handleSelectFileChange.bind(this)}
                   clearable={false}
+                  disabled={isFetching}
                   testId="Publish-Select-MainFile"/>
         </div>
       </div>,
