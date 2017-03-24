@@ -174,6 +174,17 @@ class PublishApiModal extends React.Component {
   addExchangeFormFields(isFetching: ?boolean): [any] {
     const {groupId, assetId, main, files} = this.props
     return [
+      <div className="form-row" key="Form-MainFile">
+        <div className="large-col">
+          <Label className="required">Main File</Label>
+          <Select name="import-type"
+                  options={files}
+                  value={main}
+                  onChange={this.handleSelectFileChange.bind(this)}
+                  clearable={false}
+                  testId="Publish-Select-MainFile"/>
+        </div>
+      </div>,
       <div className="form-row" key="Form-Asset-Group-Ids">
         <div className="form-col">
           <Label className="required">GroupId</Label>
@@ -193,17 +204,6 @@ class PublishApiModal extends React.Component {
                      required
                      testId="Publish-Input-AssetId"/>
         </div>
-      </div>,
-      <div className="form-row" key="Form-MainFile">
-        <div className="large-col">
-          <Label className="required">Main File</Label>
-          <Select name="import-type"
-                  options={files}
-                  value={main}
-                  onChange={this.handleSelectFileChange.bind(this)}
-                  clearable={false}
-                  testId="Publish-Select-MainFile"/>
-        </div>
       </div>
     ]
   }
@@ -213,7 +213,6 @@ class PublishApiModal extends React.Component {
     return (
       isLoading ? <div className="search-spinner"><Spinner size="l"/></div> :
         <div>
-          {publishToExchange ? this.addExchangeFormFields(isFetching) : null}
           <div className="form-row">
             <div className="form-col">
               <Label className="required">Name</Label>
@@ -261,6 +260,7 @@ class PublishApiModal extends React.Component {
               </div>
             </div>
           </div>
+          {publishToExchange ? this.addExchangeFormFields(isFetching) : null}
         </div>
     )
   }
