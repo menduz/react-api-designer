@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import  React from 'react'
 
 import Button from '@mulesoft/anypoint-components/lib/Button'
 import Modal from '@mulesoft/anypoint-components/lib/Modal'
@@ -22,16 +22,14 @@ class PublishApiModal extends React.Component {
 
   handleSave() {
     const {publishToBothApis, publishToExchange} = this.props
+    const {name, nextVersion, tags, main, assetId, groupId} = this.props
 
     if (publishToBothApis) {
-      this.props.onSubmit(this.props.name, this.props.nextVersion, this.props.tags, this.props.main,
-        this.props.assetId, this.props.groupId, true, true)
+      this.props.onSubmit(name, nextVersion, tags, main, assetId, groupId, true, true)
     } else if (publishToExchange && !publishToBothApis) {
-      this.props.onSubmit(this.props.name, this.props.nextVersion, this.props.tags, this.props.main,
-        this.props.assetId, this.props.groupId, false, true)
+      this.props.onSubmit(name, nextVersion, tags, main, assetId, groupId, false, true)
     } else {
-      this.props.onSubmit(this.props.name, this.props.nextVersion, this.props.tags, this.props.main,
-        this.props.assetId, this.props.groupId, true, false)
+      this.props.onSubmit(name, nextVersion, tags, main, assetId, groupId, true, false)
     }
   }
 
@@ -47,14 +45,6 @@ class PublishApiModal extends React.Component {
 
   handleTagChange(event: any) {
     this.props.onTagChange(event.value)
-  }
-
-  handleAssetIdChange(event: any) {
-    this.props.onAssetIdChange(event.value)
-  }
-
-  handleGroupIdChange(event: any) {
-    this.props.onGroupIdChange(event.value)
   }
 
   handleSelectFileChange(event: any) {
@@ -172,7 +162,7 @@ class PublishApiModal extends React.Component {
   }
 
   addExchangeFormFields(isFetching: ?boolean): [any] {
-    const {groupId, assetId, main, files} = this.props
+    const {main, files} = this.props
     return [
       <div className="form-row" key="Form-MainFile">
         <div className="large-col">
@@ -185,28 +175,7 @@ class PublishApiModal extends React.Component {
                   disabled={isFetching}
                   testId="Publish-Select-MainFile"/>
         </div>
-      </div>,
-      <div className="form-row" key="Form-Asset-Group-Ids">
-        <div className="form-col">
-          <Label className="required">GroupId</Label>
-          <TextField value={groupId}
-                     placeholder="com.mulesoft"
-                     disabled={isFetching}
-                     onChange={this.handleGroupIdChange.bind(this)}
-                     required
-                     testId="Publish-Input-GroupId"/>
-        </div>
-        <div className="form-col">
-          <Label className="required">AssetId</Label>
-          <TextField value={assetId}
-                     placeholder="api-gateway-external"
-                     disabled={isFetching}
-                     onChange={this.handleAssetIdChange.bind(this)}
-                     required
-                     testId="Publish-Input-AssetId"/>
-        </div>
-      </div>
-    ]
+      </div>]
   }
 
   form(name: string, currentVersion: string, nextVersion: string, tag: ?string, tags: Array<string>, isFetching: ?boolean) {
@@ -235,6 +204,7 @@ class PublishApiModal extends React.Component {
               {currentVersion ? <small>Current version: {currentVersion}</small> : null}
             </div>
           </div>
+          {publishToExchange ? this.addExchangeFormFields(isFetching) : null}
           <div className="form-row">
             <div className="large-col">
               <Label>Tags</Label>
@@ -261,7 +231,6 @@ class PublishApiModal extends React.Component {
               </div>
             </div>
           </div>
-          {publishToExchange ? this.addExchangeFormFields(isFetching) : null}
         </div>
     )
   }
@@ -301,10 +270,9 @@ class PublishApiModal extends React.Component {
   }
 
   canSubmit() {
-    const {name, nextVersion, publishToExchange, groupId, assetId, main} = this.props
+    const {name, nextVersion, publishToExchange, main} = this.props
     const apiPlatformFields = PublishApiModal.isNotEmpty(name) && PublishApiModal.isNotEmpty(nextVersion)
-    const apiExchangeFields = PublishApiModal.isNotEmpty(groupId) && PublishApiModal.isNotEmpty(assetId)
-      && PublishApiModal.isNotEmpty(main)
+    const apiExchangeFields = PublishApiModal.isNotEmpty(main)
     return publishToExchange ? (apiPlatformFields && apiExchangeFields) : apiPlatformFields
   }
 
@@ -350,8 +318,6 @@ type Props = {
   onTagChange: (tag: string) => void,
   onTagRemove: (tag: string) => void,
   onSubmitTag: (tag: ?string) => void,
-  onAssetIdChange: (assetId: string) => void,
-  onGroupIdChange: (groupId: string) => void,
   onMainFileChange: (main: string) => void,
   onPublishToBothApis: (publishBoth: boolean) => void
 }

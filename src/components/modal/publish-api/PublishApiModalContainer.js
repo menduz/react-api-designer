@@ -44,8 +44,6 @@ const mapDispatch = (dispatch, props: ContainerProps) => {
     onSubmitTag: (tag: string) => dispatch(addTag(tag)),
     onNameChange: (name: string) => dispatch(changeValue('name', name)),
     onNextVersionChange: (version: string) => dispatch(changeValue('nextVersion', version)),
-    onAssetIdChange: (assetId: string) => dispatch(changeValue('assetId', assetId)),
-    onGroupIdChange: (groupId: string) => dispatch(changeValue('groupId', groupId)),
     onMainFileChange: (main: string) => dispatch(changeValue('main', main)),
     onSubmit: (name: string, version: string, tags: Array<string>, main: string, assetId: string, groupId: string,
                platform: boolean, exchange: boolean) =>
