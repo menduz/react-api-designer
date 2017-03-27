@@ -53,5 +53,5 @@ const fromDirectory = (directory: DirectoryModel, filterFn?: (c: ElementModel)=>
 }
 
 export const fromFileTree = (fileTree: RepositoryModel): Node[] => {
-  return fromDirectory(fileTree.root, c => !(c.name === 'exchange_modules' || c.name === 'exchange.json')).children
+  return fromDirectory(fileTree.root, c => c.name !== 'exchange.json').children
 }
