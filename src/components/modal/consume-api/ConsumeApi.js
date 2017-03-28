@@ -41,6 +41,16 @@ class ConsumeApi extends Component {
     })
   }
 
+  renderConsumingFragments(fragments: List<Fragment>) {
+    return fragments.map((fragment: Fragment) => {
+      return (
+        <li>
+          Adding <b>{fragment.name}</b> to <i>/exchange_modules/{fragment.groupId || '-'}/{fragment.assetId || '-'}/{fragment.version || '-'}</i>
+        </li>
+      )
+    })
+  }
+
   render() {
     const {
       onCancel, fragments, query, submit, isSearching,
@@ -65,7 +75,9 @@ class ConsumeApi extends Component {
             ? (
             <div className="consume-api-content submiting">
               <div className="search-spinner"><Spinner size="l"/></div>
-              <span>{`Fetching and adding ${numSelectedFragments !== 0 ? numSelectedFragments : ''} dependenc${numSelectedFragments > 1 ? 'ies' : 'y'}`}</span>
+              <ul>
+                {this.renderConsumingFragments(fragments)}
+              </ul>
             </div>
           ) : (
             <InfiniteScroll loadMore={this.props.addMoreFragments}

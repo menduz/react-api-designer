@@ -94,7 +94,7 @@ const syncDoneWorkAround = (repository, retryCount = 0): Promise<Any> => {
         if (repository.getByPathString('.exchange_modules_tmp') && retryCount < 5) {
           return syncDoneWorkAround(repository, retryCount + 1)
         } else {
-          resolve(Factory.repository(repository))
+          resolve()
         }
       }))
     }, 2000)
@@ -124,7 +124,7 @@ export const removeDependency = (gav: any) =>
     const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
     consumeRemoteApi.removeDependencies(dependencies).then(() => {
       return exchangeJob(consumeRemoteApi, repository).then((fileTree) => {
-        dispatch(initFileSystem(fileTree))
+        dispatch(initFileSystem(Factory.repository(repository)))
         dispatch({type: UPDATE_DEPENDENCIES_DONE})
       })
     }).catch(err => {
@@ -141,7 +141,7 @@ export const addExchangeDependency = (dependencies: any) =>
     const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
     return consumeRemoteApi.addDependencies(dependencies).then(() => {
       return exchangeJob(consumeRemoteApi, repository).then((fileTree) => {
-        dispatch(initFileSystem(fileTree))
+        dispatch(initFileSystem(Factory.repository(repository)))
         dispatch({type: UPDATE_DEPENDENCIES_DONE})
       })
     }).catch(err => {
