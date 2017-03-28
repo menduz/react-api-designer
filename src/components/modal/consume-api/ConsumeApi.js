@@ -78,7 +78,7 @@ class ConsumeApi extends Component {
             <div className="consume-api-content submiting">
               <div className="search-spinner"><Spinner size="l"/></div>
               <ul>
-                {this.renderConsumingFragments(fragments)}
+                {this.renderConsumingFragments(fragments.filter(f => f.selected))}
               </ul>
             </div>
           ) : (
