@@ -27,8 +27,6 @@ type Props = {
 class MessageModal extends Component {
   props: Props
 
-  constructor(props: Props) { super(props) }
-
   render() {
     const { isOpen, message, title, onCancel} = this.props
 

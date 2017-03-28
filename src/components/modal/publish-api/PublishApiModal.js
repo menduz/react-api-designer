@@ -52,12 +52,19 @@ class PublishApiModal extends React.Component {
     this.props.onDescriptionChange(event.value)
   }
 
+  handleTabKeyPress (e: any) {
+    if (e.key === 'Enter') {
+      this.handleSaveTag()
+    }
+  }
+
   handleSelectFileChange(event: any) {
     this.props.onMainFileChange(event.value)
   }
 
   handleSaveTag() {
-    this.props.onSubmitTag(this.props.tag)
+    if (this.props.tag)
+      this.props.onSubmitTag(this.props.tag)
   }
 
   handlePublishBothServices() {
@@ -228,7 +235,7 @@ class PublishApiModal extends React.Component {
               <Label>Tags</Label>
               <Pills className="pills" testId="Publish-Tags-Pills">
                 {tags ? tags.map(tag => (
-                    <Pill key={tag} onRemove={() => this.props.onTagRemove(tag)}>{tag}</Pill>
+                    <Pill className="pill" key={tag} onRemove={() => this.props.onTagRemove(tag)}>{tag}</Pill>
                   )) : null}
               </Pills>
               <div className="tags">
@@ -236,6 +243,7 @@ class PublishApiModal extends React.Component {
                            value={tag}
                            placeholder="Tag..."
                            onChange={this.handleTagChange.bind(this)}
+                           onKeyPress={this.handleTabKeyPress.bind(this)}
                            testId="Publish-Tag-Input-Name"/>
                 <Button className="save-tag-button"
                         kind="primary"

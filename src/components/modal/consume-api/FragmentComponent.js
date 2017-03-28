@@ -8,7 +8,8 @@ export default class FragmentComponent extends Component {
   render() {
     const {fragment, handleFragmentSelection, isOdd} = this.props
     return (
-      <div className={cx('fragment', {'odd': isOdd})} data-test-id="Fragment">
+      <div className={cx('fragment', {'odd': isOdd})} data-test-id="Fragment"
+           onClick={handleFragmentSelection}>
         <div className="fragment-left">
           <span className="fragment-title">{fragment.name}</span>
           <span className="fragment-description">{fragment.description}</span>
@@ -25,7 +26,7 @@ export default class FragmentComponent extends Component {
           <span>{`Version: ${fragment.version || '-'}`}</span>
         </div>
         <div className="fragment-right">
-          <Checkbox onChange={handleFragmentSelection}/>
+          <Checkbox checked={fragment.selected}/>
         </div>
       </div>
     )

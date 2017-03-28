@@ -67,8 +67,11 @@
   }
 
   .pills {
-    margin-top: 5px;
-    margin-bottom: 5px;
+    max-width: 600px;
+    .pill {
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
   }
 
   .tags > .save-tag-button {
@@ -99,6 +102,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  textarea {
+    height: 52px !important;
+    padding: 5px 10px !important;
   }
 }
 

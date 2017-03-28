@@ -48,14 +48,3 @@ export const numberOfDependencies = (rootState: any): number => {
 
   return exchangeModules.asDirectoryModel().children.size
 }
-
-export const dependencyPaths = (rootState: any): string[] => {
-  const state = getAll(rootState)
-  const fileTree: ?RepositoryModel = state.fileTree
-  if (!fileTree) return []
-
-  const exchangeModules = fileTree.getByPathString('/exchange_modules')
-  if (!exchangeModules || !exchangeModules.isDirectory() ) return []
-
-  return exchangeModules.asDirectoryModel().children.map(c => c.path.toString()).toArray()
-}

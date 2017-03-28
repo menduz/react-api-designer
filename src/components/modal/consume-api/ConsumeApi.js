@@ -25,8 +25,8 @@ class ConsumeApi extends Component {
     this.props.updateQuery(event.value)
   }
 
-  handleFragmentSelection(index, fragment, event) {
-    this.props.handleFragmentSelection(index, fragment, event.value)
+  handleFragmentSelection(index, fragment) {
+    this.props.handleFragmentSelection(index, fragment)
   }
 
   handleSearchFragment(query) {
@@ -47,7 +47,7 @@ class ConsumeApi extends Component {
       const gav = `${fragment.groupId}/${fragment.assetId}/${fragment.version}`;
       return (
         <li key={gav}>
-          Adding '{fragment.name}' to <i>/exchange_modules/{gav}</i>
+          Adding '{fragment.name}' to '/exchange_modules/{gav}/'
         </li>
       )
     })
