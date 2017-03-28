@@ -1,10 +1,10 @@
-import request from 'request'
+import request from 'browser-request'
 
 export default class MockingServiceClient {
 
   constructor(baseUri, proxy) {
     // self.baseUri = 'http://mocksvc.mulesoft.com'
-    this.baseUri = baseUri || 'http://ec2-52-201-242-128.compute-1.amazonaws.com'
+    this.baseUri = baseUri || '/apiplatform/proxy/http://ec2-52-201-242-128.compute-1.amazonaws.com'
     this.proxy = proxy
     this.url = this.buildURL()
   }
