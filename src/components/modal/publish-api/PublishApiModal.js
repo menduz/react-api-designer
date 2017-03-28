@@ -115,7 +115,7 @@ class PublishApiModal extends React.Component {
     const isFetching = this.isVariableComplete(this.props.isFetching, true)
     const isFetched = this.isVariableComplete(this.props.isFetched)
     const canSubmit = this.canSubmit()
-    const content = isFetched ? this.link() : this.form(name, version, nextVersion, tag, tags, isFetching)
+    const content = isFetched ? this.link() : this.form(name, version, nextVersion, tag, tags)
     const errors = this.handleErrors()
     const partialAnswers = this.handlePartialAnswers(isFetching, isFetched)
 
@@ -138,30 +138,35 @@ class PublishApiModal extends React.Component {
               {errors}
             </div> : null
           }
-          {content}
+          {isFetching ? (
+            <div className="fetching">
+              <div className="fetching-spinner"><Spinner size="l"/></div>
+              <span>{`Publishing '${name}' version ${nextVersion}`}</span>
+            </div>
+          ) : content}
         </ModalBody>
-        <ModalFooter className="publish-footer">
-          <div className="left-side">
-            {(publishToExchange && !isFetched) &&
-            <Checkbox onChange={this.handlePublishBothServices.bind(this)} label="Also publish to API Manager" disabled={isFetching}/>}
-          </div>
-          <div className="right-side">
-            <Button kind="tertiary" noFill onClick={onCancel} testId="Publish-Cancel-Button">
-              {isFetched ? 'Close' : 'Cancel'}
-            </Button>
-            {isFetched ? null :
-              <Button kind="primary" disabled={isFetching || !canSubmit} testId="Publish-Submit-Button"
-                      isLoading={isFetching} onClick={this.handleSave.bind(this)}>
-                {isFetching ? 'Publishing...' : 'Publish'}
+        {isFetching ? null :
+          <ModalFooter className="publish-footer">
+            <div className="left-side">
+              {(publishToExchange && !isFetched) &&
+              <Checkbox onChange={this.handlePublishBothServices.bind(this)} label="Also publish to API Manager"/>}
+            </div>
+            <div className="right-side">
+              <Button kind="tertiary" noFill onClick={onCancel} testId="Publish-Cancel-Button">
+                {isFetched ? 'Close' : 'Cancel'}
               </Button>
-            }
-          </div>
-        </ModalFooter>
+              {isFetched ? null :
+                <Button kind="primary" disabled={!canSubmit} testId="Publish-Submit-Button"
+                        onClick={this.handleSave.bind(this)}>Publish</Button>
+              }
+            </div>
+          </ModalFooter>
+        }
       </Modal>
     )
   }
 
-  addExchangeFormFields(isFetching: ?boolean): [any] {
+  addExchangeFormFields(): [any] {
     const {main, files} = this.props
     return [
       <div className="form-row" key="Form-MainFile">
@@ -172,13 +177,12 @@ class PublishApiModal extends React.Component {
                   value={main}
                   onChange={this.handleSelectFileChange.bind(this)}
                   clearable={false}
-                  disabled={isFetching}
                   testId="Publish-Select-MainFile"/>
         </div>
       </div>]
   }
 
-  form(name: string, currentVersion: string, nextVersion: string, tag: ?string, tags: Array<string>, isFetching: ?boolean) {
+  form(name: string, currentVersion: string, nextVersion: string, tag: ?string, tags: Array<string>) {
     const {isLoading, publishToExchange} = this.props
     return (
       isLoading ? <div className="search-spinner"><Spinner size="l"/></div> :
@@ -188,7 +192,6 @@ class PublishApiModal extends React.Component {
               <Label className="required">Name</Label>
               <TextField value={name}
                          placeholder="Name..."
-                         disabled={isFetching}
                          onChange={this.handleNameChange.bind(this)}
                          required
                          testId="Publish-Input-Name"/>
@@ -197,14 +200,13 @@ class PublishApiModal extends React.Component {
               <Label className="required">Version</Label>
               <TextField value={nextVersion}
                          placeholder="Version..."
-                         disabled={isFetching}
                          onChange={this.handleNextVersionChange.bind(this)}
                          required
                          testId="Publish-Input-NextVersion"/>
               {currentVersion ? <small>Current version: {currentVersion}</small> : null}
             </div>
           </div>
-          {publishToExchange ? this.addExchangeFormFields(isFetching) : null}
+          {publishToExchange ? this.addExchangeFormFields() : null}
           <div className="form-row">
             <div className="large-col">
               <Label>Tags</Label>
@@ -217,7 +219,6 @@ class PublishApiModal extends React.Component {
                 <TextField className="tag-name"
                            value={tag}
                            placeholder="Tag..."
-                           disabled={isFetching}
                            onChange={this.handleTagChange.bind(this)}
                            testId="Publish-Tag-Input-Name"/>
                 <Button className="save-tag-button"
@@ -240,7 +241,7 @@ class PublishApiModal extends React.Component {
       <div key='answer-platform'>
         <h3>Successfully published to API Manager</h3>
         <div className="answer">
-          Published {response.apiName} version {response.versionName}.
+          Published version {response.versionName}.
           Click <a href={response.url} target="_blank">here</a> to view it.
         </div>
       </div>

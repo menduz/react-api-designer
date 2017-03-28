@@ -11,6 +11,7 @@ import {FileSystemTreeContainer} from '../tree'
 import {DependenciesTreeContainer} from '../dependencies-tree'
 import FileDrop from '../filedrop/FileDrop'
 import Toasts from '../toasts/Toasts'
+import {UnsavedModal} from '../modal/unsaved'
 
 import './App.css'
 
@@ -29,6 +30,7 @@ const App = () => (
       </Split>
     </Split>
     <Toasts/>
+    <UnsavedModal/>
   </FileDrop>
 )
 

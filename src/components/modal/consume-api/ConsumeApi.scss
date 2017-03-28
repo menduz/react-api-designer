@@ -19,6 +19,12 @@
   .consume-api-content {
     overflow-y: auto;
     overflow-x: hidden;
+    min-height:200px;
+  }
+
+  .submiting {
+    text-align: center;
+    margin-bottom: 60px;
   }
 
   .no-results {

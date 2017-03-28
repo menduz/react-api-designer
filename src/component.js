@@ -8,6 +8,7 @@ import * as repository from "./repository-redux"
 import mockReducer from "./components/mock/reducers"
 import Worker from "./worker"
 import {warnBeforeLeave} from "./bootstrap/util"
+import * as unsaved from "./components/modal/unsaved"
 import newFolder from "./components/modal/new-folder"
 import newFile from "./components/modal/new-file"
 import importModal from "./components/modal/import"
@@ -37,6 +38,7 @@ const reducers = {
     [consumeApi.NAME]: consumeApi.reducer,
     [toasts.NAME]: toasts.reducer,
     dialogs: combineReducers({
+      [unsaved.NAME]: unsaved.reducer,
       newFolder: newFolder.reducer,
       newFile: newFile.reducer,
       import: importModal.reducer,

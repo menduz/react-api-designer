@@ -9,3 +9,5 @@ export const getExpandedFolders = (state: any): State => getAll(state).expandedF
 
 export const getCurrentPath = (state: any): State => getAll(state).currentPath
 
+export const isUpdating = (state: any): boolean => getAll(state).updating
+

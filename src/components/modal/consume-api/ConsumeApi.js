@@ -61,45 +61,48 @@ class ConsumeApi extends Component {
             <Toast title={error} kind="error" onClose={closeError} testId="Consume-Error"/>
           </div> : null}
         <ModalBody className="consume-api-body">
-          <InfiniteScroll loadMore={this.props.addMoreFragments}
-                          hasMore={!isSearching && !noMoreFragments}
-                          useWindow={false}
-                          initialLoad={false}>
-            <div className="search-panel">
-              <Search onSearch={this.handleSearchFragment.bind(this, query)}
-                      onChange={this.onSearchChange.bind(this)} //TODO change this to an action in searchMore!
-                      className="consume-api-searcher"
-                      query={query}
-                      placeholder="Search for fragments"
-                      id="consume-search"
-                      testId="Consume-Search"/>
+          {isSubmitting
+            ? (
+            <div className="consume-api-content submiting">
+              <div className="search-spinner"><Spinner size="l"/></div>
+              <span>{`Fetching and adding ${numSelectedFragments !== 0 ? numSelectedFragments : ''} dependenc${numSelectedFragments > 1 ? 'ies' : 'y'}`}</span>
             </div>
-            <div className="consume-api-content" data-test-id="Consume-Content">
-              {isSearching ?
-                <div className="search-spinner"><Spinner size="l"/></div> :
-                fragments.size > 0 ?
-                  this.renderFragments(fragments) :
-                  <div className="no-results">No results found</div>
-              }
-              {isAddingMore ? <div className="small-spinner"><Spinner size="m"/></div> : null}
-            </div>
-        </InfiniteScroll>
+          ) : (
+            <InfiniteScroll loadMore={this.props.addMoreFragments}
+                            hasMore={!isSearching && !noMoreFragments}
+                            useWindow={false}
+                            initialLoad={false}>
+              <div className="search-panel">
+                <Search onSearch={this.handleSearchFragment.bind(this, query)}
+                        onChange={this.onSearchChange.bind(this)} //TODO change this to an action in searchMore!
+                        className="consume-api-searcher"
+                        query={query}
+                        placeholder="Search for fragments"
+                        id="consume-search"
+                        testId="Consume-Search"/>
+              </div>
+              <div className="consume-api-content" data-test-id="Consume-Content">
+                {isSearching ?
+                  <div className="search-spinner"><Spinner size="l"/></div> :
+                  fragments.size > 0 ?
+                    this.renderFragments(fragments) :
+                    <div className="no-results">No results found</div>
+                }
+                {isAddingMore && !isSearching ? <div className="small-spinner"><Spinner size="m"/></div> : null}
+              </div>
+            </InfiniteScroll>
+          )}
         </ModalBody>
-        <ModalFooter className="search-footer">
-          <div className="modal-button-zone">
-            <Button kind="tertiary" noFill onClick={onCancel} testId="Cancel-Consume-Button">Cancel</Button>
-            <Button kind="primary"
-                    isLoading={isSubmitting}
-                    disabled={numSelectedFragments === 0}
-                    onClick={submit.bind(this, fragments)}
-                    testId="Submit-Consume-Button">
-              {isSubmitting ?
-                'Adding...'
-                : `Add ${numSelectedFragments !== 0 ? numSelectedFragments : ''} Dependenc${numSelectedFragments > 1 ? 'ies' : 'y'}`
-              }
-            </Button>
-          </div>
-        </ModalFooter>
+        {isSubmitting ? null :
+          <ModalFooter className="search-footer">
+            <div className="modal-button-zone">
+              <Button kind="tertiary" noFill onClick={onCancel} testId="Cancel-Consume-Button">Cancel</Button>
+              <Button kind="primary" disabled={numSelectedFragments === 0} onClick={submit.bind(this, fragments)} testId="Submit-Consume-Button">
+                {`Add ${numSelectedFragments !== 0 ? numSelectedFragments : ''} Dependenc${numSelectedFragments > 1 ? 'ies' : 'y'}`}
+              </Button>
+            </div>
+          </ModalFooter>
+        }
       </Modal>
     )
   }

@@ -3,6 +3,7 @@
 import React, {Component} from 'react'
 import Icon from '../svgicon/SvgIcon'
 import TreeUI from '@mulesoft/anypoint-components/lib/Tree'
+import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
 import {Path} from '../../repository'
 import {copyTextToClipboard} from '../../bootstrap/util'
 import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
@@ -72,9 +73,27 @@ class DependenciesTree extends Component {
   }
 
   render() {
-    const {nodes, selected, expanded} = this.props
+    const {nodes, selected, expanded, updating} = this.props
+
+    if (updating) {
+      return (
+        <div className="Dependencies-Tree-loading" data-test-id="Dependencies-Tree-Loading">
+          <span>Updating...</span>
+          <Spinner size="m"/>
+        </div>
+      )
+    }
+
+    if (nodes && nodes.length === 0) {
+      return (
+        <div className="Dependencies-Tree-loading" data-test-id="Dependencies-Tree-Loading">
+          <span>No dependencies</span>
+        </div>
+      )
+    }
+
     return nodes ?
-      (<div className="Tree">
+      (<div className="Dependencies-Tree">
           <TreeUI className="TreeUi"
                   getLeaf={this.renderLeaf.bind(this)}
                   getFolder={this.renderFolder.bind(this)}
@@ -84,10 +103,10 @@ class DependenciesTree extends Component {
                   expanded={expanded}
                   onSelect={this.handleOnSelect.bind(this)}
                   onToggle={this.handleOnToggle.bind(this)}
-                  testId="Tree"/>
+                  testId="Dependencies-Tree"/>
         </div>
       ) : (
-      <div className="Tree-loading" data-test-id="Tree-Loading">
+      <div className="Dependencies-Tree-loading" data-test-id="Dependencies-Tree-Loading">
       </div>
     )
   }

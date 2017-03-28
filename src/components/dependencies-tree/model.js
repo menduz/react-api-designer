@@ -5,6 +5,7 @@ import {Path} from '../../repository'
 import {RepositoryModel, FileModel, DirectoryModel, ElementModel} from '../../repository/immutable/RepositoryModel';
 
 export type State = {
+  updating: boolean,
   currentPath: ?Path,
   expandedFolders: Set<Path>
 }

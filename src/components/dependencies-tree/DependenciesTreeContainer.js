@@ -1,7 +1,7 @@
 //@flow
 
 import {connect} from 'react-redux'
-import {getAll, getExpandedFolders, getCurrentPath} from './selectors'
+import {getAll, getExpandedFolders, getCurrentPath, isUpdating} from './selectors'
 import {fromFileTree} from './model'
 import {pathSelected, folderSelected, removeDependency} from './actions'
 import type {Node} from './model'
@@ -27,10 +27,12 @@ const mapStateToProps = (rootState): Props => {
   const nodes: ?Node[] = fileTree ? fromFileTree(fileTree) : undefined
   const expanded = getExpandedFolders(rootState).toArray().map(p => p.toString())
   const selected = getCurrentPath(rootState) ? [getCurrentPath(rootState).toString()] : []
+  const updating = isUpdating(rootState)
   return {
     nodes,
     selected,
-    expanded
+    expanded,
+    updating
   }
 }
 

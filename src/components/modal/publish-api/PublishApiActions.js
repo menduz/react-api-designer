@@ -14,6 +14,7 @@ import type {GetState, ExtraArgs} from '../../../types'
 import PublishRemoteApi from "../../../remote-api/PublishRemoteApi"
 import type {PublishApiResponse} from "../../../remote-api/PublishRemoteApi"
 import {getProjectType} from '../../../bootstrap/selectors'
+import {openUnsavedWarningBeforePublish} from '../unsaved/UnsavedActions'
 import * as constants from './PublishApiConstants'
 
 export const clear = () => ({
@@ -61,8 +62,10 @@ export const togglePublishBothApis = (publishBoth: boolean) => ({
 
 type Dispatch = (a: any) => void
 
-export const openModal = () => {
-  return (dispatch: Dispatch, getState: GetState, {designerRemoteApiSelectors}: ExtraArgs) => {
+export const openModal = (checkForUnsaved: boolean = true) => (dispatch: Dispatch, getState: GetState, {designerRemoteApiSelectors, repositoryContainer}: ExtraArgs) => {
+  if (checkForUnsaved && repositoryContainer.isLoaded && repositoryContainer.repository.hasDirtyFiles()) {
+    dispatch(openUnsavedWarningBeforePublish())
+  } else {
     const authSelectors = designerRemoteApiSelectors(getState);
     const remoteApi = new PublishRemoteApi(authSelectors)
     remoteApi.exchange(authSelectors.organizationDomain())

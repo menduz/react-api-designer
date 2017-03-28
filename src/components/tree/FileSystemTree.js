@@ -148,6 +148,15 @@ class FileSystemTree extends Component {
   render() {
     const {nodes, selected, expanded} = this.props
 
+
+    if (nodes && nodes.length === 0) {
+      return (
+        <div className="Tree-loading" data-test-id="Tree-Loading">
+          <span>No files</span>
+        </div>
+      )
+    }
+
     return nodes ?
       (<div className="Tree"
             onDrop={this.onRootDrop.bind(this)}
