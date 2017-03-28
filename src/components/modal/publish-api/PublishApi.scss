@@ -8,6 +8,15 @@
     color: gray;
   }
 
+  .fetching {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    span {
+      padding: 30px;
+    }
+  }
+
   .error {
     color: #d9534f;
     padding-top: 5px;
@@ -73,8 +82,8 @@
   }
 
   h3 {
-    margin-top: 15px;
-    margin-bottom: 10px;
+    margin-top: 25px;
+    margin-bottom: 0;
   }
 
   .error-container > div:first-child > h3,

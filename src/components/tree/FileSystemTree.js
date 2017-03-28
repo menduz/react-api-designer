@@ -71,6 +71,8 @@ class FileSystemTree extends Component {
   }
 
   renderLeaf({node, isSelected}) {
+    const isReadOnly = node.path.first() === 'exchange_modules'
+
     const options = [
       {label: 'Save', onClick: this.handleSave.bind(this, node.path)},
       {label: 'Rename', onClick: this.handleRename.bind(this, node.path)},
@@ -87,19 +89,24 @@ class FileSystemTree extends Component {
            onDrop={this.onDropInFile.bind(this, node.path)}>
         <label onDragEnter={this.onDragEnter.bind(this)}
                onDragLeave={this.onDragLeave.bind(this)}
-               title={node.label}>
+               title={node.label} className={isReadOnly ? 'read-only' : ''}>
           {node.label}
         </label>
-        <div className="node-options">
-          <ContextMenu triggerOn={['click']} className="tree-menu file-menu" options={options} testId="File-Tree-Context-Menu">
-            <Icon name="contextmenu" size={18}/>
-          </ContextMenu>
-        </div>
+        {isReadOnly ? null :
+          <div className="node-options">
+            <ContextMenu triggerOn={['click']} className="tree-menu file-menu" options={options}
+                         testId="File-Tree-Context-Menu">
+              <Icon name="contextmenu" size={18}/>
+            </ContextMenu>
+          </div>
+        }
       </div>
     )
   }
 
   renderFolder({node, isSelected, isExpanded}) {
+    const isReadOnly = node.path.first() === 'exchange_modules'
+
     const options = [
       {label: 'Rename', onClick: this.handleRename.bind(this, node.path)},
       {label: 'Delete', onClick: this.handleDelete.bind(this, node.path)}
@@ -121,23 +128,34 @@ class FileSystemTree extends Component {
            onDrop={this.onDropInFolder.bind(this, node.path)}>
         <label onDragEnter={this.onDragEnter.bind(this)}
                onDragLeave={this.onDragLeave.bind(this)}
-               title={node.label}>
+               title={node.label} className={isReadOnly ? 'read-only' : ''}>
           {node.label}
         </label>
-        <div className="node-options" onClick={(e) => e.stopPropagation()}>
-          <ContextMenu triggerOn={['click']} className="tree-menu new-menu" options={addOptions} testId="File-Tree-New-Menu">
-            <Icon name="plus" size={18}/>
-          </ContextMenu>
-          <ContextMenu triggerOn={['click']} className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
-            <Icon name="contextmenu" size={18}/>
-          </ContextMenu>
-        </div>
+        {isReadOnly ? null :
+          <div className="node-options" onClick={(e) => e.stopPropagation()}>
+            <ContextMenu triggerOn={['click']} className="tree-menu new-menu" options={addOptions} testId="File-Tree-New-Menu">
+              <Icon name="plus" size={18}/>
+            </ContextMenu>
+            <ContextMenu triggerOn={['click']} className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
+              <Icon name="contextmenu" size={18}/>
+            </ContextMenu>
+          </div>
+        }
       </div>
     )
   }
 
   render() {
     const {nodes, selected, expanded} = this.props
+
+
+    if (nodes && nodes.length === 0) {
+      return (
+        <div className="Tree-loading" data-test-id="Tree-Loading">
+          <span>No files</span>
+        </div>
+      )
+    }
 
     return nodes ?
       (<div className="Tree"

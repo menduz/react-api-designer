@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import  React from 'react'
 
 import Button from '@mulesoft/anypoint-components/lib/Button'
 import Modal from '@mulesoft/anypoint-components/lib/Modal'
@@ -22,16 +22,14 @@ class PublishApiModal extends React.Component {
 
   handleSave() {
     const {publishToBothApis, publishToExchange} = this.props
+    const {name, nextVersion, tags, main, assetId, groupId} = this.props
 
     if (publishToBothApis) {
-      this.props.onSubmit(this.props.name, this.props.nextVersion, this.props.tags, this.props.main,
-        this.props.assetId, this.props.groupId, true, true)
+      this.props.onSubmit(name, nextVersion, tags, main, assetId, groupId, true, true)
     } else if (publishToExchange && !publishToBothApis) {
-      this.props.onSubmit(this.props.name, this.props.nextVersion, this.props.tags, this.props.main,
-        this.props.assetId, this.props.groupId, false, true)
+      this.props.onSubmit(name, nextVersion, tags, main, assetId, groupId, false, true)
     } else {
-      this.props.onSubmit(this.props.name, this.props.nextVersion, this.props.tags, this.props.main,
-        this.props.assetId, this.props.groupId, true, false)
+      this.props.onSubmit(name, nextVersion, tags, main, assetId, groupId, true, false)
     }
   }
 
@@ -47,14 +45,6 @@ class PublishApiModal extends React.Component {
 
   handleTagChange(event: any) {
     this.props.onTagChange(event.value)
-  }
-
-  handleAssetIdChange(event: any) {
-    this.props.onAssetIdChange(event.value)
-  }
-
-  handleGroupIdChange(event: any) {
-    this.props.onGroupIdChange(event.value)
   }
 
   handleSelectFileChange(event: any) {
@@ -125,7 +115,7 @@ class PublishApiModal extends React.Component {
     const isFetching = this.isVariableComplete(this.props.isFetching, true)
     const isFetched = this.isVariableComplete(this.props.isFetched)
     const canSubmit = this.canSubmit()
-    const content = isFetched ? this.link() : this.form(name, version, nextVersion, tag, tags, isFetching)
+    const content = isFetched ? this.link() : this.form(name, version, nextVersion, tag, tags)
     const errors = this.handleErrors()
     const partialAnswers = this.handlePartialAnswers(isFetching, isFetched)
 
@@ -148,31 +138,36 @@ class PublishApiModal extends React.Component {
               {errors}
             </div> : null
           }
-          {content}
+          {isFetching ? (
+            <div className="fetching">
+              <div className="fetching-spinner"><Spinner size="l"/></div>
+              <span>{`Publishing '${name}' version ${nextVersion}`}</span>
+            </div>
+          ) : content}
         </ModalBody>
-        <ModalFooter className="publish-footer">
-          <div className="left-side">
-            {(publishToExchange && !isFetched) &&
-            <Checkbox onChange={this.handlePublishBothServices.bind(this)} label="Also publish to API Manager" disabled={isFetching}/>}
-          </div>
-          <div className="right-side">
-            <Button kind="tertiary" noFill onClick={onCancel} testId="Publish-Cancel-Button">
-              {isFetched ? 'Close' : 'Cancel'}
-            </Button>
-            {isFetched ? null :
-              <Button kind="primary" disabled={isFetching || !canSubmit} testId="Publish-Submit-Button"
-                      isLoading={isFetching} onClick={this.handleSave.bind(this)}>
-                {isFetching ? 'Publishing...' : 'Publish'}
+        {isFetching ? null :
+          <ModalFooter className="publish-footer">
+            <div className="left-side">
+              {(publishToExchange && !isFetched) &&
+              <Checkbox onChange={this.handlePublishBothServices.bind(this)} label="Also publish to API Manager"/>}
+            </div>
+            <div className="right-side">
+              <Button kind="tertiary" noFill onClick={onCancel} testId="Publish-Cancel-Button">
+                {isFetched ? 'Close' : 'Cancel'}
               </Button>
-            }
-          </div>
-        </ModalFooter>
+              {isFetched ? null :
+                <Button kind="primary" disabled={!canSubmit} testId="Publish-Submit-Button"
+                        onClick={this.handleSave.bind(this)}>Publish</Button>
+              }
+            </div>
+          </ModalFooter>
+        }
       </Modal>
     )
   }
 
-  addExchangeFormFields(isFetching: ?boolean): [any] {
-    const {groupId, assetId, main, files} = this.props
+  addExchangeFormFields(): [any] {
+    const {main, files} = this.props
     return [
       <div className="form-row" key="Form-MainFile">
         <div className="large-col">
@@ -182,34 +177,12 @@ class PublishApiModal extends React.Component {
                   value={main}
                   onChange={this.handleSelectFileChange.bind(this)}
                   clearable={false}
-                  disabled={isFetching}
                   testId="Publish-Select-MainFile"/>
         </div>
-      </div>,
-      <div className="form-row" key="Form-Asset-Group-Ids">
-        <div className="form-col">
-          <Label className="required">GroupId</Label>
-          <TextField value={groupId}
-                     placeholder="com.mulesoft"
-                     disabled={isFetching}
-                     onChange={this.handleGroupIdChange.bind(this)}
-                     required
-                     testId="Publish-Input-GroupId"/>
-        </div>
-        <div className="form-col">
-          <Label className="required">AssetId</Label>
-          <TextField value={assetId}
-                     placeholder="api-gateway-external"
-                     disabled={isFetching}
-                     onChange={this.handleAssetIdChange.bind(this)}
-                     required
-                     testId="Publish-Input-AssetId"/>
-        </div>
-      </div>
-    ]
+      </div>]
   }
 
-  form(name: string, currentVersion: string, nextVersion: string, tag: ?string, tags: Array<string>, isFetching: ?boolean) {
+  form(name: string, currentVersion: string, nextVersion: string, tag: ?string, tags: Array<string>) {
     const {isLoading, publishToExchange} = this.props
     return (
       isLoading ? <div className="search-spinner"><Spinner size="l"/></div> :
@@ -219,7 +192,6 @@ class PublishApiModal extends React.Component {
               <Label className="required">Name</Label>
               <TextField value={name}
                          placeholder="Name..."
-                         disabled={isFetching}
                          onChange={this.handleNameChange.bind(this)}
                          required
                          testId="Publish-Input-Name"/>
@@ -228,13 +200,13 @@ class PublishApiModal extends React.Component {
               <Label className="required">Version</Label>
               <TextField value={nextVersion}
                          placeholder="Version..."
-                         disabled={isFetching}
                          onChange={this.handleNextVersionChange.bind(this)}
                          required
                          testId="Publish-Input-NextVersion"/>
               {currentVersion ? <small>Current version: {currentVersion}</small> : null}
             </div>
           </div>
+          {publishToExchange ? this.addExchangeFormFields() : null}
           <div className="form-row">
             <div className="large-col">
               <Label>Tags</Label>
@@ -247,7 +219,6 @@ class PublishApiModal extends React.Component {
                 <TextField className="tag-name"
                            value={tag}
                            placeholder="Tag..."
-                           disabled={isFetching}
                            onChange={this.handleTagChange.bind(this)}
                            testId="Publish-Tag-Input-Name"/>
                 <Button className="save-tag-button"
@@ -261,7 +232,6 @@ class PublishApiModal extends React.Component {
               </div>
             </div>
           </div>
-          {publishToExchange ? this.addExchangeFormFields(isFetching) : null}
         </div>
     )
   }
@@ -271,7 +241,7 @@ class PublishApiModal extends React.Component {
       <div key='answer-platform'>
         <h3>Successfully published to API Manager</h3>
         <div className="answer">
-          Published {response.apiName} version {response.versionName}.
+          Published version {response.versionName}.
           Click <a href={response.url} target="_blank">here</a> to view it.
         </div>
       </div>
@@ -301,10 +271,9 @@ class PublishApiModal extends React.Component {
   }
 
   canSubmit() {
-    const {name, nextVersion, publishToExchange, groupId, assetId, main} = this.props
+    const {name, nextVersion, publishToExchange, main} = this.props
     const apiPlatformFields = PublishApiModal.isNotEmpty(name) && PublishApiModal.isNotEmpty(nextVersion)
-    const apiExchangeFields = PublishApiModal.isNotEmpty(groupId) && PublishApiModal.isNotEmpty(assetId)
-      && PublishApiModal.isNotEmpty(main)
+    const apiExchangeFields = PublishApiModal.isNotEmpty(main)
     return publishToExchange ? (apiPlatformFields && apiExchangeFields) : apiPlatformFields
   }
 
@@ -350,8 +319,6 @@ type Props = {
   onTagChange: (tag: string) => void,
   onTagRemove: (tag: string) => void,
   onSubmitTag: (tag: ?string) => void,
-  onAssetIdChange: (assetId: string) => void,
-  onGroupIdChange: (groupId: string) => void,
   onMainFileChange: (main: string) => void,
   onPublishToBothApis: (publishBoth: boolean) => void
 }

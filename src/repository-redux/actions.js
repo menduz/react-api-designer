@@ -14,7 +14,6 @@ import {clean} from '../components/editor/actions'
 import {addSuccessToasts} from '../components/toasts/actions'
 import {addErrorToasts} from '../components/toasts/actions'
 import {File} from '../repository'
-import ConsumeRemoteApi from '../remote-api/ConsumeRemoteApi'
 
 import defaultContentJson from './default-content.json'
 import type {Dispatch, GetState, ExtraArgs} from '../types'
@@ -52,9 +51,7 @@ export const FILE_MOVE_STARTED = `DESIGNER/${PREFIX}/FILE_MOVE_STARTED`
 export const FILE_MOVED = `DESIGNER/${PREFIX}/FILE_MOVE`
 export const FILE_MOVE_FAILED = `DESIGNER/${PREFIX}/FILE_MOVE_FAILED`
 
-export const UPDATE_DEPENDENCIES_STARTED = `DESIGNER/${PREFIX}/UPDATE_DEPENDENCIES_STARTED`
-export const UPDATE_DEPENDENCIES_FAILED = `DESIGNER/${PREFIX}/UPDATE_DEPENDENCIES_FAILED`
-export const UPDATE_DEPENDENCIES_DONE = `DESIGNER/${PREFIX}/UPDATE_DEPENDENCIES_DONE`
+export const REPOSITORY_NOT_LOADED = 'Repository not loaded!'
 
 
 export const loadingFileSystem = () => ({
@@ -96,7 +93,6 @@ export const fileContentUpdated = (file: FileModel, content: string) => ({
   payload: {file, content}
 })
 
-const REPOSITORY_NOT_LOADED = 'Repository not loaded!'
 
 
 export const directoryAdded = (directory: DirectoryModel) => ({
@@ -355,91 +351,3 @@ export const moveElement = (source: Path, destinationDir: Path) =>
         (err) => dispatch(error(FILE_MOVE_FAILED, err || 'Move failed'))
       )
   }
-
-const exchangeJob = (consumeRemoteApi: ConsumeRemoteApi): Promise<any> => {
-  return new Promise((resolve, reject) =>{
-    let intervalId = undefined
-    intervalId = setInterval(() => {
-      consumeRemoteApi.jobStatus().then(r => {
-        if (r.status === 'done') {
-          if (intervalId) {
-            clearInterval(intervalId)
-            resolve()
-          }
-        }
-      }).catch(err => {
-        console.error(err)
-        if (intervalId) {
-          clearInterval(intervalId)
-        }
-        reject()
-      })
-    }, 150)
-  })
-}
-
-export const removeExchangeDependency = (gav: any) =>
-  (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerRemoteApiSelectors}: ExtraArgs): void => {
-    if (!repositoryContainer.isLoaded)
-      return Promise.reject(dispatch(error(UPDATE_DEPENDENCIES_FAILED, REPOSITORY_NOT_LOADED)))
-
-    const repository: Repository = (repositoryContainer.repository: Repository)
-
-    dispatch({type: UPDATE_DEPENDENCIES_STARTED})
-
-    const dependencies = [gav]
-    const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
-    consumeRemoteApi.removeDependencies(dependencies).then(() => {
-      exchangeJob(consumeRemoteApi).then(() => {
-        repository.sync().then(() => {
-          const fileTree = Factory.repository(repository)
-          dispatch(initFileSystem(fileTree))
-          dispatch({type: UPDATE_DEPENDENCIES_DONE})
-        })
-      }).catch(err => {
-        dispatch(error(UPDATE_DEPENDENCIES_FAILED, 'Error removing dependency'))
-      })
-    }).catch(err => {
-      dispatch(error(UPDATE_DEPENDENCIES_FAILED, 'Error removing dependency'))
-    })
-  }
-
-//@@TODO LECKO This is a workaround, because get from job can return that it is finished when it isn't...
-const syncWorkAround = (repository): Promise<Any> => {
-  return new Promise((resolve, reject) =>{
-    setTimeout(() => {
-      let intervalCount = 0
-      let intervalId = setInterval(() => {
-        repository.sync().then(() => {
-          intervalCount++
-          if (!repository.getByPathString('.exchange_modules_tmp') || intervalCount > 4) {
-            clearInterval(intervalId)
-            resolve()
-          }
-        }).catch((e) => {
-          console.error('Error syncing new dependency', e)
-          clearInterval(intervalId)
-          resolve()
-        })
-      }, 2000)
-    }, 2000)
-  })
-}
-
-export const addExchangeDependency = (dependencies: any) =>
-  (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerRemoteApiSelectors}: ExtraArgs): Promise<any> => {
-    if (!repositoryContainer.isLoaded)
-      return Promise.reject(dispatch(error(UPDATE_DEPENDENCIES_FAILED, REPOSITORY_NOT_LOADED)))
-
-    const repository: Repository = (repositoryContainer.repository: Repository)
-    const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
-    return consumeRemoteApi.addDependencies(dependencies).then(() => {
-      return exchangeJob(consumeRemoteApi).then(() => {
-        return syncWorkAround(repository).then(() => {
-          const fileTree = Factory.repository(repository)
-          dispatch(initFileSystem(fileTree))
-          dispatch({type: UPDATE_DEPENDENCIES_DONE})
-        })
-      })
-    })
-}

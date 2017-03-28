@@ -14,7 +14,7 @@ export const getProgress = (rootState: any): ?RepositoryModel => getAll(rootStat
 
 export const getFileContent = (rootState: any) => (path: Path): ?string => {
   const state = getAll(rootState)
-  return state.contents.get(path.toString())
+  return state.contents.get(path.toString()) || ''
 }
 
 export const getCurrentFileContent = (rootState: any) => (): ?string => {

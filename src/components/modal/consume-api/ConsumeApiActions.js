@@ -5,7 +5,7 @@ import {Fragment} from './Fragment'
 import ConsumeRemoteApi from '../../../remote-api/ConsumeRemoteApi'
 import type {Dispatch, GetState, ExtraArgs} from '../../../types'
 import {getFragments, getQuery} from "./selectors";
-import {addExchangeDependency} from '../../../repository-redux/actions'
+import {addExchangeDependency} from "../../dependencies-tree/actions";
 
 export const FRAGMENTS_CHANGED = 'DESIGNER/CONSUME_API/FRAGMENTS_CHANGED'
 export const ADD_FRAGMENTS = 'DESIGNER/CONSUME_API/ADD_FRAGMENTS'
