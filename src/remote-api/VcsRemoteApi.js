@@ -16,6 +16,10 @@ class VcsRemoteApi extends RemoteApi {
     return this._get(['files', VcsRemoteApi.vcsPathForUri(path)], false)
   }
 
+  clean(): Promise<string> {
+    return this._post(['clean'], false)
+  }
+
   deleteFile(path: string): Promise {
     return this._delete(['files', VcsRemoteApi.vcsPathForUri(path)], false)
   }
@@ -24,9 +28,14 @@ class VcsRemoteApi extends RemoteApi {
     return this._post(['files', VcsRemoteApi.vcsPathForUri(from), 'move'], new PathMetadata(VcsRemoteApi.vcsPath(to)))
   }
 
-  save(files: ContentData[]): Promise<EntryMetadata[]> {
-    return this._post(['save'], files)
-      .then(elements => elements.map(EntryMetadata.fromObject))
+  save(files: ContentData[], commit): Promise<EntryMetadata[]> {
+    if (commit) {
+      return this._post(['save'], files)
+        .then(elements => elements.map(EntryMetadata.fromObject))
+    } else {
+      return this._post(['save', '?commit=false'], files)
+        .then(elements => elements.map(EntryMetadata.fromObject))
+    }
   }
 
   logs(): Promise {

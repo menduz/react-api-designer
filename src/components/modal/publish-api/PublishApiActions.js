@@ -84,10 +84,10 @@ export const openModal = (checkForUnsaved: boolean = true) => (dispatch: Dispatc
 }
 
 const formatErrorMessage = (error: any, source: string) => {
-  return error && error.body && error.body.message ? error.body.message : `Connection error while publishing to ${source}`
+  return error && error.body && error.body.message ? error.body.message : error.message
 }
 
-export const publish = (name: string, version: string, tags: Array<string>, mainFile: string,
+export const publish = (name: string, version: string, tags: Array<string>, mainFile: string, description: string,
                         assetId: string, groupId: string, platform: boolean, exchange: boolean) => {
   return (dispatch: Dispatch, getState: GetState, {designerRemoteApiSelectors}: ExtraArgs) => {
     dispatch(startFetching(!platform && exchange ? constants.EXCHANGE : !exchange && platform ? constants.PLATFORM : constants.BOTH))
@@ -98,26 +98,26 @@ export const publish = (name: string, version: string, tags: Array<string>, main
     if (exchange) {
       //publishing to exchange
       const projectType = getProjectType(getState()) // raml or raml_fragment
-      remoteApi.publishToExchange(name, version, tags, mainFile, assetId, groupId, projectType)
+      remoteApi.publishToExchange(name, version, tags, mainFile, description, assetId, groupId, projectType)
         .then((response) => {
           const url = `/exchange/${response.groupId}/${response.assetId}/${response.version}`
           dispatch(successfullyFetched({...response, url}, constants.EXCHANGE))
         })
         .catch((error) => {
-          console.error(error)
+          console.error('Error when publishing to exchange', error)
           dispatch(errorOnPublish(formatErrorMessage(error, constants.EXCHANGE), constants.EXCHANGE))
         })
     }
 
     if (platform) {
       //publishing to platform
-      remoteApi.publishToPlatform(name, version, tags, mainFile)
+      remoteApi.publishToPlatform(name, version, tags, mainFile, description)
         .then((response: PublishApiResponse) => {
           const url = `/apiplatform/${dataProvider.organizationDomain()}/admin/#/organizations/${dataProvider.organizationId()}/dashboard/apis/${response.apiId}/versions/${response.versionId}`
           dispatch(successfullyFetched({...response, url}, constants.PLATFORM))
         })
         .catch((error) => {
-          console.error(error)
+          console.error('Error when publishing to platform', error)
           dispatch(errorOnPublish(formatErrorMessage(error, constants.PLATFORM), constants.PLATFORM))
         })
     }

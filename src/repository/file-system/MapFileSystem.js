@@ -182,7 +182,7 @@ class MapFileSystem extends FileSystem {
   /**
    * Persist a file to an existing folder.
    */
-  save(files: FileData[]): Promise<Entry> {
+  save(files: FileData[], commit:Boolean = true): Promise<Entry> {
     return new Promise((resolve) => {
       setTimeout(() => {
         files.forEach((f) => this.saveFile(f))
@@ -284,17 +284,20 @@ class MapFileSystem extends FileSystem {
       setTimeout(() => {
         let entry: ?MapEntry = this._mapHelper.get(path)
 
-        if (entry &&
-          entry.type === FileSystem.FolderEntryType &&
-          this._hasChildren(path)) {
-          reject('folder not empty')
-          return //deferred.promise
+        if (entry && entry.type === FileSystem.FolderEntryType && this._hasChildren(path)) {
+          this._removeAll(path)
+          resolve()
+        } else {
+          this._mapHelper.remove(path)
+          resolve()
         }
-
-        this._mapHelper.remove(path)
-        resolve()
       }, this._delay)
     })
+  }
+
+  _removeAll(path:Path) {
+    this._findFiles(path).forEach(c => this._removeAll(c.path))
+    this._mapHelper.remove(path)
   }
 
   /**

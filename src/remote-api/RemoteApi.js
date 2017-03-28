@@ -56,8 +56,7 @@ class RemoteApi {
       const headers = this._headers()
       request(RemoteApi.requestOptions(method, url, headers, body, jsonResult),
         (error, response, body) => {
-          if (error) reject(error)
-          else if (RemoteApi._isError(response)) reject(RemoteApi._extractError(response))
+          if (error || RemoteApi._isError(response)) reject(RemoteApi._extractError(response))
           else resolve(RemoteApi._resolveBody(body, jsonResult))
         })
     })
@@ -85,7 +84,7 @@ class RemoteApi {
       status: response.statusCode,
       statusText: response.statusText,
       body: response.body,
-      message: msg
+      message: msg || response.statusText || ('Error code: '+ response.statusCode)
     }
   }
 

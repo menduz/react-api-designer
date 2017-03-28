@@ -128,7 +128,8 @@ export const removeDependency = (gav: any) =>
         dispatch({type: UPDATE_DEPENDENCIES_DONE})
       })
     }).catch(err => {
-      dispatch(error(UPDATE_DEPENDENCIES_FAILED, 'Error removing dependency'))
+      console.error('Error removing dependencies', error)
+      dispatch(error(UPDATE_DEPENDENCIES_FAILED, err))
     })
   }
 
@@ -145,6 +146,7 @@ export const addExchangeDependency = (dependencies: any) =>
         dispatch({type: UPDATE_DEPENDENCIES_DONE})
       })
     }).catch(err => {
-      dispatch(error(UPDATE_DEPENDENCIES_FAILED, 'Error adding dependency'))
+      console.error('Error adding dependency', error)
+      dispatch(error(UPDATE_DEPENDENCIES_FAILED, err))
     })
   }

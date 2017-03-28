@@ -19,6 +19,7 @@ const mapState = (rootState) => {
   return {
     groupId: state.form['groupId'],
     assetId: state.form['assetId'],
+    description: state.form['description'],
     main: state.form['main'],
     name: state.form['name'],
     version: state.form['version'],
@@ -43,11 +44,12 @@ const mapDispatch = (dispatch, props: ContainerProps) => {
     onTagRemove: (tag: string) => dispatch(removeTag(tag)),
     onSubmitTag: (tag: string) => dispatch(addTag(tag)),
     onNameChange: (name: string) => dispatch(changeValue('name', name)),
+    onDescriptionChange: (description: string) => dispatch(changeValue('description', description)),
     onNextVersionChange: (version: string) => dispatch(changeValue('nextVersion', version)),
     onMainFileChange: (main: string) => dispatch(changeValue('main', main)),
-    onSubmit: (name: string, version: string, tags: Array<string>, main: string, assetId: string, groupId: string,
-               platform: boolean, exchange: boolean) =>
-      dispatch(publish(name, version, tags, main, assetId, groupId, platform, exchange)),
+    onSubmit: (name: string, version: string, tags: Array<string>, main: string, description: string,
+               assetId: string, groupId: string, platform: boolean, exchange: boolean) =>
+      dispatch(publish(name, version, tags, main, description, assetId, groupId, platform, exchange)),
     onCancel: () => {
       dispatch(clear())
       if (props.onClose) props.onClose()

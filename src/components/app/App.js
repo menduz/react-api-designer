@@ -10,6 +10,7 @@ import {Info} from '../info'
 import {Editor} from '../editor'
 import {FileSystemTreeContainer} from '../tree'
 import {DependenciesTreeContainer} from '../dependencies-tree'
+import {MessageModal} from '../modal/message'
 import FileDrop from '../filedrop/FileDrop'
 import Toasts from '../toasts/Toasts'
 import {UnsavedModal} from '../modal/unsaved'
@@ -36,6 +37,7 @@ class App extends Component {
           </Split>
         </Split>
         <Toasts/>
+        <MessageModal/>
         <UnsavedModal/>
       </FileDrop>
     )

@@ -7,6 +7,9 @@ import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
 import {Path} from '../../repository'
 import {copyTextToClipboard} from '../../bootstrap/util'
 import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
+
+import consumeColorIcon from '../menu/dependencies-menu/assets/ConsumeExchangeColorIcon.svg'
+
 import './DependenciesTree.css'
 
 class DependenciesTree extends Component {
@@ -85,11 +88,11 @@ class DependenciesTree extends Component {
     }
 
     if (nodes && nodes.length === 0) {
-      return (
-        <div className="Dependencies-Tree-loading" data-test-id="Dependencies-Tree-Loading">
-          <span>No dependencies</span>
-        </div>
-      )
+        return (
+          <div className="empty-list-text">
+            Add a new dependency by clicking on the <img src={consumeColorIcon} role="presentation" height="13px"/> button.
+          </div>
+        )
     }
 
     return nodes ?

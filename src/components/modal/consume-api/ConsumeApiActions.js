@@ -6,6 +6,12 @@ import ConsumeRemoteApi from '../../../remote-api/ConsumeRemoteApi'
 import type {Dispatch, GetState, ExtraArgs} from '../../../types'
 import {getFragments, getQuery} from "./selectors";
 import {addExchangeDependency} from "../../dependencies-tree/actions";
+import {numberOfDependencies} from '../../../repository-redux/selectors'
+import * as MessageModal from '../message'
+import {TITLE} from './ConsumeApiConstants'
+
+import * as React from 'react'
+import consumeColorIcon from '../../menu/dependencies-menu/assets/ConsumeExchangeColorIcon.svg'
 
 export const FRAGMENTS_CHANGED = 'DESIGNER/CONSUME_API/FRAGMENTS_CHANGED'
 export const ADD_FRAGMENTS = 'DESIGNER/CONSUME_API/ADD_FRAGMENTS'
@@ -62,8 +68,20 @@ export const isAddingMore = () => ({
   type: IS_ADDING_MORE
 })
 
+const firstDependencyMessage = (dependencies: List<{groupId:string, assetId: string, version: string}>) =>
+  (
+    <span>
+      {dependencies.map(d =>
+        <div>Your new dependency is at the '/exchange_modules/{d.groupId}/{d.assetId}/{d.version}/' folder.</div>
+      )}
+       <div>
+         You can manage your dependencies from the Dependencies panel <img src={consumeColorIcon} role="presentation" height="13px"/> .
+      </div>
+    </span>
+  )
+
 export const submit = (fragments: List<Fragment>) => {
-  return (dispatch: Dispatch) => {
+  return (dispatch: Dispatch, getState: GetState) => {
     dispatch(isSubmitting()) // in progress
 
     const selected = fragments.filter(fragment => fragment.selected)
@@ -74,17 +92,22 @@ export const submit = (fragments: List<Fragment>) => {
 
     dispatch(addExchangeDependency(dependencies)).then(() => {
       dispatch(clear()) // close dialog
+      if(numberOfDependencies(getState()) === 1) {
+        const message = firstDependencyMessage(dependencies)
+        dispatch(MessageModal.actions.setContent({title: TITLE, message}))
+        dispatch(MessageModal.actions.openModal())
+      }
     }).catch(err => {
-      console.log('Error when adding dependencies', selected, err)
+      console.error('Error when adding dependencies', selected, err)
       dispatch(showError(`${err.message || err || 'Error when adding dependency'}`)) // show error in dialog
     })
   }
 }
 
-export const handleFragmentSelection = (index: number, fragment: Fragment, selected: boolean) => {
+export const handleFragmentSelection = (index: number, fragment: Fragment) => {
   return (dispatch: Dispatch, getState: GetState) => {
     const fragments: List<Fragment> = getFragments(getState())
-    dispatch(fragmentsChanged(fragments.set(index, {...fragment, selected})))
+    dispatch(fragmentsChanged(fragments.set(index, {...fragment, selected : !fragment.selected})))
   }
 }
 
@@ -95,7 +118,7 @@ export const searchFragments = (query: string) => {
     consumeRemoteApi.queryFragments(query).then((fragments) => {
       dispatch(fragmentsChanged(new List(fragments)))
     }).catch((error) => {
-      console.log(error)
+      console.error('Error when searching fragments', error)
       dispatch(showError(error.message || error.toString()))
     })
   }
@@ -121,9 +144,8 @@ export const searchMoreFragments = () => {
       else
         dispatch(noMoreFragments())
     }).catch((error) => {
-      console.log(error)
+      console.error('Error when searching more fragments', error)
       dispatch(showError(error.message || error.toString()))
     })
   }
 }
-

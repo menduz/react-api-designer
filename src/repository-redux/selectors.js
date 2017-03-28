@@ -37,3 +37,14 @@ export const isValidFile = (rootState: any) => (path: Path): boolean => {
   const element = state.fileTree.getByPath(path)
   return !!element && !element.isDirectory()
 }
+
+export const numberOfDependencies = (rootState: any): number => {
+  const state = getAll(rootState)
+  const fileTree: ?RepositoryModel = state.fileTree
+  if (!fileTree) return 0
+
+  const exchangeModules = fileTree.getByPathString('/exchange_modules')
+  if (!exchangeModules || !exchangeModules.isDirectory() ) return 0
+
+  return exchangeModules.asDirectoryModel().children.size
+}

@@ -17,6 +17,7 @@ import {getFragments, getQuery, isSubmitting, isSearching, getError, isAddingMor
 import './ConsumeApi.css'
 import FragmentComponent from './FragmentComponent'
 import InfiniteScroll from 'react-infinite-scroller'
+import {TITLE} from './ConsumeApiConstants'
 
 class ConsumeApi extends Component {
 
@@ -24,8 +25,8 @@ class ConsumeApi extends Component {
     this.props.updateQuery(event.value)
   }
 
-  handleFragmentSelection(index, fragment, event) {
-    this.props.handleFragmentSelection(index, fragment, event.value)
+  handleFragmentSelection(index, fragment) {
+    this.props.handleFragmentSelection(index, fragment)
   }
 
   handleSearchFragment(query) {
@@ -46,7 +47,7 @@ class ConsumeApi extends Component {
       const gav = `${fragment.groupId}/${fragment.assetId}/${fragment.version}`;
       return (
         <li key={gav}>
-          Adding <b>{fragment.name}</b> to <i>/exchange_modules/{gav}</i>
+          Adding '{fragment.name}' to '/exchange_modules/{gav}/'
         </li>
       )
     })
@@ -65,7 +66,7 @@ class ConsumeApi extends Component {
              onClickOverlay={onCancel}
              className="consume-api-modal">
         <ModalHeader onClose={onCancel}>
-          <h1>Consume API Fragment</h1>
+          <h1>{TITLE}</h1>
         </ModalHeader>
         {error.length > 0 ?
           <div className="error-zone">
@@ -77,7 +78,7 @@ class ConsumeApi extends Component {
             <div className="consume-api-content submiting">
               <div className="search-spinner"><Spinner size="l"/></div>
               <ul>
-                {this.renderConsumingFragments(fragments)}
+                {this.renderConsumingFragments(fragments.filter(f => f.selected))}
               </ul>
             </div>
           ) : (
