@@ -35,7 +35,7 @@ class ElectronFileSystem extends FileSystem {
     })
   }
 
-  save(entries: FileData[]): Promise<Entry> {
+  save(entries: FileData[], commit:Boolean = true): Promise<Entry> {
     return new Promise((resolve) => {
       // save all sync
       entries.forEach(({path, content}) => {

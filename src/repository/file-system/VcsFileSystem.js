@@ -63,10 +63,10 @@ class VcsFileSystem extends FileSystem {
       .then(EntryFactory.fromBasicMetadata)
   }
 
-  save(entries: FileData[]): Promise<Entry> {
+  save(entries: FileData[], commit:Boolean = true): Promise<Entry> {
     const data = entries
       .map((entry) => new ContentData(entry.path, entry.content))
-    return this._vcsApi.save(data)
+    return this._vcsApi.save(data, commit)
       .then(EntryFactory.fromBasicMetadata)
   }
 
@@ -95,6 +95,11 @@ class VcsFileSystem extends FileSystem {
   }
 
   get persistsEmptyFolders(): boolean { return false }
+
+  clean(): Promise<any> {
+    return this._vcsApi.clean()
+  }
+
 }
 
 export default VcsFileSystem

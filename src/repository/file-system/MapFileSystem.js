@@ -182,7 +182,7 @@ class MapFileSystem extends FileSystem {
   /**
    * Persist a file to an existing folder.
    */
-  save(files: FileData[]): Promise<Entry> {
+  save(files: FileData[], commit:Boolean = true): Promise<Entry> {
     return new Promise((resolve) => {
       setTimeout(() => {
         files.forEach((f) => this.saveFile(f))

@@ -94,7 +94,7 @@ export default class FileSystem {
    *
    * Returns a promise that fulfills on success or rejects on fail.
    */
-  save(files: FileData[]): Promise<Entry> {
+  save(files: FileData[], commit:Boolean = true): Promise<Entry> {
     throw new Error('Not implemented method')
   }
 
@@ -135,6 +135,10 @@ export default class FileSystem {
 
   get persistsEmptyFolders(): boolean {
     throw new Error('Not implemented method')
+  }
+
+  clean(): Promise<any> {
+    return Promise.resolve()
   }
 
   // Constants

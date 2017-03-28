@@ -66,8 +66,35 @@ export default class Repository {
         const tuples: Tuple<File, string>[] = zipArrays(files, contents)
         const fileDataList = tuples
           .map(t => ({path: t.first.path.toString(), content: t.second}))
+        const fileCount = fileDataList.length
+        const count = 10
+        let start = 0
+        let next = count
+        if (fileCount > count) {
+          let result = Promise.resolve()
 
-        return this._fileSystem.save(fileDataList)
+          while(next < fileCount) {
+            let s = start
+            let n = next
+            result  = result.then(() => {
+              return this._fileSystem.save(fileDataList.slice(s, n), false)
+            })
+            start = next - 1
+            next = start + count
+          }
+
+          return result.then(() => {
+            return this._fileSystem.save(fileDataList.slice(start, fileCount))
+          }).catch(err => {
+            console.error("Error saving files ", err)
+            return this._fileSystem.clean().then(() => Promise.reject(err)).catch(cleanErr => {
+              console.error("Error cleaning repository ", cleanErr)
+              return Promise.reject(err)
+            })
+          })
+        } else {
+          return this._fileSystem.save(fileDataList)
+        }
       }).then((entry): Promise<SaveResult> => {
         files.forEach(f => f.clear())
         const repository = this._updateDirectory(ElementFactory.directory(this._fileSystem, entry))
