@@ -140,9 +140,8 @@ export default class Repository {
   deleteDirectory(path: Path): Promise<Directory> {
     const directory = this.getDirectoryByPath(path)
     if (!directory) return Promise.reject()
-
-    return directory.remove(this._fileSystem)
-      .then(d => ((d.parent && d.parent.removeChild(d)) || d))
+    return this._fileSystem.remove(path.toString()).then(()=> ((directory.parent &&
+      directory.parent.removeChild(directory)) || directory))
   }
 
   addFile(path: Path, name: string, content: string): File {
