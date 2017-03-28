@@ -14,6 +14,7 @@ import Pills from '@mulesoft/anypoint-components/lib/Pills'
 import Checkbox from '@mulesoft/anypoint-components/lib/Checkbox'
 import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
 import Select from '@mulesoft/anypoint-components/lib/Select'
+import TextArea from '@mulesoft/anypoint-components/lib/TextArea'
 
 import './PublishApi.css'
 
@@ -22,14 +23,14 @@ class PublishApiModal extends React.Component {
 
   handleSave() {
     const {publishToBothApis, publishToExchange} = this.props
-    const {name, nextVersion, tags, main, assetId, groupId} = this.props
+    const {name, nextVersion, tags, main, assetId, groupId, description} = this.props
 
     if (publishToBothApis) {
-      this.props.onSubmit(name, nextVersion, tags, main, assetId, groupId, true, true)
+      this.props.onSubmit(name, nextVersion, tags, main, description, assetId, groupId, true, true)
     } else if (publishToExchange && !publishToBothApis) {
-      this.props.onSubmit(name, nextVersion, tags, main, assetId, groupId, false, true)
+      this.props.onSubmit(name, nextVersion, tags, main, description, assetId, groupId, false, true)
     } else {
-      this.props.onSubmit(name, nextVersion, tags, main, assetId, groupId, true, false)
+      this.props.onSubmit(name, nextVersion, tags, main, description, assetId, groupId, true, false)
     }
   }
 
@@ -45,6 +46,10 @@ class PublishApiModal extends React.Component {
 
   handleTagChange(event: any) {
     this.props.onTagChange(event.value)
+  }
+
+  handleDescriptionChange(event: any) {
+    this.props.onDescriptionChange(event.value)
   }
 
   handleSelectFileChange(event: any) {
@@ -110,12 +115,12 @@ class PublishApiModal extends React.Component {
   }
 
   render() {
-    const {name, tag, tags, onCancel, publishToExchange, version, nextVersion} = this.props
+    const {name, tag, tags, onCancel, publishToExchange, version, nextVersion, description} = this.props
 
     const isFetching = this.isVariableComplete(this.props.isFetching, true)
     const isFetched = this.isVariableComplete(this.props.isFetched)
     const canSubmit = this.canSubmit()
-    const content = isFetched ? this.link() : this.form(name, version, nextVersion, tag, tags)
+    const content = isFetched ? this.link() : this.form(name, version, nextVersion, tag, tags, description)
     const errors = this.handleErrors()
     const partialAnswers = this.handlePartialAnswers(isFetching, isFetched)
 
@@ -179,10 +184,11 @@ class PublishApiModal extends React.Component {
                   clearable={false}
                   testId="Publish-Select-MainFile"/>
         </div>
-      </div>]
+      </div>
+    ]
   }
 
-  form(name: string, currentVersion: string, nextVersion: string, tag: ?string, tags: Array<string>) {
+  form(name: string, currentVersion: string, nextVersion: string, tag: ?string, tags: Array<string>, description: string) {
     const {isLoading, publishToExchange} = this.props
     return (
       isLoading ? <div className="search-spinner"><Spinner size="l"/></div> :
@@ -204,6 +210,16 @@ class PublishApiModal extends React.Component {
                          required
                          testId="Publish-Input-NextVersion"/>
               {currentVersion ? <small>Current version: {currentVersion}</small> : null}
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="large-col">
+              <Label className="required">Description</Label>
+              <TextArea style={{ height: 65 }}
+                        placeholder="Add a description"
+                        value={description}
+                        required
+                        onChange={this.handleDescriptionChange.bind(this)}/>
             </div>
           </div>
           {publishToExchange ? this.addExchangeFormFields() : null}
@@ -270,14 +286,15 @@ class PublishApiModal extends React.Component {
     return links
   }
 
-  canSubmit() {
-    const {name, nextVersion, publishToExchange, main} = this.props
+  canSubmit(): boolean {
+    const {name, nextVersion, publishToExchange, main, description} = this.props
     const apiPlatformFields = PublishApiModal.isNotEmpty(name) && PublishApiModal.isNotEmpty(nextVersion)
+      && PublishApiModal.isNotEmpty(description)
     const apiExchangeFields = PublishApiModal.isNotEmpty(main)
     return publishToExchange ? (apiPlatformFields && apiExchangeFields) : apiPlatformFields
   }
 
-  static isNotEmpty(value: string) {
+  static isNotEmpty(value: string): boolean {
     return (value != null && value.length > 0)
   }
 }
@@ -286,6 +303,7 @@ type Props = {
   name: string,
   version: string,
   nextVersion: string,
+  description: string,
   files: [],
   tag?: string,
   tags: Array<string>,
@@ -313,7 +331,9 @@ type Props = {
   publishToBothApis: Boolean,
 
   onCancel: () => void,
-  onSubmit: () => void,
+  onSubmit: (name: string, version: string, tags: Array<string>, main: string, description: string,
+             assetId: string, groupId: string, platform: boolean, exchange: boolean) => void,
+  onDescriptionChange: (description: string) => void,
   onNameChange?: (name: string) => void,
   onNextVersionChange?: (nextVersion: string) => void,
   onTagChange: (tag: string) => void,
