@@ -34,18 +34,19 @@ class ConsumeApi extends Component {
 
   renderFragments(fragments: List<Fragment>) {
     return fragments.map((fragment: Fragment, index) => {
+      const gav = `${fragment.groupId}/${fragment.assetId}/${fragment.version}`;
       return <FragmentComponent isOdd={index % 2 !== 0}
-                                key={`fragment${index}`}
-                                fragment={fragment}
+                                key={gav} fragment={fragment}
                                 handleFragmentSelection={this.handleFragmentSelection.bind(this, index, fragment)}/>
     })
   }
 
   renderConsumingFragments(fragments: List<Fragment>) {
     return fragments.map((fragment: Fragment) => {
+      const gav = `${fragment.groupId}/${fragment.assetId}/${fragment.version}`;
       return (
-        <li>
-          Adding <b>{fragment.name}</b> to <i>/exchange_modules/{fragment.groupId || '-'}/{fragment.assetId || '-'}/{fragment.version || '-'}</i>
+        <li key={gav}>
+          Adding <b>{fragment.name}</b> to <i>/exchange_modules/{gav}</i>
         </li>
       )
     })

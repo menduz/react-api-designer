@@ -2,9 +2,14 @@ import request from 'browser-request'
 
 export default class MockingServiceClient {
 
-  constructor(baseUri, proxy) {
-    // self.baseUri = 'http://mocksvc.mulesoft.com'
-    this.baseUri = baseUri || '/apiplatform/proxy/http://ec2-52-201-242-128.compute-1.amazonaws.com'
+  constructor(baseUri = '', proxy = '') {
+    if (!baseUri) {
+      baseUri = window.location.host.startsWith('localhost')
+        ? 'http://ec2-52-201-242-128.compute-1.amazonaws.com'
+        : '/apiplatform/proxy/https://mocksvc.mulesoft.com'
+    }
+
+    this.baseUri = baseUri
     this.proxy = proxy
     this.url = this.buildURL()
   }

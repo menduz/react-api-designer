@@ -85,7 +85,9 @@ export const updateMock = () => (dispatch, getState) => {
     const mock = new MockingService(new MockingServiceClient())
     const ramlContent = getCurrentFileContent(getState())()
     const jsonObject = getParsedObject(getState())
-    mock.updateMock(m.id, m.manageKey, ramlContent, jsonObject)
+    mock.updateMock(m.id, m.manageKey, ramlContent, jsonObject).catch(err => {
+      dispatch(addErrorToasts(err))
+    })
   }
 }
 
