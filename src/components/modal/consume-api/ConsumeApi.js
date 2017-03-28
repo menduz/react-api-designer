@@ -46,7 +46,7 @@ class ConsumeApi extends Component {
       const gav = `${fragment.groupId}/${fragment.assetId}/${fragment.version}`;
       return (
         <li key={gav}>
-          Adding <b>{fragment.name}</b> to <i>/exchange_modules/{gav}</i>
+          Adding '{fragment.name}' to <i>/exchange_modules/{gav}</i>
         </li>
       )
     })
