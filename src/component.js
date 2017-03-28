@@ -14,6 +14,7 @@ import newFile from "./components/modal/new-file"
 import importModal from "./components/modal/import"
 import exportModal from "./components/modal/export"
 import rename from "./components/modal/rename"
+import * as messageModal from "./components/modal/message"
 import * as fileSystemTree from "./components/tree"
 import FileProvider from "./worker/FileProvider"
 import type {RepositoryContainer, AuthSelectors, RemoteApiSelectors, ExtraArgs, GetState} from "./types"
@@ -37,6 +38,7 @@ const reducers = {
     [publishApi.constants.NAME]: publishApi.reducer,
     [consumeApi.NAME]: consumeApi.reducer,
     [toasts.NAME]: toasts.reducer,
+    [messageModal.NAME]: messageModal.reducer,
     dialogs: combineReducers({
       [unsaved.NAME]: unsaved.reducer,
       newFolder: newFolder.reducer,

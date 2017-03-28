@@ -17,6 +17,7 @@ import {getFragments, getQuery, isSubmitting, isSearching, getError, isAddingMor
 import './ConsumeApi.css'
 import FragmentComponent from './FragmentComponent'
 import InfiniteScroll from 'react-infinite-scroller'
+import {TITLE} from './ConsumeApiConstants'
 
 class ConsumeApi extends Component {
 
@@ -65,7 +66,7 @@ class ConsumeApi extends Component {
              onClickOverlay={onCancel}
              className="consume-api-modal">
         <ModalHeader onClose={onCancel}>
-          <h1>Consume API Fragment</h1>
+          <h1>{TITLE}</h1>
         </ModalHeader>
         {error.length > 0 ?
           <div className="error-zone">

@@ -6,6 +6,12 @@ import ConsumeRemoteApi from '../../../remote-api/ConsumeRemoteApi'
 import type {Dispatch, GetState, ExtraArgs} from '../../../types'
 import {getFragments, getQuery} from "./selectors";
 import {addExchangeDependency} from "../../dependencies-tree/actions";
+import {dependencyPaths, numberOfDependencies} from '../../../repository-redux/selectors'
+import * as MessageModal from '../message'
+import {FIRST_DEPENDENCY_MESSAGE, TITLE} from './ConsumeApiConstants'
+
+import * as React from 'react'
+import consumeColorIcon from '../../menu/dependencies-menu/assets/ConsumeExchangeColorIcon.svg'
 
 export const FRAGMENTS_CHANGED = 'DESIGNER/CONSUME_API/FRAGMENTS_CHANGED'
 export const ADD_FRAGMENTS = 'DESIGNER/CONSUME_API/ADD_FRAGMENTS'
@@ -62,8 +68,18 @@ export const isAddingMore = () => ({
   type: IS_ADDING_MORE
 })
 
+export const firstDependencyMessage = (path: string) =>
+  (
+    <span>
+      {`Your new dependency is at the new '${path}' folder.
+       You can manage your dependencies from the Dependency Management panel `}
+      <img src={consumeColorIcon} role="presentation" height="13px"/>
+      {'.'}
+    </span>
+  )
+
 export const submit = (fragments: List<Fragment>) => {
-  return (dispatch: Dispatch) => {
+  return (dispatch: Dispatch, getState: GetState) => {
     dispatch(isSubmitting()) // in progress
 
     const selected = fragments.filter(fragment => fragment.selected)
@@ -74,6 +90,11 @@ export const submit = (fragments: List<Fragment>) => {
 
     dispatch(addExchangeDependency(dependencies)).then(() => {
       dispatch(clear()) // close dialog
+      if(numberOfDependencies(getState()) === 1) {
+        const message = firstDependencyMessage(dependencyPaths(getState())[0])
+        dispatch(MessageModal.actions.setContent({title: TITLE, message}))
+        dispatch(MessageModal.actions.openModal())
+      }
     }).catch(err => {
       console.log('Error when adding dependencies', selected, err)
       dispatch(showError(`${err.message || err || 'Error when adding dependency'}`)) // show error in dialog
@@ -126,4 +147,3 @@ export const searchMoreFragments = () => {
     })
   }
 }
-
