@@ -61,6 +61,7 @@ export default class MockingServiceClient {
 
   createMock(mock) {
     const options = {
+      method: 'POST',
       url: this.buildURL(),
       time: true,
       json: true,
@@ -68,7 +69,7 @@ export default class MockingServiceClient {
     }
 
     return new Promise((resolve, reject) => {
-      request.post(options, (error, response, body) => {
+      request(options, (error, response, body) => {
         if (error) {
           reject(error)
         } else {
@@ -92,13 +93,14 @@ export default class MockingServiceClient {
 
   updateMock(mock) {
     const options = {
+      method: 'PATCH',
       url: this.buildURL(mock.id, mock.manageKey),
       time: true,
       json: true,
       body: {raml: mock.raml, json: mock.json}
     }
     return new Promise((resolve, reject) => {
-      request.patch(options, (error, response, body) =>
+      request(options, (error, response, body) =>
         // return this.simplifyMock(angular.extend(mock, response.data))
         error ? reject(error) : resolve(MockingServiceClient.simplifyMock(Object.assign(mock, body)))
       )
@@ -107,9 +109,12 @@ export default class MockingServiceClient {
   }
 
   deleteMock(mockId, manageKey) {
-    const url = this.buildURL(mockId, manageKey)
+    const options = {
+      method: 'DELETE',
+      url: this.buildURL(mockId, manageKey)
+    }
     return new Promise((resolve, reject) => {
-      request.del(url, (error, response, body) =>
+      request(options, (error, response, body) =>
         error ? reject(error) : resolve(body)
       )
     })
