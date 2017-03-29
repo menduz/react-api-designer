@@ -10,7 +10,7 @@ import './Mock.css'
 class Mock extends React.Component {
 
   shouldComponentUpdate(nextProps) {
-    if (nextProps.parsedObject !== this.props.parsedObject) this.props.shouldUpdateMock()
+    if (nextProps.parsedObject !== this.props.parsedObject && nextProps.parsedObject !== null) this.props.shouldUpdateMock()
     return nextProps.isUp !== this.props.isUp || nextProps.isStarting !== this.props.isStarting
   }
 
