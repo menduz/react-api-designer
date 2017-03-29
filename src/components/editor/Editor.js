@@ -4,7 +4,7 @@ import MonacoEditor from 'react-monaco-editor'
 import EmptyResult from '@mulesoft/anypoint-components/lib/EmptyResult'
 import registerRamlLanguage from './languages/Raml'
 import {suggest, updateCurrentFile, saveCurrentFile} from './actions'
-import {getLanguage, getErrors, getSuggestions, getPosition, isReadOnly} from "./selectors"
+import {getLanguage, getErrors, getSuggestions, getPosition, isReadOnly, getCurrentFilePath} from "./selectors"
 import {getTheme} from "./../header/selectors"
 import {getCurrentFileContent} from "../../repository-redux/selectors"
 import './Editor.css'
@@ -21,6 +21,7 @@ class DesignerEditor extends React.Component {
     this.readOnly = this.props.readOnly
     this.language = this.props.language
     this.value = this.props.value
+    this.path = this.props.path
     this.position = this.props.position
     this.errors = this.props.errors
 
@@ -61,6 +62,13 @@ class DesignerEditor extends React.Component {
       this.editor.focus()
       update = true
     }
+
+    if (nextProps.path && !nextProps.path.equalsTo(this.path)) {
+      this.path = nextProps.value
+      this.editor.focus()
+      update = true
+    }
+
     return update
   }
 
@@ -212,6 +220,7 @@ class DesignerEditor extends React.Component {
 DesignerEditor.propTypes = {
   language: React.PropTypes.object,
   value: React.PropTypes.string,
+  path: React.PropTypes.object,
   position: React.PropTypes.object,
   errors: React.PropTypes.arrayOf(React.PropTypes.object),
   suggestions: React.PropTypes.arrayOf(React.PropTypes.object),
@@ -225,6 +234,7 @@ DesignerEditor.propTypes = {
 const mapStateToProps = state => {
   return {
     value: getCurrentFileContent(state)(),
+    path: getCurrentFilePath(state),
     language: getLanguage(state),
     position: getPosition(state),
     errors: getErrors(state),

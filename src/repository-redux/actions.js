@@ -36,9 +36,9 @@ export const DIRECTORY_DELETE_STARTED = `DESIGNER/${PREFIX}/DIRECTORY_DELETE_STA
 export const DIRECTORY_DELETED = `DESIGNER/${PREFIX}/DIRECTORY_DELETED`
 export const DIRECTORY_DELETE_FAILED = `DESIGNER/${PREFIX}/DIRECTORY_DELETE_FAILED`
 
-export const FILE_RENAME_STARTED = `DESIGNER/${PREFIX}/FILE_RENAME_STARTED`
-export const FILE_RENAMED = `DESIGNER/${PREFIX}/FILE_RENAMED`
-export const FILE_RENAME_FAILED = `DESIGNER/${PREFIX}/FILE_RENAME_FAILED`
+export const ELEMENT_RENAME_STARTED = `DESIGNER/${PREFIX}/ELEMENT_RENAME_STARTED`
+export const ELEMENT_RENAMED = `DESIGNER/${PREFIX}/ELEMENT_RENAMED`
+export const ELEMENT_RENAME_FAILED = `DESIGNER/${PREFIX}/ELEMENT_RENAME_FAILED`
 
 export const DIRECTORY_ADD_STARTED = `DESIGNER/${PREFIX}/DIRECTORY_ADD_STARTED`
 export const DIRECTORY_ADDED = `DESIGNER/${PREFIX}/DIRECTORY_ADDED`
@@ -47,57 +47,63 @@ export const DIRECTORY_ADD_FAILED = `DESIGNER/${PREFIX}/DIRECTORY_ADD_FAILED`
 export const FILE_CONTENT_UPDATED = `DESIGNER/${PREFIX}/FILE_CONTENT_UPDATED`
 export const FILE_CONTENT_UPDATE_FAILED = `DESIGNER/${PREFIX}/FILE_CONTENT_UPDATE_FAILED`
 
-export const FILE_MOVE_STARTED = `DESIGNER/${PREFIX}/FILE_MOVE_STARTED`
-export const FILE_MOVED = `DESIGNER/${PREFIX}/FILE_MOVE`
-export const FILE_MOVE_FAILED = `DESIGNER/${PREFIX}/FILE_MOVE_FAILED`
+export const ELEMENT_MOVE_STARTED = `DESIGNER/${PREFIX}/ELEMENT_MOVE_STARTED`
+export const ELEMENT_MOVED = `DESIGNER/${PREFIX}/ELEMENT_MOVED`
+export const ELEMENT_MOVE_FAILED = `DESIGNER/${PREFIX}/ELEMENT_MOVE_FAILED`
 
 export const REPOSITORY_NOT_LOADED = 'Repository not loaded!'
 
-
 export const loadingFileSystem = () => ({
-  type: LOADING_FILE_SYSTEM
+  type: LOADING_FILE_SYSTEM,
 })
 
 export const initFileSystem = (fileTree: RepositoryModel) => ({
   type: INIT_FILE_SYSTEM,
-  payload: fileTree
+  payload: fileTree,
 })
 
 export const fileAdded = (file: FileModel) => ({
   type: FILE_ADDED,
-  payload: file
+  payload: file,
 })
 
 export const fileSaved = (file: FileModel) => ({
   type: FILE_SAVED,
-  payload: file
+  payload: file,
 })
 
-export const fileRenamed = (oldPath: Path, element: ElementModel) => ({
-  type: FILE_RENAMED,
-  payload: {oldPath, element}
+export const elementRenamed = (oldPath: Path, element: ElementModel) => ({
+  type: ELEMENT_RENAMED,
+  payload: {oldPath, element},
 })
 
 export const fileDeleted = (path: Path) => ({
   type: FILE_DELETED,
-  payload: path
+  payload: path,
 })
 
 export const directoryDeleted = (path: Path) => ({
   type: DIRECTORY_DELETED,
-  payload: path
+  payload: path,
 })
 
 export const fileContentUpdated = (file: FileModel, content: string) => ({
   type: FILE_CONTENT_UPDATED,
-  payload: {file, content}
+  payload: {file, content},
 })
 
-
+export const elementMoved = (source: Path, destination: Path, isDirectory: boolean) => ({
+  type: ELEMENT_MOVED,
+  payload: {
+    source,
+    destination,
+    isDirectory,
+  },
+})
 
 export const directoryAdded = (directory: DirectoryModel) => ({
   type: DIRECTORY_ADDED,
-  payload: directory
+  payload: directory,
 })
 
 export const error = (type: string, errorMessage: string) =>
@@ -119,10 +125,10 @@ export const addDirectory = (parentPath: Path, name: string) =>
       .then(
         (directory) => {
           dispatch(directoryAdded(Factory.directoryModel(directory)))
-        }
+        },
       )
       .catch(
-        (err) => dispatch(error(DIRECTORY_ADD_FAILED, err || 'Error on create directory'))
+        (err) => dispatch(error(DIRECTORY_ADD_FAILED, err || 'Error on create directory')),
       )
   }
 
@@ -135,7 +141,7 @@ const mkdirs = (filename: string, repository: Repository) =>
     for (let i = 0; i < names.length - 1; i++) {
       dirname = names[i]
       const path = parentPath + dirname + '/'
-      const dir = repository.getByPathString(path);
+      const dir = repository.getByPathString(path)
       if (!dir) {
         const c = parentPath
         const d = dirname
@@ -204,7 +210,7 @@ export const addFile = (parentPath: Path, name: string, fileType?: string) =>
     if (!isValidDirectory(parentPath))
       return dispatch(error(FILE_ADD_FAILED, `${parentPath.toString()} is not valid directory`))
 
-    const defaultContent = fileType? defaultContentJson[fileType] || '' : ''
+    const defaultContent = fileType ? defaultContentJson[fileType] || '' : ''
     const repository: Repository = repositoryContainer.repository
     const file: File = repository.addFile(parentPath, name, defaultContent)
     dispatch(fileAdded(Factory.fileModel(file)))
@@ -248,22 +254,22 @@ export const saveAll = () =>
 export const rename = (path: string, newName: string) =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
     if (!repositoryContainer.isLoaded)
-      return Promise.reject(dispatch(error(FILE_RENAME_FAILED, REPOSITORY_NOT_LOADED)))
+      return Promise.reject(dispatch(error(ELEMENT_RENAME_FAILED, REPOSITORY_NOT_LOADED)))
 
     const fileTree = getFileTree(getState())
     const element = fileTree ? fileTree.getByPathString(path) : undefined
 
     if (!element || !isValidDirectory(element) || !isValidFile(element))
-      return Promise.reject(dispatch(error(FILE_RENAME_FAILED, `${path} is not valid`)))
+      return Promise.reject(dispatch(error(ELEMENT_RENAME_FAILED, `${path} is not valid`)))
 
     const repository: Repository = repositoryContainer.repository
-    dispatch({type: FILE_RENAME_STARTED})
+    dispatch({type: ELEMENT_RENAME_STARTED})
 
     return repository.rename(path, newName)
       .then(
-        (elem) => dispatch(fileRenamed(Path.fromString(path), Factory.elementModel(elem)))
+        (elem) => dispatch(elementRenamed(Path.fromString(path), Factory.elementModel(elem))),
       ).catch(
-        (err) => dispatch(error(FILE_RENAME_FAILED, err || 'Error on renameElement'))
+        (err) => dispatch(error(ELEMENT_RENAME_FAILED, err || 'Error on renameElement')),
       )
   }
 
@@ -279,7 +285,7 @@ const removeDirectory = (path: Path, dispatch: Dispatch, repository: Repository)
         dispatch(clean())
       })
     .catch(
-      (err) => dispatch(error(DIRECTORY_DELETE_FAILED, err || 'Error on delete'))
+      (err) => dispatch(error(DIRECTORY_DELETE_FAILED, err || 'Error on delete')),
     )
 }
 
@@ -295,7 +301,7 @@ const removeFile = (path: Path, dispatch: Dispatch, repository: Repository): Pro
         dispatch(clean())
       })
     .catch(
-      (err) => dispatch(error(FILE_DELETE_FAILED, err || 'Error on delete'))
+      (err) => dispatch(error(FILE_DELETE_FAILED, err || 'Error on delete')),
     )
 }
 
@@ -308,7 +314,7 @@ export const remove = (path: Path) =>
 
     const element = repository.getByPath(path)
     if (!element)
-      return Promise.reject(dispatch(error(FILE_RENAME_FAILED, `${path.toString()} is not valid`)))
+      return Promise.reject(dispatch(error(ELEMENT_RENAME_FAILED, `${path.toString()} is not valid`)))
 
     if (element.isDirectory()) {
       return removeDirectory(path, dispatch, repository)
@@ -320,7 +326,7 @@ export const remove = (path: Path) =>
 export const moveElement = (source: Path, destinationDir: Path) =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
     if (!repositoryContainer.isLoaded)
-      return Promise.reject(dispatch(error(FILE_MOVE_FAILED, REPOSITORY_NOT_LOADED)))
+      return Promise.reject(dispatch(error(ELEMENT_MOVE_FAILED, REPOSITORY_NOT_LOADED)))
 
     const fileTree = getFileTree(getState())
     if (!fileTree) return Promise.reject()
@@ -334,20 +340,20 @@ export const moveElement = (source: Path, destinationDir: Path) =>
 
     if (isInvalidDestination || isInvalidSource) {
       const invalid: Path = isInvalidDestination ? destinationDir : source
-      return Promise.reject(dispatch(error(FILE_MOVE_FAILED, `${invalid.toString()} is not valid`)))
+      return Promise.reject(dispatch(error(ELEMENT_MOVE_FAILED, `${invalid.toString()} is not valid`)))
     }
 
-    dispatch({type: FILE_MOVE_STARTED})
+    dispatch({type: ELEMENT_MOVE_STARTED})
     const destinationPath = Path.fromString(destinationDir.toString() + '/' + fromElement.name)
     const repository: Repository = repositoryContainer.repository
     return repository.move(source, destinationPath)
       .then(
         (element) => {
-          dispatch({type: FILE_MOVED, payload: {source, destination: element.path}})
+          dispatch(elementMoved(source, element.path, element.isDirectory()))
           dispatch(addSuccessToasts(`${element.isDirectory() ? 'Directory' : 'File'} '${element.name}' moved`))
-        }
+        },
       )
       .catch(
-        (err) => dispatch(error(FILE_MOVE_FAILED, err || 'Move failed'))
+        (err) => dispatch(error(ELEMENT_MOVE_FAILED, err || 'Move failed')),
       )
   }

@@ -4,6 +4,9 @@ import {
   SUGGESTION_REQUEST, SUGGESTION_RESULT, CLEAN_EDITOR
 } from './actions'
 
+import {actions as repositoryActions} from '../../repository-redux'
+import Path from '../../repository/Path'
+
 const initialState = {
   path: null,
   language: {id: ''},
@@ -62,7 +65,27 @@ export default (state = initialState, action) => {
       }
     case CLEAN_EDITOR:
       return initialState
+    case repositoryActions.ELEMENT_RENAMED:
+      return elementLocationChangedReducer(state, action.payload.oldPath, action.payload.element.path)
+    case repositoryActions.ELEMENT_MOVED:
+      return elementLocationChangedReducer(state, action.payload.source, action.payload.destination)
     default:
       return state
   }
+}
+
+const elementLocationChangedReducer = (state, oldPath: Path, newPath: Path) => {
+  const path: ?Path = state.path
+
+  if(path && path.equalsTo(oldPath)) {
+    return { ...state, path: newPath}
+  }
+
+  if (path && path.isDescendantOf(oldPath)) {
+    const relativePath = oldPath.relativePathTo(path)
+    const resultPath = Path.mergePath(newPath, relativePath)
+    return { ...state, path: resultPath}
+  }
+
+  return state
 }

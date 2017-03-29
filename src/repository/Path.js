@@ -4,6 +4,7 @@ import {List} from  'immutable'
 
 export default class Path {
   static FileSystemSeparator = '/'
+  static BackSymbol = '..'
 
   toString(): string { throw new Error('Not implemented method') }
   isEmpty(): boolean { throw new Error('Not implemented method') }
@@ -12,14 +13,40 @@ export default class Path {
   shift(): Path { throw new Error('Not implemented method') }
   first(): string { throw new Error('Not implemented method') }
   last(): string { throw new Error('Not implemented method') }
+
   elements(): List<string> { throw new Error('Not implemented method') }
 
   append(element: string): Path {
     return Path.path(this.elements().push(element), this.isAbsolute())
   }
 
-  equalsTo(other: Path): boolean {
+  equalsTo(other: ?Path): boolean {
     return !!other && this.toString() === other.toString()
+  }
+
+  isDescendantOf(other: Path): boolean {
+    return this.toString().startsWith(other.toString())
+  }
+
+  relativePathTo(other: Path): Path {
+    if (this.isAbsolute() !== other.isAbsolute()) return other
+
+    const [thisDiff, otherDiff] = this.diff(other)
+    const resultElements = thisDiff
+      .elements()
+      .map(() => Path.BackSymbol)
+      .concat(otherDiff.elements())
+
+    return Path.path(resultElements, false)
+  }
+
+
+  diff(other: Path): [Path, Path] {
+    if (this.isAbsolute() !== other.isAbsolute()) return [this, other]
+    if (this.isEmpty() && other.isEmpty()) return [this, other]
+    if (this.first() !== other.first()) return [this, other]
+
+    return this.shift().diff(other.shift())
   }
 
   static emptyPath = (absolute: boolean = true): Path => {
@@ -32,7 +59,7 @@ export default class Path {
 
     return relativePath.elements().reduce(
       (result: Path, value: string) =>
-        value === '..' ? result.parent() : result.append(value),
+        value === Path.BackSymbol ? result.parent() : result.append(value),
       basePath
     )
   }
@@ -94,7 +121,7 @@ class PathImpl extends Path {
 
   parent(): Path { return Path.path(this._elements.pop()) }
 
-  shift(): Path { return Path.path(this._elements.shift()) }
+  shift(): Path { return Path.path(this._elements.shift(), false) }
 
   first(): string { return this._elements.first() }
 
