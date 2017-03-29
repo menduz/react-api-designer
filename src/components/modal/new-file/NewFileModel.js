@@ -31,7 +31,7 @@ const allFileTypes = [
     {value: 'DATA-TYPE', label: 'Type', defaultName: 'dataType.raml', info: 'Define a single data type declaration', link: 'raml-data-types'},
     {value: 'DOCUMENTATION-ITEM', label: 'User Documentation', defaultName: 'documentation.raml', info: 'Define a single page documentation item', link: 'user-documentation'},
     {value: 'NAMED-EXAMPLE', label: 'Example', defaultName: 'example.raml', info: 'Define a single example for a given data type', link: 'defining-examples-in-raml'},
-    {value: 'ANNOTATION-TYPE-DECLARATION', label: 'Annotation', defaultName: 'annotation.raml', info: 'Define a single annotation type declaration that describes additional metadata that can be applied to any RAML node', link: 'annotations'},
+    {value: 'ANNOTATION-TYPE-DECLARATION', label: 'Annotation Type', defaultName: 'annotation.raml', info: 'Define a single annotation type declaration that describes additional metadata that can be applied to any RAML node', link: 'annotations'},
     {value: 'SECURITY-SCHEME', label: 'Security Scheme', defaultName: 'securityScheme.raml', info: 'Define a single security scheme that describes the mechanism to secure data access, identify requests, and determine access level and data visibility', link: 'security-schemes'}
   ]},
   {value: 'RAML08', label: 'RAML 0.8', defaultName: 'api.raml', projectType: API_PROJECT},
