@@ -71,9 +71,10 @@ export const isAddingMore = () => ({
 const firstDependencyMessage = (dependencies: List<{groupId:string, assetId: string, version: string}>) =>
   (
     <span>
-      {dependencies.map(d =>
-        <div>Your new dependency is at the '/exchange_modules/{d.groupId}/{d.assetId}/{d.version}/' folder.</div>
-      )}
+      {dependencies.map(d => {
+        const gav = `${d.groupId}/${d.assetId}/${d.version}`
+        return <div key={gav}>Your new dependency is at the '/exchange_modules/{gav}/' folder.</div>
+      })}
        <div>
          You can manage your dependencies from the Dependencies panel <img src={consumeColorIcon} role="presentation" height="13px"/> .
       </div>
