@@ -5,31 +5,36 @@ import FileSystem from './file-system/FileSystem'
 
 class Element {
   _name: string
-  _parent: ?Directory
 
-  constructor(name: string, parent: ?Directory) {
+  constructor(name: string) {
     this._name = name
-    this._parent = parent
   }
 
   get name(): string { return this._name }
 
-  set name(name: string) { this._name = name }
+  get parent(): Directory { throw new Error('Not implemented method') }
 
-  get parent(): ?Directory { return this._parent }
+  set parent(value: Directory) { throw new Error('Not implemented method') }
 
-  set parent(value: ?Directory) { this._parent = value }
+  get path(): Path { throw new Error('Not implemented method') }
 
-  get path(): Path {
-    if (!this._parent) return Path.emptyPath()
-    return this._parent.path.append(this._name)
-  }
-
-  moveTo(directory: Directory): Element {
-    if (this._parent) this._parent.removeChild(this)
+  moveTo(directory: Directory): $Subtype<Element> {
+    this.parent.removeChild(this)
 
     directory.addChild(this)
-    this._parent = directory
+    this.parent = directory
+
+    return this
+  }
+
+  async rename(fileSystem: FileSystem, newName: string): Promise<$Subtype<Element>> {
+    if (newName !== this.name && this.parent !== this) {
+      const currentPath = this.path.toString()
+      const newPath = this.path.parent().append(newName).toString()
+      await fileSystem.rename(currentPath, newPath, this.isDirectory())
+      this._name = newName
+      this.parent.updateChildrenNames()
+    }
 
     return this
   }
@@ -40,11 +45,11 @@ class Element {
 
   isDirectory(): boolean { throw new Error('Not implemented method') }
 
-  getByPath(path: Path): ?Element { throw new Error('Not implemented method') }
+  getByPath(path: Path): ?$Subtype<Element> { throw new Error('Not implemented method') }
 
-  remove(fileSystem: FileSystem): Promise<Element> { throw new Error('Not implemented method') }
+  remove(fileSystem: FileSystem): Promise<$Subtype<Element>> { throw new Error('Not implemented method') }
 
-  clone(parent: Directory): Element { throw new Error('Not implemented method') }
+  clone(parent: Directory): $Subtype<Element> { throw new Error('Not implemented method') }
 }
 
 class State {
@@ -227,21 +232,29 @@ class NotPersistedState extends State {
 
 class File extends Element {
   _state: State
+  _parent: Directory
 
-  constructor(name: string, stateFactory: (f: File) => State, parent?: Directory) {
-    super(name, parent)
+  constructor(name: string, stateFactory: (f: File) => State, parent: Directory) {
+    super(name)
+    this._parent = parent
     this._state = stateFactory(this)
   }
+
+  get parent(): Directory { return this._parent }
+
+  set parent(parent: Directory) { this._parent = parent }
+
+  get path(): Path { return this.parent.path.append(this._name) }
 
   asFile(): File { return this }
 
   asDirectory(): Directory { throw new Error('Trying to cast Directory to File') }
 
-  static persistedFile(name: string, fileSystem: FileSystem, parent?: Directory): File {
+  static persistedFile(name: string, fileSystem: FileSystem, parent: Directory): File {
     return new File(name, (f) => new EmptyState(fileSystem, f), parent)
   }
 
-  static newFile(fileSystem: FileSystem, name: string, content: string, parent?: Directory): File {
+  static newFile(fileSystem: FileSystem, name: string, content: string, parent: Directory): File {
     return new File(name, (f) => new NotPersistedState(fileSystem, f, content), parent)
   }
 
@@ -292,10 +305,18 @@ class File extends Element {
 
 class Directory extends Element {
   _children: Map<string, Element>
+  _parent: Directory
 
-  constructor(name: string, children: Element[], parent?: Directory) {
-    super(name, parent)
-    this._children = new Map(children.map(e => [e._name, e]))
+  constructor(name: string, childProvider: (parent: Directory) => Element[], parent?: Directory) {
+    super(name)
+    this._parent = parent? parent : this
+    this._children = Directory._createChildrenMap(childProvider(this))
+  }
+
+  isRoot(): boolean { return this._parent === this }
+
+  static _createChildrenMap(children: Element[]): Map<string, Element> {
+    return new Map(children.map(e => [e._name, e]))
   }
 
   isDirectory() {
@@ -308,6 +329,24 @@ class Directory extends Element {
 
   isEmpty(): boolean {
     return this._children.size === 0
+  }
+
+  get parent(): Directory { return this._parent }
+
+  set parent(parent: Directory) { this._parent = parent }
+
+  get path(): Path {
+    if (this.isRoot()) return Path.emptyPath()
+    return this.parent.path.append(this._name)
+  }
+
+  updateChildrenNames(): void {
+    const childrenArray = Array.from(this._children.values())
+    this._children = Directory._createChildrenMap(childrenArray)
+  }
+
+  get children(): Element[] {
+    return Array.from(this._children.values())
   }
 
   get children(): Element[] {
@@ -347,15 +386,11 @@ class Directory extends Element {
     return promise.then(() => this)
   }
 
-  clone(parent: Directory): Element {
-    const newDirectory = new Directory(this._name, [], parent)
+  clone(parent: Directory): Directory {
+    const childProvider = (parent: Directory) => this.children
+      .map(c => c.clone(parent))
 
-    const newChildren = this.children
-      .map(c => c.clone(newDirectory))
-      .map(c => [c.name, c])
-    newDirectory._children = new Map(newChildren)
-
-    return newDirectory
+    return new Directory(this._name, childProvider, parent)
   }
 
   fileChildren(): File[] {

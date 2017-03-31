@@ -33,7 +33,7 @@ class RepositoryModelFactory {
     return new FileModel(file.name, file.path, file.extension,  file.dirty)
   }
 
-  static elementModel(element: Element): ElementModel {
+  static elementModel(element: Element): $Subtype<ElementModel> {
     return element.isDirectory()
       ? RepositoryModelFactory.directoryModel(element.asDirectory())
       : RepositoryModelFactory.fileModel(element.asFile())

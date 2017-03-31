@@ -404,3 +404,73 @@ it('move a directory from root to directory and back', async() => {
   expect(newRepository2.getByPath(to)).toBeUndefined()
   await assertFile(newRepository2, from, fileName, fileContent, false, true)
 })
+
+// Rename
+
+it('rename a file in root', async() => {
+  const dirPath = Path.emptyPath()
+  const originalName = 'api.raml'
+  const originalPath = dirPath.append(originalName)
+  const fileContent = '#%RAML 1.0\ntitle: myApi'
+  const newName = 'api-1.raml'
+  const newPath = dirPath.append(newName)
+
+  const fileSystem = await createFileSystem()
+  const repository = await Repository.fromFileSystem(fileSystem)
+  await assertFile(repository, originalPath, originalName, fileContent, false, true)
+
+  await repository.rename(originalPath, newName)
+  expect(repository.getByPath(originalPath)).toBeUndefined()
+  await assertFile(repository, newPath, newName, fileContent, false, true)
+
+  const newRepository1 = await Repository.fromFileSystem(fileSystem)
+  expect(newRepository1.getByPath(originalPath)).toBeUndefined()
+  await assertFile(newRepository1, newPath, newName, fileContent, false, true)
+
+  // Rename file back
+  await repository.rename(newPath, originalName)
+  expect(repository.getByPath(newPath)).toBeUndefined()
+  await assertFile(repository, originalPath, originalName, fileContent, false, true)
+
+  const newRepository2 = await Repository.fromFileSystem(fileSystem)
+  expect(newRepository2.getByPath(newPath)).toBeUndefined()
+  await assertFile(newRepository2, originalPath, originalName, fileContent, false, true)
+})
+
+it('rename a directory in root', async() => {
+  const parentPath = Path.emptyPath()
+  const dirName = 'library'
+  const dirPath = parentPath.append(dirName)
+  const childName = 'lib.raml'
+  const childPath = dirPath.append(childName)
+  const childContent = '#%RAML 1.0 Library'
+  const newName = 'library-new'
+  const newPath = parentPath.append(newName)
+  const newChildPath = newPath.append(childName)
+
+  const fileSystem = await createFileSystem()
+  const repository = await Repository.fromFileSystem(fileSystem)
+  assertDirectory(repository, dirPath, dirName)
+  await assertFile(repository, childPath, childName, childContent, false, true)
+
+  await repository.rename(dirPath, newName)
+  expect(repository.getByPath(dirPath)).toBeUndefined()
+  assertDirectory(repository, newPath, newName)
+  await assertFile(repository, newChildPath, childName, childContent, false, true)
+
+  const newRepository1 = await Repository.fromFileSystem(fileSystem)
+  expect(newRepository1.getByPath(dirPath)).toBeUndefined()
+  assertDirectory(newRepository1, newPath, newName)
+  await assertFile(newRepository1, newChildPath, childName, childContent, false, true)
+
+  // Rename file back
+  await repository.rename(newPath, dirName)
+  expect(repository.getByPath(newPath)).toBeUndefined()
+  assertDirectory(repository, dirPath, dirName)
+  await assertFile(repository, childPath, childName, childContent, false, true)
+
+  const newRepository2 = await Repository.fromFileSystem(fileSystem)
+  expect(newRepository2.getByPath(newPath)).toBeUndefined()
+  assertDirectory(newRepository2, dirPath, dirName)
+  await assertFile(newRepository2, childPath, childName, childContent, false, true)
+})

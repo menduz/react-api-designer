@@ -2,11 +2,13 @@
 
 import type {State} from './RenameModel'
 import * as actions from './RenameActions'
+import Path from '../../../repository/Path'
 
 const initialState : State = {
   newName: '',
   oldName: '',
-  showModal: false
+  showModal: false,
+  path: Path.emptyPath()
 }
 
 export default (state: State = initialState, action: any): State => {

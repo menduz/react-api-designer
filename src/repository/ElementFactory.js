@@ -5,7 +5,7 @@ import type {Entry} from './file-system/FileSystem'
 import {Element, File, Directory} from './Element'
 
 class ElementFactory {
-  static element(fileSystem: FileSystem, entry: Entry, parent?: Directory): Element {
+  static element(fileSystem: FileSystem, entry: Entry, parent: Directory): Element {
     switch (entry.type) {
       case FileSystem.FolderEntryType:
         return ElementFactory.directory(fileSystem, entry, parent)
@@ -20,16 +20,12 @@ class ElementFactory {
     if (entry.type !== FileSystem.FolderEntryType) throw new Error('This isn\'t a folder entry')
 
     const entryChildren = entry.children || []
-    const children = entryChildren.map((entry) => ElementFactory.element(fileSystem, entry))
-    const directory = new Directory(entry.name, children, parent)
-    children.forEach((child: Element) => {
-      child.parent = directory
-    })
-
-    return directory
+    const childProvider = (parent: Directory) =>
+      entryChildren.map((entry) => ElementFactory.element(fileSystem, entry, parent))
+    return new Directory(entry.name, childProvider, parent)
   }
 
-  static file(fileSystem: FileSystem, entry: Entry, parent?: Directory): File {
+  static file(fileSystem: FileSystem, entry: Entry, parent: Directory): File {
     if (entry.type !== FileSystem.FileEntryType) throw new Error('This isn\'t a file entry')
 
     return File.persistedFile(entry.name, fileSystem, parent)

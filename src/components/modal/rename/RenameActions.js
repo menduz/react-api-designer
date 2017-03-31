@@ -1,6 +1,9 @@
 //@flow
 
 import {rename} from '../../../repository-redux/actions'
+import Path from '../../../repository/Path'
+
+import type {Dispatch} from '../../../types'
 
 export const CHANGE_NAME = 'DESIGNER/RENAME/CHANGE_NAME'
 export const SHOW = 'DESIGNER/RENAME/SHOW_DIALOG'
@@ -11,7 +14,7 @@ export const changeName = (name: string) => ({
   payload: name
 })
 
-export const openRenameDialog = (path: string) => ({
+export const openRenameDialog = (path: Path) => ({
   type: SHOW,
   payload: path
 })
@@ -20,8 +23,8 @@ export const closeRenameDialog = () => ({
   type: HIDE
 })
 
-export const renameWith = (path: string, newName: string) =>
-  (dispatch) => {
+export const renameWith = (path: Path, newName: string) =>
+  (dispatch: Dispatch) => {
     dispatch(rename(path, newName))
     dispatch(closeRenameDialog())
   }

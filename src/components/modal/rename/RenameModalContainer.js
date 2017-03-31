@@ -6,7 +6,11 @@ import RenameModal from './RenameModal'
 import {getShowModal, getNewName, getPath} from './RenameSelectors'
 import {changeName, closeRenameDialog, renameWith} from './RenameActions'
 
-const mapState = (rootState) => {
+import type {Props} from './RenameModal'
+import type {Dispatch} from '../../../types'
+import Path from '../../../repository/Path'
+
+const mapState = (rootState: any): $Shape<Props> => {
   return {
     newName: getNewName(rootState),
     path: getPath(rootState),
@@ -14,9 +18,9 @@ const mapState = (rootState) => {
   }
 }
 
-const mapDispatch = (dispatch) => {
+const mapDispatch = (dispatch: Dispatch): $Shape<Props> => {
   return {
-    onSubmit: (path: string, newName: string) => dispatch(renameWith(path, newName)),
+    onSubmit: (path: Path, newName: string) => dispatch(renameWith(path, newName)),
     onCancel: () => dispatch(closeRenameDialog()),
     onNameChange: (name: string) => dispatch(changeName(name))
   }

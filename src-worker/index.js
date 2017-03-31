@@ -1,5 +1,6 @@
 import "raml-xml-validation"
 import "raml-json-validation"
+import "babel-polyfill"
 import OasRamlConverter from './converter'
 import jsonParse from './json'
 import RamlSuggestions from './raml/suggest'

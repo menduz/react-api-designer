@@ -9,6 +9,8 @@ import ElementFactory from './ElementFactory'
 import ZipHelper from './helper/ZipHelper'
 import {zipArrays} from './helper/utils'
 import type {Tuple} from './helper/utils'
+import {ElementModel} from './immutable/RepositoryModel'
+import RepositoryModelFactory from './immutable/RepositoryModelFactory'
 
 // eslint-disable-next-line
 export type SaveResult = {repository: Repository, file: ?File, content: ?string}
@@ -107,7 +109,7 @@ export default class Repository {
   }
 
   sync():Promise<any> {
-    return this._fileSystem.directory(Path.fromString('')).then(entry => {
+    return this._fileSystem.directory(Path.emptyPath().toString()).then(entry => {
       this._updateDirectory(ElementFactory.directory(this._fileSystem, entry))
     })
   }
@@ -116,17 +118,13 @@ export default class Repository {
     return this.saveFiles(this.getDirtyFiles(), currentFile)
   }
 
-  rename(path: string, newName: string): Promise<Element> {
-    const element = this.getByPathString(path)
+  rename(path: Path, newName: string): Promise<$Subtype<ElementModel>> {
+    const element = this.getByPath(path)
     if (!element) return Promise.reject()
 
-    const newPath = path.substr(0, path.lastIndexOf('/') + 1) + newName
-    const promise = this._fileSystem.rename(path, newPath, element.isDirectory())
-    element.name = newName
-
-    return promise
-      .then(() => element)
-      .catch(() => element)
+    return element.rename(this._fileSystem, newName)
+      .then(RepositoryModelFactory.elementModel)
+      .catch(() => RepositoryModelFactory.elementModel(element))
   }
 
   deleteFile(path: Path): Promise<File> {
@@ -163,7 +161,7 @@ export default class Repository {
     if (!element || !element.isDirectory()) return Promise.reject()
 
     const directory: Directory = element.asDirectory()
-    const newDirectory = new Directory(name, [], directory)
+    const newDirectory = new Directory(name, () => [], directory)
 
     return this._fileSystem.createFolder(newDirectory.path.toString())
       .then(() => { directory.addChild(newDirectory) })

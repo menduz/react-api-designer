@@ -94,7 +94,7 @@ export default class FileSystem {
    *
    * Returns a promise that fulfills on success or rejects on fail.
    */
-  save(files: FileData[], commit:Boolean = true): Promise<Entry> {
+  save(files: FileData[], commit: boolean = true): Promise<Entry> {
     throw new Error('Not implemented method')
   }
 

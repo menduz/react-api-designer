@@ -14,6 +14,8 @@ import {Path} from '../../repository'
 import FileSystemTree from './FileSystemTree'
 import './FileSystemTree.css'
 
+import type {Dispatch} from '../../types/index'
+
 type Props = {
   nodes: [Node],
   selected: [string],
@@ -28,7 +30,7 @@ type Props = {
   remove: () => void
 }
 
-const mapStateToProps = (rootState): Props => {
+const mapStateToProps = (rootState: any): $Shape<Props> => {
   const state = getAll(rootState)
   if (!state) return {}
 
@@ -43,11 +45,11 @@ const mapStateToProps = (rootState): Props => {
   }
 }
 
-const mapDispatch = dispatch => {
+const mapDispatch = (dispatch: Dispatch): $Shape<Props> => {
   return {
     onSelect: (path: Path) => dispatch(pathSelected(path)),
     onToggle: (path: Path) => dispatch(folderSelected(path)),
-    rename: (path: Path) => dispatch(openRenameDialog(path.toString())),
+    rename: (path: Path) => dispatch(openRenameDialog(path)),
     saveFile: (path: Path) => dispatch(saveFileWithPath(path)),
     remove: (path: Path) => dispatch(removeFileWithPath(path)),
     moveFile: (from: Path, to: Path) => dispatch(move(from, to)),

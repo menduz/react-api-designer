@@ -4,18 +4,21 @@ import React from 'react'
 
 import Modal from '@mulesoft/anypoint-components/lib/Modal'
 import TextField from '@mulesoft/anypoint-components/lib/TextField'
+import Path from '../../../repository/Path'
 
-type Props = {
+export type Props = {
   newName?: string,
-  path: string,
+  path: Path,
   showModal: boolean,
-  onSubmit: (newName: string) => void,
+  onSubmit: (path: Path, newName: string) => void,
   onCancel: () => void,
   onNameChange: (name: string) => void
 }
 
 class RenameModal extends React.Component {
   props: Props
+
+  constructor(props: Props) { super(props) }
 
   onNameChange(event: any) {
     this.props.onNameChange(event.value)
@@ -30,7 +33,7 @@ class RenameModal extends React.Component {
 
   render() {
     const {path, newName, onCancel, showModal} = this.props
-    const name = path ? path.substr(path.lastIndexOf('/') + 1, path.length) : ''
+    const name = path.last()
 
     return showModal ? (
       <Modal className="rename"

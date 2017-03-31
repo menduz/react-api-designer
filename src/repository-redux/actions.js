@@ -251,23 +251,22 @@ export const saveAll = () =>
       })
   }
 
-export const rename = (path: string, newName: string) =>
+export const rename = (path: Path, newName: string) =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): Promise<any> => {
     if (!repositoryContainer.isLoaded)
       return Promise.reject(dispatch(error(ELEMENT_RENAME_FAILED, REPOSITORY_NOT_LOADED)))
 
     const fileTree = getFileTree(getState())
-    const element = fileTree ? fileTree.getByPathString(path) : undefined
-
-    if (!element || !isValidDirectory(element) || !isValidFile(element))
-      return Promise.reject(dispatch(error(ELEMENT_RENAME_FAILED, `${path} is not valid`)))
+    const element = fileTree ? fileTree.getByPath(path) : undefined
+    if (!element)
+      return Promise.reject(dispatch(error(ELEMENT_RENAME_FAILED, `${path.toString()} is not valid`)))
 
     const repository: Repository = repositoryContainer.repository
     dispatch({type: ELEMENT_RENAME_STARTED})
 
     return repository.rename(path, newName)
       .then(
-        (elem) => dispatch(elementRenamed(Path.fromString(path), Factory.elementModel(elem))),
+        (elem) => dispatch(elementRenamed(path, elem)),
       ).catch(
         (err) => dispatch(error(ELEMENT_RENAME_FAILED, err || 'Error on renameElement')),
       )

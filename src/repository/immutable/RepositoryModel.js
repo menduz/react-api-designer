@@ -54,9 +54,9 @@ export class ElementModel {
 
   get path(): Path { return this._path }
 
-  withPath(path: Path): DirectoryModel | ElementModel { throw new Error('Not implemented method') }
+  withPath(path: Path): $Subtype<ElementModel> { throw new Error('Not implemented method') }
 
-  withName(name: string): DirectoryModel | ElementModel { throw new Error('Not implemented method') }
+  withName(name: string): $Subtype<ElementModel> { throw new Error('Not implemented method') }
 
   isDirectory(): boolean { throw new Error('Not implemented method') }
 
@@ -64,27 +64,27 @@ export class ElementModel {
 
   asDirectoryModel(): DirectoryModel { throw new Error('Not implemented method') }
 
-  getByPath(path: Path): ?ElementModel { throw new Error('Not implemented method') }
+  getByPath(path: Path): ?$Subtype<ElementModel> { throw new Error('Not implemented method') }
 }
 
 export class DirectoryModel extends ElementModel {
-  _children: Map<string, ElementModel>
+  _children: Map<string, $Subtype<ElementModel>>
 
-  constructor(name: string, path: Path, children: Map<string, ElementModel>) {
+  constructor(name: string, path: Path, children: Map<string, $Subtype<ElementModel>>) {
     super(name, path)
     this._children = children
   }
 
-  static directory(name: string, path: Path, children: List<ElementModel>) {
+  static directory(name: string, path: Path, children: List<$Subtype<ElementModel>>) {
     const childrenMap: Map<string, ElementModel> = Map(children.map(c => [c.name, c]))
     return new DirectoryModel(name, path, childrenMap)
   }
 
   isDirectory() { return true }
 
-  get children(): List<ElementModel> { return List(this._children.values()) }
+  get children(): List<$Subtype<ElementModel>> { return List(this._children.values()) }
 
-  withChildren(children: Map<string, ElementModel>): DirectoryModel {
+  withChildren(children: Map<string, $Subtype<ElementModel>>): DirectoryModel {
     return new DirectoryModel(this.name, this.path, children)
   }
 
@@ -102,7 +102,7 @@ export class DirectoryModel extends ElementModel {
 
   asDirectoryModel(): DirectoryModel { return this }
 
-  getByPath(path: Path): ?ElementModel {
+  getByPath(path: Path): ?$Subtype<ElementModel> {
     if (path.isEmpty()) return this
 
     const child = this._children.get(path.first())
@@ -148,7 +148,7 @@ export class FileModel extends ElementModel {
 
   asDirectoryModel(): DirectoryModel { throw new Error('Trying to cast FileModel to DirectoryModel') }
 
-  getByPath(path: Path): ?ElementModel { return path.isEmpty() ? this : null }
+  getByPath(path: Path): ?FileModel { return path.isEmpty() ? this : null }
 
   withName(name: string) { return new FileModel(name, this._path, this._extension ,this._dirty) }
 
