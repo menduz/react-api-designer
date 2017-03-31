@@ -4,8 +4,11 @@ import {connect} from 'react-redux'
 
 import ZipConflictModal from './ZipConflictModal'
 
-import {getShowZipConflictModal, getAllFilesAction, getFileToImport, getFileNameToImport, getFileType, getZipFiles, getZipFileAction} from '../ImportSelectors'
+import {getShowZipConflictModal, getAllFilesAction, getFileToImport, getFileNameToImport, getFileType, getZipFiles, getZipFileAction,
+  isImporting
+} from '../ImportSelectors'
 import {saveZipFiles, closeZipConflictDialog, allFilesActionChange, zipFileActionChange, zipFileOverrideAction} from '../ImportActions'
+import {isSaving} from "../../../../repository-redux/selectors";
 
 const mapState = (rootState) => {
   return {
@@ -15,7 +18,9 @@ const mapState = (rootState) => {
     fileNameToImport: getFileNameToImport(rootState),
     fileType: getFileType(rootState),
     zipFiles: getZipFiles(rootState),
-    zipFileAction: getZipFileAction(rootState)
+    zipFileAction: getZipFileAction(rootState),
+    isImporting: isImporting(rootState),
+    isSaving: isSaving(rootState)
   }
 }
 

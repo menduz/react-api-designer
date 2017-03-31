@@ -18,7 +18,9 @@ type Props = {
   fileNameToImport: string,
   zipFileOverrideAction: (filename:string, override:Boolean) => void,
   zipFiles: [],
-  zipFileAction:string
+  zipFileAction:string,
+  isImporting:boolean,
+  isSaving:boolean,
 }
 
 class ZipConflictModal extends React.Component {
@@ -53,7 +55,7 @@ class ZipConflictModal extends React.Component {
   }
 
   render() {
-    const {onSubmit, onCancel, showZipConflictModal, fileNameToImport, zipFiles} = this.props
+    const {onSubmit, onCancel, showZipConflictModal, fileNameToImport, zipFiles, isImporting, isSaving} = this.props
 
     if (!showZipConflictModal) return null
 
@@ -83,8 +85,9 @@ class ZipConflictModal extends React.Component {
           <Button kind="primary"
                   onClick={onSubmit}
                   disabled={count === 0}
+                  isLoading={isImporting}
                   testId="Zip-Submit-Button">
-            Replace {count === 1 ? 'file' : count + ' files'}
+            {isImporting ? isSaving ? 'Saving...' : 'Replacing...' : `Replace ${count === 1 ? 'file' : count + ' files'}`}
           </Button>
         </ModalFooter>
       </Modal>

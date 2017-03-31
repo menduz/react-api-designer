@@ -152,6 +152,8 @@ export const saveZipFiles = () => (dispatch: Dispatch, getState: GetState) => {
   const state = getAll(getState())
   const zipFiles = state.zipFiles
   const files = zipFiles.filter(f => f.override)
+
+  dispatch({type: IMPORT_STARTED})
   ZipHelper.filesContents(state.fileToImport, files).then(contents => {
     dispatch(addBulkFiles(contents))
       .then(() => {

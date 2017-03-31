@@ -5,12 +5,17 @@ import {Path} from '../repository'
 import {RepositoryModel} from '../repository/immutable'
 import {getCurrentFilePath} from '../components/editor/selectors'
 import type {State} from './model'
+import {FILE_SAVE_STARTED} from "./actions";
 
 export const getAll = (rootState: any): State => rootState.designer[NAME]
 
 export const getFileTree = (rootState: any): ?RepositoryModel => getAll(rootState).fileTree
 
-export const getProgress = (rootState: any): boolean => getAll(rootState).progress
+export const isProgress = (rootState: any): boolean => getAll(rootState).progress
+
+export const getProgressType = (rootState: any): string => isProgress(rootState) && getAll(rootState).progressType
+
+export const isSaving = (rootState: any): string => getProgressType(rootState) === FILE_SAVE_STARTED
 
 export const getFileContent = (rootState: any) => (path: Path): ?string => {
   const state = getAll(rootState)

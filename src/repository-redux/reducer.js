@@ -21,7 +21,8 @@ const initialState: State = {
   fileTree: undefined,
   contents: Map(),
   progress: true,
-  error: '',
+  progressType: '',
+  error: ''
 }
 
 type RepositoryAction = { type: string, payload: any }
@@ -158,8 +159,10 @@ const reducer = (state: State = initialState, action: RepositoryAction): State =
     case ELEMENT_MOVE_STARTED:
       return {
         ...state,
-        progress: true, error: '',
-        contents: contentReducer(state.contents, action),
+        progress: true,
+        progressType: action.type,
+        error: '',
+        contents: contentReducer(state.contents, action)
       }
     default:
       return state

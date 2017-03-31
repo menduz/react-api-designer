@@ -14,7 +14,6 @@ type Props = {
   onSubmit: () => void,
   onCancel: () => void,
   showConflictModal: Boolean,
-  isImporting: Boolean,
   fileNameToImport: string
 }
 

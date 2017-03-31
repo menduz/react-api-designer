@@ -5,7 +5,7 @@ import {hasProjectSelected} from '../../bootstrap/selectors'
 import {isParsing} from '../editor/selectors'
 import {isExchangeMode} from '../header/selectors'
 import {isOpen} from '../modal/publish-api/PublishApiSelectors'
-import {getProgress} from '../../repository-redux/selectors'
+import {isProgress} from '../../repository-redux/selectors'
 import Support from '../menu/support/Support'
 import ProjectOptions from '../menu/project-options/ProjectOptions'
 import ProjectOptionsBasic from '../menu/project-options/ProjectOptionsBasic'
@@ -40,7 +40,7 @@ class HeaderOptions extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    progress: isParsing(state) || getProgress(state),
+    progress: isParsing(state) || isProgress(state),
     isExchangeOpen: isOpen(state),
     isExchangeMode: isExchangeMode(state) && hasProjectSelected(state),
     showAdvancedOptions: ownProps.showAdvancedOptions

@@ -32,6 +32,7 @@ type Props = {
   fileToImport: any,
   showModal: Boolean,
   isImporting: Boolean,
+  isSaving: Boolean,
   error: string
 }
 
@@ -74,7 +75,7 @@ class ImportModal extends React.Component {
   render() {
     const {
       onCancel, onImportTypeChange, onFileUpload, onCloseError,
-      showModal, selectValue, url, isImporting, fileToImport, error
+      showModal, selectValue, url, isImporting, isSaving, fileToImport, error
     } = this.props
 
     return showModal ? (
@@ -127,7 +128,7 @@ class ImportModal extends React.Component {
           <Button kind="primary"
                   onClick={this.handleSubmit.bind(this)}
                   isLoading={isImporting}
-                  testId="Import-Submit-Button">Import</Button>
+                  testId="Import-Submit-Button">{isImporting ? isSaving ? 'Saving...' : 'Importing...' : 'Import'}</Button>
         </ModalFooter>
 
       </Modal>

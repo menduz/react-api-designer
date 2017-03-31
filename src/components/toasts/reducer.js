@@ -21,6 +21,6 @@ export default (state = initialState, action) => {
         toasts: removedToast
       }
     default:
-      return initialState
+      return state
   }
 }
