@@ -3,7 +3,6 @@
 //import {PREFIX} from './index'
 
 import {Repository} from '../../repository'
-import type {Dispatch, GetState, ExtraArgs} from '../../types'
 
 import * as editor from "../editor"
 import {File} from "../../repository"
@@ -13,6 +12,7 @@ import {initFileSystem, REPOSITORY_NOT_LOADED} from '../../repository-redux/acti
 import Factory from '../../repository/immutable/RepositoryModelFactory'
 import {addErrorToasts} from "../toasts/actions";
 import ConsumeRemoteApi from "../../remote-api/ConsumeRemoteApi";
+import type {Dispatch, ExtraArgs, GetState} from "../../types/index";
 
 
 const PREFIX = 'DEPENDENCIES_TREE'
@@ -87,7 +87,7 @@ export const folderSelected = (path: Path, filePath: Path): void =>
 
 
 //@@TODO LECKO This is a workaround, because get from job can return that it is finished when it isn't...
-const syncDoneWorkAround = (repository, retryCount = 0): Promise<Any> => {
+const syncDoneWorkAround = (repository, retryCount = 0): Promise<any> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(repository.sync().then(() => {
@@ -113,8 +113,10 @@ const exchangeJob = (consumeRemoteApi: ConsumeRemoteApi, repository: Repository)
 
 export const removeDependency = (gav: any) =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerRemoteApiSelectors}: ExtraArgs): void => {
-    if (!repositoryContainer.isLoaded)
-      return Promise.reject(dispatch(error(UPDATE_DEPENDENCIES_FAILED, REPOSITORY_NOT_LOADED)))
+    if (!repositoryContainer.isLoaded) {
+      Promise.reject(dispatch(error(UPDATE_DEPENDENCIES_FAILED, REPOSITORY_NOT_LOADED)))
+      return
+    }
 
     const repository: Repository = (repositoryContainer.repository: Repository)
 

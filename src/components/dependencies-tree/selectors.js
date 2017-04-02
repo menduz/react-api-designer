@@ -8,7 +8,7 @@ import {Set} from 'immutable'
 
 export const getAll = (state: any): State => state.designer[NAME]
 
-export const getExpandedFolders = (state: any): Set<Path> => getAll(state).expandedFolders
+export const getExpandedFolders = (state: any): Set<string> => getAll(state).expandedFolders
 
 export const getCurrentPath = (state: any): ?Path => getAll(state).currentPath
 

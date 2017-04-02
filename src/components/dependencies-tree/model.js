@@ -8,7 +8,7 @@ import Path from "../../repository/Path";
 export type State = {
   updating: boolean,
   currentPath: ?Path,
-  expandedFolders: Set<Path>
+  expandedFolders: Set<string>
 }
 
 export type Node = {

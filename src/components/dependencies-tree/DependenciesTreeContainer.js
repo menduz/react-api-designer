@@ -11,7 +11,7 @@ import './DependenciesTree.css'
 import Path from "../../repository/Path";
 
 type Props = {
-  nodes: Node[],
+  nodes: ?Node[],
   selected: string[],
   expanded: string[],
   updating: boolean,
@@ -20,7 +20,7 @@ type Props = {
   remove?: () => void
 }
 
-const mapStateToProps = (rootState): Props => {
+const mapStateToProps = (rootState): $Shape<Props> => {
   const state = getAll(rootState)
   if (!state) return {}
 
