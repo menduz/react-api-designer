@@ -1,8 +1,9 @@
 // @flow
 
 import {Set} from 'immutable'
-import {Path} from '../../repository'
+import {List} from 'immutable'
 import {RepositoryModel, FileModel, DirectoryModel, ElementModel} from '../../repository/immutable/RepositoryModel';
+import Path from "../../repository/Path";
 
 export type State = {
   updating: boolean,
@@ -13,8 +14,9 @@ export type State = {
 export type Node = {
   path: Path,
   name: string,
-  isDirty: boolean,
-  children?: Node[]
+  isDirty?: boolean,
+  children?: Node[],
+  filePath: Path
 }
 
 const fromFile = (file: FileModel, rootPath:string, name: string): Node => {
@@ -52,7 +54,7 @@ const fromDirectory = (directory: DirectoryModel, rootPath: string, name: string
   }
 }
 
-const buildRootNode = (groupId, assetId, version, children): Node => {
+const buildRootNode = (groupId:ElementModel, assetId:ElementModel, version:ElementModel, children:List<ElementModel>): Node => {
   const name = groupId.name + ":" + assetId.name + ":" + version.name
   const p = groupId.name + "_" + assetId.name + "_" + version.name
   return {
@@ -61,7 +63,7 @@ const buildRootNode = (groupId, assetId, version, children): Node => {
     name: p,
     label: name,
     gav:{ groupId: groupId.name , assetId: assetId.name ,version: version.name},
-    children: children.map(c => fromElement(c, version.path, p)).toArray()
+    children: children.map(c => fromElement(c, version.path.toString(), p)).toArray()
   }
 }
 
@@ -72,9 +74,12 @@ export const fromFileTree = (fileTree: RepositoryModel) : Node[] => {
   if (exchangeModules) {
     if (exchangeModules.isDirectory()) {
       const d = exchangeModules.asDirectoryModel()
-      d.children.forEach( groupId => {
-        return groupId.children.forEach( assetId => {
-          return assetId.children.forEach( version => {
+      d.children.forEach( g => {
+        const groupId = g.asDirectoryModel()
+        return groupId.children.forEach( a => {
+          const assetId = a.asDirectoryModel()
+          return assetId.children.forEach( v => {
+            const version = v.asDirectoryModel()
             result.push(buildRootNode(groupId, assetId, version, version.children))
           })
         })

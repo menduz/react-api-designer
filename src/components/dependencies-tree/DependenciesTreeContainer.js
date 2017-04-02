@@ -6,17 +6,18 @@ import {fromFileTree} from './model'
 import {pathSelected, folderSelected, removeDependency} from './actions'
 import type {Node} from './model'
 import {getFileTree} from "../../repository-redux/selectors"
-import {Path} from '../../repository'
 import DependenciesTree from './DependenciesTree'
 import './DependenciesTree.css'
+import Path from "../../repository/Path";
 
 type Props = {
-  nodes: [Node],
-  selected: [string],
-  expanded: [string],
-  onSelect: (path: Path) => void,
-  onToggle: (path: Path, isExpanded: boolean) => void,
-  remove: () => void
+  nodes: Node[],
+  selected: string[],
+  expanded: string[],
+  updating: boolean,
+  onSelect?: (path: Path) => void,
+  onToggle?: (path: Path, isExpanded: boolean) => void,
+  remove?: () => void
 }
 
 const mapStateToProps = (rootState): Props => {
@@ -25,8 +26,9 @@ const mapStateToProps = (rootState): Props => {
 
   const fileTree = getFileTree(rootState)
   const nodes: ?Node[] = fileTree ? fromFileTree(fileTree) : undefined
-  const expanded = getExpandedFolders(rootState).toArray().map(p => p.toString())
-  const selected = getCurrentPath(rootState) ? [getCurrentPath(rootState).toString()] : []
+  const expanded:string[] = getExpandedFolders(rootState).toArray().map(p => p.toString())
+  let currentPath = getCurrentPath(rootState);
+  const selected = currentPath ? [currentPath.toString()] : []
   const updating = isUpdating(rootState)
   return {
     nodes,
