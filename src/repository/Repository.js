@@ -1,6 +1,6 @@
 // @flow
 
-import FileSystem from './file-system/FileSystem'
+import {FileSystem} from './file-system/FileSystem'
 import type {Entry} from './file-system/FileSystem'
 
 import Path from './Path'
@@ -13,7 +13,7 @@ import {ElementModel} from './immutable/RepositoryModel'
 import RepositoryModelFactory from './immutable/RepositoryModelFactory'
 
 // eslint-disable-next-line
-export type SaveResult = {repository: Repository, file: ?File, content: ?string}
+export type SaveResult = { repository: Repository, file: ?File, content: ?string }
 
 export default class Repository {
   _fileSystem: FileSystem
@@ -164,17 +164,19 @@ export default class Repository {
     const newDirectory = new Directory(name, () => [], directory)
 
     return this._fileSystem.createFolder(newDirectory.path.toString())
-      .then(() => { directory.addChild(newDirectory) })
+      .then(() => {
+        directory.addChild(newDirectory)
+      })
       .then(() => newDirectory)
   }
 
   move(from: Path, to: Path): Promise<Element> {
     const newParent = this.getByPath(to.parent())
-    const element   = this.getByPath(from)
+    const element = this.getByPath(from)
 
     if (!newParent)
       throw new Error(`New directory is not a defined`)
-    else if(!newParent.isDirectory())
+    else if (!newParent.isDirectory())
       throw new Error(`${newParent.path.toString()} is not a valid directory`)
     else if (!element)
       throw new Error(`${from.toString()} is not a valid directory`)
@@ -189,7 +191,7 @@ export default class Repository {
   _isMovableInFileSystem(element: Element): boolean {
     if (element.isDirectory()) {
       const directory = element.asDirectory()
-      return this._fileSystem.persistsEmptyFolders || !directory.isEmpty()
+      return this._fileSystem.persistsEmptyFolders() || !directory.isEmpty()
     } else {
       const file = element.asFile()
       return file.persisted
@@ -205,7 +207,7 @@ export default class Repository {
     return file
   }
 
-  buildZip():Promise<> {
+  buildZip(): Promise<> {
     return ZipHelper.buildZip(this.root)
   }
 

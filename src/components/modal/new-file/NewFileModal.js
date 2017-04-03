@@ -3,19 +3,21 @@
 import React from 'react'
 import Icon from '../../svgicon/SvgIcon'
 
-import Modal from '@mulesoft/anypoint-components/lib/Modal'
-import Popover from '@mulesoft/anypoint-components/lib/Popover'
-import Select from '@mulesoft/anypoint-components/lib/Select'
-import TextField from '@mulesoft/anypoint-components/lib/TextField'
+import {
+  Modal,
+  Popover,
+  Select,
+  TextField,
+}from '../../MulesoftComponents'
 import type {FileType} from './NewFileModel'
 import {Path} from '../../../repository'
 import './NewFile.css'
 
 type Props = {
   fileName: string,
-  fileType: object,
-  fileTypeOptions: object[],
-  fragmentType: string,
+  fileType: FileType,
+  fileTypeOptions: FileType[],
+  fragmentType: FileType,
   onSubmit: () => void,
   onCancel: () => void,
   onFileTypeChange: (file: FileType) => void,
@@ -42,7 +44,16 @@ class NewFileModal extends React.Component {
   }
 
   render() {
-    const {fileName, fileTypeOptions, fileType, fragmentType, onCancel, onFileTypeChange, onFragmentTypeChange, showModal} = this.props
+    const {
+      fileName,
+      fileTypeOptions,
+      fileType,
+      fragmentType,
+      onCancel,
+      onFileTypeChange,
+      onFragmentTypeChange,
+      showModal
+    } = this.props
 
     return showModal ? (
       <Modal className="new-file"
@@ -97,7 +108,7 @@ class NewFileModal extends React.Component {
     return (
       <div className="Popover-in-modal" data-test-id="New-File-Fragment">
         {fragmentType.info}
-        <a href={link + fragmentType.link} target="_blank">(read more)</a>
+        <a href={link + (fragmentType.link ? fragmentType.link: '')} target="_blank">(read more)</a>
       </div>
     )
   }

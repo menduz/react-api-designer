@@ -6,7 +6,7 @@ class Storage {
     throw new Error('Not implemented method')
   }
 
-  setValue(key: string, value: string): string {
+  setValue(key: string, value: string): void {
     throw new Error('Not implemented method')
   }
 }

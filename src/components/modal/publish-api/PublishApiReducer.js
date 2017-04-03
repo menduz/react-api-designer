@@ -1,10 +1,7 @@
-// @flow
-
 import * as actions from './PublishApiActions'
-import type {State} from  './PublishApiModel'
 import * as constants from './PublishApiConstants'
 
-const initialState: State = {
+const initialState = {
   form: {tags: new Set()},
   isFetching: {
     [constants.EXCHANGE]: false,

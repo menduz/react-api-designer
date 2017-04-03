@@ -1,4 +1,4 @@
-//@flow
+// @flow
 
 import type {State} from './ExportModel'
 import * as actions from './ExportActions'

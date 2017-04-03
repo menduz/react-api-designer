@@ -1,5 +1,3 @@
-//@flow
-
 import request from "browser-request"
 import {nextName} from "../../../repository/helper/utils"
 import {addFile} from "../../tree/actions"
@@ -50,7 +48,7 @@ export const closeZipConflictDialog = () => ({
   type: HIDE_ZIP_CONFLICT_MODAL
 })
 
-export const zipFileOverrideAction = (filename, override) => ({
+export const zipFileOverrideAction = (filename: string, override) => ({
   type: ZIP_FILE_OVERRIDE_ACTION,
   payload: {filename, override}
 })

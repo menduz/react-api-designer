@@ -2,19 +2,21 @@
 
 import  React from 'react'
 
-import Button from '@mulesoft/anypoint-components/lib/Button'
-import Modal from '@mulesoft/anypoint-components/lib/Modal'
-import ModalHeader from '@mulesoft/anypoint-components/lib/ModalHeader'
-import ModalBody from '@mulesoft/anypoint-components/lib/ModalBody'
-import ModalFooter from '@mulesoft/anypoint-components/lib/ModalFooter'
-import Label from '@mulesoft/anypoint-components/lib/Label'
-import TextField from '@mulesoft/anypoint-components/lib/TextField'
-import Pill from '@mulesoft/anypoint-components/lib/Pill'
-import Pills from '@mulesoft/anypoint-components/lib/Pills'
-import Checkbox from '@mulesoft/anypoint-components/lib/Checkbox'
-import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
-import Select from '@mulesoft/anypoint-components/lib/Select'
-import TextArea from '@mulesoft/anypoint-components/lib/TextArea'
+import {
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Label,
+  TextField,
+  Pill,
+  Pills,
+  Checkbox,
+  Spinner,
+  Select,
+  TextArea,
+} from '../../MulesoftComponents'
 
 import './PublishApi.css'
 
@@ -303,7 +305,7 @@ class PublishApiModal extends React.Component {
   }
 
   static isNotEmpty(value: string): boolean {
-    return (value != null && value.length > 0)
+    return (!value && value.length > 0)
   }
 }
 

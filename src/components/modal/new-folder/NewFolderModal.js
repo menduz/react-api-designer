@@ -2,8 +2,7 @@
 
 import React from 'react'
 
-import Modal from '@mulesoft/anypoint-components/lib/Modal'
-import TextField from '@mulesoft/anypoint-components/lib/TextField'
+import {Modal, TextField} from '../../MulesoftComponents'
 
 import {Path} from '../../../repository'
 

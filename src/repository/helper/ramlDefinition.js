@@ -1,7 +1,7 @@
 // @flow
 
 import Repository from '../Repository'
-import Element from '../Element'
+import {Element} from '../Element'
 import {isRamlFile, isApiDefinition} from './extensions'
 
 export default (repository: Repository) => {
@@ -11,14 +11,14 @@ export default (repository: Repository) => {
   const findRaml = (elem: Element) => {
     if (!elem.isDirectory()) {
       if (isRamlFile(elem.name)) {
-        return elem.getContent().then(c => {
+        return elem.asFile().getContent().then(c => {
           if (isApiDefinition(c)) ramls.push(elem.path)
         })
       } else {
         return Promise.resolve()
       }
     } else {
-      return Promise.all(elem.children.map(c => {
+      return Promise.all(elem.asDirectory().children.map(c => {
         return findRaml(c)
       }))
     }

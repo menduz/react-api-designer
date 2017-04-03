@@ -1,11 +1,12 @@
 //@flow
 
-import type {State} from './NewFolderModel'
 import * as actions from './NewFolderActions'
+import type {State} from './NewFolderModel'
 
 const initialState = {
   showModal: false,
-  folderName: ''
+  folderName: '',
+  path: undefined
 }
 
 export default (state: State = initialState, action: any): State => {

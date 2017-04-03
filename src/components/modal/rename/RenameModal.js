@@ -1,13 +1,11 @@
 //@flow
 
 import React from 'react'
-
-import Modal from '@mulesoft/anypoint-components/lib/Modal'
-import TextField from '@mulesoft/anypoint-components/lib/TextField'
+import {Modal, TextField} from '../../MulesoftComponents'
 import Path from '../../../repository/Path'
 
 export type Props = {
-  newName?: string,
+  newName: ?string,
   path: Path,
   showModal: boolean,
   onSubmit: (path: Path, newName: string) => void,

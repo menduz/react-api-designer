@@ -1,4 +1,4 @@
-//@flow
+// @flow-weak
 
 import {connect} from 'react-redux'
 import {getAll, getExpandedFolders, getCurrentPath} from './selectors'

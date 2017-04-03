@@ -1,5 +1,3 @@
-//@flow
-
 import React from 'react'
 
 import Button from '@mulesoft/anypoint-components/lib/Button'
@@ -19,14 +17,14 @@ type Props = {
   isImporting: Boolean,
   fileNameToImport: string,
   zipFileOverrideAction: (filename:string, override:Boolean) => void,
-  zipFiles: Array,
+  zipFiles: [],
   zipFileAction:string
 }
 
 class ZipConflictModal extends React.Component {
   props: Props
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
 
     this.state = {

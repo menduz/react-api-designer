@@ -1,5 +1,7 @@
 //@flow
 
+import type {Dispatch} from "../../types";
+
 export const ADD_TOAST = `DESIGNER/TOASTS/ADD_TOAST`
 export const REMOVE_TOAST = `DESIGNER/TOASTS/REMOVE_TOAST`
 
@@ -14,7 +16,7 @@ export const removeToast = (toastTitle: string) => ({
 })
 
 export const addInfoToasts = (msg: string) =>
-  (dispatch) => {
+  (dispatch: Dispatch) => {
     dispatch(addToast(msg, "info"))
 
     setTimeout(() => {
@@ -23,7 +25,7 @@ export const addInfoToasts = (msg: string) =>
   }
 
 export const addSuccessToasts = (msg: string) =>
-  (dispatch) => {
+  (dispatch: Dispatch) => {
     dispatch(addToast(msg, "success"))
 
     setTimeout(() => {
@@ -32,7 +34,7 @@ export const addSuccessToasts = (msg: string) =>
   }
 
 export const addErrorToasts = (error: any) =>
-  (dispatch) => {
+  (dispatch: Dispatch) => {
     console.error(error)
     dispatch(addToast(error.message || error, "error"))
   }

@@ -6,7 +6,7 @@ import Repository from './Repository'
 import MemoryFileSystem from './file-system/MemoryFileSystem'
 import {mapFolderEntry} from './file-system/MapFileSystem'
 import FileSystemBuilder, {directory, file} from './file-system/FileSystemBuilder'
-import FileSystem from './file-system/FileSystem'
+import {FileSystem} from './file-system/FileSystem'
 
 // Test Helpers
 

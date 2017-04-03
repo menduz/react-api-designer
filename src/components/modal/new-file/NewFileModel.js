@@ -8,19 +8,21 @@ export type FileType = {
   value: string,
   label: string,
   defaultName: string,
-  subTypes:? FileType[],
+  subTypes?: FileType[],
+  info?: string,
+  link?: string,
 }
 
 export type State = {
   fileName: string,
   fileTypeOptions: FileType[],
-  fileType: FileType,
-  fragmentType: FileType,
+  fileType?: FileType,
+  fragmentType?: FileType,
   showModal: boolean,
   path?: Path
 }
 
-const allFileTypes = [
+const allFileTypes: FileType[] = [
   {value: 'RAML10', label: 'RAML 1.0', defaultName: 'api.raml', subTypes: [
     {value: 'RAML10', label: 'Spec', defaultName: 'api.raml', info:'RAML 1.0 API Spec', link: 'the-root-of-the-document', projectType: API_PROJECT},
     {value: 'TRAIT', label: 'Trait', defaultName: 'trait.raml', info: 'Define a single trait with common characteristics for methods', link: 'resource-types-and-traits'},

@@ -7,7 +7,7 @@ import type {MapEntry} from './MapFileSystem'
 
 const LOCAL_PERSISTENCE_KEY = 'localStorageFilePersistence'
 
-class LocalStorageHelper extends MapHelper {
+class LocalStorageHelper implements MapHelper {
 
   forEach(fn: (entry: MapEntry) => void): void {
     for (let key: string in localStorage) {

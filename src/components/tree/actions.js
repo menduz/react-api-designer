@@ -44,13 +44,14 @@ export const pathSelected = (path: Path) =>
       })
   }
 
-export const folderSelected = (path: Path): void =>
-  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs) => {
+export const folderSelected = (path: Path) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer}: ExtraArgs): void => {
+    if (!repositoryContainer.isLoaded) return
+
     const repository: Repository = repositoryContainer.repository
     const directory = repository.getByPath(path)
 
-    if (!directory || !directory.isDirectory())
-      return
+    if (!directory || !directory.isDirectory()) return
 
     const folders = getAll(getState()).expandedFolders;
     if (folders.has(path)) {

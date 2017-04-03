@@ -11,4 +11,4 @@ export const getProjectType = (rootState: any): ProjectType => getAll(rootState)
 
 export const isInitializing = (rootState: any): boolean => getAll(rootState).initializing
 
-export const hasProjectSelected = (rootState: any): string => !isInitializing(rootState) && getProjectId(rootState)
+export const hasProjectSelected = (rootState: any): boolean => !isInitializing(rootState) && !!getProjectId(rootState)

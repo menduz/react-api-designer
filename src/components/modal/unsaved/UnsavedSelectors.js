@@ -1,6 +1,6 @@
 // @flow
 
-import type State from './UnsavedModel'
+import type {State} from './UnsavedModel'
 
 export const getAll = (rootState: any): State => rootState.designer.dialogs.unsaved
 

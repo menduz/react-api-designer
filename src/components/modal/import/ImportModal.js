@@ -2,16 +2,18 @@
 
 import React from 'react'
 
-import Button from '@mulesoft/anypoint-components/lib/Button'
-import Modal from '@mulesoft/anypoint-components/lib/Modal'
-import ModalHeader from '@mulesoft/anypoint-components/lib/ModalHeader'
-import ModalBody from '@mulesoft/anypoint-components/lib/ModalBody'
-import ModalFooter from '@mulesoft/anypoint-components/lib/ModalFooter'
-import Select from '@mulesoft/anypoint-components/lib/Select'
-import TextField from '@mulesoft/anypoint-components/lib/TextField'
-import FileUploader from '@mulesoft/anypoint-components/lib/FileUploader'
-import Popover from '@mulesoft/anypoint-components/lib/Popover'
-import Toast from '@mulesoft/anypoint-components/lib/Toast'
+import {
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Select,
+  TextField,
+  FileUploader,
+  Popover,
+  Toast,
+} from '../../MulesoftComponents'
 
 import Icon from '../../svgicon/SvgIcon'
 import importTypes from './importTypes.json'

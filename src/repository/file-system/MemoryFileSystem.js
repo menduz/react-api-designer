@@ -5,11 +5,10 @@ import MapFileSystem from './MapFileSystem'
 import {MapHelper} from './MapFileSystem'
 import type {MapEntry} from './MapFileSystem'
 
-class MemoryMapHelper extends MapHelper {
+class MemoryMapHelper implements MapHelper {
   _map: Map<string, MapEntry>
 
   constructor(map: Map<string, MapEntry>) {
-    super()
     this._map = map
   }
 

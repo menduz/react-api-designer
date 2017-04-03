@@ -1,6 +1,6 @@
 // @flow
 
-import FileSystem from './FileSystem'
+import {FileSystem, EntryTypes, Separator} from './FileSystem'
 import MemoryFileSystem from './MemoryFileSystem'
 
 type FileSystemDirectory = {type: 'folder', name: string, children: FileSystemElement[]}
@@ -12,7 +12,7 @@ class FileSystemDirectoryFactory {
 
   constructor(name: string) {
     this._directory = {
-      type: FileSystem.FolderEntryType,
+      type: EntryTypes.Folder,
       name: name,
       children: []
     }
@@ -53,26 +53,29 @@ export default class FileSystemBuilder {
   build(initialFileSystem: ?FileSystem): Promise<FileSystem> {
     const fileSystem = initialFileSystem || MemoryFileSystem.empty()
 
-    return Promise.all(this._rootElements.map(e => this._addElementToFileSystem(fileSystem, e, '')))
+    let promises = this._rootElements
+      .map(e => FileSystemBuilder._addElementToFileSystem(fileSystem, e, ''));
+
+    return Promise.all(promises)
       .then(() => fileSystem)
   }
 
-  _addFileToFileSystem(fileSystem: FileSystem, file: FileSystemFile, currentPath: string): Promise<any> {
-    return fileSystem.save([{path: currentPath + FileSystem.Separator + file.name, content: file.content}])
+  static _addFileToFileSystem(fileSystem: FileSystem, file: FileSystemFile, currentPath: string): Promise<any> {
+    return fileSystem.save([{path: currentPath + Separator + file.name, content: file.content}])
   }
 
-  _addDirectoryToFileSystem(fileSystem: FileSystem, directory: FileSystemDirectory, currentPath: string): Promise<any> {
-    const path = currentPath + FileSystem.Separator + directory.name
+  static _addDirectoryToFileSystem(fileSystem: FileSystem, directory: FileSystemDirectory, currentPath: string): Promise<any> {
+    const path = currentPath + Separator + directory.name
     return fileSystem.createFolder(path)
       .then(() =>
-        Promise.all(directory.children.map(e => this._addElementToFileSystem(fileSystem, e, path)))
+        Promise.all(directory.children.map(e => FileSystemBuilder._addElementToFileSystem(fileSystem, e, path)))
       )
   }
 
-  _addElementToFileSystem(fileSystem: FileSystem, element: FileSystemElement, currentPath: string): Promise<any> {
-    return element.type === FileSystem.FileEntryType ?
-      this._addFileToFileSystem(fileSystem, element, currentPath) :
-      this._addDirectoryToFileSystem(fileSystem, element, currentPath)
+  static _addElementToFileSystem(fileSystem: FileSystem, element: FileSystemElement, currentPath: string): Promise<any> {
+    return element.type === EntryTypes.File ?
+      FileSystemBuilder._addFileToFileSystem(fileSystem, element, currentPath) :
+      FileSystemBuilder._addDirectoryToFileSystem(fileSystem, element, currentPath)
   }
 }
 
@@ -81,5 +84,5 @@ export const directory = (name: string): FileSystemDirectoryFactory => {
 }
 
 export const file = (name: string, content: string): FileSystemFile => {
-  return {type: FileSystem.FileEntryType, name, content}
+  return {type: EntryTypes.File, name, content}
 }

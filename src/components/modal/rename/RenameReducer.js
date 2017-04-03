@@ -6,9 +6,8 @@ import Path from '../../../repository/Path'
 
 const initialState : State = {
   newName: '',
-  oldName: '',
-  showModal: false,
-  path: Path.emptyPath()
+  path: Path.emptyPath(),
+  showModal: false
 }
 
 export default (state: State = initialState, action: any): State => {

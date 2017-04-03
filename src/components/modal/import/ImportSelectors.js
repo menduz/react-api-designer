@@ -4,28 +4,28 @@ import type {State} from './ImportModel'
 
 export const getAll = (rootState: any): State => rootState.designer.dialogs.import
 
-export const getSelectValue = (state: any): State => getAll(state).selectValue
+export const getSelectValue = (state: any): string => getAll(state).selectValue
 
-export const getShowModal = (state: any): State => getAll(state).showModal
+export const getShowModal = (state: any): boolean => getAll(state).showModal
 
-export const getFileToImport = (state: any): State => getAll(state).fileToImport
+export const getFileToImport = (state: any): ?any => getAll(state).fileToImport
 
-export const getUrl = (state: any): State => getAll(state).url
+export const getUrl = (state: any): ?string => getAll(state).url
 
-export const isImporting = (state: any): State => getAll(state).isImporting
+export const isImporting = (state: any): boolean => getAll(state).isImporting
 
-export const getShowConflictModal = (state: any): State => getAll(state).showConflictModal
+export const getShowConflictModal = (state: any): boolean => getAll(state).showConflictModal
 
-export const getFileNameToImport = (state: any): State => getAll(state).fileNameToImport
+export const getFileNameToImport = (state: any): string => getAll(state).fileNameToImport
 
-export const getFileType = (state: any): State => getAll(state).fileType
+export const getFileType = (state: any): ?string => getAll(state).fileType
 
-export const getShowZipConflictModal = (state: any): State => getAll(state).showZipConflictModal
+export const getShowZipConflictModal = (state: any): boolean => getAll(state).showZipConflictModal
 
-export const getAllFilesAction = (state: any): State => getAll(state).allFilesAction
+export const getAllFilesAction = (state: any): ?any => getAll(state).allFilesAction
 
-export const getZipFiles = (state: any): State => getAll(state).zipFiles
+export const getZipFiles = (state: any): any[] => getAll(state).zipFiles
 
-export const getZipFileAction = (state: any): State => getAll(state).zipFileAction
+export const getZipFileAction = (state: any): ?any => getAll(state).zipFileAction
 
-export const getError = (state: any): State => getAll(state).error
+export const getError = (state: any): string => getAll(state).error

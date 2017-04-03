@@ -1,14 +1,16 @@
-//@flow
+// @flow
 
 import React from 'react'
 
-import Button from '@mulesoft/anypoint-components/lib/Button'
-import Modal from '@mulesoft/anypoint-components/lib/Modal'
-import ModalBody from '@mulesoft/anypoint-components/lib/ModalBody'
-import ModalHeader from '@mulesoft/anypoint-components/lib/ModalHeader'
-import ModalFooter from '@mulesoft/anypoint-components/lib/ModalFooter'
-import Select from '@mulesoft/anypoint-components/lib/Select'
-import TextField from '@mulesoft/anypoint-components/lib/TextField'
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  ModalFooter,
+  Select,
+  TextField,
+} from '../../MulesoftComponents'
 
 import './Export.css'
 

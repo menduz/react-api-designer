@@ -1,7 +1,7 @@
 // @flow
 
 import Path from './Path'
-import FileSystem from './file-system/FileSystem'
+import {FileSystem} from './file-system/FileSystem'
 
 class Element {
   _name: string

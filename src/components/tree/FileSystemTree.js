@@ -1,5 +1,3 @@
-//@flow
-
 import React, {Component} from 'react'
 import Icon from '../svgicon/SvgIcon'
 import TreeUI from '@mulesoft/anypoint-components/lib/Tree'
@@ -7,14 +5,17 @@ import RenameModalContainer from "../modal/rename/RenameModalContainer"
 import {Path} from '../../repository'
 import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
 import './FileSystemTree.css'
+import type {Node} from './model'
+
+type Selection = {node: Node}
 
 class FileSystemTree extends Component {
 
-  handleOnSelect(selection) {
+  handleOnSelect(selection: Selection) {
     this.props.onSelect(selection.node.path)
   }
 
-  handleOnToggle(selection) {
+  handleOnToggle(selection: Selection) {
     this.props.onToggle(selection.node.path)
   }
 
@@ -43,7 +44,7 @@ class FileSystemTree extends Component {
     this.onDragLeave(event)
   }
 
-  onDropInFolder(path: Path, event) {
+  onDropInFolder(path: Path, event: Event) {
     event.stopPropagation()
     event.preventDefault()
 

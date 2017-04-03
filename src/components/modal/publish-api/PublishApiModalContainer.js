@@ -1,14 +1,16 @@
 // @flow
 
-import React from "react"
+import React from 'react'
 import {connect} from 'react-redux'
+import type {Dispatch} from '../../../types/index'
+import {getPublishToExchange} from '../../header/selectors'
 
-import {getAll} from './PublishApiSelectors'
+import {addTag, changeValue, clear, publish, removeTag, togglePublishBothApis} from './PublishApiActions'
 import PublishApiModal from './PublishApiModal'
 
-import type {State} from "./PublishApiModel"
-import {changeValue, publish, clear, removeTag, addTag, togglePublishBothApis} from "./PublishApiActions"
-import {getPublishToExchange} from "../../header/selectors";
+import type {State} from './PublishApiModel'
+
+import {getAll} from './PublishApiSelectors'
 
 type ContainerProps = {
   onClose: () => void
@@ -37,7 +39,7 @@ const mapState = (rootState) => {
   }
 }
 
-const mapDispatch = (dispatch, props: ContainerProps) => {
+const mapDispatch = (dispatch: Dispatch, props: ContainerProps) => {
   return {
     onPublishToBothApis: (publishBoth: boolean) => dispatch(togglePublishBothApis(publishBoth)),
     onTagChange: (tag: string) => dispatch(changeValue('tag', tag)),
