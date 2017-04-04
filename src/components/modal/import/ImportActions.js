@@ -119,11 +119,13 @@ const addAndSaveFile = (fileName: string, fileType, content, dispatch: Dispatch)
 }
 
 export const importFileFromUrl = (url: string, fileType: string) =>
-  (dispatch: Dispatch, getState: GetState, {designerWorker, repositoryContainer}: ExtraArgs) => {
+  (dispatch: Dispatch, getState: GetState, {designerWorker, repositoryContainer, designerRemoteApiSelectors}: ExtraArgs) => {
+
+    const proxy = designerRemoteApiSelectors(getState).baseUrl() + '/proxy/'
 
     dispatch({type: IMPORT_STARTED})
     if (fileType === 'SWAGGER') {
-      designerWorker.convertUrlToRaml(url).then(c => {
+      designerWorker.convertUrlToRaml(proxy + url).then(c => {
         const fileName = toRamlName(nameFromUrl(url), repositoryContainer)
         addAndSaveFile(fileName, fileType, c, dispatch)
       }).catch(err => {
@@ -131,7 +133,7 @@ export const importFileFromUrl = (url: string, fileType: string) =>
       })
     }
     else {
-      request({ method: 'GET', url: url}, (err, response) => {
+      request({ method: 'GET', url: proxy + url}, (err, response) => {
         if (err)
           dispatch(changeError(err))
         else {
