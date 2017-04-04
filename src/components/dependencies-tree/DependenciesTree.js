@@ -4,9 +4,9 @@ import React, {Component} from 'react'
 import Icon from '../svgicon/SvgIcon'
 import TreeUI from '@mulesoft/anypoint-components/lib/Tree'
 import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
+import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
 import {Path} from '../../repository'
 import {copyTextToClipboard} from '../../bootstrap/util'
-import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
 
 import consumeColorIcon from '../menu/dependencies-menu/assets/ConsumeExchangeColorIcon.svg'
 
@@ -22,13 +22,12 @@ class DependenciesTree extends Component {
     this.props.onToggle(selection.node.path, selection.node.filePath)
   }
 
-
-  handleDelete(gav) {
-    this.props.remove(gav)
+  handleUpdate(gav) {
+    this.props.checkForUpdate(gav)
   }
 
   handleCopyToClipboard(path: Path) {
-    copyTextToClipboard(path.toString().substring(1));
+    copyTextToClipboard(path.toString().substring(1))
   }
 
   renderLeaf({node, isSelected}) {
@@ -45,7 +44,8 @@ class DependenciesTree extends Component {
           {node.label}
         </label>
         <div className="node-options" onClick={(e) => e.stopPropagation()}>
-          <ContextMenu triggerOn={['click']} className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
+          <ContextMenu triggerOn={['click']} className="tree-menu folder-menu" options={options}
+                       testId="File-Tree-Context-Menu">
             <Icon name="contextmenu" size={18}/>
           </ContextMenu>
         </div>
@@ -55,7 +55,7 @@ class DependenciesTree extends Component {
 
   renderFolder({node, isSelected, isExpanded}) {
     const options = [
-      {label: 'Remove Dependency', onClick: this.handleDelete.bind(this, node.gav)}
+      {label: 'Information', onClick: this.handleUpdate.bind(this, node.gav)}
     ]
 
     return (
@@ -67,7 +67,8 @@ class DependenciesTree extends Component {
         </label>
         {node.gav ?
           <div className="node-options" onClick={(e) => e.stopPropagation()}>
-            <ContextMenu triggerOn={['click']} className="tree-menu folder-menu" options={options} testId="File-Tree-Context-Menu">
+            <ContextMenu triggerOn={['click']} className="tree-menu folder-menu" options={options}
+                         testId="File-Tree-Context-Menu">
               <Icon name="contextmenu" size={18}/>
             </ContextMenu>
           </div> : null}
@@ -88,11 +89,12 @@ class DependenciesTree extends Component {
     }
 
     if (nodes && nodes.length === 0) {
-        return (
-          <div className="empty-list-text">
-            Add a new dependency by clicking on the <img src={consumeColorIcon} role="presentation" height="13px"/> button.
-          </div>
-        )
+      return (
+        <div className="empty-list-text">
+          Add a new dependency by clicking on the <img src={consumeColorIcon} role="presentation" height="13px"/>
+          button.
+        </div>
+      )
     }
 
     return nodes ?
@@ -109,9 +111,8 @@ class DependenciesTree extends Component {
                   testId="Dependencies-Tree"/>
         </div>
       ) : (
-      <div className="Dependencies-Tree-loading" data-test-id="Dependencies-Tree-Loading">
-      </div>
-    )
+        <div className="Dependencies-Tree-loading" data-test-id="Dependencies-Tree-Loading"/>
+      )
   }
 }
 

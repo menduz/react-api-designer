@@ -25,8 +25,8 @@ import ProjectRemoteApi from "./remote-api/ProjectRemoteApi"
 import App from "./components/app/App"
 import HeaderOptions from "./components/header/HeaderOptions"
 import * as toasts from "./components/toasts"
-import * as dependenciesTree from "./components/dependencies-tree";
-
+import * as dependenciesTree from "./components/dependencies-tree"
+import * as dependencyModal from "./components/modal/dependency"
 
 const reducers = {
   designer: combineReducers({
@@ -39,6 +39,7 @@ const reducers = {
     [consumeApi.NAME]: consumeApi.reducer,
     [toasts.NAME]: toasts.reducer,
     [messageModal.NAME]: messageModal.reducer,
+    [dependencyModal.NAME]: dependencyModal.reducer,
     dialogs: combineReducers({
       [unsaved.NAME]: unsaved.reducer,
       newFolder: newFolder.reducer,

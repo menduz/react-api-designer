@@ -1,7 +1,9 @@
+// @flow
+
 import React, {Component} from 'react'
 import cx from 'classnames'
-import Rating from '@mulesoft/anypoint-components/lib/Rating'
-import Checkbox from '@mulesoft/anypoint-components/lib/Checkbox'
+
+import {Rating, Checkbox} from '../../MulesoftComponents'
 
 export default class FragmentComponent extends Component {
 

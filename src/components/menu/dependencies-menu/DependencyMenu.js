@@ -1,6 +1,8 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {isOpen} from '../../modal/consume-api/selectors'
+import {isOpen as isDependencyOpen} from '../../modal/dependency/DependencySelectors'
+import {DependencyModal} from '../../modal/dependency'
 import * as consumeIndex from '../../modal/consume-api'
 import consumeColorIcon from './assets/ConsumeExchangeColorIcon.svg'
 import './DependencyMenu.css'
@@ -8,7 +10,7 @@ import './DependencyMenu.css'
 class DependencyMenu extends React.Component {
 
   render() {
-    const {isConsumeOpen} = this.props
+    const {isConsumeOpen, isDependencyOpen} = this.props
     const {ConsumeApi} = consumeIndex
     return (
       <div className="dependency-menu menu" data-test-id="Dependencies-Menu">
@@ -20,6 +22,7 @@ class DependencyMenu extends React.Component {
           </a>
         </div>
         {isConsumeOpen ? <ConsumeApi onCancel={this.props.clearConsumeModal.bind(this)}/> : null}
+        {isDependencyOpen ? <DependencyModal/> : null}
       </div>
     )
   }
@@ -27,7 +30,8 @@ class DependencyMenu extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    isConsumeOpen: isOpen(state)
+    isConsumeOpen: isOpen(state),
+    isDependencyOpen: isDependencyOpen(state)
   }
 }
 

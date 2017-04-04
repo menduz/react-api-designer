@@ -16,6 +16,8 @@ import FileUploader from '@mulesoft/anypoint-components/lib/FileUploader'
 import Toast from '@mulesoft/anypoint-components/lib/Toast'
 import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
 import TextArea from '@mulesoft/anypoint-components/lib/TextArea'
+import Search from '@mulesoft/anypoint-components/lib/Search'
+import Rating from '@mulesoft/anypoint-components/lib/Rating'
 
 export {
   Modal,
@@ -34,5 +36,7 @@ export {
   FileUploader,
   Toast,
   ContextMenu,
-  TextArea
+  TextArea,
+  Search,
+  Rating
 }

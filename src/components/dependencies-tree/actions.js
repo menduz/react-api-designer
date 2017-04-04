@@ -2,17 +2,20 @@
 
 //import {PREFIX} from './index'
 
-import {Repository} from '../../repository'
+import {List} from 'immutable'
 
-import * as editor from "../editor"
-import {File} from "../../repository"
-import {getAll} from "./selectors"
+import ConsumeRemoteApi from '../../remote-api/ConsumeRemoteApi'
+import * as editor from '../editor'
+import {Repository} from '../../repository'
+import {File} from '../../repository'
+import {getAll} from './selectors'
 import {Path} from '../../repository'
-import {initFileSystem, REPOSITORY_NOT_LOADED} from '../../repository-redux/actions'
 import Factory from '../../repository/immutable/RepositoryModelFactory'
-import {addErrorToasts} from "../toasts/actions";
-import ConsumeRemoteApi from "../../remote-api/ConsumeRemoteApi";
-import type {Dispatch, ExtraArgs, GetState} from "../../types/index";
+import {initFileSystem, REPOSITORY_NOT_LOADED} from '../../repository-redux/actions'
+import {addErrorToasts} from '../toasts/actions'
+
+import type {Dispatch, GetState, ExtraArgs} from '../../types'
+import type {GAV} from '../modal/dependency/DependencyModel'
 
 
 const PREFIX = 'DEPENDENCIES_TREE'
@@ -111,21 +114,18 @@ const exchangeJob = (consumeRemoteApi: ConsumeRemoteApi, repository: Repository)
   })
 }
 
-export const removeDependency = (gav: any) =>
-  (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerRemoteApiSelectors}: ExtraArgs): void => {
+export const removeDependency = (gav: GAV) =>
+  (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerRemoteApiSelectors}: ExtraArgs): Promise<*> => {
     if (!repositoryContainer.isLoaded) {
-      Promise.reject(dispatch(error(UPDATE_DEPENDENCIES_FAILED, REPOSITORY_NOT_LOADED)))
-      return
+      return Promise.reject(dispatch(error(UPDATE_DEPENDENCIES_FAILED, REPOSITORY_NOT_LOADED)))
     }
-
-    const repository: Repository = (repositoryContainer.repository: Repository)
 
     dispatch({type: UPDATE_DEPENDENCIES_STARTED})
 
-    const dependencies = [gav]
+    const repository: Repository = (repositoryContainer.repository: Repository)
     const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
-    consumeRemoteApi.removeDependencies(dependencies).then(() => {
-      return exchangeJob(consumeRemoteApi, repository).then((fileTree) => {
+    return consumeRemoteApi.removeDependencies([gav]).then(() => {
+      return exchangeJob(consumeRemoteApi, repository).then(() => {
         dispatch(initFileSystem(Factory.repository(repository)))
         dispatch({type: UPDATE_DEPENDENCIES_DONE})
       })
@@ -135,15 +135,17 @@ export const removeDependency = (gav: any) =>
     })
   }
 
-export const addExchangeDependency = (dependencies: any) =>
+export const addExchangeDependency = (addDependencies: List<GAV>, removeDependencies: List<GAV> = List()) =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerRemoteApiSelectors}: ExtraArgs): Promise<any> => {
     if (!repositoryContainer.isLoaded)
       return Promise.reject(dispatch(error(UPDATE_DEPENDENCIES_FAILED, REPOSITORY_NOT_LOADED)))
 
+    dispatch({type: UPDATE_DEPENDENCIES_STARTED})
+
     const repository: Repository = (repositoryContainer.repository: Repository)
     const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
-    return consumeRemoteApi.addDependencies(dependencies).then(() => {
-      return exchangeJob(consumeRemoteApi, repository).then((fileTree) => {
+    return consumeRemoteApi.changeDependencies(addDependencies.toArray(), removeDependencies.toArray()).then(() => {
+      return exchangeJob(consumeRemoteApi, repository).then(() => {
         dispatch(initFileSystem(Factory.repository(repository)))
         dispatch({type: UPDATE_DEPENDENCIES_DONE})
       })

@@ -1,6 +1,6 @@
 // @flow
 
-import {List} from  'immutable'
+import {List} from 'immutable'
 
 export default class Path {
   static FileSystemSeparator = '/'
