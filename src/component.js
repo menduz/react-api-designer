@@ -1,13 +1,13 @@
 //@flow
 
 import "./index.css"
-import {combineReducers} from "redux"
+import { combineReducers } from "redux"
 import * as bootstrap from "./bootstrap"
 import * as editor from "./components/editor"
 import * as repository from "./repository-redux"
 import mockReducer from "./components/mock/reducers"
 import Worker from "./worker"
-import {warnBeforeLeave} from "./bootstrap/util"
+import { warnBeforeLeave } from "./bootstrap/util"
 import * as unsaved from "./components/modal/unsaved"
 import newFolder from "./components/modal/new-folder"
 import newFile from "./components/modal/new-file"
@@ -17,7 +17,7 @@ import rename from "./components/modal/rename"
 import * as messageModal from "./components/modal/message"
 import * as fileSystemTree from "./components/tree"
 import FileProvider from "./worker/FileProvider"
-import type {RepositoryContainer, AuthSelectors, RemoteApiSelectors, ExtraArgs, GetState} from "./types"
+import type {RepositoryContainer, AuthSelectors, RemoteApiSelectors, ExtraArgs, GetState } from "./types"
 import * as header from "./components/header"
 import publishApi from "./components/modal/publish-api"
 import * as consumeApi from "./components/modal/consume-api"
@@ -26,7 +26,8 @@ import App from "./components/app/App"
 import HeaderOptions from "./components/header/HeaderOptions"
 import * as toasts from "./components/toasts"
 import * as dependenciesTree from "./components/dependencies-tree";
-
+require("babel-core/register");
+require("babel-polyfill");
 
 const reducers = {
   designer: combineReducers({

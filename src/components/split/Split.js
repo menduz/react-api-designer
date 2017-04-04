@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import SplitPane from 'react-split-pane'
 import cx from 'classnames'
-import Drawer from '@mulesoft/anypoint-components/lib/Drawer'
+import ResizablePanel from '@mulesoft/anypoint-components/lib/ResizablePanel'
 import Storage from '../../storage'
 import "./Split.css"
 
@@ -12,7 +12,7 @@ export default class Split extends Component {
   constructor(props) {
     super(props)
 
-    const {id, defaultSize} = this.props
+    const { id, defaultSize } = this.props
     this.sizeKey = `${id}:locked`
     this.lockedKey = `${id}:size`
 
@@ -26,11 +26,11 @@ export default class Split extends Component {
   }
 
   _onHover() {
-    this.setState({hover: true})
+    this.setState({ hover: true })
   }
 
   _onUnhover() {
-    this.setState({hover: false})
+    this.setState({ hover: false })
   }
 
   _onToggle(open) {
@@ -44,53 +44,53 @@ export default class Split extends Component {
   }
 
   _onToggleLock(locked) {
-    this.setState({locked})
+    this.setState({ locked })
     Storage.setValue(this.lockedKey, locked)
   }
 
   _onDragStart() {
-    this.setState({dragging: true})
+    this.setState({ dragging: true })
   }
 
   _onDragEnd(size) {
-    this.setState({dragging: false})
+    this.setState({ dragging: false })
     Storage.setValue(this.sizeKey, size)
     window.dispatchEvent(new Event('resize'))
   }
 
   _onDrag(size) {
-    this.setState({size})
+    this.setState({ size })
     if (size <= Split.MIN_SIZE) {
       this._onToggle(false)
     }
   }
 
   _drawer(child) {
-    const {size, hover, locked} = this.state
-    const {position, id} = this.props
+    const { size, hover, locked } = this.state
+    const { position, id } = this.props
     const isOpen = locked || hover
 
     return (
-      <Drawer className="Drawer" position={position} width={size} isOpen={isOpen} isLocked={locked}
-              onHover={this._onHover.bind(this)} onUnhover={this._onUnhover.bind(this)} testId={'Drawer-'+id}
-              onToggle={this._onToggle.bind(this)} onToggleLock={this._onToggleLock.bind(this)}>
+      <ResizablePanel className="Drawer" position={position} width={size} isOpen={isOpen} isLocked={locked}
+        onHover={this._onHover.bind(this)} onUnhover={this._onUnhover.bind(this)} testId={'Drawer-' + id}
+        onToggle={this._onToggle.bind(this)} onToggleLock={this._onToggleLock.bind(this)}>
         {child}
-      </Drawer>
+      </ResizablePanel>
     )
   }
 
   render() {
-    const {size, dragging, hover, locked} = this.state
-    const {position, minSize, className, children, id} = this.props
+    const { size, dragging, hover, locked } = this.state
+    const { position, minSize, className, children, id } = this.props
     const isOpen = locked || hover
-    const classNames = cx('Split', className, {'is-dragging': dragging})
+    const classNames = cx('Split', className, { 'is-dragging': dragging })
     const leftPrimary = position === 'left'
 
     return (
-      <SplitPane className={classNames} data-test-id={'Split-Pane-'+id}
-                 split="vertical" primary={leftPrimary ? "first" : "second"}
-                 minSize={minSize} size={isOpen ? size : Split.MIN_SIZE} onChange={this._onDrag.bind(this)}
-                 onDragStarted={this._onDragStart.bind(this)} onDragFinished={this._onDragEnd.bind(this)}>
+      <SplitPane className={classNames} data-test-id={'Split-Pane-' + id}
+        split="vertical" primary={leftPrimary ? "first" : "second"}
+        minSize={minSize} size={isOpen ? size : Split.MIN_SIZE} onChange={this._onDrag.bind(this)}
+        onDragStarted={this._onDragStart.bind(this)} onDragFinished={this._onDragEnd.bind(this)}>
         {leftPrimary ? this._drawer(children[0]) : children[0]}
         {leftPrimary ? children[1] : this._drawer(children[1])}
       </SplitPane>
