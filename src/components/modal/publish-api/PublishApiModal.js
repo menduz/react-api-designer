@@ -50,6 +50,18 @@ class PublishApiModal extends React.Component {
     this.props.onTagChange(event.value)
   }
 
+  handleAssetIdChange(event: any) {
+    this.props.onAssetIdChange(event.value)
+  }
+
+  handleGroupIdChange(event: any) {
+    this.props.onGroupIdChange(event.value)
+  }
+
+  handleShowAdvanced() {
+    this.props.onShowAdvancedChange(!this.props.showAdvanced)
+  }
+
   handleDescriptionChange(event: any) {
     this.props.onDescriptionChange(event.value)
   }
@@ -197,6 +209,38 @@ class PublishApiModal extends React.Component {
     ]
   }
 
+  addAdvancedExchangeFormFields(): [any] {
+    const {groupId, assetId, showAdvanced} = this.props
+    return [
+      <div className="form-row" key="Show-Advanced">
+        <div className="large-col">
+          <a onClick={this.handleShowAdvanced.bind(this)}>
+            {showAdvanced ? '< Hide Advanced' : 'Show advanced >'}
+          </a>
+        </div>
+      </div>,
+      !showAdvanced ? null :
+        <div className="form-row" key="Form-Asset-Group-Ids">
+          <div className="form-col">
+            <Label className="required">GroupId</Label>
+            <TextField value={groupId}
+                       placeholder="com.mulesoft"
+                       onChange={this.handleGroupIdChange.bind(this)}
+                       required
+                       testId="Publish-Input-GroupId"/>
+          </div>
+          <div className="form-col">
+            <Label className="required">AssetId</Label>
+            <TextField value={assetId}
+                       placeholder="api-gateway-external"
+                       onChange={this.handleAssetIdChange.bind(this)}
+                       required
+                       testId="Publish-Input-AssetId"/>
+          </div>
+        </div>
+    ]
+  }
+
   form(name: string, currentVersion: string, nextVersion: string, tag: ?string, tags: Array<string>, description: string) {
     const {isLoading, publishToExchange} = this.props
     return (
@@ -224,8 +268,7 @@ class PublishApiModal extends React.Component {
           <div className="form-row">
             <div className="large-col">
               <Label className="required">Description</Label>
-              <TextArea style={{ height: 65 }}
-                        placeholder="Add a description"
+              <TextArea placeholder="Add a description"
                         value={description}
                         required
                         onChange={this.handleDescriptionChange.bind(this)}/>
@@ -258,6 +301,7 @@ class PublishApiModal extends React.Component {
               </div>
             </div>
           </div>
+          {publishToExchange ? this.addAdvancedExchangeFormFields() : null}
         </div>
     )
   }
@@ -297,10 +341,11 @@ class PublishApiModal extends React.Component {
   }
 
   canSubmit(): boolean {
-    const {name, nextVersion, publishToExchange, main, description} = this.props
+    const {name, nextVersion, publishToExchange, groupId, assetId, main, description} = this.props
     const apiPlatformFields = PublishApiModal.isNotEmpty(name) && PublishApiModal.isNotEmpty(nextVersion)
       && PublishApiModal.isNotEmpty(description)
-    const apiExchangeFields = PublishApiModal.isNotEmpty(main)
+    const apiExchangeFields =  PublishApiModal.isNotEmpty(groupId) && PublishApiModal.isNotEmpty(assetId)
+      && PublishApiModal.isNotEmpty(main)
     return publishToExchange ? (apiPlatformFields && apiExchangeFields) : apiPlatformFields
   }
 
@@ -338,6 +383,7 @@ type Props = {
     platform: boolean,
     exchange: boolean,
   },
+  showAdvanced: boolean,
   publishToExchange: boolean,
   publishToBothApis: boolean,
 
@@ -351,6 +397,7 @@ type Props = {
   onTagRemove: (tag: string) => void,
   onSubmitTag: (tag: ?string) => void,
   onMainFileChange: (main: string) => void,
+  onShowAdvancedChange?: (showAdvanced: boolean) => void,
   onPublishToBothApis: (publishBoth: boolean) => void
 }
 

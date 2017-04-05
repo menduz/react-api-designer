@@ -26,7 +26,7 @@ export const clean = () =>
     dispatch({type: CLEAN})
   }
 
-const initWithFileSytem = (fs: FileSystem, dispatch: Dispatch, {repositoryContainer, designerWorker}: ExtraArgs,
+const initWithFileSystem = (fs: FileSystem, dispatch: Dispatch, {repositoryContainer, designerWorker}: ExtraArgs,
                            projectId: string = '', projectType: ProjectType = API_PROJECT): any => {
 
   // clean old state
@@ -62,24 +62,24 @@ const initWithFileSytem = (fs: FileSystem, dispatch: Dispatch, {repositoryContai
 export const init = (projectId: string, projectType: ProjectType) =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerWorker, designerRemoteApiSelectors}: ExtraArgs): any => {
     const repository = new VcsFileSystem(new VcsRemoteApi(designerRemoteApiSelectors(getState)))
-    initWithFileSytem(repository, dispatch, {repositoryContainer, designerWorker}, projectId, projectType)
+    initWithFileSystem(repository, dispatch, {repositoryContainer, designerWorker}, projectId, projectType)
   }
 
 
 export const initLocalStorage = () =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerWorker}: ExtraArgs): any => {
     const repository = new LocalStorageFileSystem()
-    initWithFileSytem(repository, dispatch, {repositoryContainer, designerWorker})
+    initWithFileSystem(repository, dispatch, {repositoryContainer, designerWorker})
   }
 
 
 export const initElectron = (basePath: string) =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerWorker}: ExtraArgs): any => {
     const repository = new ElectronFileSystem(basePath)
-    initWithFileSytem(repository, dispatch, {repositoryContainer, designerWorker})
+    initWithFileSystem(repository, dispatch, {repositoryContainer, designerWorker})
   }
 
   export const initCustom = (repository) =>
   (dispatch: Dispatch, getState: GetState, {repositoryContainer, designerWorker}: ExtraArgs): any => {
-    initWithFileSytem(repository, dispatch, {repositoryContainer, designerWorker})
+    initWithFileSystem(repository, dispatch, {repositoryContainer, designerWorker})
   }

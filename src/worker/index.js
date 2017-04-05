@@ -41,7 +41,8 @@ export default class DesignerWorker {
     }
 
     return {
-      postMessage: () => console.error('Could not initialize Designer Worker:', w.Worker, w.Blob, w.URL),
+      postMessage: () => console.error('Could not initialize Designer Worker:',
+        'Worker?', w.Worker !== undefined, '- Blob?', w.Blob !== undefined, '- URL?', w.URL !== undefined),
       addEventListener: () => false,
       removeEventListener: () => false
     }
