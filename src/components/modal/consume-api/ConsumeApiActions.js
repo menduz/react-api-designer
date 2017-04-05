@@ -117,7 +117,9 @@ export const searchFragments = (query: string) => {
     dispatch(isSearching())
     const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
     consumeRemoteApi.queryFragments(query).then((fragments) => {
-      dispatch(fragmentsChanged(new List(fragments)))
+      const assets = fragments.data?fragments.data.assets:[]
+      dispatch(fragmentsChanged(new List(assets)))
+
     }).catch((error) => {
       console.error('Error when searching fragments', error)
       dispatch(showError(error.message || error.toString()))
