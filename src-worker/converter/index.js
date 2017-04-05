@@ -33,22 +33,21 @@ export default class OasRamlConverter {
     }
   }
 
-  convertToSwagger(rootPath, format) {
-    const toSwagger = new converter.Converter(converter.Formats.AUTO, converter.Formats.SWAGGER)
-    const o = {...this.options,
+  convertAutoToSwagger(rootPath, format) {
+    const toSwagger = new converter.Converter(converter.Formats.AUTO, converter.Formats.OAS)
+    return toSwagger.convertFile(rootPath, {
+      ...this.options,
       format: format
-    }
-
-    return toSwagger.convertFile(rootPath, o)
+    })
   }
 
-  convertUrlToRaml(url) {
-    const toRaml = new converter.Converter(converter.Formats.AUTO, converter.Formats.RAML10)
+  convertSwaggerUrlToRaml(url) {
+    const toRaml = new converter.Converter(converter.Formats.OAS, converter.Formats.RAML10)
     return toRaml.convertFile(url)
   }
 
   convertSwaggerToRaml(files: Array) {
-    const toRaml = new converter.Converter(converter.Formats.SWAGGER, converter.Formats.RAML10)
+    const toRaml = new converter.Converter(converter.Formats.OAS, converter.Formats.RAML10)
 
 
     function toAbsolute(path) {
@@ -93,14 +92,14 @@ export default class OasRamlConverter {
     })
   }
 
-  convert(text, from, to, options) {
+  convertText(text, from, to) {
     return new Promise((resolve, reject) => {
       const fromFormat = converter.Formats[from];
       const toFormat = converter.Formats[to];
 
-      const o = {...options,
-        fsResolver: this.options.fsResolver,
-        httpResolver: this.options.httpResolver
+      const o = {
+        ...this.options,
+        validateImport: true
       }
 
       new converter.Converter(fromFormat, toFormat).convertData(text, o)

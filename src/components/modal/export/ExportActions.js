@@ -49,7 +49,7 @@ export const exportAll = (name: string, type: string) =>
     else {
 
       return findRamlRoot(repository).then(rootPath => {
-        return designerWorker.convertToSwagger(
+        return designerWorker.convertAutoToSwagger(
           rootPath,
           type
         ).then(

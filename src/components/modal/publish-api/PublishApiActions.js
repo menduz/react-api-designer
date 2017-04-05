@@ -83,7 +83,7 @@ export const openModal = (checkForUnsaved: boolean = true) => (dispatch: Dispatc
   }
 }
 
-const formatErrorMessage = (error: any, source: string) => {
+const formatErrorMessage = (error: any) => {
   return error && error.body && error.body.message ? error.body.message : error.message
 }
 
@@ -105,7 +105,7 @@ export const publish = (name: string, version: string, tags: Array<string>, main
         })
         .catch((error) => {
           console.error('Error when publishing to exchange', error)
-          dispatch(errorOnPublish(formatErrorMessage(error, constants.EXCHANGE), constants.EXCHANGE))
+          dispatch(errorOnPublish(formatErrorMessage(error), constants.EXCHANGE))
         })
     }
 
@@ -118,7 +118,7 @@ export const publish = (name: string, version: string, tags: Array<string>, main
         })
         .catch((error) => {
           console.error('Error when publishing to platform', error)
-          dispatch(errorOnPublish(formatErrorMessage(error, constants.PLATFORM), constants.PLATFORM))
+          dispatch(errorOnPublish(formatErrorMessage(error), constants.PLATFORM))
         })
     }
   }

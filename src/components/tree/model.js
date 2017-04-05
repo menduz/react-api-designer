@@ -10,6 +10,7 @@ export type State = {
 }
 
 export type LeafNode = { path: Path, name: string, label: string }
+// eslint-disable-next-line
 export type NonLeafNode = { path: Path, name: string, label: string, children: Node[] }
 export type Node = LeafNode | NonLeafNode
 

@@ -9,3 +9,7 @@ export type State = {
   projectId: string,
   projectType: ProjectType
 }
+
+export const toName = (type: ProjectType): string => {
+  return type === API_PROJECT ? 'Spec' : type === FRAGMENT_PROJECT ? 'Fragment' : ''
+}

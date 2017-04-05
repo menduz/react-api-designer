@@ -1,5 +1,36 @@
 // @flow
 
+
+export const EntryTypes = {
+  File: 'file',
+  Folder: 'folder'
+}
+
+export const Separator = '/'
+
+export type Path = string
+
+export type Entry = {
+  name: string,
+  path: string,
+  type: 'folder' | 'file',
+  meta: ?{[key: string]: any},
+  children: ?Entry[],
+}
+
+export const folderEntry = (name: string, path: Path, children: Entry[]): Entry => {
+  return {name, path, children, type: EntryTypes.Folder, meta: undefined}
+}
+
+export const fileEntry = (name: string, path: Path): Entry => {
+  return {name, path, type: EntryTypes.File, meta: undefined, children: undefined}
+}
+
+export type FileData = {
+  path: string,
+  content: string
+}
+
 export interface FileSystem {
   /**
    *
@@ -122,34 +153,4 @@ export interface FileSystem {
   clean(): Promise<any>;
 
   persistsEmptyFolders(): boolean;
-}
-
-export const EntryTypes = {
-  File: 'file',
-  Folder: 'folder'
-}
-
-export const Separator = '/'
-
-export type Path = string
-
-export type Entry = {
-  name: string,
-  path: string,
-  type: 'folder' | 'file',
-  meta: ?{[key: string]: any},
-  children: ?Entry[],
-}
-
-export const folderEntry = (name: string, path: Path, children: Entry[]): Entry => {
-  return {name, path, children, type: EntryTypes.Folder, meta: undefined}
-}
-
-export const fileEntry = (name: string, path: Path): Entry => {
-  return {name, path, type: EntryTypes.File, meta: undefined, children: undefined}
-}
-
-export type FileData = {
-  path: string,
-  content: string
 }

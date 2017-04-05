@@ -15,7 +15,6 @@ import {
   FILE_CONTENT_UPDATE_FAILED, ELEMENT_MOVE_FAILED, LOADING_FILE_SYSTEM,
 } from './actions'
 import Path from '../repository/Path'
-import {ElementModel} from '../repository/immutable/RepositoryModel'
 
 const initialState: State = {
   fileTree: undefined,
@@ -25,11 +24,13 @@ const initialState: State = {
   error: ''
 }
 
-type RepositoryAction = { type: string, payload: any }
-
-const moveElementContent = (contents: Map<string, string>, oldPath: Path, newPath: Path, isDirectory: boolean) => {
-  if (isDirectory) return moveDirectoryContent(contents, oldPath, newPath)
-  return moveFileContent(contents, oldPath, newPath)
+const moveFileContent = (contents: Map<string, string>, oldPath: Path, newPath: Path): Map<string, string> => {
+  const oldPathString = oldPath.toString()
+  if (!contents.has(oldPathString)) return contents
+  const content = contents.get(oldPathString)
+  return contents
+    .remove(oldPathString)
+    .set(newPath.toString(), content)
 }
 
 const moveDirectoryContent = (contents: Map<string, string>, oldPath: Path, newPath: Path): Map<string, string> => {
@@ -44,14 +45,12 @@ const moveDirectoryContent = (contents: Map<string, string>, oldPath: Path, newP
     )
 }
 
-const moveFileContent = (contents: Map<string, string>, oldPath: Path, newPath: Path): Map<string, string> => {
-  const oldPathString = oldPath.toString()
-  if (!contents.has(oldPathString)) return contents
-  const content = contents.get(oldPathString)
-  return contents
-    .remove(oldPathString)
-    .set(newPath.toString(), content)
+const moveElementContent = (contents: Map<string, string>, oldPath: Path, newPath: Path, isDirectory: boolean) => {
+  if (isDirectory) return moveDirectoryContent(contents, oldPath, newPath)
+  return moveFileContent(contents, oldPath, newPath)
 }
+
+type RepositoryAction = { type: string, payload: any }
 
 const contentReducer = (contents: Map<string, string> = Map(), action: RepositoryAction): Map<string, string> => {
   switch (action.type) {

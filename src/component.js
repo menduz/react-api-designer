@@ -59,11 +59,12 @@ const repositoryContainer: RepositoryContainer = {
 const initThunkArg = (authSelector: AuthSelectors): ExtraArgs => {
   if (!window.require) throw new Error('require missing. Forgot to include loader.js?')
 
-  const workerUrl = window.require.getConfig().paths['worker']
+  const paths = window.require.getConfig().paths;
+  const workerUrl = `${paths['worker']}#${paths['remoteApi']}/proxy`
   const designerWorker = new Worker(workerUrl, new FileProvider(repositoryContainer))
 
   const designerRemoteApiSelectors = (getState: GetState): RemoteApiSelectors => ({
-    baseUrl: () => window.require.getConfig().paths['remoteApi'],
+    baseUrl: () => paths['remoteApi'],
     authorization: () => authSelector.authorization(getState()),
     ownerId: () => authSelector.ownerId(getState()),
     organizationId: () => authSelector.organizationId(getState()),

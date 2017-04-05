@@ -16,8 +16,6 @@ export type Props = {
 class RenameModal extends React.Component {
   props: Props
 
-  constructor(props: Props) { super(props) }
-
   onNameChange(event: any) {
     this.props.onNameChange(event.value)
   }

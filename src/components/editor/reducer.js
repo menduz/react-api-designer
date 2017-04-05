@@ -20,6 +20,22 @@ const initialState = {
   suggestions: []
 }
 
+const elementLocationChangedReducer = (state, oldPath: Path, newPath: Path) => {
+  const path: ?Path = state.path
+
+  if(path && path.equalsTo(oldPath)) {
+    return { ...state, path: newPath}
+  }
+
+  if (path && path.isDescendantOf(oldPath)) {
+    const relativePath = oldPath.relativePathTo(path)
+    const resultPath = Path.mergePath(newPath, relativePath)
+    return { ...state, path: resultPath}
+  }
+
+  return state
+}
+
 export default (state = initialState, action) => {
   switch (action.type) {
 
@@ -72,20 +88,4 @@ export default (state = initialState, action) => {
     default:
       return state
   }
-}
-
-const elementLocationChangedReducer = (state, oldPath: Path, newPath: Path) => {
-  const path: ?Path = state.path
-
-  if(path && path.equalsTo(oldPath)) {
-    return { ...state, path: newPath}
-  }
-
-  if (path && path.isDescendantOf(oldPath)) {
-    const relativePath = oldPath.relativePathTo(path)
-    const resultPath = Path.mergePath(newPath, relativePath)
-    return { ...state, path: resultPath}
-  }
-
-  return state
 }

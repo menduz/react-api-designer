@@ -124,7 +124,7 @@ class PublishApiModal extends React.Component {
   }
 
   render() {
-    const {name, tag, tags, onCancel, publishToExchange, version, nextVersion, description} = this.props
+    const {name, tag, tags, onCancel, publishToExchange, version, nextVersion, description, typeLabel} = this.props
 
     const isFetching = this.isVariableComplete(this.props.isFetching, true)
     const isFetched = this.isVariableComplete(this.props.isFetched)
@@ -139,7 +139,7 @@ class PublishApiModal extends React.Component {
              onClickOverlay={onCancel}
              className="publish-api-modal">
         <ModalHeader>
-          <h1>Publish API to {publishToExchange ? 'Exchange' : 'API Manager' }</h1>
+          <h1>Publish API {typeLabel} to {publishToExchange ? 'Exchange' : 'API Manager' }</h1>
         </ModalHeader>
         <ModalBody>
           {partialAnswers ?
@@ -305,21 +305,22 @@ class PublishApiModal extends React.Component {
   }
 
   static isNotEmpty(value: string): boolean {
-    return (!value && value.length > 0)
+    return value && value.trim().length > 0
   }
 }
 
 type Props = {
-  name: string,
-  version: string,
-  nextVersion: string,
-  description: string,
+  name?: string,
+  version?: string,
+  nextVersion?: string,
+  description?: string,
   files: [],
   tag?: string,
   tags: Array<string>,
-  groupId: string,
-  assetId: string,
-  main: string,
+  groupId?: string,
+  assetId?: string,
+  main?: string,
+  typeLabel?: string,
   isLoading: boolean,
   error: {
     platform: ?string,

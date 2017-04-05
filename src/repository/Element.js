@@ -349,10 +349,6 @@ class Directory extends Element {
     return Array.from(this._children.values())
   }
 
-  get children(): Element[] {
-    return Array.from(this._children.values())
-  }
-
   addChild(child: Element) {
     if (this._children.has(child.name)) return;
 

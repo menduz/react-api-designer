@@ -97,12 +97,12 @@ export default class DesignerWorker {
     return this._postAndExpect('ramlSuggest', {content, cursorPosition, path, repository})
   }
 
-  convertToSwagger(rootPath, format) {
-    return this._postAndExpect('convertToSwagger', {rootPath, format})
+  convertAutoToSwagger(rootPath, format) {
+    return this._postAndExpect('convertAutoToSwagger', {rootPath, format})
   }
 
-  convertUrlToRaml(rootPath) {
-    return this._postAndExpect('convertUrlToRaml', {rootPath})
+  convertSwaggerUrlToRaml(rootPath) {
+    return this._postAndExpect('convertSwaggerUrlToRaml', {rootPath})
   }
 
   convertSwaggerToRaml(files) {

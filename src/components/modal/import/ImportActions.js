@@ -125,7 +125,7 @@ export const importFileFromUrl = (url: string, fileType: string) =>
 
     dispatch({type: IMPORT_STARTED})
     if (fileType === 'SWAGGER') {
-      designerWorker.convertUrlToRaml(proxy + url).then(c => {
+      designerWorker.convertSwaggerUrlToRaml(proxy + url).then(c => {
         const fileName = toRamlName(nameFromUrl(url), repositoryContainer)
         addAndSaveFile(fileName, fileType, c, dispatch)
       }).catch(err => {

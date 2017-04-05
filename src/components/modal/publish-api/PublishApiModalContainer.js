@@ -11,6 +11,7 @@ import PublishApiModal from './PublishApiModal'
 import type {State} from './PublishApiModel'
 
 import {getAll} from './PublishApiSelectors'
+import {getProjectTypeLabel} from "../../../bootstrap/selectors";
 
 type ContainerProps = {
   onClose: () => void
@@ -29,6 +30,7 @@ const mapState = (rootState) => {
     files: state.form['files'],
     tag: state.form['tag'],
     tags: [...state.form['tags']],
+    typeLabel: getProjectTypeLabel(rootState),
     isFetching: state.isFetching,
     isFetched: state.isFetched,
     link: state.link,
