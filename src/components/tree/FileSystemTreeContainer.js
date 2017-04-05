@@ -1,4 +1,4 @@
-//@flow-weak
+//@flow
 
 import {connect} from 'react-redux'
 import {getAll, getExpandedFolders, getCurrentPath} from './selectors'
@@ -8,26 +8,27 @@ import {saveFileWithPath, removeFileWithPath} from "../editor/actions"
 import {openRenameDialog} from "../modal/rename/RenameActions"
 import {openNewFolderDialog} from "../../components/modal/new-folder/NewFolderActions"
 import {openNewFileDialog} from "../../components/modal/new-file/NewFileActions"
-import type {Node} from './model'
 import {getFileTree} from "../../repository-redux/selectors"
 import {Path} from '../../repository'
 import FileSystemTree from './FileSystemTree'
-import './FileSystemTree.css'
 
+import type {Node} from './model'
 import type {Dispatch} from '../../types/index'
 
+import './FileSystemTree.css'
+
 type Props = {
-  nodes: [Node],
-  selected: [string],
-  expanded: [string],
+  nodes: ?Node[],
+  selected: ?string[],
+  expanded: string[],
   onSelect: (path: Path) => void,
   onToggle: (path: Path, isExpanded: boolean) => void,
   showNewFolderDialog: (path: Path) => void,
   showNewFileDialog: (path: Path) => void,
-  moveFile: () => void,
-  saveFile: () => void,
-  rename: () => void,
-  remove: () => void
+  moveFile: (from: Path, to: Path) => void,
+  saveFile: (path: Path) => void,
+  rename: (path: Path) => void,
+  remove: (path: Path) => void
 }
 
 const mapStateToProps = (rootState: any): $Shape<Props> => {
@@ -37,7 +38,8 @@ const mapStateToProps = (rootState: any): $Shape<Props> => {
   const fileTree = getFileTree(rootState)
   const nodes: ?Node[] = fileTree ? fromFileTree(fileTree) : undefined
   const expanded = getExpandedFolders(rootState).toArray().map(p => p.toString())
-  const selected = getCurrentPath(rootState) ? [getCurrentPath(rootState).toString()] : []
+  const currentPath = getCurrentPath(rootState)
+  const selected = currentPath ? [currentPath.toString()] : []
   return {
     nodes,
     selected,

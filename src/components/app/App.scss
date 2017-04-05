@@ -2,14 +2,40 @@
 $small-font: Open Sans, sans-serif; //used for font size less than 14
 $large-font: DIN Pro, sans-serif; //used for font size grater than 14
 
-.App {
-  .LeftPanel {
-    padding-bottom: 55px;
-  }
+html, body, div#root, div#root > div, .App.FileDrop, .App-content {
+  height: 100%;
+}
 
+.App {
   /* hide editor scrollbar and tab list active selector while dragging */
   .Split.is-dragging .Editor .decorationsOverviewRuler, .Split.is-dragging [data-anypoint-component="TabList"] > div {
     display: none !important;
+  }
+
+  .RightPanel, .LeftPanel {
+    position: relative;
+    height: 100%;
+
+    > div {
+      z-index: 0;
+    }
+  }
+
+  .right-container, .mid-container, .left-container {
+    display: inline-block;
+  }
+
+  .mid-container {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .App-content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    align-items: stretch;
   }
 }
 

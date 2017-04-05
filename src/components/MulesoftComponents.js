@@ -18,6 +18,7 @@ import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
 import TextArea from '@mulesoft/anypoint-components/lib/TextArea'
 import Search from '@mulesoft/anypoint-components/lib/Search'
 import Rating from '@mulesoft/anypoint-components/lib/Rating'
+import ResizablePanel from '@mulesoft/anypoint-components/lib/ResizablePanel'
 
 export {
   Modal,
@@ -38,5 +39,6 @@ export {
   ContextMenu,
   TextArea,
   Search,
+  ResizablePanel,
   Rating
 }

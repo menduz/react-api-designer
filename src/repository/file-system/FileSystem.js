@@ -1,6 +1,5 @@
 // @flow
 
-
 export const EntryTypes = {
   File: 'file',
   Folder: 'folder'
