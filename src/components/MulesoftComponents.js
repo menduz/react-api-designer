@@ -15,6 +15,7 @@ import Popover from '@mulesoft/anypoint-components/lib/Popover'
 import FileUploader from '@mulesoft/anypoint-components/lib/FileUploader'
 import Toast from '@mulesoft/anypoint-components/lib/Toast'
 import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
+import TextArea from '@mulesoft/anypoint-components/lib/TextArea'
 
 export {
   Modal,
@@ -32,5 +33,6 @@ export {
   Popover,
   FileUploader,
   Toast,
-  ContextMenu
+  ContextMenu,
+  TextArea
 }
