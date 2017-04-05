@@ -100,7 +100,7 @@ export const publish = (name: string, version: string, tags: Array<string>, main
       const projectType = getProjectType(getState()) // raml or raml_fragment
       remoteApi.publishToExchange(name, version, tags, mainFile, description, assetId, groupId, projectType)
         .then((response) => {
-          const url = `/exchange/${response.groupId}/${response.assetId}/${response.version}`
+          const url = `/exchange2/${response.groupId}/${response.assetId}/${response.version}/`
           dispatch(successfullyFetched({...response, url}, constants.EXCHANGE))
         })
         .catch((error) => {
