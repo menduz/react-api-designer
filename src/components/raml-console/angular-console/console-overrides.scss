@@ -12,6 +12,16 @@
     padding-left: 4px;
   }
 
+  .raml-console-root-description {
+    padding: 0 10px;
+
+    + span a {
+      padding: 0 10px 5px;
+      display: inline-block;
+      cursor: pointer;
+    }
+  }
+
   .raml-console-resource-root {
     min-height: 45px;
   }

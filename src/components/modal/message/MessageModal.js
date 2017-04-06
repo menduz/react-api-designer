@@ -2,12 +2,13 @@
 
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {Button} from '../../MulesoftComponents'
-import {Modal} from '../../MulesoftComponents'
-import {ModalHeader} from '../../MulesoftComponents'
-import {ModalBody} from '../../MulesoftComponents'
-import {ModalFooter} from '../../MulesoftComponents'
-
+import {
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from '../../MulesoftComponents'
 import * as actions from './actions'
 import {
   getMessage,

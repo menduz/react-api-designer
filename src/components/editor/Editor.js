@@ -32,23 +32,24 @@ class DesignerEditor extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
+    if (!this.monaco || !this.monaco.editor || !this.editor || !this.language)
+      return false;
 
-    if (this.monaco && this.monaco.editor && this.editor && this.language) {
-      if (nextProps.position !== this.position)
-        this._revealPosition(nextProps.position)
 
-      if (nextProps.theme !== this.theme)
-        this._changeTheme(nextProps.theme)
+    if (nextProps.position !== this.position)
+      this._revealPosition(nextProps.position)
 
-      if (nextProps.readOnly !== this.readOnly)
-        this._changeReadOnly(nextProps.readOnly)
+    if (nextProps.theme !== this.theme)
+      this._changeTheme(nextProps.theme)
 
-      if (!this.language.native && nextProps.errors !== this.errors && (nextProps.errors.length !== 0 || this.errors.length !== 0))
-        this._showErrors(nextProps.errors)
+    if (nextProps.readOnly !== this.readOnly)
+      this._changeReadOnly(nextProps.readOnly)
 
-      if (this.onSuggestCallback)
-        this._showSuggestions(nextProps.suggestions)
-    }
+    if (!this.language.native && nextProps.errors !== this.errors && (nextProps.errors.length !== 0 || this.errors.length !== 0))
+      this._showErrors(nextProps.errors)
+
+    if (this.onSuggestCallback)
+      this._showSuggestions(nextProps.suggestions)
 
     let update = false
     if (nextProps.language.id !== this.language.id) {

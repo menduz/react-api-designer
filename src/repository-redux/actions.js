@@ -183,7 +183,7 @@ export const addBulkFiles = (files: []) =>
     const importedFiles: File[] = []
 
     return Promise.all(files.map(f => dispatch(mkdirs(f.filename, repository)))).then(() => {
-      Promise.all(files.map(f => {
+      return Promise.all(files.map(f => {
         return dispatch(mkdirs(f.filename, repository)).then(c => {
           if (!repository.getByPathString('/' + f.filename)) {
             const file: File = repository.addFile(c.parentPath, c.name, f.content)
@@ -196,7 +196,8 @@ export const addBulkFiles = (files: []) =>
           }
         })
       })).then(() => {
-        repository.saveFiles(importedFiles, null)
+        dispatch({type: FILE_SAVE_STARTED})
+        return repository.saveFiles(importedFiles, null)
           .then((result) => successSaving(dispatch, 'All imported files saved', result))
           .catch(() => dispatch(error(FILE_SAVE_FAILED, 'Error saving importing files')))
       })
@@ -246,7 +247,7 @@ export const saveAll = () =>
     return repository.saveAll(currentFile)
       .then((result) => successSaving(dispatch, 'All files saved', result))
       .catch((e) => {
-        console.log(e)
+        console.error('Error while saving all files', e)
         dispatch(error(FILE_SAVE_FAILED, 'Error on save all'))
       })
   }

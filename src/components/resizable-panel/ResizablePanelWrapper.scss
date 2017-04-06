@@ -1,0 +1,103 @@
+$width: 10px;
+$toggleButtonSize: 25px;
+$toggleTransitionTime: 0.2s;
+
+.panel {
+  position: relative;
+  height: 100%;
+
+  > div {
+    z-index: 0;
+  }
+}
+
+.close-container, .open-container {
+  position: relative;
+
+  .panel {
+    &.panel-left {
+      padding-right: $width;
+
+      > div > button {
+        right: $width * -1;
+        width: $width;
+      }
+    }
+
+    &.panel-right {
+      padding-left: $width;
+
+      > div > button {
+        left: $width * -1;
+        width: $width;
+      }
+    }
+  }
+}
+
+.open-container {
+  width: auto;
+
+  -webkit-transition: width 1s;
+  -moz-transition: width 1s;
+  -ms-transition: width 1s;
+  -o-transition: width 1s;
+  transition: width 1s;
+
+  .toggle-button {
+    width: 0;
+
+    &.right {
+      left: 0;
+    }
+
+    &.left {
+      right: 0;
+    }
+  }
+}
+
+.close-container {
+  width: $width;
+  cursor: pointer;
+  background-color: #f4f5f6;
+
+  .toggle-button {
+    width: $toggleButtonSize;
+
+    -webkit-transition: width $toggleTransitionTime, left $toggleTransitionTime, right $toggleTransitionTime;
+    -moz-transition: width $toggleTransitionTime, left $toggleTransitionTime, right $toggleTransitionTime;
+    -ms-transition: width $toggleTransitionTime, left $toggleTransitionTime, right $toggleTransitionTime;
+    -o-transition: width $toggleTransitionTime, left $toggleTransitionTime, right $toggleTransitionTime;
+    transition: width $toggleTransitionTime, left $toggleTransitionTime, right $toggleTransitionTime;
+  }
+}
+
+.toggle-button {
+  top: 0;
+  height: 30px;
+  padding: 0;
+  z-index: 2;
+  border: none;
+  outline: none;
+  overflow: hidden;
+  position: absolute;
+  background-color: #f4f5f6;
+
+  &.right {
+    left: -1 * $toggleButtonSize;
+
+    > div {
+      transform: rotate(-90deg);
+    }
+  }
+
+  &.left {
+    right: -1 * $toggleButtonSize;
+
+    > div {
+      transform: rotate(90deg);
+    }
+  }
+}
+

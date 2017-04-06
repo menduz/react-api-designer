@@ -1,14 +1,17 @@
 // @flow
 
-import React from "react"
+import React from 'react'
 import {connect} from 'react-redux'
+import type {Dispatch} from '../../../types/index'
+import {getPublishToExchange} from '../../header/selectors'
 
-import {getAll} from './PublishApiSelectors'
+import {addTag, changeValue, clear, publish, removeTag, togglePublishBothApis} from './PublishApiActions'
 import PublishApiModal from './PublishApiModal'
 
-import type {State} from "./PublishApiModel"
-import {changeValue, publish, clear, removeTag, addTag, togglePublishBothApis} from "./PublishApiActions"
-import {getPublishToExchange} from "../../header/selectors";
+import type {State} from './PublishApiModel'
+
+import {getAll} from './PublishApiSelectors'
+import {getProjectTypeLabel} from "../../../bootstrap/selectors";
 
 type ContainerProps = {
   onClose: () => void
@@ -27,6 +30,8 @@ const mapState = (rootState) => {
     files: state.form['files'],
     tag: state.form['tag'],
     tags: [...state.form['tags']],
+    showAdvanced: state.form['showAdvanced'],
+    typeLabel: getProjectTypeLabel(rootState),
     isFetching: state.isFetching,
     isFetched: state.isFetched,
     link: state.link,
@@ -37,16 +42,19 @@ const mapState = (rootState) => {
   }
 }
 
-const mapDispatch = (dispatch, props: ContainerProps) => {
+const mapDispatch = (dispatch: Dispatch, props: ContainerProps) => {
   return {
     onPublishToBothApis: (publishBoth: boolean) => dispatch(togglePublishBothApis(publishBoth)),
     onTagChange: (tag: string) => dispatch(changeValue('tag', tag)),
     onTagRemove: (tag: string) => dispatch(removeTag(tag)),
     onSubmitTag: (tag: string) => dispatch(addTag(tag)),
     onNameChange: (name: string) => dispatch(changeValue('name', name)),
+    onAssetIdChange: (assetId: string) => dispatch(changeValue('assetId', assetId)),
+    onGroupIdChange: (groupId: string) => dispatch(changeValue('groupId', groupId)),
     onDescriptionChange: (description: string) => dispatch(changeValue('description', description)),
     onNextVersionChange: (version: string) => dispatch(changeValue('nextVersion', version)),
     onMainFileChange: (main: string) => dispatch(changeValue('main', main)),
+    onShowAdvancedChange: (showAdvanced: string) => dispatch(changeValue('showAdvanced', showAdvanced)),
     onSubmit: (name: string, version: string, tags: Array<string>, main: string, description: string,
                assetId: string, groupId: string, platform: boolean, exchange: boolean) =>
       dispatch(publish(name, version, tags, main, description, assetId, groupId, platform, exchange)),

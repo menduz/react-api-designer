@@ -1,4 +1,3 @@
-// @flow
 
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
@@ -37,16 +36,16 @@ class ConsumeApi extends Component {
     return fragments.map((fragment: Fragment, index) => {
       const gav = `${fragment.groupId}/${fragment.assetId}/${fragment.version}`;
       return <FragmentComponent isOdd={index % 2 !== 0}
-                                key={gav} fragment={fragment}
+                                key={gav+index} fragment={fragment}
                                 handleFragmentSelection={this.handleFragmentSelection.bind(this, index, fragment)}/>
     })
   }
 
   renderConsumingFragments(fragments: List<Fragment>) {
-    return fragments.map((fragment: Fragment) => {
+    return fragments.map((fragment: Fragment, index) => {
       const gav = `${fragment.groupId}/${fragment.assetId}/${fragment.version}`;
       return (
-        <li key={gav}>
+        <li key={gav+index}>
           Adding '{fragment.name}' to '/exchange_modules/{gav}/'
         </li>
       )

@@ -7,5 +7,6 @@ export type State = {
   fileTree: ?RepositoryModel,
   contents: Map<string, string>,
   progress: boolean,
+  progressType: ?string,
   error: ?string
 }

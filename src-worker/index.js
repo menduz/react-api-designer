@@ -64,13 +64,16 @@ const requestFilePromise = path => {
   })
 }
 
-const ramlParser = new RamlParser(requestFilePromise);
-const ramlSuggest = new RamlSuggestions(requestFilePromise);
-const converter = new OasRamlConverter(requestFilePromise);
+// proxy
+const proxy = (self.location.hash.trim() || '#').substring(1)
 
-listenThenPost('convertToSwagger', data => converter.convertToSwagger(data.rootPath, data.format))
+const ramlParser = new RamlParser(requestFilePromise, proxy)
+const ramlSuggest = new RamlSuggestions(requestFilePromise)
+const converter = new OasRamlConverter(requestFilePromise, proxy)
 
-listenThenPost('convertUrlToRaml', data => converter.convertUrlToRaml(data.rootPath))
+listenThenPost('convertAutoToSwagger', data => converter.convertAutoToSwagger(data.rootPath, data.format))
+
+listenThenPost('convertSwaggerUrlToRaml', data => converter.convertSwaggerUrlToRaml(data.rootPath))
 
 listenThenPost('convertSwaggerToRaml', data => converter.convertSwaggerToRaml(data.files))
 
@@ -84,7 +87,7 @@ listenThenPost('jsonParse', data => jsonParse(data.text))
 
 listenThenPost('oasParse', data => {
   return new Promise((resolve, reject) => {
-    converter.convert(data.text, "SWAGGER", "RAML10", {validateImport: true}).then(raml => {
+    converter.convertText(data.text, "OAS", "RAML10").then(raml => {
       ramlParser.parseData(raml).then(resolve).catch(reject)
     }).catch(reject)
   })

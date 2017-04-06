@@ -1,7 +1,36 @@
 // @flow
 
-export default class FileSystem {
+export const EntryTypes = {
+  File: 'file',
+  Folder: 'folder'
+}
 
+export const Separator = '/'
+
+export type Path = string
+
+export type Entry = {
+  name: string,
+  path: string,
+  type: 'folder' | 'file',
+  meta: ?{[key: string]: any},
+  children: ?Entry[],
+}
+
+export const folderEntry = (name: string, path: Path, children: Entry[]): Entry => {
+  return {name, path, children, type: EntryTypes.Folder, meta: undefined}
+}
+
+export const fileEntry = (name: string, path: Path): Entry => {
+  return {name, path, type: EntryTypes.File, meta: undefined, children: undefined}
+}
+
+export type FileData = {
+  path: string,
+  content: string
+}
+
+export interface FileSystem {
   /**
    *
    * Path
@@ -84,44 +113,33 @@ export default class FileSystem {
    * If the method is applied to a fullpath of type file an Entry with that data is fulfilled in the promise.
    */
 
-
-  directory(path: Path): Promise<Entry> {
-    throw new Error('Not implemented method')
-  }
+  directory(path: string): Promise<Entry>;
 
   /**
    * Saves content to a given file to the given fullpath. It creates the necessary folders if needed.
    *
    * Returns a promise that fulfills on success or rejects on fail.
    */
-  save(files: FileData[], commit: boolean = true): Promise<Entry> {
-    throw new Error('Not implemented method')
-  }
+  save(files: FileData[], commit?: boolean): Promise<Entry>;
 
   /**
    * Creates a folder. Creates all the required previous folder levels if needed.
    *
    * Returns a promise that fulfills on success or rejects on fail.
    */
-  createFolder(path: Path): Promise<any> {
-    throw new Error('Not implemented method')
-  }
+  createFolder(path: string): Promise<any>;
 
   /**
    * Returns a promise that contains the content of the file found at fullpath. Fails if the fullpath does not exist or is a folder.
    */
-  load(path: Path): Promise<string> {
-    throw new Error('Not implemented method')
-  }
+  load(path: string): Promise<string>;
 
   /**
    * Removes a fullpath and all the nested children of the hierarchy.
    *
    * Returns a promise that fulfills on success or rejects on fail.
    */
-  remove(path: Path): Promise<any> {
-    throw new Error('Not implemented method')
-  }
+  remove(path: string): Promise<any>;
 
   /**
    * Renames a file or folder. If the destination is a different folder
@@ -129,43 +147,9 @@ export default class FileSystem {
    *
    * Returns a promise that fulfills on success or rejects on fail.
    */
-  rename(source: Path, destination: Path, isDirectory: boolean): Promise<any> {
-    throw new Error('Not implemented method')
-  }
+  rename(source: string, destination: string, isDirectory: boolean): Promise<any>;
 
-  get persistsEmptyFolders(): boolean {
-    throw new Error('Not implemented method')
-  }
+  clean(): Promise<any>;
 
-  clean(): Promise<any> {
-    return Promise.resolve()
-  }
-
-  // Constants
-  static Separator = '/'
-  static FileEntryType = 'file'
-  static FolderEntryType = 'folder'
-}
-
-export type Path = string
-
-export type Entry = {
-  name: string,
-  path: string,
-  type: 'folder' | 'file',
-  meta: ?{[key: string]: any},
-  children: ?Entry[],
-}
-
-export const folderEntry = (name: string, path: Path, children: Entry[]): Entry => {
-  return {name, path, children, type: FileSystem.FolderEntryType, meta: undefined}
-}
-
-export const fileEntry = (name: string, path: Path): Entry => {
-  return {name, path, type: FileSystem.FileEntryType, meta: undefined, children: undefined}
-}
-
-export type FileData = {
-  path: string,
-  content: string
+  persistsEmptyFolders(): boolean;
 }

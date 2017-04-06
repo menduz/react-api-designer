@@ -12,12 +12,13 @@ class ZipHelper {
     const addToZip = (element: Element, parentDirZip: JSZip): Promise<> => {
       if (element.isDirectory()) {
         const zipFolder = parentDirZip.folder(element.name)
-        if (element.children.isEmpty) return Promise.resolve()
-        return Promise.all(element.children.map(c => {
+        let directory = element.asDirectory();
+        if (directory.children.isEmpty) return Promise.resolve()
+        return Promise.all(directory.children.map(c => {
           return addToZip(c, zipFolder)
         }))
       } else {
-        return element.getContent().then(content => {
+        return element.asFile().getContent().then(content => {
           parentDirZip.file(element.name, content)
         })
       }
@@ -30,7 +31,7 @@ class ZipHelper {
     })
   }
 
-  static filesContents(content: any, files: Array) {
+  static filesContents(content: any, files: []) {
 
     const buildContents = (zip, files) => {
       return Promise.all(files.map(f => {

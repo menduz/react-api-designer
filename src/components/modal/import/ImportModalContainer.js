@@ -6,6 +6,7 @@ import ImportModal from './ImportModal'
 
 import {getShowModal, getSelectValue, isImporting, getFileToImport, getUrl, getError} from './ImportSelectors'
 import {closeImportDialog, changeType, changeUrl, uploadFile, importFileFromUrl, importFile, changeError} from './ImportActions'
+import {isSaving} from "../../../repository-redux/selectors"
 
 const mapState = (rootState) => {
   return {
@@ -14,6 +15,7 @@ const mapState = (rootState) => {
     fileToImport: getFileToImport(rootState),
     url: getUrl(rootState),
     isImporting: isImporting(rootState),
+    isSaving: isSaving(rootState),
     error: getError(rootState)
   }
 }

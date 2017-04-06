@@ -3,12 +3,15 @@
 import {connect} from 'react-redux'
 import {getAll, getExpandedFolders, getCurrentPath, isUpdating} from './selectors'
 import {fromFileTree} from './model'
-import {pathSelected, folderSelected, removeDependency} from './actions'
-import type {Node} from './model'
-import {getFileTree} from "../../repository-redux/selectors"
+import {pathSelected, folderSelected} from './actions'
+import {getFileTree} from '../../repository-redux/selectors'
+import {Path} from '../../repository'
 import DependenciesTree from './DependenciesTree'
+import {checkForUpdates} from '../modal/dependency/DependencyActions'
+
+import type {Node} from './model'
+import type {GAV} from '../modal/dependency/DependencyModel'
 import './DependenciesTree.css'
-import Path from "../../repository/Path";
 
 type Props = {
   nodes: ?Node[],
@@ -17,7 +20,7 @@ type Props = {
   updating: boolean,
   onSelect?: (path: Path) => void,
   onToggle?: (path: Path, isExpanded: boolean) => void,
-  remove?: () => void
+  checkForUpdate: (gav: GAV) => void
 }
 
 const mapStateToProps = (rootState): $Shape<Props> => {
@@ -42,7 +45,7 @@ const mapDispatch = dispatch => {
   return {
     onSelect: (path: Path, filePath: Path) => dispatch(pathSelected(path,filePath)),
     onToggle: (path: Path, filePath: Path) => dispatch(folderSelected(path,filePath)),
-    remove: (gav: any) => dispatch(removeDependency(gav)),
+    checkForUpdate: (gav: any) => dispatch(checkForUpdates(gav))
   }
 }
 

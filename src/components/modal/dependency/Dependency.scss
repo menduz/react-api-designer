@@ -1,0 +1,40 @@
+@import "../../variables.scss";
+
+.dependency-modal {
+  font-family: $large-font;
+
+  .fragment-props-table {
+    display: flex;
+    font-size: 14px;
+    font-family: $small-font;
+    width: 430px;
+  }
+
+  .search-spinner {
+    min-height: 160px;
+    margin-top: 60px;
+    margin-left: 43%;
+    margin-right: 350px;
+  }
+
+  .column {
+    display: flex;
+    flex-direction: column;
+
+    :last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .cell {
+    margin-bottom: 5px;
+    &.key {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+
+  .column.fragment-keys {
+    margin-right: 15px;
+  }
+}

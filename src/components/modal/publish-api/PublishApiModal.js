@@ -2,19 +2,21 @@
 
 import  React from 'react'
 
-import Button from '@mulesoft/anypoint-components/lib/Button'
-import Modal from '@mulesoft/anypoint-components/lib/Modal'
-import ModalHeader from '@mulesoft/anypoint-components/lib/ModalHeader'
-import ModalBody from '@mulesoft/anypoint-components/lib/ModalBody'
-import ModalFooter from '@mulesoft/anypoint-components/lib/ModalFooter'
-import Label from '@mulesoft/anypoint-components/lib/Label'
-import TextField from '@mulesoft/anypoint-components/lib/TextField'
-import Pill from '@mulesoft/anypoint-components/lib/Pill'
-import Pills from '@mulesoft/anypoint-components/lib/Pills'
-import Checkbox from '@mulesoft/anypoint-components/lib/Checkbox'
-import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
-import Select from '@mulesoft/anypoint-components/lib/Select'
-import TextArea from '@mulesoft/anypoint-components/lib/TextArea'
+import {
+  Button,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Label,
+  TextField,
+  Pill,
+  Pills,
+  Checkbox,
+  Spinner,
+  Select,
+  TextArea,
+} from '../../MulesoftComponents'
 
 import './PublishApi.css'
 
@@ -46,6 +48,18 @@ class PublishApiModal extends React.Component {
 
   handleTagChange(event: any) {
     this.props.onTagChange(event.value)
+  }
+
+  handleAssetIdChange(event: any) {
+    this.props.onAssetIdChange(event.value)
+  }
+
+  handleGroupIdChange(event: any) {
+    this.props.onGroupIdChange(event.value)
+  }
+
+  handleShowAdvanced() {
+    this.props.onShowAdvancedChange(!this.props.showAdvanced)
   }
 
   handleDescriptionChange(event: any) {
@@ -122,7 +136,7 @@ class PublishApiModal extends React.Component {
   }
 
   render() {
-    const {name, tag, tags, onCancel, publishToExchange, version, nextVersion, description} = this.props
+    const {name, tag, tags, onCancel, publishToExchange, version, nextVersion, description, typeLabel} = this.props
 
     const isFetching = this.isVariableComplete(this.props.isFetching, true)
     const isFetched = this.isVariableComplete(this.props.isFetched)
@@ -137,7 +151,7 @@ class PublishApiModal extends React.Component {
              onClickOverlay={onCancel}
              className="publish-api-modal">
         <ModalHeader>
-          <h1>Publish API to {publishToExchange ? 'Exchange' : 'API Manager' }</h1>
+          <h1>Publish API {typeLabel} to {publishToExchange ? 'Exchange' : 'API Manager' }</h1>
         </ModalHeader>
         <ModalBody>
           {partialAnswers ?
@@ -195,6 +209,38 @@ class PublishApiModal extends React.Component {
     ]
   }
 
+  addAdvancedExchangeFormFields(): [any] {
+    const {groupId, assetId, showAdvanced} = this.props
+    return [
+      <div className="form-row" key="Show-Advanced">
+        <div className="large-col">
+          <a onClick={this.handleShowAdvanced.bind(this)}>
+            {showAdvanced ? '< Hide Advanced' : 'Show advanced >'}
+          </a>
+        </div>
+      </div>,
+      !showAdvanced ? null :
+        <div className="form-row" key="Form-Asset-Group-Ids">
+          <div className="form-col">
+            <Label className="required">GroupId</Label>
+            <TextField value={groupId}
+                       placeholder="com.mulesoft"
+                       onChange={this.handleGroupIdChange.bind(this)}
+                       required
+                       testId="Publish-Input-GroupId"/>
+          </div>
+          <div className="form-col">
+            <Label className="required">AssetId</Label>
+            <TextField value={assetId}
+                       placeholder="api-gateway-external"
+                       onChange={this.handleAssetIdChange.bind(this)}
+                       required
+                       testId="Publish-Input-AssetId"/>
+          </div>
+        </div>
+    ]
+  }
+
   form(name: string, currentVersion: string, nextVersion: string, tag: ?string, tags: Array<string>, description: string) {
     const {isLoading, publishToExchange} = this.props
     return (
@@ -222,8 +268,7 @@ class PublishApiModal extends React.Component {
           <div className="form-row">
             <div className="large-col">
               <Label className="required">Description</Label>
-              <TextArea style={{ height: 65 }}
-                        placeholder="Add a description"
+              <TextArea placeholder="Add a description"
                         value={description}
                         required
                         onChange={this.handleDescriptionChange.bind(this)}/>
@@ -256,6 +301,7 @@ class PublishApiModal extends React.Component {
               </div>
             </div>
           </div>
+          {publishToExchange ? this.addAdvancedExchangeFormFields() : null}
         </div>
     )
   }
@@ -295,29 +341,31 @@ class PublishApiModal extends React.Component {
   }
 
   canSubmit(): boolean {
-    const {name, nextVersion, publishToExchange, main, description} = this.props
+    const {name, nextVersion, publishToExchange, groupId, assetId, main, description} = this.props
     const apiPlatformFields = PublishApiModal.isNotEmpty(name) && PublishApiModal.isNotEmpty(nextVersion)
       && PublishApiModal.isNotEmpty(description)
-    const apiExchangeFields = PublishApiModal.isNotEmpty(main)
+    const apiExchangeFields =  PublishApiModal.isNotEmpty(groupId) && PublishApiModal.isNotEmpty(assetId)
+      && PublishApiModal.isNotEmpty(main)
     return publishToExchange ? (apiPlatformFields && apiExchangeFields) : apiPlatformFields
   }
 
   static isNotEmpty(value: string): boolean {
-    return (value != null && value.length > 0)
+    return value && value.trim().length > 0
   }
 }
 
 type Props = {
-  name: string,
-  version: string,
-  nextVersion: string,
-  description: string,
+  name?: string,
+  version?: string,
+  nextVersion?: string,
+  description?: string,
   files: [],
   tag?: string,
-  tags: Array<string>,
-  groupId: string,
-  assetId: string,
-  main: string,
+  tags?: Array<string>,
+  groupId?: string,
+  assetId?: string,
+  main?: string,
+  typeLabel?: string,
   isLoading: boolean,
   error: {
     platform: ?string,
@@ -328,15 +376,16 @@ type Props = {
     exchange: ?any,
   },
   isFetched: {
-    platform: Boolean,
-    exchange: Boolean,
+    platform: boolean,
+    exchange: boolean,
   },
   isFetching: {
-    platform: Boolean,
-    exchange: Boolean,
+    platform: boolean,
+    exchange: boolean,
   },
-  publishToExchange: Boolean,
-  publishToBothApis: Boolean,
+  showAdvanced: boolean,
+  publishToExchange: boolean,
+  publishToBothApis: boolean,
 
   onCancel: () => void,
   onSubmit: (name: string, version: string, tags: Array<string>, main: string, description: string,
@@ -348,6 +397,7 @@ type Props = {
   onTagRemove: (tag: string) => void,
   onSubmitTag: (tag: ?string) => void,
   onMainFileChange: (main: string) => void,
+  onShowAdvancedChange?: (showAdvanced: boolean) => void,
   onPublishToBothApis: (publishBoth: boolean) => void
 }
 

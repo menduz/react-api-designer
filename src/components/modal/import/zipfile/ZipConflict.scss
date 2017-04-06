@@ -13,4 +13,8 @@
       margin-top: 5px;
     }
   }
+
+  div[data-anypoint-component="ModalFooter"] {
+    min-height: 70px;
+  }
 }

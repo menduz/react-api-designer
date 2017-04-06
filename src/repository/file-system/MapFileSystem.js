@@ -1,6 +1,6 @@
 // @flow
 
-import FileSystem from './FileSystem'
+import {FileSystem, EntryTypes, Separator} from './FileSystem'
 import type {Path, Entry, FileData} from './FileSystem'
 
 export type MapEntry = {
@@ -18,10 +18,10 @@ const mapEntry = (name: string, path: string, type: 'folder' | 'file',
 })
 
 const mapFolderEntry = (name: string, path: string, children: MapEntry[], meta: ?{[key: string]: any}): MapEntry =>
-  mapEntry(name, path, FileSystem.FolderEntryType, meta || {}, children, undefined)
+  mapEntry(name, path, EntryTypes.Folder, meta || {}, children, undefined)
 
 const mapFileEntry = (name: string, path: string, content: string, meta: ?{[key: string]: any}): MapEntry =>
-  mapEntry(name, path, FileSystem.FileEntryType, meta || {}, undefined, content)
+  mapEntry(name, path, EntryTypes.File, meta || {}, undefined, content)
 
 const toEntry = (entry: MapEntry): Entry => {
   const children = entry.children && entry.children.map(toEntry)
@@ -35,16 +35,16 @@ const toEntry = (entry: MapEntry): Entry => {
   }
 }
 
-class MapHelper {
-  forEach(fn: (entry: MapEntry) => void): void { throw new Error('Not implemented method')}
+export interface MapHelper {
+  forEach(fn: (entry: MapEntry) => void): void;
 
-  has(path: Path): boolean { throw new Error('Not implemented method')}
+  has(path: Path): boolean;
 
-  set(path: Path, content: MapEntry): void { throw new Error('Not implemented method')}
+  set(path: Path, content: MapEntry): void;
 
-  get(path: Path): ?MapEntry { throw new Error('Not implemented method')}
+  get(path: Path): ?MapEntry;
 
-  remove(path: Path): void { throw new Error('Not implemented method')}
+  remove(path: Path): void;
 }
 
 type ValidationResult = {
@@ -52,22 +52,22 @@ type ValidationResult = {
   reason?: string
 }
 
-class MapFileSystem extends FileSystem {
+class MapFileSystem implements FileSystem {
   _mapHelper: MapHelper
   _delay: number
 
   constructor(mapHelper: MapHelper, delay: number = 500) {
-    super()
     this._mapHelper = mapHelper
     this._delay = delay
   }
 
-  get persistsEmptyFolders(): boolean { return true }
+  //noinspection JSMethodCanBeStatic
+  persistsEmptyFolders(): boolean { return true }
 
-  _fileNotFoundMessage(path: Path): string { return `file with path="${path}" does not exist` }
+  static _fileNotFoundMessage(path: Path): string { return `file with path="${path}" does not exist` }
 
-  _addChildren(entry: MapEntry, fn: (path: Path) => MapEntry[]): void {
-    if (entry.type === FileSystem.FolderEntryType)
+  static _addChildren(entry: MapEntry, fn: (path: Path) => MapEntry[]): void {
+    if (entry.type === EntryTypes.Folder)
       entry.children = fn(entry.path)
   }
 
@@ -75,7 +75,7 @@ class MapFileSystem extends FileSystem {
     let entries: MapEntry[] = []
     this._mapHelper.forEach((entry) => {
       if (entry.path.toLowerCase() === path.toLowerCase()) {
-        this._addChildren(entry, this._findFiles.bind(this))
+        MapFileSystem._addChildren(entry, this._findFiles.bind(this))
         entries.push(entry)
       }
     })
@@ -90,8 +90,8 @@ class MapFileSystem extends FileSystem {
     let entries: MapEntry[] = []
     this._mapHelper.forEach((entry) => {
       if (entry.path.toLowerCase() !== path.toLowerCase() &&
-        this._extractParentPath(entry.path) + '/' === path) {
-        this._addChildren(entry, this._findFiles.bind(this))
+        MapFileSystem._extractParentPath(entry.path) + '/' === path) {
+        MapFileSystem._addChildren(entry, this._findFiles.bind(this))
         entries.push(entry)
       }
     })
@@ -109,14 +109,14 @@ class MapFileSystem extends FileSystem {
    */
   static delay = 500
 
-  _validatePath(path: Path): ValidationResult {
+  static _validatePath(path: Path): ValidationResult {
     return path.indexOf('/') !== 0 ?
       {valid: false, reason: 'Path should start with "/"'} :
       {valid: true}
   }
 
   _isValidParent(path: Path): boolean {
-    const parent = this._extractParentPath(path)
+    const parent = MapFileSystem._extractParentPath(path)
     return this._mapHelper.has(parent) || parent === ''
   }
 
@@ -130,8 +130,8 @@ class MapFileSystem extends FileSystem {
     return has
   }
 
-  _extractNameFromPath(path: Path): string {
-    if (!this._validatePath(path).valid) throw new Error('Invalid Path!')
+  static _extractNameFromPath(path: Path): string {
+    if (!MapFileSystem._validatePath(path).valid) throw new Error('Invalid Path!')
 
     // When the path is ended in '/'
     path = path.lastIndexOf('/') === path.length - 1 ? path.slice(0, -1) : path
@@ -139,8 +139,8 @@ class MapFileSystem extends FileSystem {
     return path.slice(path.lastIndexOf('/') + 1)
   }
 
-  _extractParentPath(path: Path): Path {
-    if (!this._validatePath(path).valid) throw new Error('Invalid Path!')
+  static _extractParentPath(path: Path): Path {
+    if (!MapFileSystem._validatePath(path).valid) throw new Error('Invalid Path!')
 
     // When the path is ended in '/'
     path = path.lastIndexOf('/') === path.length - 1 ? path.slice(0, -1) : path
@@ -160,8 +160,8 @@ class MapFileSystem extends FileSystem {
   }
 
   _loadDirectory(path: Path): Entry {
-    if (!this._validatePath(path).valid)
-      throw new Error(this._validatePath(path).reason)
+    if (!MapFileSystem._validatePath(path).valid)
+      throw new Error(MapFileSystem._validatePath(path).reason)
 
     if (!this._mapHelper.has('/')) {
       this._mapHelper.set(path, mapEntry(
@@ -182,7 +182,7 @@ class MapFileSystem extends FileSystem {
   /**
    * Persist a file to an existing folder.
    */
-  save(files: FileData[], commit:Boolean = true): Promise<Entry> {
+  save(files: FileData[]): Promise<Entry> {
     return new Promise((resolve) => {
       setTimeout(() => {
         files.forEach((f) => this.saveFile(f))
@@ -193,7 +193,7 @@ class MapFileSystem extends FileSystem {
 
   saveFile(fileData: FileData) {
     const {path, content} = fileData
-    const name: string = this._extractNameFromPath(path)
+    const name: string = MapFileSystem._extractNameFromPath(path)
     const entry: ?MapEntry = this._mapHelper.get(path)
 
     if (!this._isValidParent(path))
@@ -201,7 +201,7 @@ class MapFileSystem extends FileSystem {
 
     let file: MapEntry
     if (entry) {
-      if (entry.type === FileSystem.FolderEntryType)
+      if (entry.type === EntryTypes.Folder)
         throw new Error('file has the same name as a folder')
 
       const meta = entry.meta || {}
@@ -232,7 +232,7 @@ class MapFileSystem extends FileSystem {
    */
   createFolder(path: Path): Promise<any> {
     return new Promise((resolve, reject) => {
-      const isValidPath: ValidationResult = this._validatePath(path)
+      const isValidPath: ValidationResult = MapFileSystem._validatePath(path)
 
       if (!isValidPath.valid)
         return reject(isValidPath.reason)
@@ -245,7 +245,7 @@ class MapFileSystem extends FileSystem {
 
       setTimeout(() => {
         this._mapHelper.set(path, mapEntry(
-          this._extractNameFromPath(path),
+          MapFileSystem._extractNameFromPath(path),
           path,
           'folder',
           {
@@ -270,7 +270,7 @@ class MapFileSystem extends FileSystem {
         if (entry && entry.type === 'file') {
           resolve(entry.content || '')
         } else {
-          reject(this._fileNotFoundMessage(path))
+          reject(MapFileSystem._fileNotFoundMessage(path))
         }
       }, this._delay)
     })
@@ -280,17 +280,19 @@ class MapFileSystem extends FileSystem {
    * Removes a file or directory.
    */
   remove(path: Path): Promise<any> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         let entry: ?MapEntry = this._mapHelper.get(path)
 
-        if (entry && entry.type === FileSystem.FolderEntryType && this._hasChildren(path)) {
-          this._removeAll(path)
-          resolve()
-        } else {
-          this._mapHelper.remove(path)
-          resolve()
-        }
+        if (entry &&
+          entry.type === EntryTypes.Folder &&
+          this._hasChildren(path)) {
+            this._removeAll(path)
+            resolve()
+          } else {
+            this._mapHelper.remove(path)
+            resolve()
+          }
       }, this._delay)
     })
   }
@@ -319,13 +321,13 @@ class MapFileSystem extends FileSystem {
           return reject('Destination folder does not exist.')
 
         sourceEntry.path = destination
-        sourceEntry.name = this._extractNameFromPath(destination)
+        sourceEntry.name = MapFileSystem._extractNameFromPath(destination)
 
         this._mapHelper.remove(destination)
         this._mapHelper.remove(source)
         this._mapHelper.set(destination, sourceEntry)
 
-        if (sourceEntry.type === FileSystem.FolderEntryType) {
+        if (sourceEntry.type === EntryTypes.Folder) {
           //move all child items
           this._mapHelper.forEach((entry) => {
             if (entry.path.toLowerCase() !== source.toLowerCase() &&
@@ -343,12 +345,16 @@ class MapFileSystem extends FileSystem {
       }, this._delay)
     })
   }
+
+  clean(): Promise<any> {
+    return this.directory(Separator)
+      .then()
+  }
 }
 
 export default MapFileSystem
 
 export {
-  MapHelper,
   mapEntry,
   mapFileEntry,
   mapFolderEntry

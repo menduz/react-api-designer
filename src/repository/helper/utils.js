@@ -1,15 +1,25 @@
 //@flow
 
-import {RepositoryContainer} from '../../types'
 import {Path, Directory, Repository} from '../../repository'
+
+import type {RepositoryContainer} from '../../types'
+
+function getDirectoryOrRoot(repository: Repository, path: ?Path): Directory {
+  if (path) {
+    const directory = repository.getDirectoryByPath(path)
+    if (directory) return directory
+  }
+
+  return repository.root
+}
 
 export const nextName = (name: string, repositoryContainer: RepositoryContainer, path: ?Path): string => {
   let result = name
   if (result && repositoryContainer.isLoaded) {
     const repository: Repository = repositoryContainer.repository
-    const parent: Repository | Directory = path ? repository.getDirectoryByPath(path) : repository
+    const parent = getDirectoryOrRoot(repository, path);
 
-    for (let i = 1; parent.getByPath(Path.fromString(result)) != null; i++) {
+    for (let i = 1; !!parent.getByPath(Path.fromString(result)); i++) {
       result = i + '-' + name
     }
   }

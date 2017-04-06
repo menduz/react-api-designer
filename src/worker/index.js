@@ -41,7 +41,8 @@ export default class DesignerWorker {
     }
 
     return {
-      postMessage: () => console.error('Could not initialize Designer Worker:', w.Worker, w.Blob, w.URL),
+      postMessage: () => console.error('Could not initialize Designer Worker:',
+        'Worker?', w.Worker !== undefined, '- Blob?', w.Blob !== undefined, '- URL?', w.URL !== undefined),
       addEventListener: () => false,
       removeEventListener: () => false
     }
@@ -97,12 +98,12 @@ export default class DesignerWorker {
     return this._postAndExpect('ramlSuggest', {content, cursorPosition, path, repository})
   }
 
-  convertToSwagger(rootPath, format) {
-    return this._postAndExpect('convertToSwagger', {rootPath, format})
+  convertAutoToSwagger(rootPath, format) {
+    return this._postAndExpect('convertAutoToSwagger', {rootPath, format})
   }
 
-  convertUrlToRaml(rootPath) {
-    return this._postAndExpect('convertUrlToRaml', {rootPath})
+  convertSwaggerUrlToRaml(rootPath) {
+    return this._postAndExpect('convertSwaggerUrlToRaml', {rootPath})
   }
 
   convertSwaggerToRaml(files) {

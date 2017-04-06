@@ -1,5 +1,3 @@
-// @flow
-
 import React, {Component} from 'react'
 import Spinner from '@mulesoft/anypoint-components/lib/Spinner'
 import {Mock} from '../../mock'

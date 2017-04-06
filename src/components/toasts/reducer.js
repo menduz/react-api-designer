@@ -15,12 +15,12 @@ export default (state = initialState, action) => {
         ]
       }
     case REMOVE_TOAST:
-      var removedToast = state.toasts.filter(t => t.title === action.toastTitle)
+      const removedToast = state.toasts.filter(t => t.title === action.toastTitle)
       return {
         ...state,
         toasts: removedToast
       }
     default:
-      return initialState
+      return state
   }
 }

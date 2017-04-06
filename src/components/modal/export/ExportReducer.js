@@ -1,10 +1,10 @@
-//@flow
+// @flow
 
 import type {State} from './ExportModel'
 import * as actions from './ExportActions'
 
 const initialState = {
-  exportName: '',
+  exportName: 'api.zip',
   type: 'zip',
   showModal: false,
   isExporting: false,
@@ -14,9 +14,11 @@ const initialState = {
 export default (state: State = initialState, action: any): State => {
   switch (action.type) {
     case actions.CHANGE_TYPE:
+      const type = action.payload.type.value;
       return {
         ...state,
-        type: action.payload.type.value
+        type: type,
+        exportName: 'api.' + type
       }
     case actions.SHOW:
       return {
@@ -47,7 +49,8 @@ export default (state: State = initialState, action: any): State => {
       }
     }
     case actions.EXPORT_DONE:
-    default:
       return initialState
+    default:
+      return state
   }
 }

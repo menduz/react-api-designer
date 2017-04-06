@@ -11,11 +11,12 @@ export const pathExtension = (path: string, defaultValue: string = ''): string =
 type Language = {
   id: string,
   native: boolean,
+  label: string,
   parent:? string,
   type:? string
 }
 
-const line = (text: string, line: number = 1, limit: integer = 50): string => {
+const line = (text: string, line: number = 1, limit: number = 50): string => {
   const l = text.substring(0, limit).split(/\r\n|\n/, line) // stop at first /n
   if (!l) return text
   const item = l[line - 1]
@@ -34,10 +35,10 @@ const ramlType = (text: string): string => {
   return subType || '1.0'
 }
 
-export const MD: Language = {id: 'md', native: true, label: 'Markdown'}
-export const JSON: Language = {id: 'json', native: true, label: 'JSON'}
-export const YAML: Language = {id: 'yaml', native: true, label: 'YAML'}
-export const OAS: Language = {id: 'oas', parent: 'json', label: 'OAS', type: '1.0'}
+export const MD: Language = {id: 'md', native: true, label: 'Markdown', type: undefined, parent: undefined}
+export const JSON: Language = {id: 'json', native: true, label: 'JSON', type: undefined, parent: undefined}
+export const YAML: Language = {id: 'yaml', native: true, label: 'YAML', type: undefined, parent: undefined}
+export const OAS: Language = {id: 'oas', native: false, parent: 'json', label: 'OAS', type: '1.0'}
 
 export const language = (path: string, text: string): Language => {
   const extension = pathExtension(path, 'txt')
@@ -45,7 +46,7 @@ export const language = (path: string, text: string): Language => {
   switch (extension) {
     case 'raml':
       const type = ramlType(text);
-      return type ? {id: 'raml', type} : YAML
+      return type ? {id: 'raml', type, native: false, label: 'RAML', parent: undefined} : YAML
     case 'json':
       return oasType(text) ? OAS : JSON
     case 'yml':
@@ -55,14 +56,14 @@ export const language = (path: string, text: string): Language => {
     case 'markdown':
       return MD
     default:
-      return {id: extension, native: true}
+      return {id: extension, native: true, label: extension, parent: undefined, type: undefined}
   }
 }
 
-export const isRamlFile = (name): string =>  {
+export const isRamlFile = (name: string): boolean =>  {
   return name.endsWith('.raml');
 }
 
-export const isApiDefinition = (raml): string => {
+export const isApiDefinition = (raml: string): boolean => {
   return /^#%RAML\s(0\.8|1\.0)\s*$/.test(line(raml));
 }

@@ -3,14 +3,13 @@
 import VcsRemoteApi from "../../remote-api/VcsRemoteApi";
 import {EntryMetadata, ContentData} from "../../remote-api/VcsElements";
 
-import FileSystem from './FileSystem'
+import {FileSystem, Separator, fileEntry, folderEntry} from './FileSystem'
 import type {Path, Entry, FileData} from './FileSystem'
-import {fileEntry, folderEntry} from './FileSystem'
 
 class EntryFactory {
   static fromBasicMetadata(elements: EntryMetadata[]) {
     const children = EntryFactory.entriesInPath(elements, '', 0)
-    return folderEntry('', FileSystem.Separator, children)
+    return folderEntry('', Separator, children)
   }
 
   static entriesInPath(items: EntryMetadata[], path: string, level: number): Entry[] {
@@ -36,7 +35,7 @@ class EntryFactory {
 
   static folderEntry(metadata: EntryMetadata, deeperItems: EntryMetadata[]): Entry {
     const name = metadata.name();
-    const path = FileSystem.Separator + metadata.path;
+    const path = Separator + metadata.path;
     const children = EntryFactory.entriesInPath(deeperItems, metadata.path, metadata.pathLength());
 
     return folderEntry(name, path, children)
@@ -44,17 +43,16 @@ class EntryFactory {
 
   static fileEntry(metadata: EntryMetadata): Entry {
     const name = metadata.name();
-    const path = FileSystem.Separator + metadata.path;
+    const path = Separator + metadata.path;
 
     return fileEntry(name, path)
   }
 }
 
-class VcsFileSystem extends FileSystem {
+class VcsFileSystem implements FileSystem {
   _vcsApi: VcsRemoteApi
 
   constructor(vcsApi: VcsRemoteApi) {
-    super()
     this._vcsApi = vcsApi
   }
 
@@ -63,7 +61,7 @@ class VcsFileSystem extends FileSystem {
       .then(EntryFactory.fromBasicMetadata)
   }
 
-  save(entries: FileData[], commit:Boolean = true): Promise<Entry> {
+  save(entries: FileData[], commit: boolean = true): Promise<Entry> {
     const data = entries
       .map((entry) => new ContentData(entry.path, entry.content))
     return this._vcsApi.save(data, commit)
@@ -94,12 +92,9 @@ class VcsFileSystem extends FileSystem {
     return this._vcsApi.moveFile(source, destination)
   }
 
-  get persistsEmptyFolders(): boolean { return false }
+  persistsEmptyFolders(): boolean { return false }
 
-  clean(): Promise<any> {
-    return this._vcsApi.clean()
-  }
-
+  clean(): Promise<any> { return this._vcsApi.clean() }
 }
 
 export default VcsFileSystem

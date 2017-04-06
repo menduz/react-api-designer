@@ -1,17 +1,21 @@
 // @flow
 
 import {List} from 'immutable'
-import {Fragment} from './Fragment'
+import * as React from 'react'
+
 import ConsumeRemoteApi from '../../../remote-api/ConsumeRemoteApi'
-import type {Dispatch, GetState, ExtraArgs} from '../../../types'
-import {getFragments, getQuery} from "./selectors";
-import {addExchangeDependency} from "../../dependencies-tree/actions";
+import {getFragments, getQuery} from './selectors'
+import {addExchangeDependency} from '../../dependencies-tree/actions'
 import {numberOfDependencies} from '../../../repository-redux/selectors'
 import * as MessageModal from '../message'
 import {TITLE} from './ConsumeApiConstants'
 
-import * as React from 'react'
 import consumeColorIcon from '../../menu/dependencies-menu/assets/ConsumeExchangeColorIcon.svg'
+
+import type {Dispatch, GetState, ExtraArgs} from '../../../types'
+import type {GAV} from '../dependency/DependencyModel'
+import type {ConsumeResponse} from '../../../remote-api/ConsumeRemoteApi'
+import type {Fragment} from './Fragment'
 
 export const FRAGMENTS_CHANGED = 'DESIGNER/CONSUME_API/FRAGMENTS_CHANGED'
 export const ADD_FRAGMENTS = 'DESIGNER/CONSUME_API/ADD_FRAGMENTS'
@@ -68,14 +72,15 @@ export const isAddingMore = () => ({
   type: IS_ADDING_MORE
 })
 
-const firstDependencyMessage = (dependencies: List<{groupId:string, assetId: string, version: string}>) =>
+const firstDependencyMessage = (dependencies: List<GAV>) =>
   (
     <span>
-      {dependencies.map(d => {
-        const gav = `${d.groupId}/${d.assetId}/${d.version}`
-        return <div key={gav}>Your new dependency is at the '/exchange_modules/{gav}/' folder.</div>
-      })}
-       <div>
+      {dependencies.map((gav: GAV, index: number) =>
+        <div key={`${gav.assetId}-${gav.groupId}-${gav.version}-${index}`}>
+          Your new dependency is at the '/exchange_modules/{gav.groupId}/{gav.assetId}/{gav.version}/' folder.
+        </div>
+      )}
+       <div key="dep-extra-info">
          You can manage your dependencies from the Dependencies panel <img src={consumeColorIcon} role="presentation" height="13px"/> .
       </div>
     </span>
@@ -86,10 +91,7 @@ export const submit = (fragments: List<Fragment>) => {
     dispatch(isSubmitting()) // in progress
 
     const selected = fragments.filter(fragment => fragment.selected)
-    const dependencies = selected.map(c => {
-        return {groupId: c.groupId, assetId: c.assetId, version: c.version}
-      }
-    )
+    const dependencies: List<GAV> = selected.map(c => ({groupId: c.groupId, assetId: c.assetId, version: c.version}))
 
     dispatch(addExchangeDependency(dependencies)).then(() => {
       dispatch(clear()) // close dialog
@@ -116,8 +118,8 @@ export const searchFragments = (query: string) => {
   return (dispatch: Dispatch, getState: GetState, {designerRemoteApiSelectors}: ExtraArgs) => {
     dispatch(isSearching())
     const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
-    consumeRemoteApi.queryFragments(query).then((fragments) => {
-      dispatch(fragmentsChanged(new List(fragments)))
+    consumeRemoteApi.queryFragments(query).then(({data}: ConsumeResponse) => {
+      dispatch(fragmentsChanged(new List(data.assets)))
     }).catch((error) => {
       console.error('Error when searching fragments', error)
       dispatch(showError(error.message || error.toString()))
@@ -139,7 +141,8 @@ export const searchMoreFragments = () => {
     const consumeRemoteApi = new ConsumeRemoteApi(designerRemoteApiSelectors(getState))
 
     dispatch(isAddingMore())
-    consumeRemoteApi.queryFragments(query, fragments.count()).then((fragments) => {
+    consumeRemoteApi.queryFragments(query, fragments.count()).then(({data}: ConsumeResponse) => {
+      const fragments = data.assets
       if (fragments.length !== 0)
         dispatch(addFragments(new List(fragments)))
       else

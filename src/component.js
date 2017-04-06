@@ -1,4 +1,6 @@
 //@flow
+require("babel-core/register");
+require("babel-polyfill");
 
 import "./index.css"
 import { combineReducers } from "redux"
@@ -25,9 +27,9 @@ import ProjectRemoteApi from "./remote-api/ProjectRemoteApi"
 import App from "./components/app/App"
 import HeaderOptions from "./components/header/HeaderOptions"
 import * as toasts from "./components/toasts"
-import * as dependenciesTree from "./components/dependencies-tree";
-require("babel-core/register");
-require("babel-polyfill");
+import * as dependenciesTree from "./components/dependencies-tree"
+import * as dependencyModal from "./components/modal/dependency"
+
 
 const reducers = {
   designer: combineReducers({
@@ -40,6 +42,7 @@ const reducers = {
     [consumeApi.NAME]: consumeApi.reducer,
     [toasts.NAME]: toasts.reducer,
     [messageModal.NAME]: messageModal.reducer,
+    [dependencyModal.NAME]: dependencyModal.reducer,
     dialogs: combineReducers({
       [unsaved.NAME]: unsaved.reducer,
       newFolder: newFolder.reducer,
@@ -60,11 +63,12 @@ const repositoryContainer: RepositoryContainer = {
 const initThunkArg = (authSelector: AuthSelectors): ExtraArgs => {
   if (!window.require) throw new Error('require missing. Forgot to include loader.js?')
 
-  const workerUrl = window.require.getConfig().paths['worker']
+  const paths = window.require.getConfig().paths;
+  const workerUrl = `${paths['worker']}#${paths['remoteApi']}/proxy`
   const designerWorker = new Worker(workerUrl, new FileProvider(repositoryContainer))
 
   const designerRemoteApiSelectors = (getState: GetState): RemoteApiSelectors => ({
-    baseUrl: () => window.require.getConfig().paths['remoteApi'],
+    baseUrl: () => paths['remoteApi'],
     authorization: () => authSelector.authorization(getState()),
     ownerId: () => authSelector.ownerId(getState()),
     organizationId: () => authSelector.organizationId(getState()),

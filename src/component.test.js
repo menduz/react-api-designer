@@ -8,7 +8,7 @@ import {Provider} from "react-redux"
 import thunk from "redux-thunk"
 import * as component from "./component"
 import {Header} from './components/header'
-import FileSystem from "./repository/file-system/FileSystem";
+import {FileSystem} from "./repository/file-system/FileSystem";
 import MemoryFileSystem from "./repository/file-system/MemoryFileSystem";
 import FileSystemBuilder, {file, directory} from "./repository/file-system/FileSystemBuilder";
 

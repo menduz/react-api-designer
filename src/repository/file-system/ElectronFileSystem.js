@@ -1,16 +1,13 @@
 // @flow
 
-import FileSystem from './FileSystem'
-import type {Path, Entry, FileData} from './FileSystem'
-import {fileEntry, folderEntry} from './FileSystem'
+import type {Entry, FileData, Path} from './FileSystem'
+import {fileEntry, FileSystem, folderEntry, Separator} from './FileSystem'
 
-
-class ElectronFileSystem extends FileSystem {
+class ElectronFileSystem implements FileSystem {
   baseDir: string
   fs: any
 
   constructor(baseDir: Path) {
-    super()
     this.baseDir = baseDir
     this.fs = window.nodeRequire('fs')
     if (!this.fs) throw new Error('Could not load window.nodeRequire("fs"). Are you running NativeFileSystem in an Electron context?')
@@ -24,7 +21,7 @@ class ElectronFileSystem extends FileSystem {
     return this.fs.readdirSync(dir).filter(f => !f.startsWith('.')).map(f => {
       const p = dir + f
       return this.isDirectory(p)
-        ? folderEntry(f, p, this.toEntries(p + FileSystem.Separator))
+        ? folderEntry(f, p, this.toEntries(p + Separator))
         : fileEntry(f, p)
     })
   }
@@ -35,14 +32,14 @@ class ElectronFileSystem extends FileSystem {
     })
   }
 
-  save(entries: FileData[], commit:Boolean = true): Promise<Entry> {
+  save(entries: FileData[]): Promise<Entry> {
     return new Promise((resolve) => {
       // save all sync
       entries.forEach(({path, content}) => {
         this.fs.writeFileSync(this.path(path), content)
       })
 
-      resolve(this.directory(FileSystem.Separator))
+      resolve(this.directory(Separator))
     })
   }
 
@@ -84,11 +81,11 @@ class ElectronFileSystem extends FileSystem {
     })
   }
 
-  isDirectory(path) {
+  isDirectory(path: Path) {
     return this.fs.lstatSync(path).isDirectory()
   }
 
-  removeDirectory(path) {
+  removeDirectory(path: Path) {
     if (this.fs.existsSync(path)) {
       this.fs.readdirSync(path).forEach(file => {
         const curPath = path + '/' + file
@@ -102,7 +99,11 @@ class ElectronFileSystem extends FileSystem {
       })
       this.fs.rmdirSync(path)
     }
-  };
+  }
+
+  persistsEmptyFolders(): boolean { return true }
+
+  clean(): Promise<any> { return Promise.resolve() }
 }
 
 export default ElectronFileSystem

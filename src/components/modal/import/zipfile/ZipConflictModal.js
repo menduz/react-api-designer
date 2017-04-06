@@ -1,5 +1,3 @@
-//@flow
-
 import React from 'react'
 
 import Button from '@mulesoft/anypoint-components/lib/Button'
@@ -13,20 +11,23 @@ import './ZipConflict.css'
 
 type Props = {
   selectValue: string,
-  onSubmit: () => void,
+  submit: (zipWithDependencies:boolean) => void,
   onCancel: () => void,
   showConflictModal: Boolean,
   isImporting: Boolean,
   fileNameToImport: string,
   zipFileOverrideAction: (filename:string, override:Boolean) => void,
-  zipFiles: Array,
-  zipFileAction:string
+  zipWithDependencies:boolean,
+  zipFiles: [],
+  zipFileAction:string,
+  isImporting:boolean,
+  isSaving:boolean,
 }
 
 class ZipConflictModal extends React.Component {
   props: Props
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
 
     this.state = {
@@ -54,8 +55,13 @@ class ZipConflictModal extends React.Component {
     ))
   }
 
+  handleSubmit() {
+    return this.props.submit(this.props.zipWithDependencies)
+  }
+
   render() {
-    const {onSubmit, onCancel, showZipConflictModal, fileNameToImport, zipFiles} = this.props
+    const {onCancel, showZipConflictModal, fileNameToImport, zipFiles,
+      isImporting, isSaving, zipWithDependencies} = this.props
 
     if (!showZipConflictModal) return null
 
@@ -65,9 +71,9 @@ class ZipConflictModal extends React.Component {
     return (
       <Modal className="zip-conflict-modal"
              onCancel={onCancel}
-             onSubmit={onSubmit}
+             onSubmit={this.handleSubmit.bind(this)}
              onEsc={onCancel}
-             onEnter={onSubmit}
+             onEnter={this.handleSubmit.bind(this)}
              onClickOverlay={onCancel}
              testId="Zip-Conflict-Modal">
 
@@ -83,10 +89,11 @@ class ZipConflictModal extends React.Component {
         <ModalFooter>
           <Button kind="tertiary" onClick={onCancel} noFill testId="Zip-Cancel-Button">Cancel</Button>
           <Button kind="primary"
-                  onClick={onSubmit}
+                  onClick={this.handleSubmit.bind(this)}
                   disabled={count === 0}
+                  isLoading={isImporting}
                   testId="Zip-Submit-Button">
-            Replace {count === 1 ? 'file' : count + ' files'}
+            {isImporting ? isSaving ?  'Saving...' : 'Replacing...' : `Replace ${count === 1 ? 'file' : count + ' files'}`}
           </Button>
         </ModalFooter>
       </Modal>

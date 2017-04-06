@@ -1,7 +1,7 @@
 // @flow
 
 import Path from './Path'
-import FileSystem from './file-system/FileSystem'
+import {FileSystem} from './file-system/FileSystem'
 
 class Element {
   _name: string
@@ -343,10 +343,6 @@ class Directory extends Element {
   updateChildrenNames(): void {
     const childrenArray = Array.from(this._children.values())
     this._children = Directory._createChildrenMap(childrenArray)
-  }
-
-  get children(): Element[] {
-    return Array.from(this._children.values())
   }
 
   get children(): Element[] {

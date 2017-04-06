@@ -1,11 +1,7 @@
 //@flow
 
 import React from 'react'
-import Modal from '@mulesoft/anypoint-components/lib/Modal'
-import ModalHeader from '@mulesoft/anypoint-components/lib/ModalHeader'
-import ModalBody from '@mulesoft/anypoint-components/lib/ModalBody'
-import ModalFooter from '@mulesoft/anypoint-components/lib/ModalFooter'
-import Button from '@mulesoft/anypoint-components/lib/Button'
+import {Modal, ModalHeader, ModalBody, ModalFooter, Button} from '../../MulesoftComponents'
 
 type Props = {
   showModal: boolean,

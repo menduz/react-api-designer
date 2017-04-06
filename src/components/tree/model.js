@@ -9,14 +9,12 @@ export type State = {
   expandedFolders: Set<Path>
 }
 
-export type Node = {
-  path: Path,
-  name: string,
-  isDirty?: boolean,
-  children?: Node[]
-}
+export type LeafNode = { path: Path, name: string, label: string }
+// eslint-disable-next-line
+export type NonLeafNode = { path: Path, name: string, label: string, children: Node[] }
+export type Node = LeafNode | NonLeafNode
 
-const fromFile = (file: FileModel): Node => {
+const fromFile = (file: FileModel): LeafNode => {
   return {
     path: file.path,
     name: file.name,
@@ -31,7 +29,7 @@ const fromElement = (element: ElementModel): Node => {
     : fromFile(element.asFileModel())
 }
 
-const fromDirectory = (directory: DirectoryModel, filterFn?: (c: ElementModel)=>boolean): Node => {
+const fromDirectory = (directory: DirectoryModel, filterFn?: (c: ElementModel) => boolean): NonLeafNode => {
   const children = directory.children
     .sort((a, b) => {
       if (a.isDirectory() && !b.isDirectory()) return -1;

@@ -3,7 +3,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 
-import ContextMenu from '@mulesoft/anypoint-components/lib/ContextMenu'
+import {ContextMenu} from '../../MulesoftComponents'
 import Icon from '../../svgicon/SvgIcon'
 
 import NewFolderModalContainer from '../../modal/new-folder/NewFolderModalContainer'

@@ -1,15 +1,16 @@
 //@flow
 
+import {saveAll} from '../../../repository-redux/actions'
+import {openModal as openPublishModal} from '../publish-api/PublishApiActions'
+import {getFinishAction} from './UnsavedSelectors'
+
 import type {Dispatch, GetState} from '../../../types'
-import {saveAll} from "../../../repository-redux/actions";
-import {openModal as openPublishModal} from "../publish-api/PublishApiActions";
-import {getFinishAction} from "./UnsavedSelectors";
 
 export const SHOW = 'DESIGNER/UNSAVED/SHOW_DIALOG'
 export const HIDE = 'DESIGNER/UNSAVED/HIDE_DIALOG'
 export const SAVING = 'DESIGNER/UNSAVED/SAVING'
 
-const finish = () => (dispatch: Dispatch, getState: GetState): Promise<any> => {
+const finish = () => (dispatch: Dispatch, getState: GetState): void => {
   switch (getFinishAction(getState())) {
     case 'publishing':
       dispatch(openPublishModal(false))
@@ -23,14 +24,14 @@ const finish = () => (dispatch: Dispatch, getState: GetState): Promise<any> => {
 }
 
 export const saveChanges = () =>
-  (dispatch: Dispatchs): Promise<any> => {
+  (dispatch: Dispatch): void => {
     dispatch({type: SAVING})
     dispatch(saveAll()).then(() => {
       dispatch(finish())
     })
   }
 
-export const cancelSave = () => (dispatch: Dispatch): Promise<any> => {
+export const cancelSave = () => (dispatch: Dispatch): void => {
   dispatch(finish())
 }
 
@@ -39,6 +40,6 @@ const openUnsavedWarningDialog = (finishActionType: string) => ({
   payload: finishActionType
 })
 
-export const openUnsavedWarningBeforePublish = () => (dispatch: Dispatch): Promise<any> => {
+export const openUnsavedWarningBeforePublish = () => (dispatch: Dispatch): void => {
   dispatch(openUnsavedWarningDialog('publishing'))
 }

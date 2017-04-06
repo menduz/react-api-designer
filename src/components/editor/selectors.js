@@ -1,5 +1,3 @@
-// @flow
-
 import {NAME} from './constants'
 import {Path} from '../../repository'
 import type {Issue} from '../errors'

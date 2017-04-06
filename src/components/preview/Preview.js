@@ -1,4 +1,3 @@
-// @flow
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {ConsoleLoader} from '../raml-console/angular-console'

@@ -1,5 +1,3 @@
-//@flow
-
 import React from 'react'
 
 import Button from '@mulesoft/anypoint-components/lib/Button'
@@ -16,7 +14,6 @@ type Props = {
   onSubmit: () => void,
   onCancel: () => void,
   showConflictModal: Boolean,
-  isImporting: Boolean,
   fileNameToImport: string
 }
 
