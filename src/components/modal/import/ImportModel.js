@@ -6,6 +6,7 @@ export type State = {
   showConflictModal: boolean,
   showZipConflictModal: boolean,
   zipFiles: any[],
+  zipWithDependencies: boolean,
   allFilesAction?: any,
   zipFileAction?: any,
   isImporting: boolean,

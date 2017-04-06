@@ -9,6 +9,8 @@ import {addBulkFiles} from "../../../repository-redux/actions"
 import {actions as repositoryActions} from "../../../repository-redux"
 import {File} from '../../../repository'
 import type {Dispatch, ExtraArgs, GetState} from '../../../types'
+import {addExchangeDependency} from "../../dependencies-tree/actions";
+
 
 export const HIDE = 'DESIGNER/IMPORT/HIDE_DIALOG'
 export const SHOW = 'DESIGNER/IMPORT/SHOW_DIALOG'
@@ -27,6 +29,8 @@ export const HIDE_ZIP_CONFLICT_MODAL = 'DESIGNER/IMPORT/HIDE_ZIP_CONFLICT_MODAL'
 export const SHOW_ZIP_CONFLICT_MODAL = 'DESIGNER/IMPORT/SHOW_ZIP_CONFLICT_MODAL'
 
 export const ADD_ZIP_FILES = 'DESIGNER/IMPORT/ADD_ZIP_FILES'
+export const ZIP_WITH_DEPENDENCIES = 'DESIGNER/IMPORT/ZIP_WITH_DEPENDENCIES'
+export const UPDATE_DEPENDENCIES_FROM_ZIP = 'DESIGNER/IMPORT/UPDATE_DEPENDENCIES_FROM_ZIP'
 
 export const ZIP_FILE_OVERRIDE_ACTION = 'DESIGNER/IMPORT/ZIP_FILE_OVERRIDE_ACTION'
 
@@ -56,6 +60,11 @@ export const zipFileOverrideAction = (filename: string, override) => ({
 export const addZipFiles = (zipFiles) => ({
   type: ADD_ZIP_FILES,
   payload: {zipFiles}
+})
+
+export const zipWithDependencies = (zipWithDependencies) => ({
+  type: ZIP_WITH_DEPENDENCIES,
+  payload: {zipWithDependencies}
 })
 
 export const uploadTempFile = (fileName: string, type: string, content: any) => ({
@@ -148,7 +157,7 @@ const isZip = (file) => {
   return (/\.zip$/i).test(file.name)
 }
 
-export const saveZipFiles = () => (dispatch: Dispatch, getState: GetState) => {
+export const saveZipFiles = (updateDependencies:boolean) => (dispatch: Dispatch, getState: GetState) => {
   const state = getAll(getState())
   const zipFiles = state.zipFiles
   const files = zipFiles.filter(f => f.override)
@@ -157,8 +166,22 @@ export const saveZipFiles = () => (dispatch: Dispatch, getState: GetState) => {
   ZipHelper.filesContents(state.fileToImport, files).then(contents => {
     dispatch(addBulkFiles(contents))
       .then(() => {
-        dispatch({type: IMPORT_DONE})
+        if(updateDependencies) {
+          dispatch(updateDependenciesFromZip())
+        } else {
+          dispatch({type: IMPORT_DONE})
+        }
       })
+  })
+}
+
+export const updateDependenciesFromZip = () => (dispatch: Dispatch, getState: GetState) => {
+  const state = getAll(getState())
+  ZipHelper.filesContents(state.fileToImport,[{filename:'exchange.json'}]).then(f => {
+    const json = JSON.parse(f[0].content)
+    dispatch(addExchangeDependency(json.dependencies)).then(() => {
+      dispatch({type: IMPORT_DONE})
+    })
   })
 }
 
@@ -201,13 +224,17 @@ export const importFile = (file: any, fileType: string) =>
           })
         } else {
           ZipHelper.listZipFiles(repository, upload.target.result).then(files => {
-            dispatch(addZipFiles(files))
-            const conflicts = files.filter(f => f.conflict)
+            const filtered = files.filter(f => !(f.filename.startsWith('exchange_modules/') || f.filename === 'exchange.json'))
+            const hasDependencies = files.filter(f => f.filename.startsWith('exchange_modules/')).length > 1
 
+            dispatch(zipWithDependencies(hasDependencies))
+            dispatch(addZipFiles(filtered))
+            const conflicts = filtered.filter(f => f.conflict)
             if (conflicts.length > 0)
               dispatch(showZipConflictDialog())
-            else
-              dispatch(saveZipFiles())
+            else {
+              dispatch(saveZipFiles(hasDependencies))
+            }
           })
         }
       } else {

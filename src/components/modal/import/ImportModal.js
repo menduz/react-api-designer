@@ -33,6 +33,7 @@ type Props = {
   showModal: Boolean,
   isImporting: Boolean,
   isSaving: Boolean,
+  zipWithDependencies: Boolean,
   error: string
 }
 
@@ -75,7 +76,8 @@ class ImportModal extends React.Component {
   render() {
     const {
       onCancel, onImportTypeChange, onFileUpload, onCloseError,
-      showModal, selectValue, url, isImporting, isSaving, fileToImport, error
+      showModal, selectValue, url, isImporting, isSaving, fileToImport, error,
+      zipWithDependencies
     } = this.props
 
     return showModal ? (

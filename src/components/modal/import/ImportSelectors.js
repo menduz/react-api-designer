@@ -26,6 +26,8 @@ export const getAllFilesAction = (state: any): ?any => getAll(state).allFilesAct
 
 export const getZipFiles = (state: any): any[] => getAll(state).zipFiles
 
+export const getZipWithDependencies = (state: any): boolean => getAll(state).zipWithDependencies
+
 export const getZipFileAction = (state: any): ?any => getAll(state).zipFileAction
 
 export const getError = (state: any): string => getAll(state).error

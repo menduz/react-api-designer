@@ -12,6 +12,7 @@ const initialState: State = {
   fileNameToImport: '',
   showConflictModal: false,
   showZipConflictModal: false,
+  zipWithDependencies:false
 }
 
 export default (state: State = initialState, action: any): State => {
@@ -62,6 +63,12 @@ export default (state: State = initialState, action: any): State => {
       return {
         ...state,
         zipFiles: action.payload.zipFiles
+      }
+
+    case actions.ZIP_WITH_DEPENDENCIES:
+      return {
+        ...state,
+        zipWithDependencies: action.payload.zipWithDependencies
       }
 
     case actions.ZIP_FILE_OVERRIDE_ACTION:
