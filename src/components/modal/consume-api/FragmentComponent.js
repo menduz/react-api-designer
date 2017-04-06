@@ -16,9 +16,9 @@ export default class FragmentComponent extends Component {
           <span className="fragment-title">{fragment.name}</span>
           <span className="fragment-description">{fragment.description}</span>
           <div className="rating">
-            <Rating className="fragment-rating" testId="Fragment-Rating" rating={fragment.rating} disabled/>
+            <Rating className="fragment-rating" testId="Fragment-Rating" rating={fragment.rating || 0} disabled/>
             <span className="amount-of-rating">
-              {` (${fragment.numberOfRates} vote${fragment.numberOfRates !== 1 ? 's' : ''})`}
+              {` (${fragment.numberOfRates || 0} vote${fragment.numberOfRates !== 1 ? 's' : ''})`}
             </span>
           </div>
         </div>
