@@ -12,19 +12,6 @@ html, body, div#root, div#root > div, .App.FileDrop, .App-content {
     display: none !important;
   }
 
-  .RightPanel, .LeftPanel {
-    position: relative;
-    height: 100%;
-
-    > div {
-      z-index: 0;
-    }
-  }
-
-  .right-container, .mid-container, .left-container {
-    display: inline-block;
-  }
-
   .mid-container {
     flex-grow: 1;
     position: relative;

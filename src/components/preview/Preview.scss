@@ -1,7 +1,5 @@
 .Preview {
 
-  margin-left: 20px;
-
   .No-preview {
     text-align: center;
     color: #cacbcc;
@@ -18,6 +16,8 @@
   }
 
   .json-preview {
+    margin-left: 10px;
+    margin-right: 10px;
     /* Makes the arrow from the tree looks blackish */
     li > div > div {
       color: #c8c9ca !important;

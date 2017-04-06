@@ -27,24 +27,20 @@ class App extends Component {
     return (
       <FileDrop className='App' testId="App">
         <div className="App-content">
-          <div className="left-container">
-            <ResizablePanelWrapper id="left-panel" minWidth="200" className="LeftPanel" position="left">
-              <div>
-                <Menu/>
-                <FileSystemTreeContainer/>
-                {isConsumeMode ? <DependencyMenu/> : null}
-                {isConsumeMode ? <DependenciesTreeContainer/> : null}
-              </div>
-            </ResizablePanelWrapper>
-          </div>
+          <ResizablePanelWrapper id="left-panel" minWidth="200" position="left">
+            <div>
+              <Menu/>
+              <FileSystemTreeContainer/>
+              {isConsumeMode ? <DependencyMenu/> : null}
+              {isConsumeMode ? <DependenciesTreeContainer/> : null}
+            </div>
+          </ResizablePanelWrapper>
           <div className="mid-container">
             <Editor/>
           </div>
-          <div className="right-container">
-            <ResizablePanelWrapper id="right-panel" minWidth="300" className="RightPanel" position="right">
-              <Info/>
-            </ResizablePanelWrapper>
-          </div>
+          <ResizablePanelWrapper id="right-panel" minWidth="300" position="right">
+            <Info/>
+          </ResizablePanelWrapper>
         </div>
 
         <Toasts/>
