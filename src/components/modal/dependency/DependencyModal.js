@@ -1,28 +1,28 @@
 // @flow
 
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
-import {Button, Modal, ModalHeader, ModalBody, ModalFooter, Toast, Spinner} from '../../MulesoftComponents'
-import {isSearching, getError, getFragment, canUpdate, getCurrentGAV} from './DependencySelectors'
-import {showError, clear, updateDependency} from './DependencyActions'
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Toast, Spinner } from '../../MulesoftComponents'
+import { isSearching, getError, getFragment, canUpdate, getCurrentGAV } from './DependencySelectors'
+import { showError, clear, updateDependency } from './DependencyActions'
 import DependencyInfo from './DependencyInfo'
 
-import type {Dispatch} from '../../../types'
-import type {Fragment} from '../consume-api/Fragment'
-import type {GAV} from './DependencyModel'
+import type {Dispatch } from '../../../types'
+import type {Fragment } from '../consume-api/Fragment'
+import type {GAV } from './DependencyModel'
 
 import './Dependency.css'
-import {removeDependency} from '../../dependencies-tree/actions'
+import { removeDependency } from '../../dependencies-tree/actions'
 
 class DependencyModal extends Component {
   props: DependencyProps
 
   _renderFragmentProperties() {
-    const {fragment, canUpdate, currentGAV} = this.props
+    const { fragment, canUpdate, currentGAV } = this.props
     return (
       <div className="dependency-answer">
-        <DependencyInfo fragment={fragment} canUpdate={canUpdate} currentGAV={currentGAV}/>
+        <DependencyInfo fragment={fragment} canUpdate={canUpdate} currentGAV={currentGAV} />
       </div>
     )
   }
@@ -34,20 +34,20 @@ class DependencyModal extends Component {
     } = this.props
     return (
       <Modal testId="Dependency-Modal"
-             onEsc={onCancel}
-             onClickOverlay={onCancel}
-             className="dependency-modal">
+        onEsc={onCancel}
+        onClickOverlay={onCancel}
+        className="dependency-modal">
         <ModalHeader onClose={onCancel}>
           <h1 className="modal-title">{fragment ? fragment.name : 'Loading'}</h1>
         </ModalHeader>
         {error.length > 0 ?
           <div className="error-zone">
-            <Toast title={error} kind="error" onClose={closeError} testId="Dependency-Error"/>
+            <Toast title={error} kind="error" onClose={closeError} testId="Dependency-Error" />
           </div> : null}
         <ModalBody className="dependency-body">
           <div className="dependency-content" data-test-id="Dependency-Content">
             {isSearching ?
-              <div className="search-spinner"><Spinner size="l"/></div> :
+              <div className="search-spinner"><Spinner size="l" /></div> :
               this._renderFragmentProperties()
             }
           </div>
@@ -56,14 +56,14 @@ class DependencyModal extends Component {
           <ModalFooter className="search-footer">
             <div className="modal-button-zone">
               <Button kind="danger"
-                      onClick={removeDependency.bind(this, currentGAV)}
-                      testId="Remove-Dependency-Button">
+                onClick={removeDependency.bind(this, currentGAV)}
+                testId="Remove-Dependency-Button">
                 Remove
               </Button>
               {canUpdate ?
                 <Button kind="primary"
-                        onClick={updateDependency}
-                        testId="Update-Dependency-Button">
+                  onClick={updateDependency}
+                  testId="Update-Dependency-Button">
                   {`Update to ${fragment.version}`}
                 </Button> : null}
               <Button kind="tertiary" noFill onClick={onCancel} testId="Cancel-Dependency-Button">Cancel</Button>
