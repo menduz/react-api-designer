@@ -43,7 +43,7 @@
     "flow-bin": "^0.37.4",
     "ignore-loader": "^0.1.2",
     "json-loader": "^0.5.4",
-    "node-sass": "^4.5.1",
+    "node-sass": "^4.13.1",
     "npm-run-all": "^4.0.2",
     "postcss": "^5.2.15",
     "react-scripts": "^0.8.5",
